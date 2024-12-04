@@ -23,7 +23,7 @@
 #include <catalogchapter.h>
 
 class QWidget;
-class DocPosition;
+class DocPositionBase;
 class DocPositionList;
 class QComboBox;
 
@@ -35,13 +35,13 @@ public:
   TemplToPositionDialogBase( QWidget* );
   ~TemplToPositionDialogBase( );
 
-  virtual void setDocPosition( DocPosition*, bool, bool ) = 0;
+  virtual void setDocPosition( DocPositionBase*, bool, bool ) = 0;
   virtual void setCatalogChapters( const QList<CatalogChapter>&, const QString& ) = 0;
   virtual QString chapter() const = 0;
 
   void setPositionList( DocPositionList, int );
   int insertAfterPosition();
-  virtual DocPosition docPosition() = 0;
+  virtual DocPositionBase docPosition() = 0;
 protected:
   /**
    * Needs to be reimplemented to return a pointer to a

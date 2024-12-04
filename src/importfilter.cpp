@@ -206,9 +206,9 @@ DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
             // qDebug () << "Importing line " << l;
             if ( !( l.isEmpty() || l.startsWith( "#" ) ) ) {
                 bool ok;
-                DocPosition dp = importDocPosition( l, ok );
+                DocPositionBase dp = importDocPosition( l, ok );
                 if ( ok )
-                    list.append( new DocPosition( dp ) );
+                    list.append( new DocPositionBase( dp ) );
             }
         }
         f.close();
@@ -220,7 +220,7 @@ DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
 }
 
 // creates a DocPosition from one line of the imported file
-DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
+DocPositionBase DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
     QStringList parts = l.split( mSeparator, Qt::KeepEmptyParts );
     // qDebug () << "Importing raw line " << l;
@@ -228,7 +228,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
     QString h;
     ok = true;
 
-    DocPosition pos;
+    DocPositionBase pos;
 
     // the text (mandatory)
     QString t = replaceCOL( parts, mText );

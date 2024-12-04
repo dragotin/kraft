@@ -186,7 +186,7 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
           // qDebug () << "ERROR: Strange type string loaded from db: " << typeStr;
         }
 
-        DocPosition *dp = doc->createPosition( type );
+        DocPositionBase *dp = doc->createPosition( type );
         dp->setDbId( q.value(0).toInt() );
         dp->setText( q.value(2).toString() );
 

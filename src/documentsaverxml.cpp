@@ -58,14 +58,13 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
     for (DocPositionBase *item : doc->positions()) {
         if (item->toDelete())
             continue;
-        DocPosition *pos = static_cast<DocPosition*>(item);
         QDomElement itemType = xmldoc.createElement("item");
 
         itemType.appendChild(textElement(xmldoc, "type", item->typeStr()));
         itemType.appendChild(textElement(xmldoc, "text", item->text()));
 
-        itemType.appendChild(textElement(xmldoc, "amount", QString::number(pos->amount(), 'f', 2)));
-        itemType.appendChild(textElement(xmldoc, "unit", pos->unit().einheitSingular()));
+        itemType.appendChild(textElement(xmldoc, "amount", QString::number(item->amount(), 'f', 2)));
+        itemType.appendChild(textElement(xmldoc, "unit", item->unit().einheitSingular()));
 
         QString ttStr;
         DocPositionBase::TaxType tt = item->taxType();
@@ -81,8 +80,8 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
 
         itemType.appendChild(textElement(xmldoc, "taxtype", ttStr));
 
-        itemType.appendChild(textElement(xmldoc, "unitprice", QString::number(pos->unitPrice().toDouble(), 'f', 2)));
-        itemType.appendChild(textElement(xmldoc, "itemprice", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
+        itemType.appendChild(textElement(xmldoc, "unitprice", QString::number(item->unitPrice().toDouble(), 'f', 2)));
+        itemType.appendChild(textElement(xmldoc, "itemprice", QString::number(item->overallPrice().toDouble(), 'f', 2)));
 
         const QMap<QString, KraftAttrib> attribs = item->attributes();
         for(const auto &k : attribs.keys()) {
@@ -379,7 +378,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
             QString t = childElemText(itemElem, "type");
             DocPositionBase::PositionType itemType = DocPositionBase::typeStrToType(t);
 
-            DocPosition *item = doc->createPosition(itemType);
+            DocPositionBase *item = doc->createPosition(itemType);
             item->setPositionNumber(++itemCnt);
             t = childElemText(itemElem, "text");
             item->setText(t);

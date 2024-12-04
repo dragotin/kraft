@@ -34,8 +34,8 @@ public:
   InsertTemplDialog( QWidget* );
   ~InsertTemplDialog();
 
-  void setDocPosition( DocPosition*, bool, bool ) override;
-  DocPosition docPosition() override;
+  void setDocPosition( DocPositionBase*, bool, bool ) override;
+  DocPositionBase docPosition() override;
 
   void setCatalogChapters( const QList<CatalogChapter>&, const QString& selectedChap) override;
   QString chapter() const override;
@@ -46,7 +46,7 @@ private:
   QString prepareText( const QString& input );
 
   Ui::insertTmplBase *mBaseWidget;
-  DocPosition mParkPosition;
+  DocPositionBase mParkPosition;
   QMap<QCheckBox*, QString> mTagMap;
 };
 

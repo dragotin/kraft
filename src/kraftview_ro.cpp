@@ -151,8 +151,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     QString docType = doc->docType();
     DocType dt(docType);
 
-    for(DocPositionBase *dpb: positions) {
-        DocPosition *dp = static_cast<DocPosition*>(dpb);
+    for(DocPositionBase *dp: positions) {
         tmpl.createDictionary( "ITEMS" );
 
         tmpl.setValue( "ITEMS", "NUMBER", QString::number( pos++ ) );

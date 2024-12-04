@@ -19,7 +19,7 @@
 #include "format.h"
 
 
-ReportItem::ReportItem(DocPositionBase *dpb)
+ReportItem::ReportItem(DocPositionBase *dp)
     : QObject()
 {
 //    int     _itemNo;
@@ -31,7 +31,6 @@ ReportItem::ReportItem(DocPositionBase *dpb)
 //    QString _nettoPrice;
 //    QString _taxMarker;
 
-    DocPosition *dp = static_cast<DocPosition*>(dpb);
     _kind = dp->typeStr();
     _text = dp->text();
     _itemNo = dp->positionNumber();

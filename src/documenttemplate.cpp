@@ -279,8 +279,7 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
     QString h;
 
     for (DocPositionBase *p : posList) {
-        DocPosition *posPtr = static_cast<DocPosition*>(p);
-        DocPosition pos = *posPtr;
+        DocPositionBase pos = *p;
         tmpl.createDictionary( "POSITIONS" );
         tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" ), QString::number(pos.positionNumber()));
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),

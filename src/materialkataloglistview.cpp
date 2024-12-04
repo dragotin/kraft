@@ -125,9 +125,9 @@ void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, 
   }
 }
 
-DocPosition MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
+DocPositionBase MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
 {
-  DocPosition pos;
+  DocPositionBase pos;
   if ( ! item ) {
     item = currentItem();
   }

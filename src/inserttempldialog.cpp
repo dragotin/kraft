@@ -85,7 +85,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   connect(mBaseWidget->mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
-void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPrices)
+void InsertTemplDialog::setDocPosition(DocPositionBase *dp, bool isNew , bool showPrices)
 {
   if ( dp ) {
     mParkPosition = *dp;
@@ -142,7 +142,7 @@ QComboBox *InsertTemplDialog::getPositionCombo()
   return mBaseWidget->dmPositionCombo;
 }
 
-DocPosition InsertTemplDialog::docPosition()
+DocPositionBase InsertTemplDialog::docPosition()
 {
   mParkPosition.setText( mBaseWidget->dmTextEdit->toPlainText() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );

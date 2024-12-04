@@ -144,7 +144,7 @@ private Q_SLOTS:
         DocPositionList list = doc.positions();
         QCOMPARE(list.count(), 4);
 
-        DocPosition *dp = static_cast<DocPosition*>(list[0]);
+        DocPositionBase *dp = list[0];
         QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
         QCOMPARE(dp->text(), QStringLiteral("first item"));
         QCOMPARE(dp->amount(), 8.4);
@@ -155,7 +155,7 @@ private Q_SLOTS:
 
         QVERIFY(dp->hasTag("Work"));
 
-        dp = static_cast<DocPosition*>(list[1]);
+        dp = list[1];
         QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
         QCOMPARE(dp->text(), QStringLiteral("second item"));
         QCOMPARE(dp->amount(), 4.4);

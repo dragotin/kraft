@@ -51,7 +51,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
   strList << i18n( "the Header of the Document as first item" );
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
-    DocPosition *dp = static_cast<DocPosition*>( it.next() );
+    DocPositionBase *dp = it.next();
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
     if ( h.length() > 50 ) {
       h = h.left( 50 );

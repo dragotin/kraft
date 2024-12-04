@@ -46,7 +46,7 @@ DocPositionList buildPosList() {
 
     // Attention: only use tags here that exist in the database, as
     // defined in the 10_migrate.sql
-    DocPosition *dp1 = new DocPosition;
+    DocPositionBase *dp1 = new DocPositionBase;
     dp1->setAmount(2.0);
     dp1->setUnitPrice(Geld(6.50));
     dp1->setText("Position1");
@@ -54,7 +54,7 @@ DocPositionList buildPosList() {
 
     positions.append(dp1);
 
-    DocPosition *dp2 = new DocPosition;
+    DocPositionBase *dp2 = new DocPositionBase;
     dp2->setAmount(4.0);
     dp2->setUnitPrice(Geld(12.50));
     dp2->setText("Position2");
@@ -62,7 +62,7 @@ DocPositionList buildPosList() {
 
     positions.append(dp2);
 
-    DocPosition *dp3 = new DocPosition;
+    DocPositionBase *dp3 = new DocPositionBase;
     dp3->setAmount(4.0);
     dp3->setUnitPrice(Geld(1.50));
     dp3->setText("Position3");

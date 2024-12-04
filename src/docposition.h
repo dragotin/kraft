@@ -48,6 +48,11 @@ public:
     enum PositionType { Position, ExtraDiscount, Text, Demand, Alternative };
     enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
+    static const QString Kind;
+    static const QString Discount;
+    static const QString Tags;
+    static const QString ExtraDiscountTagRequired;
+
     DocPositionBase();
     DocPositionBase( const PositionType& );
 
@@ -75,22 +80,6 @@ public:
     static QString typeToString(DocPositionBase::PositionType t);
     static DocPositionBase::PositionType typeStrToType(const QString& t);
 
-protected:
-    int     m_dbId;
-    int     m_position;
-    QString m_text;
-    bool    mToDelete;
-    TaxType mTaxType;
-    PositionType mType;
-};
-
-
-class DocPosition : public DocPositionBase
-{
-public:
-    DocPosition();
-    DocPosition( const PositionType& );
-
     void setUnit( const Einheit& unit ) { m_unit = unit; }
     Einheit unit() const { return m_unit; }
 
@@ -100,24 +89,24 @@ public:
 
     void setAmount( double amount ) { m_amount = amount; }
     double amount() { return m_amount; }
-    
+
     PositionViewWidget* associatedWidget() { return mWidget; }
     void setAssociatedWidget( PositionViewWidget *w ) { mWidget = w; }
 
-    static const QString Kind;
-    static const QString Discount;
-    static const QString Tags;
-    static const QString ExtraDiscountTagRequired;
-
 private:
+    int     m_dbId;
+    int     m_position;
+    QString m_text;
+    bool    mToDelete;
+    TaxType mTaxType;
+    PositionType mType;
+
     Einheit m_unit;
     Geld    m_unitPrice;
     double  m_amount;
     PositionViewWidget *mWidget;
-
-    // No calculation yet
-
 };
+
 
 class DocPositionList : public QList<DocPositionBase*>
 {
@@ -138,7 +127,7 @@ public:
     bool hasIndividualTaxes() const;
 
 protected:
-    int compareItems ( DocPosition *dp1, DocPosition *dp2 );
+    int compareItems ( DocPositionBase *dp1, DocPositionBase *dp2 );
 
 private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
@@ -149,7 +138,6 @@ typedef QListIterator<DocPositionBase*> DocPositionListIterator;
 typedef DocPositionBase* DocPositionGuardedPtr;
 
 Q_DECLARE_METATYPE(DocPositionBase)
-Q_DECLARE_METATYPE(DocPosition)
 Q_DECLARE_METATYPE(DocPositionList)
 
 #endif

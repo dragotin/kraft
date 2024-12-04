@@ -156,7 +156,7 @@ void TemplKatalogView::slDeleteTemplate()
   }
 }
 
-bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
+bool TemplKatalogView::currentItemToDocPosition( DocPositionBase& pos )
 {
   TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
   bool res = false;

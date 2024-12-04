@@ -142,7 +142,7 @@ public:
 
     KraftDoc& operator=( KraftDoc& );
 
-    DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
+    DocPositionBase *createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
     QList<ReportItem*> reportItemList() const;

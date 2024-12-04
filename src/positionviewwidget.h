@@ -47,7 +47,7 @@ public:
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition(DocPositionBase*);
+    void setDocPosition(DocPositionBase*pos);
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -58,9 +58,9 @@ public:
     State state() { return mState; }
     DocPositionBase::PositionType  kind()  { return mKind; }
 
-    static QString techKindString(DocPosition::PositionType kind);
-    static DocPosition::PositionType techStringToKind( const QString& kindStr );
-    static QString kindLabel(DocPosition::PositionType);
+    static QString techKindString(DocPositionBase::PositionType kind);
+    static DocPositionBase::PositionType techStringToKind( const QString& kindStr );
+    static QString kindLabel(DocPositionBase::PositionType);
 
     QString stateString( const State& state ) const;
     QString cleanKindString(const QString &src);
@@ -83,13 +83,13 @@ public Q_SLOTS:
     void slotSetEnabled( bool );
     void slotEnableKindMenu( bool );
     void slotAllowIndividualTax( bool );
-    void slotSetTax( DocPosition::TaxType );
+    void slotSetTax( DocPositionBase::TaxType );
     void slotShowPrice( bool show );  // hide the price entries for certain doc types.
 
 protected Q_SLOTS:
     void slotLockPosition();
     void slotUnlockPosition();
-    void slotSetPositionKind(DocPosition::PositionType kind, bool alterText);
+    void slotSetPositionKind(DocPositionBase::PositionType kind, bool alterText);
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
 
@@ -131,7 +131,7 @@ private:
     DocPositionBase::PositionType  mKind;
     bool mPositionPriceValid;
     QLocale *mLocale;
-    DocPosition::TaxType mTax;
+    DocPositionBase::TaxType mTax;
 };
 
 class PositionViewWidgetList : public QList<PositionViewWidget*>

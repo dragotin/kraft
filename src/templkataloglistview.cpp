@@ -210,9 +210,9 @@ TemplKatalogListView::~TemplKatalogListView()
 {
 }
 
-DocPosition TemplKatalogListView::itemToDocPosition( QTreeWidgetItem *it )
+DocPositionBase TemplKatalogListView::itemToDocPosition( QTreeWidgetItem *it )
 {
-    DocPosition pos;
+    DocPositionBase pos;
     if ( ! it ) {
         it = currentItem();
     }

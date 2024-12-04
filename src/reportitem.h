@@ -44,7 +44,7 @@ class ReportItem: public QObject
 
 public:
     ReportItem() : QObject() {}
-    ReportItem(DocPositionBase *dpb);
+    ReportItem(DocPositionBase*);
 
     QString getText() { return _text; }
     QString itemNumber() { return QString::number(_itemNo); }

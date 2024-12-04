@@ -35,7 +35,6 @@
 #include "docdigest.h"
 #include "docidentgenerator.h"
 
-// FIXME: Make KraftDoc inheriting DocDigest!
 namespace {
 
 QString multilineHtml( const QString& str )
@@ -205,9 +204,9 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   DocPositionListIterator it( origDoc.mPositions );
 
   while ( it.hasNext() ) {
-    DocPosition *dp = static_cast<DocPosition*>( it.next() );
+    DocPositionBase *dp = it.next();
 
-    DocPosition *newPos = new DocPosition();
+    DocPositionBase *newPos = new DocPositionBase();
     *newPos = *dp;
     newPos->setDbId( -1 );
     mPositions.append( newPos );
@@ -392,13 +391,12 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
   DocPositionListIterator it( newList );
   while ( it.hasNext() ) {
     DocPositionBase *dpb = it.next();
-    DocPosition *dp = static_cast<DocPosition*>( dpb );
-    DocPosition *newDp = createPosition( dp->type() );
-    *newDp = *dp; // FIXME: This does not copy tags and attribs
+    DocPositionBase *newDp = createPosition( dpb->type() );
+    *newDp = *dpb;
 
     // copy attribs and tags as they are not copied otherwise
-    newDp->setTags(dp->allTags());
-    QMap<QString, KraftAttrib> attribs = dp->attributes();
+    newDp->setTags(dpb->allTags());
+    QMap<QString, KraftAttrib> attribs = dpb->attributes();
     for (const auto& attrib : attribs.values()) {
         newDp->setAttribute(attrib);
     }
@@ -408,9 +406,9 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
   }
 }
 
-DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
+DocPositionBase* KraftDoc::createPosition( DocPositionBase::PositionType t )
 {
-    DocPosition *dp = new DocPosition( t );
+    DocPositionBase *dp = new DocPositionBase( t );
     mPositions.append( dp );
     return dp;
 }
@@ -707,14 +705,13 @@ void KraftDoc::slotNewIdent(const QString& ident)
         vatSums[lookupTag] = Geld();
 
         for (DocPositionBase *pb : dposList) {
-            DocPosition *p = static_cast<DocPosition*>(pb);
-            if (!p->toDelete() && p->hasTag(lookupTag)) {
-                Geld netto = p->overallPrice();
+            if (!pb->toDelete() && pb->hasTag(lookupTag)) {
+                Geld netto = pb->overallPrice();
 
                 Geld tax;
-                if (p->taxType() == DocPositionBase::TaxType::TaxFull)
+                if (pb->taxType() == DocPositionBase::TaxType::TaxFull)
                     tax = netto.percent(fullTax);
-                else if (p->taxType() == DocPositionBase::TaxType::TaxReduced)
+                else if (pb->taxType() == DocPositionBase::TaxType::TaxReduced)
                     tax = netto.percent(redTax);
 
                 bruttoSums[lookupTag] += netto;
@@ -750,9 +747,8 @@ void KraftDoc::slotNewIdent(const QString& ident)
 
      // generate a list of all tags in any position
      for (DocPositionBase *pb : dposList) {
-         DocPosition *p = static_cast<DocPosition*>(pb);
-         if (!p->toDelete()) {
-             const auto tags = p->allTags();
+         if (!pb->toDelete()) {
+             const auto tags = pb->allTags();
              for (const QString& lookupTag : tags) {
                  if (seenTags.contains(lookupTag)) {
                      seenTags[lookupTag] = 1+seenTags[lookupTag];

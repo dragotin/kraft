@@ -623,9 +623,9 @@ void KraftView::refreshPostCard()
     dp = it.next();
 
     if (  dp->type() == DocPositionBase::ExtraDiscount ) {
-      PositionViewWidget *w = ( static_cast<DocPosition*>( dp ) )->associatedWidget();
+      PositionViewWidget *w = dp->associatedWidget();
       if( w ) {
-        w->slotSetOverallPrice( ( static_cast<DocPosition*>( dp ) )->overallPrice() );
+        w->slotSetOverallPrice( dp->overallPrice() );
       } else {
         // qDebug () << "Warning: Position object has no associated widget!";
       }
@@ -966,7 +966,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
     QScopedPointer<TemplToPositionDialogBase> dia;
 
-    DocPosition *dp = new DocPosition();
+    DocPositionBase *dp = new DocPositionBase();
     dp->setPositionNumber( newpos +1 );
 
     bool newTemplate = false;
@@ -1004,7 +1004,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
     int execResult = dia->exec();
 
     if ( execResult == QDialog::Accepted ) {
-        DocPosition diaPos = dia->docPosition();
+        DocPositionBase diaPos = dia->docPosition();
         *dp = diaPos;
 
         // set the tax settings
@@ -1098,9 +1098,9 @@ void KraftView::slotImportItems()
 
       DocPositionListIterator posIt( list );
       while( posIt.hasNext() ) {
-        DocPosition *dp_old = static_cast<DocPosition*>(posIt.next());
+        DocPositionBase *dp_old = posIt.next();
 
-        DocPosition *dp = new DocPosition( *(dp_old) );
+        DocPositionBase *dp = new DocPositionBase( *(dp_old) );
         dp->setTaxType( currentTaxSetting() );
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
         widget->slotSetTax( DocPositionBase::TaxFull ); // FIXME: Value from Import?
@@ -1117,7 +1117,7 @@ void KraftView::slotAddExtraPosition()
   int newpos = mPositionWidgetList.count();
   // qDebug () << "Adding EXTRA Position at position " << newpos;
 
-  DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
+  DocPositionBase *dp = new DocPositionBase( DocPositionBase::ExtraDiscount );
   dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
   Einheit e = UnitManager::self()->getPauschUnit();
@@ -1170,7 +1170,7 @@ DocPositionList KraftView::currentPositionList()
                         t = DocPositionBase::PositionType::Alternative;
                     }
                 }
-                DocPosition *newDp = new DocPosition(t);
+                DocPositionBase *newDp = new DocPositionBase(t);
 
                 newDp->setPositionNumber( cnt++ );
                 for (const auto& a: dpb->attributes()) {
@@ -1181,11 +1181,11 @@ DocPositionList KraftView::currentPositionList()
 
                 bool calculatable = true;
 
-                if ( dpb->type() == DocPosition::ExtraDiscount ) {
+                if ( dpb->type() == DocPositionBase::ExtraDiscount ) {
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
+                    KraftAttrib a( DocPositionBase::Discount, discount, KraftAttrib::Type::Float);
                     newDp->setAttribute(a);
 
                     // get the required tag as String.
@@ -1195,7 +1195,7 @@ DocPositionList KraftView::currentPositionList()
                         // save the required tag as KraftAttrib
                         const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
                         int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
-                        const KraftAttrib a(DocPosition::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
+                        const KraftAttrib a(DocPositionBase::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
                         newDp->setAttribute(a);
                     }
 
