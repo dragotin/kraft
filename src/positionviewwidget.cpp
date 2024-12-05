@@ -184,7 +184,10 @@ void PositionViewWidget::setDocPosition( DocPosition *pos)
   QString unit = pos->unit().einheitSingular();
   m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
 
-  if( pos->type() == DocPosition::Type::Position ) {
+  if( pos->type() == DocPosition::Type::Position ||
+          pos->type() == DocPosition::Type::Demand ||
+          pos->type() == DocPosition::Type::Alternative) {
+
     positionDetailStack->setCurrentWidget( positionPage );
 
     m_sbAmount->setValue( pos->amount() );
@@ -228,7 +231,7 @@ void PositionViewWidget::setDocPosition( DocPosition *pos)
     }
     mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
-    // qDebug () << "unknown doc position type " << pos->type();
+      qDebug () << "unknown doc position type " << pos->typeStr();
   }
   slotSetOverallPrice( currentPrice() );
 
@@ -608,7 +611,7 @@ void PositionViewWidget::slotSetPositionKind(DocPosition::Type kind, bool alterT
         icon = DefaultProvider::self()->icon("arrow-move-right");
     } else if (kind == DocPosition::Type::Alternative) {
         tt = i18n( "This is an alternative item.<br/><br/>"
-                   " Use the position toolbox to change the item type." );
+                   "Use the item toolbox to change the item type." );
         showLabel = true;
         icon = DefaultProvider::self()->icon("arrow-ramp-right");
     }
