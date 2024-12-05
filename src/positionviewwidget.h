@@ -47,7 +47,7 @@ public:
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition(DocPositionBase*pos);
+    void setDocPosition(DocPosition*pos);
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -56,11 +56,11 @@ public:
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
-    DocPositionBase::PositionType  kind()  { return mKind; }
+    DocPosition::Type  kind()  { return mKind; }
 
-    static QString techKindString(DocPositionBase::PositionType kind);
-    static DocPositionBase::PositionType techStringToKind( const QString& kindStr );
-    static QString kindLabel(DocPositionBase::PositionType);
+    static QString techKindString(DocPosition::Type kind);
+    static DocPosition::Type techStringToKind( const QString& kindStr );
+    static QString kindLabel(DocPosition::Type);
 
     QString stateString( const State& state ) const;
     QString cleanKindString(const QString &src);
@@ -69,7 +69,7 @@ public:
     void setCurrentPrice( Geld );
     Geld unitPrice();
     QString extraDiscountTagRestriction();
-    DocPositionBase::TaxType taxType() const;
+    DocPosition::Tax taxType() const;
 
 public Q_SLOTS:
     void slotSetOverallPrice( Geld );
@@ -83,13 +83,13 @@ public Q_SLOTS:
     void slotSetEnabled( bool );
     void slotEnableKindMenu( bool );
     void slotAllowIndividualTax( bool );
-    void slotSetTax( DocPositionBase::TaxType );
+    void slotSetTax( DocPosition::Tax);
     void slotShowPrice( bool show );  // hide the price entries for certain doc types.
 
 protected Q_SLOTS:
     void slotLockPosition();
     void slotUnlockPosition();
-    void slotSetPositionKind(DocPositionBase::PositionType kind, bool alterText);
+    void slotSetPositionKind(DocPosition::Type kind, bool alterText);
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
 
@@ -128,10 +128,10 @@ private:
 
     Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
-    DocPositionBase::PositionType  mKind;
+    DocPosition::Type  mKind;
     bool mPositionPriceValid;
     QLocale *mLocale;
-    DocPositionBase::TaxType mTax;
+    DocPosition::Tax mTax;
 };
 
 class PositionViewWidgetList : public QList<PositionViewWidget*>

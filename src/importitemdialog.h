@@ -45,7 +45,7 @@ public:
   QComboBox *getPositionCombo();
 
 Q_SIGNALS:
-  void positionImported( const DocPositionBase& );
+  void positionImported( const DocPosition& );
 
 protected Q_SLOTS:
   void slotSchemaChanged( const QString& );

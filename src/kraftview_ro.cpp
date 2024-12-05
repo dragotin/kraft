@@ -131,9 +131,10 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
     // check the tax settings: If all items have the same settings, its not individual.
     bool individualTax = false;
-    int ttype = -1;
-    for(DocPositionBase *dp: positions) {
-        if( ttype == -1 ) {
+
+    DocPosition::Tax ttype{DocPosition::Tax::Invalid};
+    for(DocPosition *dp: positions) {
+        if(ttype == DocPosition::Tax::Invalid) {
             ttype = dp->taxType();
         } else {
             if( ttype != dp->taxType() ) { // different from previous one?
@@ -151,7 +152,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     QString docType = doc->docType();
     DocType dt(docType);
 
-    for(DocPositionBase *dp: positions) {
+    for(DocPosition *dp: positions) {
         tmpl.createDictionary( "ITEMS" );
 
         tmpl.setValue( "ITEMS", "NUMBER", QString::number( pos++ ) );
@@ -174,16 +175,18 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
             QString taxType;
             if( individualTax ) {
-                if( dp->taxType() == 1 ) {
+                if( dp->taxType() == DocPosition::Tax::None ) {
                     taxFreeCnt++;
                     taxType = "TAX_FREE";
-                } else if( dp->taxType() == 2 ) {
+                } else if( dp->taxType() == DocPosition::Tax::Reduced) {
                     taxType = "REDUCED_TAX";
                     reducedTaxCnt++;
-                } else {
+                } else if( dp->taxType() == DocPosition::Tax::Full) {
                     // ATTENTION: Default for all non known tax types is full tax.
                     fullTaxCnt++;
                     taxType = "FULL_TAX";
+                } else {
+                    qDebug() << "Invalid tax type.";
                 }
             }
             tmpl.createSubDictionary("PRICE_DISPLAY", taxType);

@@ -34,102 +34,102 @@
 @author Klaas Freitag
 */
 
-DocPositionBase::DocPositionBase() : KraftObj(),
+DocPosition::DocPosition() : KraftObj(),
     m_dbId( -1 ),
     mToDelete( false ),
-    mTaxType( TaxFull ),
-    mType( Position )
+    mTaxType( Tax::Full ),
+    mType( Type::Position )
 
 {
 
 }
 
-DocPositionBase::DocPositionBase( const PositionType& t )
+DocPosition::DocPosition(const Type &t )
     : KraftObj(),
       m_dbId( -1 ),
       mToDelete( false ),
-      mTaxType( TaxFull ),
+      mTaxType( Tax::Full ),
       mType( t )
 {
 
 }
 
-DocPositionBase::TaxType DocPositionBase::taxType()
+DocPosition::Tax DocPosition::taxType()
 {
     return mTaxType;
 }
 
-void DocPositionBase::setTaxType( TaxType tt )
+void DocPosition::setTaxType( Tax tt )
 {
     mTaxType = tt;
 }
 
-void DocPositionBase::setTaxType( int tt )
+void DocPosition::setTaxType( int tt )
 {
-    mTaxType = (TaxType) tt;
+    mTaxType = (Tax) tt;
 }
 
-void DocPositionBase::setTaxType(const QString& taxStr)
+void DocPosition::setTaxType(const QString& taxStr)
 {
-    mTaxType = TaxType::TaxInvalid;
+    mTaxType = Tax::Invalid;
     if (taxStr == QStringLiteral("Full") )
-        mTaxType = TaxFull;
+        mTaxType = Tax::Full;
     else if (taxStr == QStringLiteral("Reduced"))
-        mTaxType = TaxReduced;
+        mTaxType = Tax::Reduced;
     else if (taxStr == QStringLiteral("None"))
-        mTaxType = TaxNone;
+        mTaxType = Tax::None;
 }
 
-int DocPositionBase::taxTypeNumeric()
+int DocPosition::taxTypeNumeric()
 {
-    if ( mTaxType == TaxNone )
+    if ( mTaxType == Tax::None )
         return 1;
-    else if ( mTaxType == TaxReduced )
+    else if ( mTaxType == Tax::Reduced )
         return 2;
-    else if ( mTaxType == TaxFull )
+    else if ( mTaxType == Tax::Full )
         return 3;
 
     // qDebug () << "ERR: Vat-type ambigous!";
     return 0; // Invalid
 }
 
-QString DocPositionBase::typeStr()
+QString DocPosition::typeStr()
 {
     // { Position, ExtraDiscount, Text, Demand, Alternative }
     return typeToString(type());
 }
 
-DocPositionBase::PositionType DocPositionBase::typeStrToType(const QString& t)
+DocPosition::Type DocPosition::typeStrToType(const QString& t)
 {
-    if (t == typeToString(PositionType::ExtraDiscount))
-        return PositionType::ExtraDiscount;
-    else if (t == typeToString(PositionType::Alternative))
-        return PositionType::Alternative;
-    else if (t == typeToString(PositionType::Demand))
-        return PositionType::Demand;
-    else if (t == typeToString(PositionType::Text))
-        return PositionType::Text;
+    if (t == typeToString(Type::ExtraDiscount))
+        return Type::ExtraDiscount;
+    else if (t == typeToString(Type::Alternative))
+        return Type::Alternative;
+    else if (t == typeToString(Type::Demand))
+        return Type::Demand;
+    else if (t == typeToString(Type::Text))
+        return Type::Text;
 
-    return PositionType::Position;
+    return Type::Position;
 
 }
 
-QString DocPositionBase::typeToString(DocPositionBase::PositionType t)
+QString DocPosition::typeToString(DocPosition::Type t)
 {
     switch (t) {
-    case DocPositionBase::PositionType::ExtraDiscount:
+    case DocPosition::Type::ExtraDiscount:
         return QStringLiteral("ExtraDiscount");
         break;
-    case DocPositionBase::PositionType::Alternative:
+    case DocPosition::Type::Alternative:
         return QStringLiteral("Alternative");
         break;
-    case DocPositionBase::PositionType::Demand:
+    case DocPosition::Type::Demand:
         return QStringLiteral("Demand");
         break;
-    case DocPositionBase::PositionType::Position:
+    case DocPosition::Type::Position:
         return QStringLiteral("Normal");
         break;
-    case DocPositionBase::PositionType::Text:
+    case DocPosition::Type::Text:
         return QStringLiteral("Text");
     default:
         return QString();
@@ -139,18 +139,18 @@ QString DocPositionBase::typeToString(DocPositionBase::PositionType t)
 
 // ##############################################################
 
-const QString DocPositionBase::Kind{"kind"};
-const QString DocPositionBase::Discount{"discount"};
-const QString DocPositionBase::Tags{"tags"};
-const QString DocPositionBase::ExtraDiscountTagRequired{"discountTagRequired"};
+const QString DocPosition::Kind{"kind"};
+const QString DocPosition::Discount{"discount"};
+const QString DocPosition::Tags{"tags"};
+const QString DocPosition::ExtraDiscountTagRequired{"discountTagRequired"};
 
-Geld DocPositionBase::overallPrice()
+Geld DocPosition::overallPrice()
 {
     Geld g;
 
     // only calculate the sum for normal items and discount items
-    if (type() == DocPositionBase::PositionType::Position ||
-            type() == DocPositionBase::PositionType::ExtraDiscount) {
+    if (type() == Type::Position ||
+            type() == Type::ExtraDiscount) {
         g = unitPrice() * amount();
     } else {
         // qDebug() << "Skipping price in overallPrice because of item type";
@@ -162,7 +162,7 @@ Geld DocPositionBase::overallPrice()
 // ##############################################################
 
 DocPositionList::DocPositionList()
-    : QList<DocPositionBase*>()
+    : QList<DocPosition*>()
 {
     // setAutoDelete( true );
 }
@@ -180,7 +180,7 @@ Geld DocPositionList::nettoPrice()
 
     DocPositionListIterator it( *this );
     while( it.hasNext() ) {
-        DocPositionBase *dp = it.next();
+        DocPosition *dp = it.next();
         if (!dp->toDelete())
             g += dp->overallPrice();
     }
@@ -196,10 +196,10 @@ Geld DocPositionList::fullTaxSum( double fullTax )
     }
     DocPositionListIterator it( *this );
     while( it.hasNext() ) {
-        DocPositionBase *dp = static_cast<DocPositionBase*>( it.next() );
+        DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
         auto tt = dp->taxType();
-        if( !dp->toDelete() && tt == DocPositionBase::TaxFull ) {
+        if( !dp->toDelete() && tt == DocPosition::Tax::Full ) {
             sum += dp->overallPrice();
         }
     }
@@ -221,9 +221,9 @@ Geld DocPositionList::reducedTaxSum( double reducedTax )
     }
     DocPositionListIterator it( *this );
     while( it.hasNext() ) {
-        DocPositionBase *dp = it.next();
+        DocPosition *dp = it.next();
 
-        if( !dp->toDelete() && dp->taxType() == DocPositionBase::TaxReduced ) {
+        if( !dp->toDelete() && dp->taxType() == DocPosition::Tax::Reduced ) {
             sum += dp->overallPrice();
         }
     }
@@ -249,16 +249,16 @@ Geld DocPositionList::taxSum( double fullTax, double redTax )
     return sum;
 }
 
-QString DocPositionList::posNumber( DocPositionBase* pos )
+QString DocPositionList::posNumber( DocPosition* pos )
 {
     return QString::number( 1+indexOf( pos ) );
 }
 
 
-int DocPositionList::compareItems ( DocPositionBase *dp1, DocPositionBase *dp2 )
+int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
 {
-    //DocPositionBase *dpb1 = static_cast<DocPositionBase*>( item1 );
-    //DocPositionBase *dpb2 = static_cast<DocPositionBase*>( item2 );
+    //DocPosition *dpb1 = static_cast<DocPosition*>( item1 );
+    //DocPosition *dpb2 = static_cast<DocPosition*>( item2 );
 
     int sortkey1 = dp1->positionNumber();
     int sortkey2 = dp2->positionNumber();
@@ -271,41 +271,41 @@ int DocPositionList::compareItems ( DocPositionBase *dp1, DocPositionBase *dp2 )
     return res;
 }
 
-DocPositionBase::TaxType DocPositionList::listTaxation() const
+DocPosition::Tax DocPositionList::listTaxation() const
 {
     int fullTax = 0;
     int noTax = 0;
     int redTax = 0;
 
-    DocPositionBase::TaxType ret = DocPositionBase::TaxType::TaxNone;
+    DocPosition::Tax ret = DocPosition::Tax::None;
 
     const_iterator it;
     for ( it = begin(); it != end(); ++it ) {
-        if( (*it)->taxType() == DocPositionBase::TaxFull) {
+        if( (*it)->taxType() == DocPosition::Tax::Full) {
             fullTax++;
-        } else if( (*it)->taxType() == DocPositionBase::TaxReduced ) {
+        } else if( (*it)->taxType() == DocPosition::Tax::Reduced ) {
             redTax++;
-        } else if( (*it)->taxType() == DocPositionBase::TaxNone ) {
+        } else if( (*it)->taxType() == DocPosition::Tax::None ) {
             noTax++;
         }
     }
 
     int cnt = count();
     if (noTax == cnt) {
-        ret = DocPositionBase::TaxType::TaxNone;
+        ret = DocPosition::Tax::None;
     } else if (redTax == cnt) {
-        ret = DocPositionBase::TaxType::TaxReduced;
+        ret = DocPosition::Tax::Reduced;
     } else if (fullTax == cnt) {
-        ret = DocPositionBase::TaxType::TaxFull;
+        ret = DocPosition::Tax::Full;
     } else
-        ret = DocPositionBase::TaxType::TaxIndividual;
+        ret = DocPosition::Tax::Individual;
 
     return ret;
 }
 
 bool DocPositionList::hasIndividualTaxes() const
 {
-    bool re = listTaxation() == DocPositionBase::TaxType::TaxIndividual;
+    bool re = listTaxation() == DocPosition::Tax::Individual;
     return re;
 }
 
@@ -318,13 +318,13 @@ QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& n
     return elem;
 }
 
-DocPositionBase *DocPositionList::positionFromId( int id )
+DocPosition *DocPositionList::positionFromId( int id )
 {
-    DocPositionBase *dp{nullptr};
+    DocPosition *dp{nullptr};
 
     DocPositionListIterator it(*this);
     while( it.hasNext() ) {
-        dp = static_cast<DocPositionBase*>( it.next() );
+        dp = static_cast<DocPosition*>( it.next() );
 
         if( dp->dbId() == id ) {
             break;

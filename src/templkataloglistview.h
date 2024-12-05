@@ -27,7 +27,7 @@
 /**
 @author Klaas Freitag
 */
-class DocPositionBase;
+class DocPosition;
 
 
 class TemplKatalogListView : public KatalogListView
@@ -48,7 +48,7 @@ public:
 
   void setShowCalcParts( bool );
   bool showCalcParts();
-  DocPositionBase itemToDocPosition( QTreeWidgetItem* it = 0 );
+  DocPosition itemToDocPosition( QTreeWidgetItem* it = 0 );
   CalcPartList itemsCalcParts( QTreeWidgetItem* it = 0 );
   public Q_SLOTS:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );

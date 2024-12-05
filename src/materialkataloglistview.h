@@ -24,7 +24,7 @@
 class QTreeWidgetItem;
 class StockMaterial;
 class QLocale;
-class DocPositionBase;
+class DocPosition;
 /**
 A listview that presents the contents of the Bruns Catalog
 
@@ -37,7 +37,7 @@ public:
 
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
-  DocPositionBase itemToDocPosition( QTreeWidgetItem *it = nullptr );
+  DocPosition itemToDocPosition( QTreeWidgetItem *it = nullptr );
   QTreeWidgetItem* addMaterialToView( QTreeWidgetItem*, StockMaterial* );
 
   void saveState();

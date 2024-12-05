@@ -29,7 +29,7 @@ class KatalogListView;
 class FloskelTemplate;
 class FlosTemplDialog;
 class QBoxLayout;
-class DocPositionBase;
+class DocPosition;
 /**
   * The base class for Kraft katalog view.
 
@@ -57,7 +57,7 @@ public:
 
 protected:
   Katalog* getKatalog( const QString& );
-  bool currentItemToDocPosition(DocPositionBase&);
+  bool currentItemToDocPosition(DocPosition&);
   CalcPartList currentItemsCalcParts();
 
   void saveWindowState( const QByteArray& arr );

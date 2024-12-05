@@ -117,7 +117,7 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
-    DocPositionBase *dp = it.next();
+    DocPosition *dp = it.next();
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
     if ( h.length() > 50 ) {
       h = h.left( 50 );
@@ -180,7 +180,7 @@ DocPositionList ImportItemDialog::positionList()
     if ( tags.size() > 0 ) {
       DocPositionListIterator posIt( list );
       while( posIt.hasNext() ) {
-        DocPositionBase *dp = posIt.next();
+        DocPosition *dp = posIt.next();
         for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
           dp->addTag( *it );
         }

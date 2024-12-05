@@ -40,7 +40,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
   void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
-  void setPositions( DocPositionList, DocPositionBase::TaxType, double, double );
+  void setPositions( DocPositionList, DocPosition::Tax, double, double );
   void setFooterData( const QString&,  const QString& );
   void renderDoc( KraftDoc::Part p );
   void slotSetMode( DisplayMode, KraftDoc::Part p);

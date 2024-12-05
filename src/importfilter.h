@@ -72,7 +72,7 @@ public:
   void debugDefinition();
 
 private:
-  DocPositionBase importDocPosition( const QString&, bool& );
+  DocPosition importDocPosition( const QString&, bool& );
   QString replaceCOL( const QStringList&, const QString& );
 
   QString mAmount;

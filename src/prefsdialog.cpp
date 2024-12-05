@@ -369,7 +369,7 @@ QWidget* PrefsDialog::docTab()
   gridLay->addWidget(l, 0, 0);
 
   _lineEditDemandText = new QLineEdit(this);
-  _lineEditDemandText->setText(PositionViewWidget::kindLabel(DocPositionBase::PositionType::Demand));
+  _lineEditDemandText->setText(PositionViewWidget::kindLabel(DocPosition::Type::Demand));
   _lineEditDemandText->setToolTip(i18n("This text is automatically prepended to new 'on demand' items."));
 
   gridLay->addWidget(_lineEditDemandText, 0, 1);
@@ -378,7 +378,7 @@ QWidget* PrefsDialog::docTab()
   gridLay->addWidget(l, 1, 0);
 
   _lineEditAlternativeText = new QLineEdit(this);
-  _lineEditAlternativeText->setText(PositionViewWidget::kindLabel(DocPositionBase::PositionType::Alternative));
+  _lineEditAlternativeText->setText(PositionViewWidget::kindLabel(DocPosition::Type::Alternative));
   _lineEditAlternativeText->setToolTip(i18n("This text is automatically prepended to new 'alternative' items."));
 
   gridLay->addWidget(_lineEditAlternativeText, 1, 1);

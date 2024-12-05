@@ -30,7 +30,7 @@ class FilterHeader;
 class CatalogWidget;
 class QBoxLayout;
 class QActionMenu;
-class DocPositionBase;
+class DocPosition;
 class CalcPartList;
 class QTreeWidgetItem;
 class QLabel;
@@ -117,7 +117,7 @@ protected Q_SLOTS:
     QLabel            *mTemplateStats;
     QProgressBar      *mProgress;
     // Fills the DocPosition with the data from the currently selected item in the view
-    virtual bool currentItemToDocPosition( DocPositionBase& ){ return false; }
+    virtual bool currentItemToDocPosition( DocPosition& ){ return false; }
 
     /** initializes the QActions of the application */
     void initActions();

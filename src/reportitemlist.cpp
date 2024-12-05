@@ -21,7 +21,7 @@
 ReportItemList::ReportItemList(const DocPositionList& positions)
     :QList<ReportItem*>()
 {
-    for (DocPositionBase *dp: positions) {
+    for (DocPosition *dp: positions) {
         ReportItem *ri = new ReportItem(dp);
         append(ri);
     }

@@ -79,7 +79,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             if( newDocType.substractPartialInvoice() ) {
                 if( sourceDocType.partialInvoice()  ) {
                     Geld g = sourceDoc->nettoSum();
-                    DocPositionBase *pos = doc->createPosition(DocPositionBase::Position);
+                    DocPosition *pos = doc->createPosition(DocPosition::Type::Position);
                     if(pos) {
                         Einheit e;
                         pos->setUnit(e);

@@ -112,10 +112,10 @@ class KraftView : public KraftViewBase
       * @see KraftApp#getDocument
       */
 
-  typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
+  typedef QMap<DocPosition*, PositionViewWidget*> PositionMap;
 
   DocPositionList currentPositionList();
-  DocPositionBase::TaxType currentTaxSetting();
+  DocPosition::Tax currentTaxSetting();
 
   void setup( DocGuardedPtr doc );
 
@@ -174,7 +174,7 @@ private:
   void saveChanges();
   void discardChanges();
 
-  PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
+  PositionViewWidget *createPositionViewWidget( DocPosition*, int );
 
   QStringList generateLetterHead(const QString &familyName , const QString &givenName);
 

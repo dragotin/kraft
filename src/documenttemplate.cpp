@@ -260,10 +260,10 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
  * we have individual Tax setting and show the tax marker etc.
  */
 #if 0
-    DocPositionBase::TaxType ttype = posList.listTaxation();
-    for ( DocPositionBase *p : posList) {
-        DocPositionBase pos = *p;
-        if( ttype == DocPositionBase::TaxInvalid  ) {
+    DocPosition::TaxType ttype = posList.listTaxation();
+    for ( DocPosition *p : posList) {
+        DocPosition pos = *p;
+        if( ttype == DocPosition::TaxInvalid  ) {
             ttype = pos.taxType();
         } else {
             if( ttype != pos.taxType() ) { // different from previous one?
@@ -278,8 +278,8 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
     int taxFreeCnt{0}, reducedTaxCnt{0}, fullTaxCnt{0};
     QString h;
 
-    for (DocPositionBase *p : posList) {
-        DocPositionBase pos = *p;
+    for (DocPosition *p : posList) {
+        DocPosition pos = *p;
         tmpl.createDictionary( "POSITIONS" );
         tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" ), QString::number(pos.positionNumber()));
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),
@@ -300,13 +300,13 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
         QString taxType;
 
         if( individualTax ) {
-            if( pos.taxType() == 1 ) {
+            if( pos.taxType() == DocPosition::Tax::None ) {
                 taxFreeCnt++;
                 taxType = "TAX_FREE";
-            } else if( pos.taxType() == 2 ) {
+            } else if( pos.taxType() == DocPosition::Tax::Reduced) {
                 reducedTaxCnt++;
                 taxType = "REDUCED_TAX";
-            } else {
+            } else if (pos.taxType() == DocPosition::Tax::Full) {
                 // ATTENTION: Default for all non known tax types is full tax.
                 fullTaxCnt++;
                 taxType = "FULL_TAX";
@@ -317,7 +317,7 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
 
         /* item kind: Normal, alternative or demand item. For normal items, the kind is empty.
    */
-        if (pos.type() == DocPositionBase::Demand || pos.type() == DocPositionBase::Alternative) {
+        if (pos.type() == DocPosition::Type::Demand || pos.type() == DocPosition::Type::Alternative) {
             specialPosCnt++;
         }
     }

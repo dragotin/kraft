@@ -591,7 +591,7 @@ void Portal::slotFollowUpDocument()
         DocType newDocType = wiz.docType();
         bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
         if (!allowKind) {
-            for(DocPositionBase *dp:posToCopy) {
+            for(DocPosition *dp:posToCopy) {
                 // if there is a kind attribute, that is going to be removed.
                 dp->removeAttribute("kind");
             }

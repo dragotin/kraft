@@ -19,7 +19,7 @@
 #include "format.h"
 
 
-ReportItem::ReportItem(DocPositionBase *dp)
+ReportItem::ReportItem(DocPosition *dp)
     : QObject()
 {
 //    int     _itemNo;
@@ -39,12 +39,12 @@ ReportItem::ReportItem(DocPositionBase *dp)
     _nettoPrice = dp->overallPrice().toLocaleString();
 
     QString re;
-    DocPositionBase::TaxType tt = dp->taxType();
-    if ( tt == DocPositionBase::TaxReduced ) {
+    DocPosition::Tax tt = dp->taxType();
+    if ( tt == DocPosition::Tax::Reduced ) {
         re = QStringLiteral("1");
-    } else if ( tt == DocPositionBase::TaxNone) {
+    } else if ( tt == DocPosition::Tax::None) {
         re = QStringLiteral("");
-    } else if (tt == DocPositionBase::TaxFull) {
+    } else if (tt == DocPosition::Tax::Full) {
         re = QStringLiteral("2");
     }
 

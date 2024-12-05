@@ -470,11 +470,11 @@ void KraftView::redrawDocPositions( )
   int cnt = 0;
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
-    DocPositionBase *dp = it.next();
+    DocPosition *dp = it.next();
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition(dp);
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
-      w->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+      w->slotAllowIndividualTax( currentTaxSetting() == DocPosition::Tax::Individual );
     }
     cnt++;
     // qDebug () << "now position " << dp->positionNumber();
@@ -511,7 +511,7 @@ void KraftView::setMappingId( QWidget *widget, int pos )
 // create a new position widget.
 // The position parameter comes in as list counter, starting at 0
 
-PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
+PositionViewWidget *KraftView::createPositionViewWidget( DocPosition *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
   
@@ -561,20 +561,20 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   return w;
 }
 
-DocPositionBase::TaxType KraftView::currentTaxSetting()
+DocPosition::Tax KraftView::currentTaxSetting()
 {
   // add 1 to the currentItem since that starts with zero.
   int taxKind = 1+( m_footerEdit->ui()->mTaxCombo->currentIndex() );
-  DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
+  DocPosition::Tax tt = DocPosition::Tax::Invalid;
 
   if ( taxKind == 1 ) { // No Tax at all
-    tt = DocPositionBase::TaxNone;
+    tt = DocPosition::Tax::None;
   } else if ( taxKind == 2 ) { // Reduced tax for all items
-    tt = DocPositionBase::TaxReduced;
+    tt = DocPosition::Tax::Reduced;
   } else if ( taxKind == 3 ) { // Full tax for all items
-    tt = DocPositionBase::TaxFull;
+    tt = DocPosition::Tax::Full;
   } else { // individual level
-    tt = DocPositionBase::TaxIndividual;
+    tt = DocPosition::Tax::Individual;
   }
   return tt;
 }
@@ -618,11 +618,11 @@ void KraftView::refreshPostCard()
 
 
   DocPositionListIterator it( positions );
-  DocPositionBase *dp;
+  DocPosition *dp;
   while( it.hasNext()) {
     dp = it.next();
 
-    if (  dp->type() == DocPositionBase::ExtraDiscount ) {
+    if (  dp->type() == DocPosition::Type::ExtraDiscount ) {
       PositionViewWidget *w = dp->associatedWidget();
       if( w ) {
         w->slotSetOverallPrice( dp->overallPrice() );
@@ -651,7 +651,7 @@ void KraftView::setupFooter()
   DocPositionList list = m_doc->positions();
 
   int tt = -1;
-  DocPositionBase *dp = nullptr;
+  DocPosition *dp = nullptr;
 
   DocPositionListIterator it( list );
   int taxIndex = 0;
@@ -708,14 +708,14 @@ void KraftView::slotTaxComboChanged(int newId)
       return;
     }
   }
-  DocPositionBase::TaxType tax = DocPositionBase::TaxFull;
+  DocPosition::Tax tax = DocPosition::Tax::Full;
 
   if( newId == INDI_TAX ) {
     allowTaxSetting = true;
   } else if( newId == RED_TAX ) {
-    tax = DocPositionBase::TaxReduced;
+    tax = DocPosition::Tax::Reduced;
   } else if( newId == NO_TAX ) {
-    tax = DocPositionBase::TaxNone;
+    tax = DocPosition::Tax::None;
   }
 
   PositionViewWidgetListIterator it( mPositionWidgetList );
@@ -966,7 +966,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
     QScopedPointer<TemplToPositionDialogBase> dia;
 
-    DocPositionBase *dp = new DocPositionBase();
+    DocPosition *dp = new DocPosition();
     dp->setPositionNumber( newpos +1 );
 
     bool newTemplate = false;
@@ -1004,14 +1004,14 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
     int execResult = dia->exec();
 
     if ( execResult == QDialog::Accepted ) {
-        DocPositionBase diaPos = dia->docPosition();
+        DocPosition diaPos = dia->docPosition();
         *dp = diaPos;
 
         // set the tax settings
-        if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+        if( currentTaxSetting() == DocPosition::Tax::Individual ) {
             // FIXME: In case a new item is added, add the default tax type.
             // otherwise add the tax of the template
-            dp->setTaxType( DocPositionBase::TaxFull );
+            dp->setTaxType( DocPosition::Tax::Full );
         } else {
             dp->setTaxType( currentTaxSetting() );
         }
@@ -1067,7 +1067,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
         widget->slotModified();
-        widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+        widget->slotAllowIndividualTax( currentTaxSetting() == DocPosition::Tax::Individual );
 
         // Check if the new widget is supposed to display prices, based on the doc type
         // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
@@ -1098,12 +1098,12 @@ void KraftView::slotImportItems()
 
       DocPositionListIterator posIt( list );
       while( posIt.hasNext() ) {
-        DocPositionBase *dp_old = posIt.next();
+        DocPosition *dp_old = posIt.next();
 
-        DocPositionBase *dp = new DocPositionBase( *(dp_old) );
+        DocPosition *dp = new DocPosition( *(dp_old) );
         dp->setTaxType( currentTaxSetting() );
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
-        widget->slotSetTax( DocPositionBase::TaxFull ); // FIXME: Value from Import?
+        widget->slotSetTax( DocPosition::Tax::Full ); // FIXME: Value from Import?
         widget->slotModified();
       }
       refreshPostCard();
@@ -1117,13 +1117,13 @@ void KraftView::slotAddExtraPosition()
   int newpos = mPositionWidgetList.count();
   // qDebug () << "Adding EXTRA Position at position " << newpos;
 
-  DocPositionBase *dp = new DocPositionBase( DocPositionBase::ExtraDiscount );
+  DocPosition *dp = new DocPosition( DocPosition::Type::ExtraDiscount );
   dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
   Einheit e = UnitManager::self()->getPauschUnit();
   dp->setUnit(e);
-  if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
-    dp->setTaxType( DocPositionBase::TaxFull );
+  if( currentTaxSetting() == DocPosition::Tax::Individual ) {
+    dp->setTaxType( DocPosition::Tax::Full );
   } else {
     dp->setTaxType( currentTaxSetting() );
   }
@@ -1156,21 +1156,21 @@ DocPositionList KraftView::currentPositionList()
 
         while ( outerIt.hasNext() ) {
             widget = outerIt.next();
-            DocPositionBase *dpb = widget->position();
+            DocPosition *dpb = widget->position();
 
             QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
-                const DocPositionBase::PositionType k = widget->kind();
-                DocPositionBase::PositionType t = dpb->type();
-                if (t == DocPositionBase::PositionType::Position) {
-                    if (k == DocPositionBase::PositionType::Demand) {
-                        t = DocPositionBase::PositionType::Demand;
-                    } else if (k == DocPositionBase::PositionType::Alternative) {
-                        t = DocPositionBase::PositionType::Alternative;
+                const DocPosition::Type k = widget->kind();
+                DocPosition::Type t = dpb->type();
+                if (t == DocPosition::Type::Position) {
+                    if (k == DocPosition::Type::Demand) {
+                        t = DocPosition::Type::Demand;
+                    } else if (k == DocPosition::Type::Alternative) {
+                        t = DocPosition::Type::Alternative;
                     }
                 }
-                DocPositionBase *newDp = new DocPositionBase(t);
+                DocPosition *newDp = new DocPosition(t);
 
                 newDp->setPositionNumber( cnt++ );
                 for (const auto& a: dpb->attributes()) {
@@ -1181,11 +1181,11 @@ DocPositionList KraftView::currentPositionList()
 
                 bool calculatable = true;
 
-                if ( dpb->type() == DocPositionBase::ExtraDiscount ) {
+                if ( dpb->type() == DocPosition::Type::ExtraDiscount ) {
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    KraftAttrib a( DocPositionBase::Discount, discount, KraftAttrib::Type::Float);
+                    KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
                     newDp->setAttribute(a);
 
                     // get the required tag as String.
@@ -1195,7 +1195,7 @@ DocPositionList KraftView::currentPositionList()
                         // save the required tag as KraftAttrib
                         const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
                         int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
-                        const KraftAttrib a(DocPositionBase::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
+                        const KraftAttrib a(DocPosition::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
                         newDp->setAttribute(a);
                     }
 
@@ -1269,7 +1269,7 @@ DocPositionList KraftView::currentPositionList()
                     // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings
-                    if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+                    if( currentTaxSetting() == DocPosition::Tax::Individual ) {
                         newDp->setTaxType( widget->taxType() );
                     } else {
                         newDp->setTaxType( currentTaxSetting() );

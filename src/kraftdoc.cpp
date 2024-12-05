@@ -204,9 +204,9 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   DocPositionListIterator it( origDoc.mPositions );
 
   while ( it.hasNext() ) {
-    DocPositionBase *dp = it.next();
+    DocPosition *dp = it.next();
 
-    DocPositionBase *newPos = new DocPositionBase();
+    DocPosition *newPos = new DocPosition();
     *newPos = *dp;
     newPos->setDbId( -1 );
     mPositions.append( newPos );
@@ -297,7 +297,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
         // database.
         DocPositionListIterator it( mPositions );
         while( it.hasNext() ) {
-            DocPositionBase *dp = it.next();
+            DocPosition *dp = it.next();
             if( dp->toDelete() ) {
                 // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object";
                 mPositions.removeAll( dp );
@@ -390,8 +390,8 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
 
   DocPositionListIterator it( newList );
   while ( it.hasNext() ) {
-    DocPositionBase *dpb = it.next();
-    DocPositionBase *newDp = createPosition( dpb->type() );
+    DocPosition *dpb = it.next();
+    DocPosition *newDp = createPosition( dpb->type() );
     *newDp = *dpb;
 
     // copy attribs and tags as they are not copied otherwise
@@ -406,9 +406,9 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
   }
 }
 
-DocPositionBase* KraftDoc::createPosition( DocPositionBase::PositionType t )
+DocPosition* KraftDoc::createPosition(DocPosition::Type t )
 {
-    DocPositionBase *dp = new DocPositionBase( t );
+    DocPosition *dp = new DocPosition( t );
     mPositions.append( dp );
     return dp;
 }
@@ -417,7 +417,7 @@ void KraftDoc::slotRemovePosition( int pos )
 {
   // qDebug () << "Removing position " << pos;
 
-  for( DocPositionBase *dp: mPositions ) {
+  for( DocPosition *dp: mPositions ) {
     // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString();
     if( dp->dbId() == pos ) {
       if( ! mPositions.removeAll( dp ) ) {
@@ -519,10 +519,10 @@ Geld KraftDoc::vatSum() const
 
 QString KraftDoc::taxPercentStr() const
 {
-     DocPositionBase::TaxType tt = mPositions.listTaxation();
-     if (tt == DocPositionBase::TaxType::TaxFull) {
+     DocPosition::Tax tt = mPositions.listTaxation();
+     if (tt == DocPosition::Tax::Full) {
          return fullTaxPercentStr();
-     } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+     } else if (tt == DocPosition::Tax::Reduced) {
          return reducedTaxPercentStr();
      }
      return QString();
@@ -530,10 +530,10 @@ QString KraftDoc::taxPercentStr() const
 
 QString KraftDoc::taxPercentNum() const
 {
-    DocPositionBase::TaxType tt = mPositions.listTaxation();
-    if (tt == DocPositionBase::TaxType::TaxFull) {
+    DocPosition::Tax tt = mPositions.listTaxation();
+    if (tt == DocPosition::Tax::Full) {
         return fullTaxPercentNum();
-    } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+    } else if (tt == DocPosition::Tax::Reduced) {
         return reducedTaxPercentNum();
     }
     return QString();
@@ -704,14 +704,14 @@ void KraftDoc::slotNewIdent(const QString& ident)
         bruttoSums[lookupTag] = Geld();
         vatSums[lookupTag] = Geld();
 
-        for (DocPositionBase *pb : dposList) {
+        for (DocPosition *pb : dposList) {
             if (!pb->toDelete() && pb->hasTag(lookupTag)) {
                 Geld netto = pb->overallPrice();
 
                 Geld tax;
-                if (pb->taxType() == DocPositionBase::TaxType::TaxFull)
+                if (pb->taxType() == DocPosition::Tax::Full)
                     tax = netto.percent(fullTax);
-                else if (pb->taxType() == DocPositionBase::TaxType::TaxReduced)
+                else if (pb->taxType() == DocPosition::Tax::Reduced)
                     tax = netto.percent(redTax);
 
                 bruttoSums[lookupTag] += netto;
@@ -746,7 +746,7 @@ void KraftDoc::slotNewIdent(const QString& ident)
 
 
      // generate a list of all tags in any position
-     for (DocPositionBase *pb : dposList) {
+     for (DocPosition *pb : dposList) {
          if (!pb->toDelete()) {
              const auto tags = pb->allTags();
              for (const QString& lookupTag : tags) {

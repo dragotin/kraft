@@ -25,7 +25,7 @@ void init_test_db()
 
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
 
-    // create the tagTemplate table which is required by DocPositionBase::hasTag
+    // create the tagTemplate table which is required by DocPosition::hasTag
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("10_dbmigrate.sql");
     QVERIFY(sqls.size() > 0);
     KraftDB::self()->processSqlCommands(sqls);
@@ -46,7 +46,7 @@ DocPositionList buildPosList() {
 
     // Attention: only use tags here that exist in the database, as
     // defined in the 10_migrate.sql
-    DocPositionBase *dp1 = new DocPositionBase;
+    DocPosition *dp1 = new DocPosition;
     dp1->setAmount(2.0);
     dp1->setUnitPrice(Geld(6.50));
     dp1->setText("Position1");
@@ -54,7 +54,7 @@ DocPositionList buildPosList() {
 
     positions.append(dp1);
 
-    DocPositionBase *dp2 = new DocPositionBase;
+    DocPosition *dp2 = new DocPosition;
     dp2->setAmount(4.0);
     dp2->setUnitPrice(Geld(12.50));
     dp2->setText("Position2");
@@ -62,7 +62,7 @@ DocPositionList buildPosList() {
 
     positions.append(dp2);
 
-    DocPositionBase *dp3 = new DocPositionBase;
+    DocPosition *dp3 = new DocPosition;
     dp3->setAmount(4.0);
     dp3->setUnitPrice(Geld(1.50));
     dp3->setText("Position3");

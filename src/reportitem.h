@@ -26,7 +26,7 @@
 @author Klaas Freitag
 */
 
-class DocPositionBase;
+class DocPosition;
 
 class ReportItem: public QObject
 {
@@ -44,7 +44,7 @@ class ReportItem: public QObject
 
 public:
     ReportItem() : QObject() {}
-    ReportItem(DocPositionBase*);
+    ReportItem(DocPosition*);
 
     QString getText() { return _text; }
     QString itemNumber() { return QString::number(_itemNo); }

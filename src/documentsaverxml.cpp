@@ -55,7 +55,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
 */
     int cnt {0};
 
-    for (DocPositionBase *item : doc->positions()) {
+    for (DocPosition *item : doc->positions()) {
         if (item->toDelete())
             continue;
         QDomElement itemType = xmldoc.createElement("item");
@@ -67,13 +67,13 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
         itemType.appendChild(textElement(xmldoc, "unit", item->unit().einheitSingular()));
 
         QString ttStr;
-        DocPositionBase::TaxType tt = item->taxType();
+        DocPosition::Tax tt = item->taxType();
         // The Full Taxtype is default.
-        if (tt == DocPositionBase::TaxType::TaxFull)
+        if (tt == DocPosition::Tax::Full)
             ttStr = QStringLiteral("Full");
-        else if (tt == DocPositionBase::TaxType::TaxReduced)
+        else if (tt == DocPosition::Tax::Reduced)
             ttStr = QStringLiteral("Reduced");
-        else if (tt == DocPositionBase::TaxType::TaxNone)
+        else if (tt == DocPosition::Tax::None)
             ttStr = QStringLiteral("None");
         else
             ttStr = QStringLiteral("Invalid");
@@ -376,9 +376,9 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         QDomElement itemElem = groupElem.firstChildElement("item");
         while (!itemElem.isNull()) {
             QString t = childElemText(itemElem, "type");
-            DocPositionBase::PositionType itemType = DocPositionBase::typeStrToType(t);
+            DocPosition::Type itemType = DocPosition::typeStrToType(t);
 
-            DocPositionBase *item = doc->createPosition(itemType);
+            DocPosition *item = doc->createPosition(itemType);
             item->setPositionNumber(++itemCnt);
             t = childElemText(itemElem, "text");
             item->setText(t);
@@ -398,7 +398,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
 
             Geld g(item->overallPrice());
             // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
-            if (itemType == DocPositionBase::PositionType::Position)
+            if (itemType == DocPosition::Type::Position)
                 Q_ASSERT(!(g != Geld(t.toDouble())));
 
             QDomElement attrElem = itemElem.firstChildElement("attrib");
@@ -846,13 +846,13 @@ void DocumentSaverXML::loadPositions( const QString& id, KraftDoc *doc )
     while( q.next() ) {
         // qDebug () << " loading position id " << q.value( 0 ).toInt() << endl;
 
-        DocPositionBase::PositionType type = DocPositionBase::Position;
+        DocPosition::PositionType type = DocPosition::Position;
         QString typeStr = q.value( 1 ).toString();
         // if ( typeStr == PosTypeExtraDiscount ) {
-        //  type = DocPositionBase::ExtraDiscount;
+        //  type = DocPosition::ExtraDiscount;
         // } else if ( typeStr == PosTypePosition ) {
           // nice, default position type.
-        //  type = DocPositionBase::Position;
+        //  type = DocPosition::Position;
         // } else {
           // qDebug () << "ERROR: Strange type string loaded from db: " << typeStr << endl;
         // }
