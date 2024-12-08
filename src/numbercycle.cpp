@@ -212,7 +212,7 @@ QString NumberCycles::generateIdent(const QString& name, const QString& docType,
     NumberCycle nc;
     nc = get(name);
 
-    int newCounter = increaseCounter(name);
+    int newCounter = increaseLocalCounter(name);
 
     if (newCounter > -1) {
         return generateDocumentIdent(nc.getTemplate(), docType,
@@ -222,7 +222,7 @@ QString NumberCycles::generateIdent(const QString& name, const QString& docType,
     return QString();
 }
 
-int NumberCycles::increaseCounter(const QString& ncName)
+int NumberCycles::increaseLocalCounter(const QString& ncName)
 {
     NumberCycle nc;
     const int MaxAttempt{10};
@@ -254,7 +254,6 @@ int NumberCycles::increaseCounter(const QString& ncName)
         }
         attempt++;
         QThread::msleep(2*attempt); // Sleep a short time before trying agian. Lock should be gone after that.
-
     }
     if (attempt == MaxAttempt) {
         qDebug() << "Could not lock the numbercycle file";
@@ -393,12 +392,11 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
 
 }
 
-//
+// this lock code does not do anything at all because the local file
+// is exclusive anyway.
 bool NumberCycles::tryLock()
 {
     bool re{true};
-    // Consider case that file does not exist at all.
-
     qDebug() << "Try to lock numbercycles:" << re;
     return re;
 }

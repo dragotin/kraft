@@ -782,6 +782,9 @@ void Portal::slotFinalizeDoc()
     dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::FinalizeDocDialog ui;
     ui.setupUi(dia);
+    QIcon icon = DefaultProvider::self()->icon("checklist");
+    QPixmap icp = icon.pixmap(QSize(120, 120));
+    ui.iconLabel->setPixmap(icp);
     QString info = QStringLiteral("<b>") + i18n("%1, date %2").arg(doc->docType()).arg(doc->dateStr())+QStringLiteral("</b>");
     ui._docTypeLabel->setText(info);
     info = QStringLiteral("<pre>") + doc->address() + QStringLiteral("</pre>");

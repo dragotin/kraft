@@ -79,7 +79,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="iconLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
          <horstretch>0</horstretch>
@@ -94,9 +94,6 @@
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="pics/kraft.qrc">:/kraft/custom-icons/checklist.svg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
