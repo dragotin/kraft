@@ -782,6 +782,7 @@ void Portal::slotFinalizeDoc()
     dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::FinalizeDocDialog ui;
     ui.setupUi(dia);
+    dia->setWindowTitle(i18n("Finalize Document"));
     QIcon icon = DefaultProvider::self()->icon("checklist");
     QPixmap icp = icon.pixmap(QSize(120, 120));
     ui.iconLabel->setPixmap(icp);
@@ -797,7 +798,7 @@ void Portal::slotFinalizeDoc()
             AllDocsView *dv = m_portalView->allDocsView();
             dv->slotUpdateView(doc);
             const QString uuid = doc->uuid();
-            slotGeneratePDF(uuid);
+            slotDocumentSelected(uuid); // re-generates PDF and such
             delete doc;
         });
         doc->finalize();
@@ -1016,9 +1017,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
 
     if (indx.pdfOutdated(uuid)) {
         // the PDF should exist. if not, try to create if that is feasible
-        if (!docPtr->state().forcesReadOnly()) {
             slotGeneratePDF(uuid);
-        }
     } else {
         pdfEnabled = true;
     }
