@@ -49,16 +49,27 @@ public:
         Invalid     // Invalidated. Never sent out
     };
 
-    const QString StateUndefinedStr{"Undefined"};
-    const QString StateNewStr{"New"};
-    const QString StateDraftStr{"Draft"};
-    const QString StateFinalStr{"Final"};
-    const QString StateRetractedStr{"Retracted"};
-    const QString StateInvalidStr{"Invalid"};
-    const QString StateConvertedStr{"Converted"};
+    static const QString StateUndefinedStr;
+    static const QString StateNewStr;
+    static const QString StateDraftStr;
+    static const QString StateFinalStr;
+    static const QString StateRetractedStr;
+    static const QString StateInvalidStr;
+    static const QString StateConvertedStr;
+
+    static const QString StateUndefinedI18n;
+    static const QString StateNewI18n;
+    static const QString StateDraftI18n;
+    static const QString StateFinalI18n;
+    static const QString StateRetractedI18n;
+    static const QString StateInvalidI18n;
+    static const QString StateConvertedI18n;
+
+    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
     KraftDocState::State state() const { return _state; }
     QString stateString() const;
+    QString stateStringI18n() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
     bool forcesReadOnly();
@@ -66,7 +77,6 @@ public:
     bool is(State s) const { return _state == s; }
     bool isNew() const { return is(State::New); }
     bool canBeFinalized() const;
-    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
 private:
     State _state;

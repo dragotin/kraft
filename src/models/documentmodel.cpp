@@ -125,6 +125,12 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
         int h = fm.height();
 
         return QSize( 0, h + 4 );
+    } else if (role == Qt::FontRole) {
+        if (idx.column() == Document_StateStr && ! digest.state().is(KraftDocState::State::Final)) {
+            QFont boldFont;
+            boldFont.setBold(true);
+            return boldFont;
+        }
     }
     return QVariant();
 }

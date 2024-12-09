@@ -22,6 +22,7 @@
 #include <QList>
 
 #include "kraftobj.h"
+#include "kraftdoc.h"
 
 class QString;
 class QDate;
@@ -53,8 +54,9 @@ public:
   QString ident() const   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
 
-  QString stateStr() const { return _state; }
-  void setStateStr(const QString& s) { _state = s; }
+  QString stateStr() const { return _state.stateString(); }
+  void setState(KraftDocState s) { _state = s; }
+  KraftDocState state() const { return _state; }
 
   QString whiteboard() const  { return mWhiteboard; }
   void setWhiteboard( const QString& white ) { mWhiteboard = white; }
@@ -70,7 +72,7 @@ protected:
   QString mWhiteboard;
   QString mProjectLabel;
   QString mClientAddress ;
-  QString _state;
+  KraftDocState _state;
 
   QDate       mDate;
   QLocale     mLocale;

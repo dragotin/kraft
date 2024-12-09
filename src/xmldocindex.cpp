@@ -139,7 +139,9 @@ DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
         // dd.setClientId()
         dd.setDate(QDate::fromString(obj["date"].toString(), Qt::ISODate));
         dd.setIdent(obj["ident"].toString());
-        dd.setStateStr(obj["state"].toString());
+        KraftDocState state;
+        state.setStateFromString(obj["state"].toString());
+        dd.setState(state);
         dd.setUuid(obj["uuid"].toString());
         dd.setProjectLabel(obj["prjtLabel"].toString());
         dd.setLastModified(QDateTime::fromString(obj["lastModified"].toString(), Qt::ISODate));

@@ -102,7 +102,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         break;
     }
     case Document_StateStr: {
-        var = digest.stateStr();
+        var = digest.state().stateStringI18n();
         break;
     }
     case Document_ClientName: {

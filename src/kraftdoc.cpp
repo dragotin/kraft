@@ -47,6 +47,22 @@ QString multilineHtml( const QString& str )
 
 } // end namespace
 
+const QString KraftDocState::StateUndefinedStr = QStringLiteral("Undefined");
+const QString KraftDocState::StateNewStr = QStringLiteral("New");
+const QString KraftDocState::StateDraftStr{"Draft"};
+const QString KraftDocState::StateFinalStr{"Final"};
+const QString KraftDocState::StateRetractedStr{"Retracted"};
+const QString KraftDocState::StateInvalidStr{"Invalid"};
+const QString KraftDocState::StateConvertedStr{"Converted"};
+
+const QString KraftDocState::StateUndefinedI18n = i18n("Undefined");
+const QString KraftDocState::StateNewI18n = i18n("New");
+const QString KraftDocState::StateDraftI18n = i18n("Draft");
+const QString KraftDocState::StateFinalI18n = i18n("Final");
+const QString KraftDocState::StateRetractedI18n = i18n("Retracted");
+const QString KraftDocState::StateInvalidI18n = i18n("Invalid");
+const QString KraftDocState::StateConvertedI18n = i18n("Converted");
+
 // =====================================================================================
 void KraftDocState::setStateFromString(const QString& s)
 {
@@ -70,6 +86,33 @@ void KraftDocState::setStateFromString(const QString& s)
     } else {
         _state = State::Invalid;
     }
+}
+
+QString KraftDocState::stateStringI18n() const
+{
+    switch(_state) {
+    case State::New:
+        return StateNewI18n;
+        break;
+    case State::Draft:
+        return StateDraftI18n;
+        break;
+    case State::Final:
+        return StateFinalI18n;
+        break;
+    case State::Retracted:
+        return StateRetractedI18n;
+        break;
+    case State::Invalid:
+        return StateInvalidI18n;
+        break;
+    case State::Undefined:
+        return StateUndefinedI18n;
+        break;
+    case State::Converted:
+        return StateConvertedI18n;
+    }
+    return StateUndefinedI18n;
 }
 
 QString KraftDocState::stateString() const
@@ -328,7 +371,7 @@ DocDigest KraftDoc::toDigest()
     digest.setIdent(ident());
     digest.setWhiteboard(whiteboard());
     digest.setProjectLabel(projectLabel());
-    digest.setStateStr(_state.stateString());
+    digest.setState(_state);
 
     for( const auto &attrib : attributes()) {
         digest.setAttribute(attrib);
