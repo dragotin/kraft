@@ -5,7 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   appimage-build:
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.3
+    container: opensuse/leap:15.4
     steps:
       # need to install Git >= 2.18 before checkout according to GitHub actions
       # we can just install all the dependencies beforehand, though
@@ -20,23 +20,20 @@ jobs:
             git \
             extra-cmake-modules \
             libctemplate-devel pkgconf \
-            "cmake(Grantlee5)" \
-            "cmake(KF5Codecs)" \
-            "cmake(KF5Config)" \
-            "cmake(KF5Contacts)" \
-            "cmake(KF5I18n)" \
-            "cmake(Qt5Core)" \
-            "cmake(Qt5Concurrent)" \
-            "cmake(Qt5Gui)" \
-            "cmake(Qt5Sql)" \
-            "cmake(Qt5Test)" \
-            "cmake(Qt5Widgets)" \
-            "cmake(Qt5Xml)" \
-            "cmake(Qt5XmlPatterns)" \
-            "cmake(Qt5Svg)" \
-            libQt5Sql5-sqlite \
-            libQt5Sql5-mysql \
-            libqt5-qtdeclarative-tools
+            "cmake(KF6TextTemplate)" \
+            "cmake(KF6Codecs)" \
+            "cmake(KF6ConfigCore)" \
+            "cmake(KF6Contacts)" \
+            "cmake(KF6I18n)" \
+            "cmake(Qt6Core)" \
+            "cmake(Qt6Concurrent)" \
+            "cmake(Qt6Gui)" \
+            "cmake(Qt6Sql)" \
+            "cmake(Qt6Test)" \
+            "cmake(Qt6Widgets)" \
+            "cmake(Qt6Xml)" \
+            "cmake(Qt6Svg)" \
+            qt6-qtdeclarative-tools
 
       - uses: actions/checkout@v4
         with:
