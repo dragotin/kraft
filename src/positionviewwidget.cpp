@@ -67,25 +67,22 @@ PositionViewWidget::PositionViewWidget()
   pbTagging->setCheckable( false );
   pbTagging->setIcon( DefaultProvider::self()->icon( "flag" ) );
 
-  connect( m_sbAmount, SIGNAL( valueChanged( double )),
-             this, SLOT( slotRefreshPrice( ) ) );
-  connect( m_sbUnitPrice, SIGNAL( valueChanged( double )),
-             this, SLOT( slotRefreshPrice( ) ) );
-  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ),
-           this, SLOT( slotRefreshPrice() ) );
+  connect( m_sbAmount, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
+  connect( m_sbUnitPrice, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
+  connect( mDiscountPercent, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
 
-  connect( pbExec, SIGNAL( pressed() ),     this,  SLOT( slotExecButtonPressed() ) );
-  connect( pbTagging,  SIGNAL( pressed() ), this,  SLOT( slotTaggingButtonPressed() ) );
+  connect( pbExec, &QPushButton::pressed, this, &PositionViewWidget::slotExecButtonPressed);
+  connect( pbTagging, &QPushButton::pressed, this, &PositionViewWidget::slotTaggingButtonPressed);
 
 
   /* modified signals */
-  connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
-  connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
+  connect( m_cbUnit, &QComboBox::activated, this, &PositionViewWidget::slotModified);
+  connect( m_teFloskel, &QTextEdit::textChanged, this, &PositionViewWidget::slotModified);
 
-  connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
-  connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
-  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
-  connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
+  connect( m_sbAmount, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( m_sbUnitPrice, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( mDiscountPercent, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( mDiscountTag, &QComboBox::activated, this, &PositionViewWidget::slotModified);
 
   mExecPopup->setTitle(i18n("Item Actions") );
 

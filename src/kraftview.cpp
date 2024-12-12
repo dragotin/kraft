@@ -244,7 +244,6 @@ void KraftView::setupDocHeaderView()
     m_headerEdit = edit->docHeaderEdit();
 
     m_headerEdit->m_cbType->clear();
-    // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
     m_headerEdit->mButtLang->hide();
 
@@ -263,14 +262,11 @@ void KraftView::setupDocHeaderView()
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
-    connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
-             this, SLOT( slotDocTypeChanged( const QString& ) ) );
+    connect( m_headerEdit->m_cbType, &QComboBox::textActivated, this, &KraftView::slotDocTypeChanged);
 
-    connect( m_headerEdit->mButtLang, SIGNAL( clicked() ),
-             this, SLOT( slotLanguageSettings() ) );
-    connect( edit, SIGNAL( modified() ),
-              this, SLOT( slotModifiedHeader() ) );
-    connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
+    connect( m_headerEdit->mButtLang, &QPushButton::clicked, this, &KraftView::slotLanguageSettings);
+    connect( edit, &KraftDocHeaderEdit::modified, this, &KraftView::slotModifiedHeader);
+    connect( edit, &KraftDocHeaderEdit::pickAddressee, this, &KraftView::slotPickAddressee);
 }
 
 void KraftView::slotLinkClicked(const QString& link)
@@ -296,9 +292,8 @@ void KraftView::setupItems()
 
     m_positionScroll = edit->positionScroll();
 
-    connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddNewItem() ) );
-    connect( edit, SIGNAL( addExtraClicked() ), SLOT( slotAddExtraPosition() ) );
-    connect( edit, SIGNAL( importItemsClicked() ), SLOT( slotImportItems() ) );
+    connect( edit, &KraftDocPositionsEdit::addPositionClicked, this, &KraftView::slotAddNewItem);
+    connect( edit, &KraftDocPositionsEdit::addExtraClicked, this, &KraftView::slotAddExtraPosition);
 
 }
 
@@ -1079,36 +1074,6 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
         slotFocusItem( widget, newpos );
         refreshPostCard();
     }
-}
-
-void KraftView::slotImportItems()
-{
-  ImportItemDialog dia( this );
-  DocPositionList list = currentPositionList();
-  int newpos = list.count();
-  dia.setPositionList( list, newpos );
-
-  if ( dia.exec() ) {
-    DocPositionList list = dia.positionList();
-    if ( list.count() > 0 ) {
-      // qDebug () << "Importlist amount of entries: " << list.count();
-      int cnt = 0;
-      int newpos = dia.getPositionCombo()->currentIndex();
-      // qDebug () << "Newpos is " << newpos;
-
-      DocPositionListIterator posIt( list );
-      while( posIt.hasNext() ) {
-        DocPosition *dp_old = posIt.next();
-
-        DocPosition *dp = new DocPosition( *(dp_old) );
-        dp->setTaxType( currentTaxSetting() );
-        PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
-        widget->slotSetTax( DocPosition::Tax::Full ); // FIXME: Value from Import?
-        widget->slotModified();
-      }
-      refreshPostCard();
-    }
-  }
 }
 
 void KraftView::slotAddExtraPosition()

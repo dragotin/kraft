@@ -51,8 +51,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
     hb->addWidget(l);
     mCatalogSelector = new QComboBox;
     hb->addWidget(mCatalogSelector);
-    connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
-             this,  SLOT( slotSelectCatalog( const QString& ) ) );
+    connect( mCatalogSelector, &QComboBox::textActivated, this, &CatalogSelection::slotSelectCatalog);
     l->setBuddy( mCatalogSelector );
 
     hb->addStretch();

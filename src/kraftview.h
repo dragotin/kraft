@@ -132,7 +132,6 @@ class KraftView : public KraftViewBase
   void slotAddItems(Katalog*, CatalogTemplateList , const QString &selectedChapter);
 
   void slotAddExtraPosition();
-  void slotImportItems();
   void slotFocusItem( PositionViewWidget*,  int );
   void slotNewHeaderText(const DocText& dt , bool replace);
   void slotNewFooterText(const DocText& dt , bool replace);
