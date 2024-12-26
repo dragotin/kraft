@@ -52,13 +52,20 @@ bool AddressProviderPrivate::init()
         // should be handled in Akonadi::Control::start().
         // See https://invent.kde.org/pim/akonadi/-/merge_requests/189
         qDebug() << "Akonadi broken: " << Akonadi::ServerManager::brokenReason();
-    } else if ( !Akonadi::Control::start( ) ) {
-        qDebug() << "Failed to start Akonadi!";
-    } else {
-        mSession = new Akonadi::Session( "KraftSession" );
+    } else if (Akonadi::ServerManager::state() == Akonadi::ServerManager::Running) {
+        qDebug() << "** Akonadi is already running";
+        mSession = Session::defaultSession();
         _akonadiUp = true;
-        qDebug() << "** Akonadi Session started.";
+    } else if (Akonadi::Control::start()) {
+        qDebug() << "Akonadi Started!";
+        mSession = new Akonadi::Session("KraftSession", this);
+        _akonadiUp = true;
+    } else {
+        qDebug() << "Akonadi Start failed";
     }
+    if (_akonadiUp)
+        qDebug() << "** Akonadi Session available.";
+
 #endif
     return _akonadiUp;
 }
