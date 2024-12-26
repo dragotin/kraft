@@ -80,12 +80,11 @@ void MyIdentity::load()
     connect(_addressProvider, &AddressProvider::lookupResult,
              this, &MyIdentity::slotAddresseeFound);
 
-    qDebug() << "looking up identity" << myUid;
-
     _myContact = KContacts::Addressee();
 
     KContacts::Addressee contact;
     if( ! myUid.isEmpty() ) {
+        qDebug() << "looking up my identity" << myUid << "in address provider";
         _source = Source::Backend;
         // qDebug () << "Got My UID: " << myUid;
         AddressProvider::LookupState state = _addressProvider->lookupAddressee( myUid );
@@ -105,8 +104,10 @@ void MyIdentity::load()
         }
     } else {
         // check if the vcard can be read
+
         _source = Source::Manual;
         const QString file = identityFile();
+        qDebug() << "looking up my identity in vcard file"<< file;
         QFile f(file);
         if( f.exists() ) {
             if( f.open( QIODevice::ReadOnly )) {
@@ -119,6 +120,8 @@ void MyIdentity::load()
                     contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
                 }
             }
+        } else {
+            qDebug() << "VCard file does not exist!";
         }
         slotAddresseeFound(myUid, contact);
     }

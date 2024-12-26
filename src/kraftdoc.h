@@ -35,6 +35,7 @@ class Geld;
 class DocDigest;
 
 class KraftView;
+class KLazyLocalizedString;
 
 class KraftDocState
 {
@@ -57,13 +58,13 @@ public:
     static const QString StateInvalidStr;
     static const QString StateConvertedStr;
 
-    static const QString StateUndefinedI18n;
-    static const QString StateNewI18n;
-    static const QString StateDraftI18n;
-    static const QString StateFinalI18n;
-    static const QString StateRetractedI18n;
-    static const QString StateInvalidI18n;
-    static const QString StateConvertedI18n;
+    static const KLazyLocalizedString StateUndefinedI18n;
+    static const KLazyLocalizedString StateNewI18n;
+    static const KLazyLocalizedString StateDraftI18n;
+    static const KLazyLocalizedString StateFinalI18n;
+    static const KLazyLocalizedString StateRetractedI18n;
+    static const KLazyLocalizedString StateInvalidI18n;
+    static const KLazyLocalizedString StateConvertedI18n;
 
     static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 

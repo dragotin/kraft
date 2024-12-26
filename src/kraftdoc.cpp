@@ -21,6 +21,7 @@
 
 #include <QDebug>
 #include <klocalizedstring.h>
+#include <KLazyLocalizedString>
 
 // application specific includes
 #include "kraftdoc.h"
@@ -55,13 +56,13 @@ const QString KraftDocState::StateRetractedStr{"Retracted"};
 const QString KraftDocState::StateInvalidStr{"Invalid"};
 const QString KraftDocState::StateConvertedStr{"Converted"};
 
-const QString KraftDocState::StateUndefinedI18n = i18n("Undefined");
-const QString KraftDocState::StateNewI18n = i18n("New");
-const QString KraftDocState::StateDraftI18n = i18n("Draft");
-const QString KraftDocState::StateFinalI18n = i18n("Final");
-const QString KraftDocState::StateRetractedI18n = i18n("Retracted");
-const QString KraftDocState::StateInvalidI18n = i18n("Invalid");
-const QString KraftDocState::StateConvertedI18n = i18n("Converted");
+const KLazyLocalizedString KraftDocState::StateUndefinedI18n = kli18n("Undefined");
+const KLazyLocalizedString KraftDocState::StateNewI18n = kli18n("New");
+const KLazyLocalizedString KraftDocState::StateDraftI18n = kli18n("Draft");
+const KLazyLocalizedString KraftDocState::StateFinalI18n = kli18n("Final");
+const KLazyLocalizedString KraftDocState::StateRetractedI18n = kli18n("Retracted");
+const KLazyLocalizedString KraftDocState::StateInvalidI18n = kli18n("Invalid");
+const KLazyLocalizedString KraftDocState::StateConvertedI18n = kli18n("Converted");
 
 // =====================================================================================
 void KraftDocState::setStateFromString(const QString& s)
@@ -92,27 +93,27 @@ QString KraftDocState::stateStringI18n() const
 {
     switch(_state) {
     case State::New:
-        return StateNewI18n;
+        return StateNewI18n.toString();
         break;
     case State::Draft:
-        return StateDraftI18n;
+        return StateDraftI18n.toString();
         break;
     case State::Final:
-        return StateFinalI18n;
+        return StateFinalI18n.toString();
         break;
     case State::Retracted:
-        return StateRetractedI18n;
+        return StateRetractedI18n.toString();
         break;
     case State::Invalid:
-        return StateInvalidI18n;
+        return StateInvalidI18n.toString();
         break;
     case State::Undefined:
-        return StateUndefinedI18n;
+        return StateUndefinedI18n.toString();
         break;
     case State::Converted:
-        return StateConvertedI18n;
+        return StateConvertedI18n.toString();
     }
-    return StateUndefinedI18n;
+    return StateUndefinedI18n.toString();
 }
 
 QString KraftDocState::stateString() const
