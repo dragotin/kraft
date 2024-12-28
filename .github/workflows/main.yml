@@ -34,7 +34,8 @@ jobs:
             "cmake(Qt6Widgets)" \
             "cmake(Qt6Xml)" \
             "cmake(Qt6Svg)" \
-            qt6-declarative-tools
+            qt6-declarative-tools \
+            kf6-extra-cmake-modules
 
       - uses: actions/checkout@v4
         with:
