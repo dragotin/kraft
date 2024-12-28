@@ -23,7 +23,6 @@ jobs:
             libctemplate-devel pkgconf \
             "cmake(KF6TextTemplate)" \
             "cmake(KF6Codecs)" \
-            "cmake(KF6ConfigCore6)" \
             "cmake(KF6Contacts)" \
             "cmake(KF6I18n)" \
             "cmake(Qt6Core)" \
