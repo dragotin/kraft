@@ -11,6 +11,7 @@ jobs:
       # we can just install all the dependencies beforehand, though
       - name: Install dependencies
         run: |
+          zypper ar https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.5 KF && \
           zypper install -y \
             gcc \
             gcc-c++ \
