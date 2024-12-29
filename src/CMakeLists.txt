@@ -101,10 +101,12 @@ set(kraft_SRCS
     models/documentproxymodels.cpp
     models/datemodel.cpp
     models/docbasemodel.cpp
+    models/contactsdirmodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp
     addressprovider_akonadi.cpp
+    addressprovider_local.cpp
     addressselectordialog.cpp
     kraftdb.cpp
     geld.cpp
@@ -197,7 +199,8 @@ target_include_directories(kraftlib PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_
 
 qt_add_executable(kraft
     MANUAL_FINALIZATION
-    main.cpp)
+    main.cpp
+    models/contactsdirmodel.h models/contactsdirmodel.cpp)
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
 target_include_directories(kraft PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_SOURCE_DIR}/src)
