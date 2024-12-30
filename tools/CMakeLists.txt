@@ -1,6 +1,11 @@
 
 set(findcontact_NAME findcontact)
-set(FINDCONTACT_SRC findcontact.cpp ../src/addressprovider.cpp ../src/addressprovider_akonadi.cpp)
+set(FINDCONTACT_SRC findcontact.cpp
+    ../src/addressprovider.cpp
+    ../src/addressproviderakonadi.cpp
+    ../src/addressproviderlocal.cpp
+    ../src/addressproviderprivate.cpp
+    ../src/models/contactsdirmodel.cpp)
 
 set(AUTOMOC ON)
 

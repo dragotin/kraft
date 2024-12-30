@@ -18,6 +18,7 @@
 #ifndef ADDRESSPROVIDER_H
 #define ADDRESSPROVIDER_H
 
+#include "addressproviderprivate.h"
 #include <QSet>
 #include <QAbstractItemModel>
 
@@ -113,7 +114,7 @@ Q_SIGNALS:
 private:
   QHash<QString, KContacts::Addressee> _addressCache;
 
-  AddressProviderPrivate *_d;
+  std::unique_ptr<AddressProviderPrivate> _d;
   QHash<QString, QString> _errMessages;
   QSet<QString> _notFoundUids;
 };

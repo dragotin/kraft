@@ -23,6 +23,8 @@
 
 #include <kcontacts/addressee.h>
 
+#include "addressproviderprivate.h"
+
 #ifdef HAVE_AKONADI
 #include <kjob.h>
 
@@ -31,58 +33,43 @@
 #include <Akonadi/ChangeRecorder>
 #endif // HAVE_AKONADI
 
+
 class QAbstractItemModel;
 class AddressItemModel;
 
 // An akonadi based provider.
-class AddressProviderPrivate : public QObject
+class AddressProviderAkonadi : public AddressProviderPrivate
 {
-    Q_OBJECT
 public:
-    AddressProviderPrivate( QObject* parent = 0 );
+    AddressProviderAkonadi( QObject* parent = 0 );
 
     // initialize the backend and return true if that worked.
     bool init();
     // returns the result of the init process later on
-    bool backendUp();
-    QString backendName() const;
+    bool backendUp() override;
+    QString backendName() const override;
 
-    bool lookupAddressee( const QString& uid );
-    QString formattedAddress( const KContacts::Addressee& ) const;
+    bool lookupAddressee( const QString& uid ) override;
 
-    QAbstractItemModel *model();
+    QAbstractItemModel *model() override;
 
-    KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
-    KContacts::Addressee getAddressee(const QModelIndex& indx);
+    KContacts::Addressee getAddressee(int row, const QModelIndex &parent) override;
+    KContacts::Addressee getAddressee(const QModelIndex& indx) override;
 
-    bool isSearchOngoing(const QString& uid);
-#ifdef HAVE_AKONADI
+    bool isSearchOngoing(const QString& uid) override;
+
 public Q_SLOTS:
     void searchResult( KJob* );
-#endif
-Q_SIGNALS:
-    //
-    void addresseeFound( const QString&, const KContacts::Addressee& );
-    void addresseeNotFound( const QString& );
-
-    // error message when looking up the address for a UID
-    void lookupError( const QString&, const QString&);
-
-    // emitted when the search is finished, even if there was no result.
-    void finished( int );
 
 private:
-    QSet<QString>        mUidSearches;
     bool                 _akonadiUp;
 
 #ifdef HAVE_AKONADI
     Akonadi::Session *mSession;
     Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
-    Akonadi::ContactsTreeModel *_model;
 #else
     void *mSession;
     void *mMonitor;
-    void *_model;
 #endif
 };
 

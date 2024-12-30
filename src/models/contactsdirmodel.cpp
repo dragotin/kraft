@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <KLocalizedString>
 #include <QFileInfo>
+#include <QIODevice>
 #include <KContacts/Address>
 #include <kcontacts/vcardconverter.h>
 
 #include "models/contactsdirmodel.h"
 
-QVariantList TreeItem::_headers{ "Name", "City"};
+QVariantList CTMItem::_headers{ "Name", "City", "UID" };
 
-TreeItem::TreeItem(KContacts::Addressee& addressee, TreeItem* parentItem)
+CTMItem::CTMItem(KContacts::Addressee& addressee, CTMItem* parentItem)
     :_parentItem(parentItem), _addressee(addressee)
 {
     if (parentItem == nullptr) {
@@ -32,46 +32,50 @@ TreeItem::TreeItem(KContacts::Addressee& addressee, TreeItem* parentItem)
     }
 }
 
-void TreeItem::appendChild(std::unique_ptr<TreeItem> &child)
+void CTMItem::appendChild(std::unique_ptr<CTMItem> &child)
 {
     _childItems.push_back(std::move(child));
 }
 
-TreeItem* TreeItem::child(int row)
+CTMItem* CTMItem::child(int row)
 {
     return row >= 0 && row < childCount() ? _childItems.at(row).get() : nullptr;
 }
 
-int TreeItem::childCount() const
+int CTMItem::childCount() const
 {
     return int(_childItems.size());
 }
 
-int TreeItem::columnCount() const
+int CTMItem::columnCount() const
 {
     return int(_headers.count());
 }
 
-QVariant TreeItem::data(int column) const
+QVariant CTMItem::data(int column) const
 {
     QVariant re;
+    // qDebug() << "Checking for column" << column;
     if (column == 0) {
         // return name
         re = _addressee.formattedName();
     } else if (column == 1) {
         re = _addressee.address(KContacts::Address::Pref).locality();
+    } else if (column == 2) {
+        re = _addressee.uid();
     }
 
     return re;
 }
 
-int TreeItem::row() const
+int CTMItem::row() const
 {
-    if (_parentItem == nullptr)
+    if (_parentItem == nullptr) {
         return 0;
+    }
     const auto it = std::find_if(_parentItem->_childItems.cbegin(), _parentItem->_childItems.cend(),
-                                 [this](const std::unique_ptr<TreeItem> &treeItem) {
-                                     return treeItem.get() == this;
+                                 [this](const std::unique_ptr<CTMItem> &CTMItem) {
+                                     return CTMItem.get() == this;
                                  });
 
     if (it != _parentItem->_childItems.cend())
@@ -80,14 +84,18 @@ int TreeItem::row() const
     return -1;
 }
 
-TreeItem* TreeItem::parentItem()
+CTMItem* CTMItem::parentItem()
 {
     return _parentItem;
 }
 
+KContacts::Addressee CTMItem::getAddressee() const
+{
+    return _addressee;
+}
 // =============================================================================
 
-ContactsDirModel::ContactsDirModel(QObject *parent, const QString& baseDir)
+ContactsDirModel::ContactsDirModel(const QString& baseDir, QObject *parent)
     : QAbstractItemModel(parent)
 {
 
@@ -99,34 +107,29 @@ ContactsDirModel::ContactsDirModel(QObject *parent, const QString& baseDir)
 
     KContacts::Addressee rootAdr;
     rootAdr.setFormattedName(baseDir);
-    auto rootItem = std::make_unique<TreeItem>(rootAdr);
+    _rootItem = std::make_unique<CTMItem>(rootAdr);
 
     for (const auto &dirEntry : QDirListing(baseDir, QDirListing::IteratorFlag::Recursive)) {
-         if (dirEntry.fileName().endsWith(u".vcf")) {
-             const QString file = dirEntry.fileName();
-             qDebug() << "looking up my identity in vcard file"<< file;
-             QFile f(file);
-             if( f.exists() ) {
-                 if( f.open( QIODevice::ReadOnly )) {
-                     const QByteArray data = f.readAll();
-                     KContacts::VCardConverter converter;
-                     KContacts::Addressee::List list = converter.parseVCards( data );
+        if (dirEntry.fileName().endsWith(u".vcf")) {
+            const QString file = dirEntry.fileInfo().canonicalFilePath();
+            qDebug() << "reading vcard file" << file;
+            QFile f(file);
+            if( f.open( QIODevice::ReadOnly )) {
+                const QByteArray data = f.readAll();
+                KContacts::VCardConverter converter;
+                KContacts::Addressee::List list = converter.parseVCards(data);
 
-                     if( list.count() > 0 ) {
-                        auto contact = list.at(0);
-                        auto item = std::make_unique<TreeItem>(contact, rootItem.get());
-                        rootItem.get()->appendChild(item);
-                        // contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+                if( list.count() > 0 ) {
+                    auto contact = list.at(0);
+                    auto item = std::make_unique<CTMItem>(contact, _rootItem.get());
+                    _rootItem.get()->appendChild(item);
+                    qDebug() << "Appending" << contact.formattedName();
+                    // contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
 
-                     }
-                 }
-             } else {
-                 qDebug() << "VCard file does not exist!";
-             }
-
-         }
+                }
+            }
+        }
     }
-
 }
 
 ContactsDirModel::~ContactsDirModel() = default;
@@ -136,7 +139,7 @@ QVariant ContactsDirModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || role != Qt::DisplayRole)
         return {};
 
-    const auto *item = static_cast<const TreeItem*>(index.internalPointer());
+    const auto *item = static_cast<const CTMItem*>(index.internalPointer());
     return item->data(index.column());
 }
 
@@ -154,11 +157,11 @@ QVariant ContactsDirModel::headerData(int section, Qt::Orientation orientation, 
 
 QModelIndex ContactsDirModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (!hasIndex(row, column, parent))
+     if (!hasIndex(row, column, parent))
         return {};
 
-    TreeItem *parentItem = parent.isValid()
-        ? static_cast<TreeItem*>(parent.internalPointer())
+    CTMItem *parentItem = parent.isValid()
+        ? static_cast<CTMItem*>(parent.internalPointer())
         : _rootItem.get();
 
     if (auto *childItem = parentItem->child(row))
@@ -171,8 +174,8 @@ QModelIndex ContactsDirModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return {};
 
-    auto *childItem = static_cast<TreeItem*>(index.internalPointer());
-    TreeItem *parentItem = childItem->parentItem();
+    auto *childItem = static_cast<CTMItem*>(index.internalPointer());
+    CTMItem *parentItem = childItem->parentItem();
 
     return parentItem != _rootItem.get()
         ? createIndex(parentItem->row(), 0, parentItem) : QModelIndex{};
@@ -184,18 +187,20 @@ int ContactsDirModel::rowCount(const QModelIndex &parent) const
     if (parent.column() > 0)
         return 0;
 
-    const TreeItem *parentItem = parent.isValid()
-        ? static_cast<const TreeItem*>(parent.internalPointer())
-        : _rootItem.get();
-
-    return parentItem->childCount();
-
+    CTMItem *parentItem;
+    if (parent.isValid()) {
+        parentItem = static_cast<CTMItem*>(parent.internalPointer());
+    } else {
+        parentItem = _rootItem.get();
+    }
+    int rc = parentItem->childCount();
+    return rc;
 }
 
 int ContactsDirModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+        return static_cast<CTMItem*>(parent.internalPointer())->columnCount();
     return _rootItem->columnCount();
 }
 

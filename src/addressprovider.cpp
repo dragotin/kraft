@@ -21,19 +21,18 @@
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
 
-#include "addressprovider_akonadi.h"
+#include "addressproviderlocal.h"
 
 /* ==================================================================================== */
 
 AddressProvider::AddressProvider( QObject *parent )
-  :QObject( parent ),
-    _d( new AddressProviderPrivate(parent) )
+  :QObject( parent )
 {
-    connect(_d, SIGNAL(addresseeFound(QString, KContacts::Addressee)),
-            this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
-    connect(_d, SIGNAL(lookupError( QString, QString)), this,
-            SLOT(slotErrorMsg(QString, QString)));
-    connect(_d, SIGNAL(addresseeNotFound(QString)), SLOT(slotAddresseeNotFound(QString)));
+    _d = std::make_unique<AddressProviderLocal>("/home/kf/.local/share/contacts/", this);
+
+    connect(_d.get(), &AddressProviderPrivate::addresseeFound, this, &AddressProvider::slotAddresseeFound);
+    connect(_d.get(), &AddressProviderPrivate::lookupError, this, &AddressProvider::slotErrorMsg);
+    connect(_d.get(), &AddressProviderPrivate::addresseeNotFound, this, &AddressProvider::slotAddresseeNotFound);
 }
 
 bool AddressProvider::backendUp()
