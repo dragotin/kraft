@@ -6,37 +6,40 @@
 #include <QDirListing>
 #include <KContacts/Addressee>
 
-class TreeItem
+/**
+ * @brief The CTMItem class - ContactsDirModel Item
+ */
+class CTMItem
 {
 public:
-    explicit TreeItem(KContacts::Addressee& addressee, TreeItem* parentItem = nullptr);
+    explicit CTMItem(KContacts::Addressee& addressee, CTMItem* parentItem = nullptr);
 
-    TreeItem *child(int row);
+    CTMItem *child(int row);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
     int row() const;
-    TreeItem *parentItem();
-    void appendChild(std::unique_ptr<TreeItem> &child);
+    CTMItem *parentItem();
+    void appendChild(std::unique_ptr<CTMItem> &child);
+    KContacts::Addressee getAddressee() const;
 
 private:
-    std::vector<std::unique_ptr<TreeItem>> _childItems;
+    std::vector<std::unique_ptr<CTMItem>> _childItems;
     static QVariantList _headers;
-    QVariantList _itemData;
-    TreeItem* _parentItem;
+    CTMItem* _parentItem;
     KContacts::Addressee _addressee;
-    QString _name; // for the root item
 };
+
+// =============================================================================
 
 class ContactsDirModel : public QAbstractItemModel
 {
-public:
-    ContactsDirModel(QObject *parent, const QString& baseDir);
-
+    Q_OBJECT
 public:
     Q_DISABLE_COPY_MOVE(ContactsDirModel)
 
-    explicit ContactsDirModel(const QString &data, QObject *parent = nullptr);
+    explicit ContactsDirModel(const QString& baseDir, QObject *parent = nullptr);
+
     ~ContactsDirModel() override;
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -50,9 +53,9 @@ public:
     int columnCount(const QModelIndex &parent = {}) const override;
 
 private:
-    static void setupModelData(const QList<QStringView> &lines, TreeItem *parent);
+    static void setupModelData(const QList<QStringView> &lines, CTMItem *parent);
 
-    std::unique_ptr<TreeItem> _rootItem;
+    std::unique_ptr<CTMItem> _rootItem;
 };
 
 #endif // CONTACTSDIRMODEL_H
