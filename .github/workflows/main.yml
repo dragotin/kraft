@@ -14,8 +14,6 @@ jobs:
           zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_15.5 QT6 && \
           zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.5 KF && \
           zypper install -y \
-            gcc12 \
-            gcc12-c++ \
             cmake \
             make \
             wget \
@@ -34,7 +32,8 @@ jobs:
             "cmake(Qt6Xml)" \
             "cmake(Qt6Svg)" \
             qt6-declarative-tools \
-            kf6-extra-cmake-modules
+            kf6-extra-cmake-modules \
+            && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 50
 
       - uses: actions/checkout@v4
         with:
