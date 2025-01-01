@@ -104,6 +104,7 @@ find_package(Asciidoctor)
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++fs")
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
