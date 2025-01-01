@@ -193,7 +193,8 @@ endif()
 
 qt_add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
 
-qt_add_ui(kraftlib  SOURCES ${kraft_UIS})
+# Use this with newer versions of Qt and remove the AUTOMOC in main CMakeLists.txt
+# qt_add_ui(kraftlib  SOURCES ${kraft_UIS})
 
 target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
 target_include_directories(kraftlib PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/models ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
