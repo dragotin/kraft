@@ -21,15 +21,22 @@
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
 
+#if HAVE_AKONADI
+#include "addressproviderakonadi.h"
+#else
 #include "addressproviderlocal.h"
+#endif
 
 /* ==================================================================================== */
 
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
 {
+#if HAVE_AKONADI
+    _d = std::make_unique<AddressProviderAkonadi>();
+#else
     _d = std::make_unique<AddressProviderLocal>("/home/kf/.local/share/contacts/", this);
-
+#endif
     connect(_d.get(), &AddressProviderPrivate::addresseeFound, this, &AddressProvider::slotAddresseeFound);
     connect(_d.get(), &AddressProviderPrivate::lookupError, this, &AddressProvider::slotErrorMsg);
     connect(_d.get(), &AddressProviderPrivate::addresseeNotFound, this, &AddressProvider::slotAddresseeNotFound);
