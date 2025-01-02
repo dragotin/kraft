@@ -5,14 +5,14 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   appimage-build:
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.5
+    container: opensuse/leap:15.6
     steps:
       # need to install Git >= 2.18 before checkout according to GitHub actions
       # we can just install all the dependencies beforehand, though
       - name: Install dependencies
         run: |
-          zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_15.5 QT6 && \
-          zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.5 KF && \
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_15.6 QT6 && \
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.6 KF && \
           zypper install -y \
             cmake \
             make \
