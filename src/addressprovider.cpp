@@ -33,7 +33,7 @@ AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
 {
 #if HAVE_AKONADI
-    _d = std::make_unique<AddressProviderAkonadi>();
+    _d = std::make_unique<AddressProviderAkonadi>(this);
 #else
     _d = std::make_unique<AddressProviderLocal>("/home/kf/.local/share/contacts/", this);
 #endif
