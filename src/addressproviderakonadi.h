@@ -58,9 +58,10 @@ public:
 
     bool isSearchOngoing(const QString& uid) override;
 
+#ifdef HAVE_AKONADI
 public Q_SLOTS:
     void searchResult( KJob* );
-
+#endif
 private:
     bool                 _akonadiUp;
 
