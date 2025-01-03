@@ -21,7 +21,7 @@
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
 
-#if HAVE_AKONADI
+#ifdef HAVE_AKONADI
 #include "addressproviderakonadi.h"
 #else
 #include "addressproviderlocal.h"
@@ -32,7 +32,7 @@
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
 {
-#if HAVE_AKONADI
+#ifdef HAVE_AKONADI
     _d = std::make_unique<AddressProviderAkonadi>(this);
 #else
     _d = std::make_unique<AddressProviderLocal>("/home/kf/.local/share/contacts/", this);
