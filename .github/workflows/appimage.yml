@@ -28,7 +28,7 @@ env:
   QML_DIR: ""
   PUBLISHER: "Klaas Freitag"
   DESCRIPTION: "Documents for the small business"
-  QT_MODULES: qtcore qtwidgets qtcontcurrent qtsql qttest qtxml qtsvg
+  QT_MODULES: "" 
   # QT_MODULES: qt3d qtgraphs qtquick3d qtlocation qtdatavis3d qtserialport qtshadertools qtpositioning qtconnectivity
 
 #-------------------------------------------------------------------------------
