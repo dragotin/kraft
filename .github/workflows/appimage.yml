@@ -79,7 +79,7 @@ jobs:
         rpm \
         libfuse2 \
         fakeroot \
-        libctemplate-devel
+        libctemplate-dev
 
     - name: '⚙️ Install CMake'
       uses: lukka/get-cmake@latest
