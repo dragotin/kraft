@@ -57,6 +57,7 @@ jobs:
     - name: 'Install KF6 Snap'
       run: |
         sudo snap install kf6-core22-sdk
+        sudo snap install ecm-tools
 
     - name: '⚙️ Install dependencies'
       run: |
