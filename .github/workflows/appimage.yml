@@ -54,10 +54,9 @@ jobs:
         cache: true
         install-deps: 'true'
 
-    - name: 'Install KF6 Snap'
+    - name: '⚙ Install KF6 Snap'
       run: |
-        sudo snap install kf6-core22-sdk
-        sudo snap install ecm-tools
+        sudo snap install kde-qt6-core22-sdk 
 
     - name: '⚙️ Install dependencies'
       run: |
