@@ -76,6 +76,7 @@ jobs:
         libxcb-cursor-dev \
         libssl-dev \
         libudev-dev \
+        extra-cmake-modules \
         rpm \
         libfuse2 \
         fakeroot \
