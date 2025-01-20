@@ -5,8 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(kraft LANGUAGES CXX)
 cmake_policy(SET CMP0063 NEW)
 
-SET(ECM_MIN_VERSION "6.0.0")
-FIND_PACKAGE(ECM ${ECM_MIN_VERSION} REQUIRED NO_MODULE)
+FIND_PACKAGE(ECM 6.0.0 REQUIRED NO_MODULE)
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
@@ -77,7 +76,7 @@ kde_enable_exceptions()
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Gui Xml Sql Svg SvgWidgets Network Concurrent Test)
+find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core Gui Xml Sql Svg SvgWidgets Network Concurrent Test)
 
 qt_standard_project_setup()
 
