@@ -20,7 +20,7 @@
 
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
-
+#include "defaultprovider.h"
 #ifdef HAVE_AKONADI
 #include "addressproviderakonadi.h"
 #else
@@ -35,7 +35,9 @@ AddressProvider::AddressProvider( QObject *parent )
 #ifdef HAVE_AKONADI
     _d = std::make_unique<AddressProviderAkonadi>(this);
 #else
-    _d = std::make_unique<AddressProviderLocal>("/home/kf/.local/share/contacts/", this);
+    const QString p = DefaultProvider::self()->kraftV2AddressDir();
+    qDebug() << "reading addresses from directory" << p;
+    _d = std::make_unique<AddressProviderLocal>(p, this);
 #endif
     connect(_d.get(), &AddressProviderPrivate::addresseeFound, this, &AddressProvider::slotAddresseeFound);
     connect(_d.get(), &AddressProviderPrivate::lookupError, this, &AddressProvider::slotErrorMsg);

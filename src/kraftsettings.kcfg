@@ -28,6 +28,10 @@
     <entry name="KraftV2BaseDir" type="String">
       <label>The root path of Kraft V2.0</label>
     </entry>
+    <entry name="KraftV2AddressDir" type="String">
+      <label>Basedir of the addresses collection if Akonadi is disabled.</label>
+    </entry>
+
   </group>
 
   <group name="WindowSizes">
