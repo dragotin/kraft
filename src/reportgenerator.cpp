@@ -165,15 +165,9 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     QScopedPointer<DocumentTemplate> templateEngine;
     QPointer<PDFConverter> converter;
 
-    if (QString::compare(ext, QStringLiteral("trml"), Qt::CaseInsensitive) == 0) {
-        // use the old ctemplate engine with reportlab.
-        templateEngine.reset(new CTemplateDocumentTemplate(_tmplFile));
-        converter = new ReportLabPDFConverter;
-    } else {
-        // use Grantlee.
-        templateEngine.reset(new GrantleeDocumentTemplate(_tmplFile));
-        converter = new WeasyPrintPDFConverter;
-    }
+    // use Grantlee.
+    templateEngine.reset(new GrantleeDocumentTemplate(_tmplFile));
+    converter = new WeasyPrintPDFConverter;
 
     converter->setTemplatePath(fi.path());
 

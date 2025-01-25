@@ -44,18 +44,6 @@ protected:
 
 // ==================================================================================
 
-class CTemplateDocumentTemplate : public DocumentTemplate
-{
-public:
-    CTemplateDocumentTemplate(const QString& tmplFile);
-
-    const QString expand(const QString& uuid,
-                         const KContacts::Addressee &myContact,
-                         const KContacts::Addressee &customerContact) override;
-};
-
-// ==================================================================================
-
 class GrantleeDocumentTemplate : public DocumentTemplate
 {
 public:
