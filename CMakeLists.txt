@@ -7,6 +7,8 @@ cmake_policy(SET CMP0063 NEW)
 
 FIND_PACKAGE(ECM 6.0.0 REQUIRED NO_MODULE)
 
+option(BUILD_WITH_AKONADI "Enable build checks for Akonadi" ON)
+
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -87,13 +89,18 @@ find_package(KF6 REQUIRED COMPONENTS
     TextTemplate
 )
 
-find_package(${AKO_PREFIX}Akonadi)
-find_package(${AKO_PREFIX}AkonadiContactCore)
-find_package(${AKO_PREFIX}AkonadiContactWidgets)
+# Disable lookup of Akonadi with -DBUILD_WITH_AKONADI=OFF
+if (BUILD_WITH_AKONADI)
+    find_package(${AKO_PREFIX}Akonadi)
+    find_package(${AKO_PREFIX}AkonadiContactCore)
+    find_package(${AKO_PREFIX}AkonadiContactWidgets)
 
-if( ${AKO_PREFIX}AkonadiContactCore_FOUND AND ${AKO_PREFIX}AkonadiContactWidgets_FOUND )
-    message ("## Defined Akonadi FOUND")
-    add_definitions(-DHAVE_AKONADI)
+    if( ${AKO_PREFIX}AkonadiContactCore_FOUND AND ${AKO_PREFIX}AkonadiContactWidgets_FOUND )
+        message ("## Defined Akonadi FOUND")
+        add_definitions(-DHAVE_AKONADI)
+    endif()
+else()
+    message("Akonadi Check disabled")
 endif()
 
 find_package(Ctemplate REQUIRED)
