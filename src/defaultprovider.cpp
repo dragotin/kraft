@@ -471,6 +471,17 @@ QString DefaultProvider::kraftV2Dir(KraftV2Dir dir)
     return bDir;
 }
 
+ QString DefaultProvider::kraftV2AddressDir()
+ {
+     QString addrDir = KraftSettings::self()->kraftV2AddressDir();
+
+     if (addrDir.isEmpty()) {
+         addrDir = QDir::homePath();
+         addrDir += QStringLiteral("/.local/share/contacts/");
+     }
+     return addrDir;
+ }
+
 bool DefaultProvider::writeXmlArchive()
 {
     return KraftSettings::self()->doXmlArchive();

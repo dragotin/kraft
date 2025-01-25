@@ -88,6 +88,10 @@ public:
     // utility - returns the name of the subdir for a given enum type
     QString kraftV2Subdir(KraftV2Dir dir);
 
+    // returns the path to the directory where vcd files are stored as file based addressbook
+    // if Akonadi is not enabled
+    QString kraftV2AddressDir();
+
     DefaultProvider();
 
     // these are v1 methods
