@@ -160,7 +160,6 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
         _uuid.clear();
         return;
     }
-    const QString ext = fi.completeSuffix();
 
     QScopedPointer<DocumentTemplate> templateEngine;
     QPointer<PDFConverter> converter;

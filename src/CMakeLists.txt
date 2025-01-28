@@ -85,7 +85,6 @@ set(kraft_SRCS
     headertemplateprovider.cpp
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
-    texttemplate.cpp
     grantleetemplate.cpp
     tagman.cpp
     itemtagdialog.cpp

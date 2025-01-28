@@ -1,0 +1,101 @@
+<!-- Check file docoverview_ro.css for stylesheet definition. It is added
+     to the html output automagically.
+  -->
+<body>
+<h1><u>{{ kraft.HEADLINE }}</u></h1>
+<p/>
+<p/>
+<table width="100%" border="0">
+<tr>
+ <td>{{ kraft.ADDRESS }}</td>
+ <td align="right"><b>{{ kraft.DOC_TYPE }}</b><br/>{{ kraft.DATE }}<br/>{{ kraft.DOCNO }}</td>
+</tr>
+</table>
+<p/>
+<p/>
+<p>
+{{ kraft.SALUT }}
+</p>
+<p>
+{{ kraft.PRETEXT }}
+</p>
+<p></p>
+<table width="100%" border="0">
+
+{% for item in doc.reportItems %}
+<tr>
+<td width="20">{{ item.itemNumber }}.</td>
+<td colspan="3">
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            <i>
+          {% endif %}
+          {% if enableHtmlInTexts %}
+            {{ item.text|linebreaks }}
+          {% else %}
+            {{ item.htmlText|safe }}
+          {% endif %}
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            </i>
+          {% endif %}
+</td>
+<td></td>
+</tr>
+
+<tr>
+<td width="40"></td>
+<td colspan="1">{{ item.amount }} {{ item.unit }}</td>
+<td align="right"><span class="{{PRICE_STYLE}}">je {{ item.unit }}</span></td>
+<td align="right"><span class="{{PRICE_STYLE}}">{{ item.unitPrice }}</span></td>
+<td width="10" align="right"><span class="{{PRICE_STYLE}}">
+{% if doc.hasIndividualTaxation %}
+{{ item.taxMarker }}
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+
+<tr>
+          <td>{{ label.NET }}</td>
+          <td class="col-TotalSum">{{ doc.nettoSumStr }}</td>
+        </tr>
+        <tr>
+        {% if doc.hasIndividualTaxation %}
+         {# This section is shown for documents with individual tax rates #}
+        <tr>
+          <td><sup><small>{{ doc.taxMarkerReduced }}</small></sup>&nbsp;
+          +{{ doc.reducedTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-TotalSum">{{ doc.reducedTaxSumStr }}</td>
+        </tr>
+        <tr>
+          <td><sup><small>{{ doc.taxMarkerFull }}</small></sup>&nbsp;
+          +{{ doc.fullTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-TotalSum">{{ doc.fullTaxSumStr }}</td>
+        </tr>
+        {% else %}
+        <tr>
+        {# This section is shown for documents with one consistent tax rate #}
+
+        {# Note: taxPercentStr can either be reduced or full, depending on #}
+        {# the tax settings of the document #}
+          <td>+{{ doc.taxPercentStr }}% {{ label.VAT }}</td>
+          <td>{{ doc.taxSumStr }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td><b>{{ label.SUM }}</b></td>
+          <td class="col-TotalSum">{{ doc.bruttoSumStr }}</td>
+        </tr>
+
+
+</table>
+<p>
+    {% if enableHtmlInTexts %}
+      {{ doc.postText|linebreaks }}
+    {% else %}
+      {{ doc.postTextHtml|safe }}
+    {% endif %}
+
+</p><p>
+{{ doc.goodbye }}
+</p>
+</body>

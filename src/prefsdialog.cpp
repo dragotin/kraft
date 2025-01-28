@@ -46,13 +46,13 @@
 #include "doctypeedit.h"
 #include "taxeditdialog.h"
 #include "impviewwidgets.h"
-#include "texttemplate.h"
 #include "htmlview.h"
 #include "addressselectordialog.h"
 #include "addressprovider.h"
 #include "format.h"
 #include "positionviewwidget.h"
 #include "myidentity.h"
+#include "grantleetemplate.h"
 
 // ################################################################################
 
@@ -618,7 +618,7 @@ void PrefsDialog::accept()
   QDialog::accept();
 }
 
-#define IDENTITY_TAG(X) QLatin1String(X)
+#define IDENTITY_TAG(X) (X)
 #define QL1(X) QStringLiteral(X)
 
 void PrefsDialog::fillManualIdentityForm(const KContacts::Addressee& addressee)
@@ -647,40 +647,35 @@ void PrefsDialog::displayOwnAddress(const KContacts::Addressee& addressee, bool 
     // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
     // It should be refactored.
 
-    const QString tmplFile = DefaultProvider::self()->locateFile( "views/identity.thtml" );
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(tmplFile);
+    const QString tmplFile = DefaultProvider::self()->locateFile( "views/identity.gtmpl" );
+    GrantleeFileTemplate tmpl(tmplFile);
     if( !tmpl.isOk() ) {
         return;
     }
-    if( ! tmpl.errorString().isEmpty() ) {
-        mIdentityView->displayContent( QString("<h1>Unable to find template <i>identity.trml</i></h1><p>%1</p>")
-                                       .arg(tmpl.errorString()));
+    bool ok;
+    if( ! tmpl.isOk()) {
+        mIdentityView->displayContent(QStringLiteral("<h1>Unable to find template <i>identity.gtmpl</i></h1>"));
         return;
     }
 
     QString addressBookInfo;
     _pbChangeIdentity->setEnabled(backendUp);
 
-    QPalette p;
-    QColor c = p.color(QPalette::Normal, QPalette::ToolTipBase);
-    tmpl.setValue(IDENTITY_TAG("CSS_WARN_BACKGROUND_COLOR"), c.name());
+    QObject errorObj;
+    QObject obj;
 
-    c =  p.color(QPalette::Normal, QPalette::QPalette::Base);
-    tmpl.setValue(IDENTITY_TAG("CSS_IDENTITY_IMAGE_BACKGROUND"), "#ea4e1d"); // c.name());
+    obj.setProperty(IDENTITY_TAG("CSS_WARN_BACKGROUND_COLOR"), "#ea4e1d");
 
     if( !backendUp ) {
         addressBookInfo = i18n("The identity cannot be found.");
-        tmpl.createDictionary(QL1("NO_IDENTITY"));
-        tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft Addressbook Integration down.</b></p>"
+        errorObj.setProperty("NO_IDENTITY_WRN", i18n("<p><b>Kraft Addressbook Integration down.</b></p>"
                                                    "<p>The address book backend is not up and running.</p>"
                                                    "<p>Please check your addressbook integration setup.</p>"));
     }
 
     if( addressee.isEmpty() ) {
         addressBookInfo = i18n("The identity is not listed in an address book.");
-        tmpl.createDictionary(QL1("NO_IDENTITY"));
-        tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft does not know your identity.</b></p>"
+        errorObj.setProperty("NO_IDENTITY_WRN", i18n("<p><b>Kraft does not know your identity.</b></p>"
                                                    "<p>Please pick one from the address books by clicking on the Button below.</p>"
                                                    "<p>Not having an identity selected can make your documents look incomplete.</p>"));
     } else {
@@ -698,19 +693,18 @@ void PrefsDialog::displayOwnAddress(const KContacts::Addressee& addressee, bool 
 
             // it is an address from the address book
             addressBookInfo  = i18n("Your identity can be found in the address books.");
-            tmpl.createDictionary(QL1("IDENTITY"));
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
+            obj.setProperty( IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
+            obj.setProperty( IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
+            obj.setProperty( IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
+            obj.setProperty( IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
 
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
+            obj.setProperty( IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
+            obj.setProperty( IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
+            obj.setProperty( IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
 
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
+            obj.setProperty( IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
+            obj.setProperty( IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
+            obj.setProperty( IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
             KContacts::Address myAddress;
             myAddress = addressee.address( KContacts::Address::Pref );
             QString addressType = i18n("preferred address");
@@ -741,22 +735,26 @@ void PrefsDialog::displayOwnAddress(const KContacts::Addressee& addressee, bool 
                 // qDebug () << "WRN: Address is still empty!";
             }
 
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), QL1("(")+addressType+QL1(")") );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
+            obj.setProperty( IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), addressType);
 
-            tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
+            obj.setProperty( IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
         }
     }
 
-    const QString ex = tmpl.expand();
+    tmpl.addToObjMapping("kraft", &obj);
+    tmpl.addToObjMapping("error", &errorObj);
+
+    const QString ex = tmpl.render(ok);
+    qDebug() << ex;
     mIdentityView->displayContent(ex);
 }
 

@@ -31,7 +31,6 @@ class dbID;
 class KJob;
 class QFile;
 class AddressProvider;
-class TextTemplate;
 
 enum class ReportFormat { PDF, PDFMail, HTML };
 
@@ -71,7 +70,6 @@ protected Q_SLOTS:
 
 private:
     void convertTemplate( const QString& );
-    void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
     QString registerDictTag( const QString&, const QString&, const QString& ) const;

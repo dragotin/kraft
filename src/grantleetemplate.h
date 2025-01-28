@@ -28,10 +28,11 @@ public:
     GrantleeFileTemplate( const QString& file);
 
     void addToObjMapping(const QString& key, QObject *obj);
-    void addToMappingHash( const QString& prefix, const QVariantHash& hash);
+    void addToMappingHash( const QString& key, const QVariantHash& hash);
 
     QString render(bool &ok) const;
 
+    bool isOk() const;
 private:
     const QString& _tmplFileName;
     QHash<QString, QObject*> _objs;

@@ -1,0 +1,141 @@
+<table width="100%" border="0" id="main">
+  <tr>
+    <td class="title" colspan="2" valign="bottom">{{ system.KRAFT_WELCOME_LABEL }}
+  </tr>
+  <tr>
+    <td>
+      <p>{{ system.KRAFT_INTRO_DESC  }}</p>
+      <p>Copyright © 2004-{{ system.KRAFT_COPYRIGHT_YEAR  }} Klaas Freitag &lt;kraft@freisturz.de&gt;</p>
+      <p>{{ system.KRAFT_LICENSE_TEXT  }} <a href="/license">GNU Public License 2.0</a></p>
+    </td>
+    <td width="15%" align="center" style="vertical-align: top; padding-right: 20px; margin: 0px;">
+      <a href="http://www.volle-kraft-voraus.de"><img src="{{ system.KRAFT_LOGO_FILE }}" />
+      <br/>{{ system.KRAFT_WEBSITE }}</a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <p>{{ system.KRAFT_AUTHORS }}:
+        <ul>
+          <li>{{ system.KRAFT_MAINTAINER }}: Klaas Freitag &lt;kraft@freisturz.de&gt;</li>
+          <li>{{ system.KRAFT_DEVELOPER }}: Thomas Richard</li>
+          <li>{{ system.KRAFT_GRAPHICS }}: Johannes Spielhagen</li>
+          <li>{{ system.KRAFT_MANUAL }}: Ronald Stroethoff &lt;stroet43@zonnet.nl&gt;</li>
+        </ul>
+      </p>
+      <p>{{ system.KRAFT_GITHUB }} <a href="https://www.github.com/dragotin/kraft">Github</a></p>
+    </td>
+    <td width="15%" align="center" style="vertical-align: middle; padding-right: 20px; margin: 0px;">
+      <a href="mailto:opensource@freisturz.de
+         ?body={{ system.KRAFT_FEEDBACK_TEMPLATE }}">{{ system.KRAFT_FEEDBACK }}</a>
+    </td>
+  </tr>
+</table>
+<hr/>
+<table  width="100%" border="0" id="main2">
+  <tr>
+    <td class="label">{{ system.KRAFT_VERSION_LABEL }}:</td>
+    <td class="value">{{ system.KRAFT_VERSION }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.KRAFT_CODENAME_LABEL }}:</td>
+    <td class="value"><i>{{ system.KRAFT_CODENAME }}</i></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.GIT_BUILD_LABEL }}:</td>
+    <td class="value">{{ system.GIT_BUILD_STRING }}</i></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.COUNTRY_SETTING_LABEL }}:</td>
+    <td class="value"><i>{{ system.COUNTRY_SETTING }}</i></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.LANGUAGE_SETTING_LABEL }}:</td>
+    <td class="value"><i>{{ system.LANGUAGE_SETTING }}</i></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td colspan="3" class="header">{{ system.KRAFT_V2_LABEL }}</td>
+  </tr>
+  <tr>
+    <td class="label">{{ system.KRAFT_V2_ROOT_DIR_LABEL }}:</td>
+    <td class="value">{{ system.KRAFTV2_ROOT_DIR }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td colspan="3" class="header">{{ system.DATABASE_TITLE_LABEL }}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.DATABASE_NAME_LABEL }}:</td>
+    <td class="value">{{ system.DATABASE_NAME }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.DATABASE_SCHEMA_VERSION_LABEL }}:</td>
+    <td class="value">{{ system.DATABASE_SCHEMA_VERSION }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.DATABASE_DRIVER_LABEL }}:</td>
+    <td class="value">{{ system.DATABASE_DRIVER }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.DATABASE_CONNECTION_LABEL }}:</td>
+    <td class="value">{{ system.DATABASE_CONNECTION }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.DATABASE_VERSION_LABEL }}:</td>
+    <td class="value">{{ system.DATABASE_VERSION }}</td>
+    <td></td>
+  </tr>
+
+
+  <tr>
+    <td colspan="3" class="header">{{ system.ADDRESSBOOK_BACKEND_LABEL }}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.ADDRESSBOOK_BACKEND_TYPE_LABEL }}:</td>
+    <td class="value">{{ system.ADDRESSBOOK_BACKEND_TYPE }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td colspan="3" class="header">{{ system.EXTERNAL_TOOLS_LABEL }}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.RML2PDF_TOOL_LABEL }}:</td>
+    <td class="value">{{ system.RML2PDF_TOOL }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.ICONV_TOOL_LABEL }}:</td>
+    <td class="value">{{ system.ICONV_TOOL }}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ system.WEASYPRINT_TOOL_LABEL }}:</td>
+    <td class="value">{{ system.WEASYPRINT_TOOL }}</td>
+    <td></td>
+  </tr>
+</table>

@@ -29,7 +29,6 @@
 #include "docdigestdetailview.h"
 #include "defaultprovider.h"
 #include "htmlview.h"
-#include "texttemplate.h"
 #include "format.h"
 #include "kraftsettings.h"
 #include "grantleetemplate.h"
@@ -203,7 +202,7 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
 
 #define DOCDIGEST_TAG
 
-void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int month )
+QList<QObject*> DocDigestDetailView::documentListing(int year, int month )
 {
 
     QString minDate;
@@ -227,23 +226,23 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
 
     // now create the template
 
-    tmpl->setValue("I18N_AMOUNT", i18n("Amount"));
-    tmpl->setValue("I18N_TYPE",   i18n("Type"));
-    tmpl->setValue("I18N_SUM",    i18n("Sum"));
-
     QStringList doctypes;
     // QStringList doctypes = docMatrix.keys();
     // doctypes.sort();
 
+    QList<QObject*> objList;
     for( const QString& dtype: doctypes ) {
+        QObject *obj = new QObject;
         qDebug() << "creating doc list for "<<dtype;
-        tmpl->createDictionary( "DOCUMENTS" );
-        tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
+        obj->setProperty("doctype", dtype);
         const QString am = QString::number(0);
-        tmpl->setValue("DOCUMENTS", "AMOUNT", am);
+        obj->setProperty("amount", am);
         const QString sm = Format::localeDoubleToString(0.0);
-        tmpl->setValue("DOCUMENTS", "SUM", sm);
+        obj->setProperty("sum", sm);
+
+        objList.append(obj);
     }
+    return objList;
 }
 
 void DocDigestDetailView::slotShowStart()
@@ -276,24 +275,31 @@ void DocDigestDetailView::slotShowStart()
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 {
     if( _monthTemplFileName.isEmpty() ) {
-        _monthTemplFileName = DefaultProvider::self()->locateFile( "views/monthdigest.thtml" );
+        _monthTemplFileName = DefaultProvider::self()->locateFile( "views/monthdigest.gtmpl" );
     }
 
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(_monthTemplFileName);
+    GrantleeFileTemplate tmpl(_monthTemplFileName);
     if( !tmpl.isOk() ) {
         return;
     }
+
+    QObject obj;
     const QString monthStr = DefaultProvider::self()->locale()->monthName(month);
     const QString yearStr = QString::number(year);
-    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in %1 %2", monthStr, yearStr) );
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
-    tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), i18n("Month"));
-    tmpl.setValue( DOCDIGEST_TAG("MONTH_NAME"), monthStr);
+    obj.setProperty("headline", i18n("Results in %1 %2", monthStr, yearStr));
+    obj.setProperty("year_number", yearStr);
+    obj.setProperty("month_name", monthStr);
+
+    QObject labels;
+    labels.setProperty("year_label", i18n("Year"));
+    labels.setProperty("month_label", i18n("Month"));
+    labels.setProperty("amount", i18n("Amount"));
+    labels.setProperty("type", i18n("Type"));
+    labels.setProperty("sum", i18n("Sum"));
 
     // Document listing
-    documentListing(&tmpl, year, month);
+    QList<QObject*> docList = documentListing(year, month);
+    obj.setProperty("docList",QVariant::fromValue(docList));
 
     // left and right information blocks
     _leftDetails->setStyleSheet(widgetStylesheet(Left, Month));
@@ -302,7 +308,11 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 
     _rightDetails->setStyleSheet(widgetStylesheet(Right, Month));
     _rightDetails->clear();
-    const QString details = tmpl.expand();
+
+    tmpl.addToObjMapping("kraft", &obj);
+    tmpl.addToObjMapping("label", &labels);
+    bool ok;
+    const QString details = tmpl.render(ok);
     mHtmlCanvas->displayContent(details);
 
 }
@@ -310,29 +320,36 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 void DocDigestDetailView::slotShowYearDetails( int year )
 {
     if( _yearTemplFileName.isEmpty() ) {
-        _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.thtml" );
+        _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.gtmpl" );
     }
-
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(_yearTemplFileName);
+    GrantleeFileTemplate tmpl(_yearTemplFileName);
     if( !tmpl.isOk() ) {
         return;
     }
 
+    QObject labels;
+    labels.setProperty("year_label", i18n("Year"));
+
+    QObject obj;
     const QString yearStr = QString::number(year);
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
-    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1", yearStr) );
+    obj.setProperty("year_number", yearStr);
+    obj.setProperty("headline", i18n("Results in Year %1", yearStr));
 
-    documentListing(&tmpl, year, -1);
+    QList<QObject*> docList = documentListing(year, -1);
+    obj.setProperty("docList",QVariant::fromValue(docList));
 
-    const QString details = tmpl.expand();
     _leftDetails->setStyleSheet(widgetStylesheet(Left, Year));
     _leftDetails->setText("<h1>"+ yearStr +"</h1>");
     _leftDetails->setAlignment(Qt::AlignHCenter);
 
     _rightDetails->setStyleSheet(widgetStylesheet(Right, Year));
     _rightDetails->clear();
+
+    tmpl.addToObjMapping("kraft", &obj);
+    tmpl.addToObjMapping("label", &labels);
+    bool ok;
+    const QString details = tmpl.render(ok);
+    mHtmlCanvas->displayContent(details);
 
     mHtmlCanvas->displayContent( details );
 

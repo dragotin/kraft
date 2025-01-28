@@ -24,8 +24,6 @@
 #include "htmlview.h"
 #include "ui_documentactions.h"
 
-class TextTemplate;
-
 class DocDigestHtmlView : public HtmlView
 {
     Q_OBJECT
@@ -54,7 +52,7 @@ public Q_SLOTS:
 
 private:
     void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
-    void documentListing( TextTemplate *tmpl, int year, int month );
+    QList<QObject*> documentListing(int year, int month );
 
     enum Location { Left, Middle, Right };
     enum Detail { Start, Month, Year, Document };

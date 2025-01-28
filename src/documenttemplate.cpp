@@ -1,5 +1,5 @@
 /***************************************************************************
-            Template for Kraft Documents - Grantlee and ctemplate
+            KTextTemplate based template for Kraft Documents
                              -------------------
     begin                : March 2020
     copyright            : (C) 2020 by Klaas Freitag
@@ -18,7 +18,6 @@
 #include "documenttemplate.h"
 #include "defaultprovider.h"
 #include "epcqrcode.h"
-#include "texttemplate.h"
 #include "grantleetemplate.h"
 #include "format.h"
 #include "kraftsettings.h"
@@ -26,7 +25,6 @@
 #include "documentman.h"
 #include "kraftdoc.h"
 #include "docposition.h"
-#include "reportitem.h"
 #include "reportitemlist.h"
 
 #include <klocalizedstring.h>
@@ -41,21 +39,6 @@ namespace {
 QString escapeTrml2pdfXML( const QString& str )
 {
     return( str.toHtmlEscaped() );
-}
-
-QString rmlString( const QString& str, const QString& paraStyle = QString() )
-{
-    QString rml;
-
-    QString style( paraStyle );
-    if ( style.isEmpty() ) style = QStringLiteral("text");
-
-    // QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
-    QStringList li = escapeTrml2pdfXML( str ).split( "\n" );
-    rml = QString( "<para style=\"%1\">" ).arg( style );
-    rml += li.join( QString( "</para><para style=\"%1\">" ).arg( style ) ) + "</para>";
-    // qDebug () << "Returning " << rml;
-    return rml;
 }
 
 QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
@@ -166,18 +149,6 @@ QVariantHash kraftVariantHash()
         hash.insert(TAG("HOSTNAME"), h);
 
     return hash;
-}
-
-void variantHashToTemplate( TextTemplate& tmpl, const QString& prefix, const QVariantHash& hash)
-{
-    QVariantHash::const_iterator i;
-    for (i = hash.constBegin(); i != hash.constEnd(); ++i) {
-        QString key = i.key();
-        if (!prefix.isEmpty()) {
-            key = QString("%1_%2").arg(prefix).arg(i.key());
-        }
-        tmpl.setValue(key, i.value().toString());
-    }
 }
 
 QString generateEPCQRCodeFile(KraftDoc *doc)

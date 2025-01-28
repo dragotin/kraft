@@ -36,20 +36,25 @@ GrantleeFileTemplate::GrantleeFileTemplate( const QString& file)
 
 }
 
-void GrantleeFileTemplate::addToMappingHash( const QString& prefix, const QVariantHash& hash)
+bool GrantleeFileTemplate::isOk() const
+{
+    return true; // FIXME
+}
+
+void GrantleeFileTemplate::addToMappingHash( const QString& key, const QVariantHash& hash)
 {
     QObject *obj;
 
-    if (prefix.isNull()) {
+    if (key.isNull()) {
         return;
     }
 
-    if (_objs.contains(prefix)) {
-        obj = _objs[prefix];
+    if (_objs.contains(key)) {
+        obj = _objs[key];
     } else {
         // make the created objects a child of the _p QObject
         obj = new QObject(this);
-        _objs[prefix] = obj;
+        _objs[key] = obj;
     }
 
     QHash<QString, QVariant>::const_iterator i = hash.constBegin();
