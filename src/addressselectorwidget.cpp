@@ -36,9 +36,15 @@
 #include <kcontacts/addressee.h>
 #include <kcontacts/contactgroup.h>
 
+#include "defaultprovider.h"
+
 #ifdef HAVE_AKONADI
 #include <Akonadi/EntityTreeModel>
 #include <Akonadi/EntityTreeView>
+#else
+#include "htmlview.h"
+#include "grantleetemplate.h"
+#include "documenttemplate.h"
 #endif
 
 /* ==================================================================== */
@@ -232,6 +238,8 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
     _contactViewer = new Akonadi::ContactViewer;
     _contactViewer->setShowQRCode(false);
     lay->addWidget(_contactViewer);
+#else
+    _htmlView = new HtmlView(this);
 #endif
 }
 
@@ -240,7 +248,15 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 #ifdef HAVE_AKONADI
     _contactViewer->setRawContact(contact);
 #else
-    Q_UNUSED(contact);
+    const QString templateFile = DefaultProvider::self()->locateFile( "views/identity.gtmpl" );
+
+    GrantleeFileTemplate tmpl(templateFile);
+
+    const auto contactHash = Template::contactToVariantHash(contact);
+    tmpl.addToMappingHash("kraft", contactHash);
+    bool ok;
+    const QString rendered = tmpl.render(ok);
+    _htmlView->setHtml(rendered);
 #endif
 
 }

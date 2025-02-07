@@ -34,12 +34,7 @@
 
 // ==================================================================================
 
-namespace {
-
-QString escapeTrml2pdfXML( const QString& str )
-{
-    return( str.toHtmlEscaped() );
-}
+namespace Template {
 
 QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
 {
@@ -47,7 +42,7 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
 
     QString n = contact.realName();
     if (n.isEmpty()) n = QStringLiteral("Not set!");
-    hash.insert( QStringLiteral( "NAME" ),  escapeTrml2pdfXML(n) );
+    hash.insert( QStringLiteral( "NAME" ),  n.toHtmlEscaped());
 
     if( contact.isEmpty() ) return hash;
 
@@ -56,13 +51,13 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( co.isEmpty() ) {
         co = contact.realName();
     }
-    hash.insert( QStringLiteral( "ORGANISATION" ), escapeTrml2pdfXML( co ) );
+    hash.insert( QStringLiteral( "ORGANISATION" ), co.toHtmlEscaped());
     const QUrl url = contact.url().url();
-    hash.insert( QStringLiteral( "URL" ),   escapeTrml2pdfXML( url.url() ) );
-    hash.insert( QStringLiteral( "EMAIL" ), escapeTrml2pdfXML( contact.preferredEmail() ) );
-    hash.insert( QStringLiteral( "PHONE" ), escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Work ).number() ) );
-    hash.insert( QStringLiteral( "FAX" ),   escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Fax ).number() ) );
-    hash.insert( QStringLiteral( "CELL" ),  escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Cell ).number() ) );
+    hash.insert( QStringLiteral( "URL" ),   url.url().toHtmlEscaped());
+    hash.insert( QStringLiteral( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
+    hash.insert( QStringLiteral( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
+    hash.insert( QStringLiteral( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
+    hash.insert( QStringLiteral( "CELL" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
 
     KContacts::Address address;
     address = contact.address( KContacts::Address::Pref );
@@ -73,27 +68,21 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( address.isEmpty() )
         address = contact.address(KContacts::Address::Postal );
 
-    hash.insert( QStringLiteral( "POSTBOX" ),
-                 escapeTrml2pdfXML( address.postOfficeBox() ) );
+    hash.insert( QStringLiteral( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
 
-    hash.insert( QStringLiteral( "EXTENDED" ),
-                 escapeTrml2pdfXML( address.extended() ) );
-    hash.insert( QStringLiteral( "STREET" ),
-                 escapeTrml2pdfXML( address.street() ) );
-    hash.insert( QStringLiteral( "LOCALITY" ),
-                 escapeTrml2pdfXML( address.locality() ) );
-    hash.insert( QStringLiteral( "REGION" ),
-                 escapeTrml2pdfXML( address.region() ) );
-    hash.insert( QStringLiteral( "POSTCODE" ),
-                 escapeTrml2pdfXML( address.postalCode() ) );
-    hash.insert( QStringLiteral( "COUNTRY" ),
-                 escapeTrml2pdfXML( address.country() ) );
-    hash.insert( QStringLiteral( "REGION" ),
-                 escapeTrml2pdfXML( address.region() ) );
-    hash.insert( QStringLiteral("LABEL" ),
-                 escapeTrml2pdfXML( address.label() ) );
+    hash.insert( QStringLiteral( "EXTENDED" ), address.extended().toHtmlEscaped());
+    hash.insert( QStringLiteral( "STREET" ), address.street().toHtmlEscaped());
+    hash.insert( QStringLiteral( "LOCALITY" ), address.locality().toHtmlEscaped());
+    hash.insert( QStringLiteral( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( QStringLiteral( "POSTCODE" ), address.postalCode().toHtmlEscaped());
+    hash.insert( QStringLiteral( "COUNTRY" ), address.country().toHtmlEscaped());
+    hash.insert( QStringLiteral( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( QStringLiteral("LABEL" ), address.label().toHtmlEscaped());
     return hash;
 }
+}
+
+namespace {
 
 QVariantHash labelVariantHash()
 {
@@ -184,7 +173,7 @@ QString generateEPCQRCodeFile(KraftDoc *doc)
 // ==================================================================================
 
 DocumentTemplate::DocumentTemplate( const QString& tmplFile )
-      :_tmplFile(tmplFile)
+    :_tmplFile(tmplFile)
 {
 
 }
@@ -198,8 +187,8 @@ GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
 }
 
 const QString GrantleeDocumentTemplate::expand( const QString& uuid,
-                                               const KContacts::Addressee &myContact,
-                                               const KContacts::Addressee &customerContact)
+                                                const KContacts::Addressee &myContact,
+                                                const KContacts::Addressee &customerContact)
 {
 
     // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP;
@@ -227,10 +216,10 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
         gtmpl.addToObjMapping("doc", doc);
 
-        const auto mtt = contactToVariantHash(myContact);
+        const auto mtt = Template::contactToVariantHash(myContact);
         gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
 
-        const auto cct = contactToVariantHash(customerContact);
+        const auto cct = Template::contactToVariantHash(customerContact);
         gtmpl.addToMappingHash(QStringLiteral("customer"), cct);
 
         const QVariantHash labelHash = labelVariantHash();

@@ -25,6 +25,8 @@
 #ifdef HAVE_AKONADI
 #include <Akonadi/ContactViewer>
 #include <Akonadi/ContactEditorDialog>
+#else
+#include "htmlview.h"
 #endif
 
 #include <kcontacts/addressee.h>
@@ -55,6 +57,8 @@ class KraftContactViewer : public QWidget
 private:
 #ifdef HAVE_AKONADI
     Akonadi::ContactViewer *_contactViewer;
+#else
+    HtmlView *_htmlView;
 #endif
 };
 

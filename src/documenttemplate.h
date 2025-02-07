@@ -20,6 +20,10 @@
 
 #include <kcontacts/addressee.h>
 
+namespace Template {
+    QVariantHash contactToVariantHash(const KContacts::Addressee& contact);
+}
+
 class DocumentTemplate
 {
 public:
