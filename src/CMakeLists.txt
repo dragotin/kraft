@@ -178,7 +178,7 @@ set(KRAFT_LINK_LIBS
     KF6::Contacts
     KF6::ConfigCore
     KF6::ConfigGui
-    ${CTEMPLATE_LIBRARIES} pthread
+    pthread
     KF6::TextTemplate
 )
 if(${AKO_PREFIX}Akonadi_FOUND)

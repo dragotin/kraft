@@ -103,8 +103,6 @@ else()
     message("Akonadi Check disabled")
 endif()
 
-find_package(Ctemplate REQUIRED)
-
 find_package(Asciidoctor)
 # Sets the variable ASCIIDOCTOR_FOUND
 
