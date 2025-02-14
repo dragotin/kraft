@@ -41,8 +41,8 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     QVariantHash hash;
 
     QString n = contact.realName();
-    if (n.isEmpty()) n = QStringLiteral("Not set!");
-    hash.insert( QStringLiteral( "NAME" ),  n.toHtmlEscaped());
+    if (n.isEmpty()) n = TAG("Not set!");
+    hash.insert( TAG( "NAME" ),  n.toHtmlEscaped());
 
     if( contact.isEmpty() ) return hash;
 
@@ -51,13 +51,13 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( co.isEmpty() ) {
         co = contact.realName();
     }
-    hash.insert( QStringLiteral( "ORGANISATION" ), co.toHtmlEscaped());
+    hash.insert( TAG( "ORGANISATION" ), co.toHtmlEscaped());
     const QUrl url = contact.url().url();
-    hash.insert( QStringLiteral( "URL" ),   url.url().toHtmlEscaped());
-    hash.insert( QStringLiteral( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
-    hash.insert( QStringLiteral( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
-    hash.insert( QStringLiteral( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
-    hash.insert( QStringLiteral( "CELL" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
+    hash.insert( TAG( "URL" ),   url.url().toHtmlEscaped());
+    hash.insert( TAG( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
+    hash.insert( TAG( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
+    hash.insert( TAG( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
+    hash.insert( TAG( "MOBILE" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
 
     KContacts::Address address;
     address = contact.address( KContacts::Address::Pref );
@@ -68,21 +68,18 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( address.isEmpty() )
         address = contact.address(KContacts::Address::Postal );
 
-    hash.insert( QStringLiteral( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
+    hash.insert( TAG( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
 
-    hash.insert( QStringLiteral( "EXTENDED" ), address.extended().toHtmlEscaped());
-    hash.insert( QStringLiteral( "STREET" ), address.street().toHtmlEscaped());
-    hash.insert( QStringLiteral( "LOCALITY" ), address.locality().toHtmlEscaped());
-    hash.insert( QStringLiteral( "REGION" ), address.region().toHtmlEscaped());
-    hash.insert( QStringLiteral( "POSTCODE" ), address.postalCode().toHtmlEscaped());
-    hash.insert( QStringLiteral( "COUNTRY" ), address.country().toHtmlEscaped());
-    hash.insert( QStringLiteral( "REGION" ), address.region().toHtmlEscaped());
-    hash.insert( QStringLiteral("LABEL" ), address.label().toHtmlEscaped());
+    hash.insert( TAG( "EXTENDED" ), address.extended().toHtmlEscaped());
+    hash.insert( TAG( "STREET" ), address.street().toHtmlEscaped());
+    hash.insert( TAG( "LOCALITY" ), address.locality().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG( "POSTCODE" ), address.postalCode().toHtmlEscaped());
+    hash.insert( TAG( "COUNTRY" ), address.country().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG("LABEL" ), address.label().toHtmlEscaped());
     return hash;
 }
-}
-
-namespace {
 
 QVariantHash labelVariantHash()
 {
@@ -115,6 +112,11 @@ QVariantHash labelVariantHash()
 
     return hash;
 }
+}
+
+namespace {
+
+
 
 QVariantHash kraftVariantHash()
 {
@@ -222,7 +224,7 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
         const auto cct = Template::contactToVariantHash(customerContact);
         gtmpl.addToMappingHash(QStringLiteral("customer"), cct);
 
-        const QVariantHash labelHash = labelVariantHash();
+        const QVariantHash labelHash = Template::labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
 
         // -- save the EPC QR Code which is written into a temp file

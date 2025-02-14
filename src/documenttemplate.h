@@ -22,6 +22,8 @@
 
 namespace Template {
     QVariantHash contactToVariantHash(const KContacts::Addressee& contact);
+    QVariantHash labelVariantHash();
+
 }
 
 class DocumentTemplate

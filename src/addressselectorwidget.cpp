@@ -240,6 +240,7 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
     lay->addWidget(_contactViewer);
 #else
     _htmlView = new HtmlView(this);
+    lay->addWidget(_htmlView);
 #endif
 }
 
@@ -248,12 +249,15 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 #ifdef HAVE_AKONADI
     _contactViewer->setRawContact(contact);
 #else
-    const QString templateFile = DefaultProvider::self()->locateFile( "views/identity.gtmpl" );
+    const QString templateFile = DefaultProvider::self()->locateFile( "views/contact.gtmpl" );
 
     GrantleeFileTemplate tmpl(templateFile);
 
     const auto contactHash = Template::contactToVariantHash(contact);
-    tmpl.addToMappingHash("kraft", contactHash);
+    tmpl.addToMappingHash("contact", contactHash);
+    const auto labelHash = Template::labelVariantHash();
+    tmpl.addToMappingHash("label", labelHash);
+
     bool ok;
     const QString rendered = tmpl.render(ok);
     _htmlView->setHtml(rendered);
@@ -265,7 +269,8 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 
 AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
     : QSplitter(parent),
-      _provider(0)
+      mButEditContact(nullptr),
+      _provider(nullptr)
 {
     setupUi();
     restoreState();
@@ -309,8 +314,7 @@ void AddressSelectorWidget::setupUi()
     mProxyModel = new AddressSortProxyModel(_provider, this);
     mProxyModel->setSourceModel(_provider->model());
     _addressTreeView->setModel(mProxyModel);
-    connect(_addressTreeView, SIGNAL(activated(QModelIndex)),
-            this, SLOT(slotAddresseeSelected(QModelIndex)));
+    connect(_addressTreeView, &QTreeView::clicked, this, &AddressSelectorWidget::slotAddresseeSelected);
 
     mProxyModel->sort(0);
 
@@ -319,7 +323,7 @@ void AddressSelectorWidget::setupUi()
     QVBoxLayout *rightLay = new QVBoxLayout;
     rightW->setLayout(rightLay);
     this->addWidget(rightW);
-    _contactViewer = new KraftContactViewer;
+    _contactViewer = new KraftContactViewer(this);
     _contactViewer->setMinimumWidth(200);
     rightLay->addWidget(_contactViewer);
 
@@ -327,6 +331,7 @@ void AddressSelectorWidget::setupUi()
     QHBoxLayout *hboxBot = new QHBoxLayout;
     hboxBot->addStretch(4);
     rightLay->addLayout( hboxBot );
+#ifdef HAVE_AKONADI
     mButEditContact = new QPushButton(i18n("Edit Contact…"));
     mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
     mButEditContact->setEnabled( false );
@@ -337,6 +342,10 @@ void AddressSelectorWidget::setupUi()
 
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact, SIGNAL(clicked()),SLOT(slotEditContact()));
+#else
+    QLabel *lab = new QLabel(i18n("Addresses read from directory (read only)"), rightW);
+    hboxBot->addWidget(lab);
+#endif
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -395,10 +404,12 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
 
         Q_EMIT addressSelected(contact);
 
-        mButEditContact->setEnabled( true );
+        if(mButEditContact)
+            mButEditContact->setEnabled( true );
     } else {
         // qDebug () << "No address was selected!";
-        mButEditContact->setEnabled( false );
+        if(mButEditContact)
+            mButEditContact->setEnabled( false );
     }
 }
 

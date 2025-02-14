@@ -32,8 +32,8 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     restoreGeometry(geo);
 
     _addressSelectorWidget = new AddressSelectorWidget(this, false);
-    connect(_addressSelectorWidget, SIGNAL(addressSelected(KContacts::Addressee)),
-            SLOT(slotAddresseeSelected(KContacts::Addressee)));
+    connect(_addressSelectorWidget, &AddressSelectorWidget::addressSelected,
+            this, &AddressSelectorDialog::slotAddresseeSelected);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
