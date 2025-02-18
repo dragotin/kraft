@@ -38,7 +38,8 @@ DocPosition::DocPosition() : KraftObj(),
     m_dbId( -1 ),
     mToDelete( false ),
     mTaxType( Tax::Full ),
-    mType( Type::Position )
+    mType( Type::Position ),
+    m_amount{1.0}
 
 {
 
@@ -49,7 +50,8 @@ DocPosition::DocPosition(const Type &t )
       m_dbId( -1 ),
       mToDelete( false ),
       mTaxType( Tax::Full ),
-      mType( t )
+      mType( t ),
+      m_amount{1.0}
 {
 
 }

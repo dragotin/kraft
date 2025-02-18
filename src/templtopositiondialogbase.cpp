@@ -32,7 +32,7 @@ TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
   : QDialog( w )
 {
   setObjectName( "TEMPL_DIALOG" );
-  setWindowTitle( i18n("Create Item from Template" ) );
+  setWindowTitle( i18n("Create New Item" ) );
   setModal( true );
 }
 
