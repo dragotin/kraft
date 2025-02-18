@@ -23,9 +23,9 @@ public:
     void appendChild(std::unique_ptr<CTMItem> &child);
     KContacts::Addressee getAddressee() const;
 
+    static QVariantList _headers;
 private:
     std::vector<std::unique_ptr<CTMItem>> _childItems;
-    static QVariantList _headers;
     CTMItem* _parentItem;
     KContacts::Addressee _addressee;
 };

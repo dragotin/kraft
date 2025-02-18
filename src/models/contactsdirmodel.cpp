@@ -22,7 +22,7 @@
 
 #include "models/contactsdirmodel.h"
 
-QVariantList CTMItem::_headers{ "Name", "City", "UID" };
+QVariantList CTMItem::_headers{ "Name", "City" };
 
 CTMItem::CTMItem(KContacts::Addressee& addressee, CTMItem* parentItem)
     :_parentItem(parentItem), _addressee(addressee)
@@ -151,8 +151,8 @@ Qt::ItemFlags ContactsDirModel::flags(const QModelIndex &index) const
 
 QVariant ContactsDirModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    return orientation == Qt::Horizontal && role == Qt::DisplayRole
-        ? _rootItem->data(section) : QVariant{};
+    return orientation == Qt::Horizontal && role == Qt::DisplayRole && section < CTMItem::_headers.size()
+        ? CTMItem::_headers.at(section) : QVariant{};
 }
 
 QModelIndex ContactsDirModel::index(int row, int column, const QModelIndex &parent) const
