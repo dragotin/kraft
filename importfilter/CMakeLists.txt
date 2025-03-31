@@ -1,3 +1,3 @@
 ########### install files ###############
 
-install(FILES woerlein_txt.ftr standard_txt.ftr DESTINATION ${DATA_INSTALL_DIR}/kraft/importfilter/positions/)
+install(FILES woerlein_txt.ftr standard_txt.ftr DESTINATION ${KDE_INSTALL_DATADIR}/kraft/importfilter/positions/)

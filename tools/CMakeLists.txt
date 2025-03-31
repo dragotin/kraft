@@ -19,6 +19,7 @@ if(${AKO_PREFIX}Akonadi_FOUND)
 
     target_link_libraries( ${findcontact_NAME}
         Qt6::Core
+        Qt6::Xml
         Qt6::Widgets
         KF6::Contacts
         ${AKO_PREFIX}::AkonadiCore
@@ -29,4 +30,4 @@ if(${AKO_PREFIX}Akonadi_FOUND)
     install(TARGETS ${findcontact_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
-install(FILES erml2pdf.py watermarkpdf.py  DESTINATION ${DATA_INSTALL_DIR}/kraft/tools )
+install(FILES erml2pdf.py watermarkpdf.py  DESTINATION ${KDE_INSTALL_DATADIR}/kraft/tools )
