@@ -33,10 +33,11 @@ jobs:
             "cmake(Qt6Svg)" \
             qt6-declarative-tools \
             kf6-extra-cmake-modules \
-            && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 50 \
+            && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 1 \
+            && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
             && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
-            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/c++-13 50 \
-            && update-alternatives --install /usr/bin/cpp gcc /usr/bin/cpp-13 50
+            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-13 50 \
+            && update-alternatives --install /usr/bin/cpp cpp /usr/bin/g++-13 50
 
 
       - uses: actions/checkout@v4
