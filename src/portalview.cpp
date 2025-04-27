@@ -372,7 +372,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
     obj.setProperty( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
     obj.setProperty( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
 
-    obj.setProperty( "WEASYPRINT_TOOL_LABEL", i18n( "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation" ) );
+    obj.setProperty( "WEASYPRINT_TOOL_LABEL", i18n( "weasyprint for PDF generation" ) );
 
     QString wp = DefaultProvider::self()->locateBinary("weasyprint");
     if (wp.isEmpty()) {

@@ -128,12 +128,6 @@
   </tr>
 
   <tr>
-    <td class="label">{{ system.ICONV_TOOL_LABEL }}:</td>
-    <td class="value">{{ system.ICONV_TOOL }}</td>
-    <td></td>
-  </tr>
-
-  <tr>
     <td class="label">{{ system.WEASYPRINT_TOOL_LABEL }}:</td>
     <td class="value">{{ system.WEASYPRINT_TOOL }}</td>
     <td></td>
