@@ -31,9 +31,9 @@ jobs:
             "cmake(Qt6Widgets)" \
             "cmake(Qt6Xml)" \
             "cmake(Qt6Svg)" \
-            qt6-declarative-tools \
-            kf6-extra-cmake-modules \
-            && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 1 \
+             qt6-sql-sqlite \
+             qt6-sql-mysql  \
+             kf6-ktexttemplate \
             && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
             && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
             && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-13 50 \
