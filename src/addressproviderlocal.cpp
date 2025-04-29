@@ -32,7 +32,7 @@ AddressProviderLocal::AddressProviderLocal(const QString& baseDir, QObject *pare
 
 bool AddressProviderLocal::init()
 {
-    bool re{false};
+    bool re{true};
 
     return re;
 }

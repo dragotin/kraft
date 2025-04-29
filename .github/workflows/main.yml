@@ -18,7 +18,7 @@ jobs:
             make \
             wget \
             git \
-            libctemplate-devel pkgconf \
+            pkgconf \
             "cmake(KF6TextTemplate)" \
             "cmake(KF6Codecs)" \
             "cmake(KF6Contacts)" \
@@ -33,6 +33,7 @@ jobs:
             "cmake(Qt6Svg)" \
              qt6-sql-sqlite \
              qt6-sql-mysql  \
+             qt6-declarative-tools \
              kf6-ktexttemplate \
             && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
             && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
