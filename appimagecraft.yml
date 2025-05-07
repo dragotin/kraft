@@ -26,8 +26,10 @@ appimage:
     plugins:
       - qt
       - conda
+      - ktexttemplate_defaultfilters
+      - ktexttemplate_defaulttags
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint pypdf2"
-      EXTRA_QT_MODULES: "svg;texttemplate;"
+      EXTRA_QT_MODULES: "svg;"
 
