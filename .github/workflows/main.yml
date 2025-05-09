@@ -53,8 +53,8 @@ jobs:
           wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
           chmod +x appimagecraft-x86_64.AppImage
           wget https://github.com/linuxdeploy/linuxdeploy-plugin-kde/releases/download/continuous/linuxdeploy-plugin-kde-x86_64.AppImage
-chmod +x linuxdeploy-plugin-kde-x86_64.AppImage
-mv linuxdeploy-plugin-kde-x86_64.AppImage linuxdeploy-plugin-kde 
+          chmod +x linuxdeploy-plugin-kde-x86_64.AppImage
+          mv linuxdeploy-plugin-kde-x86_64.AppImage linuxdeploy-plugin-kde 
           ./appimagecraft-x86_64.AppImage
 
       - name: Archive artifacts
