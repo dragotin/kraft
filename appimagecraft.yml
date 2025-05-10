@@ -22,8 +22,10 @@ scripts:
       chmod +x "$BUILD_DIR"/AppDir/usr/bin/weasyprint
       mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
       cp /usr/lib64/qt6/plugins/kf6/ktexttemplate/*so "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
-      mkdir "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
       cp /usr/lib64/qt6/plugins/kstyle_config/breezestyleconfig.so "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/styles
+      cp /usr/lib64/qt6/plugins/styles/breeze6.so "$BUILD_DIR"/AppDir/usr/plugins/styles
 
 appimage:
   linuxdeploy:
