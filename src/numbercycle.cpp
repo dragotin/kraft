@@ -21,6 +21,8 @@
 #include <QDir>
 #include <QString>
 #include <QDateTime>
+#include <QThread>
+#include <QSaveFile>
 
 #include "numbercycle.h"
 #include "stringutil.h"

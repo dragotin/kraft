@@ -3,6 +3,7 @@
 #include <QSql>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QStandardPaths>
 
 #include "defaultprovider.h"
 
@@ -38,7 +39,7 @@ private Q_SLOTS:
         const QStringList dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
         const QString home = QDir::homePath();
         const QString appName = qAppName();
-        const QString testDir = QString("%1/.local/share/%2").arg(home).arg(appName);
+        const QString testDir = QString("%1/.local/share/%2").arg(home, appName);
 
         int indx = dirs.indexOf(testDir);
         QVERIFY(indx > -1);

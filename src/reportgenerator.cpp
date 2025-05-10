@@ -27,6 +27,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QUrl>
+#include <QTemporaryFile>
 
 #include <KLocalizedString>
 
@@ -220,7 +221,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
     // Remove tmp files that might have been created during the template expansion,
     // ie. the EPC QR Code SVG file.
 #ifndef QT_DEBUG
-    for (const auto &subfile : _cleanupFiles) {
+    for (const auto &subfile : std::as_const(_cleanupFiles)) {
         QFile::remove(subfile);
     }
 #endif
@@ -394,11 +395,11 @@ QString ReportGenerator::findTemplateFile( const QString& type )
         // a few file checks
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
+            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile, dType.name()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
+            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile, dType.name()), "");
             return QString();
         }
     }

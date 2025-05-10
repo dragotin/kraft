@@ -17,6 +17,7 @@
 
 // include files for Qt
 #include <QDir>
+#include <QJsonObject>
 #include <QWidget>
 
 #include <QDebug>

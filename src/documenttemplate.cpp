@@ -27,6 +27,7 @@
 #include "docposition.h"
 #include "reportitemlist.h"
 
+#include <QTemporaryFile>
 #include <klocalizedstring.h>
 
 #define TAG( THE_TAG )  QStringLiteral( THE_TAG )

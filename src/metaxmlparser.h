@@ -19,7 +19,7 @@
 #define METAXMLPARSER_H
 
 #include <QObject>
-#include <QtXml>
+#include <QDomDocument>
 #include <QMap>
 
 

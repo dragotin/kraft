@@ -23,6 +23,7 @@
 #include <QLocale>
 #include <QDebug>
 #include <QProcess>
+#include <QUrl>
 
 #include <KLocalizedString>
 

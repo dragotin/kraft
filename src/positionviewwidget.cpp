@@ -367,7 +367,7 @@ void PositionViewWidget::slotExecButtonPressed()
 void PositionViewWidget::slotMenuAboutToShow()
 {
   QPalette palette;
-  palette.setColor(this->backgroundRole(), QColor("#757476"));
+  palette.setColor(this->backgroundRole(), QColor(0x757476));
   this->setPalette(palette);
 }
 

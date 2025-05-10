@@ -117,7 +117,8 @@ void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus
         if( fi.exists() ) {
             Q_EMIT docAvailable( mFile.fileName() );
             if( mProcess) {
-                const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
+                const auto args = mProcess->arguments();
+                const QString rmlFile = args.last(); // the file name of the temp rmlfile
                 QFile::remove(rmlFile); // remove the rmlFile
             }
         } else {
@@ -133,8 +134,10 @@ void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus
             Q_EMIT converterError(ConvError::UnknownError);
         }
     }
-    mProcess->deleteLater();
-    mProcess = nullptr;
+    if (mProcess) {
+        mProcess->deleteLater();
+        mProcess = nullptr;
+    }
 
     mFile.setFileName( QString() );
 }
@@ -221,7 +224,8 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         QFileInfo fi(mFile.fileName());
         if( fi.exists() ) {
             Q_EMIT docAvailable( mFile.fileName() );
-            const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
+	    const auto args = mProcess->arguments();
+            const QString htmlFile = args.first(); // the file name of the temp rmlfile
             QFile::remove(htmlFile); // remove the rmlFile
         } else {
             Q_EMIT  converterError(ConvError::TargetFileMissing);
@@ -231,8 +235,10 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         qDebug() << "Weasyprint error output:" << mErrors;
         Q_EMIT converterError(ConvError::WeasyPrintRunFail);
     }
-    mProcess->deleteLater();
-    mProcess = nullptr;
+    if (mProcess) {
+        mProcess->deleteLater();
+        mProcess = nullptr;
+    }
 
     mFile.setFileName( QString() );
 }

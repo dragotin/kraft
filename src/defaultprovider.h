@@ -17,8 +17,6 @@
 #ifndef DEFAULTPROVIDER_H
 #define DEFAULTPROVIDER_H
 
-#include <QtCore>
-
 #include "kraftcat_export.h"
 
 #include "kraftdoc.h"

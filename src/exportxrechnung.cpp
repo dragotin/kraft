@@ -18,6 +18,8 @@
 // include files for Qt
 #include <QDebug>
 #include <QDir>
+#include <QTemporaryFile>
+#include <QTimer>
 
 #include "exportxrechnung.h"
 #include "documentman.h"
@@ -113,6 +115,7 @@ void ExporterXRechnung::slotSkipLookup()
 
 void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
+    Q_UNUSED(uid)
     KContacts::Addressee myContact; // leave empty for now
     // now the three pillars archDoc, myContact and mCustomerContact are defined.
 

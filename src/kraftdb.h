@@ -18,7 +18,6 @@
 #ifndef KRAFTDB_H
 #define KRAFTDB_H
 
-#include <QtCore>
 #include <QSqlError>
 #include <QSqlDatabase>
 #include <QMap>

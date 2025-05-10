@@ -8,6 +8,7 @@
 #include <klocalizedstring.h>
 #include <utime.h>
 
+#include <QSaveFile>
 #include <QSqlQuery>
 #include <QStandardPaths>
 #include <QVariant>

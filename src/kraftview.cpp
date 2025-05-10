@@ -225,7 +225,7 @@ void KraftView::slotSwitchToPage(KraftDoc::Part p)
     QPalette palette;
     palette.setColor(mDetailHeader->backgroundRole(), edit->color());
     // FIXME: color
-    palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
+    palette.setColor(mDetailHeader->foregroundRole(), QColor(0x00008b));
     mDetailHeader->setPalette( palette );
 
     mAssistant->slotSelectDocPart(p);
@@ -253,7 +253,7 @@ void KraftView::setupDocHeaderView()
         DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByUuid(predecessorUuid);
         if( predecDoc ) {
             QString id{predecDoc->docIdentifier()};
-            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid).arg(id)};
+            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid, id)};
             m_headerEdit->_labFollowup->setText(i18nc("this is a document successor for followup documents", "Successor of %1", link));
             predecIsVisible = true;
             connect( m_headerEdit->_labFollowup, &QLabel::linkActivated, this, &KraftView::slotLinkClicked);

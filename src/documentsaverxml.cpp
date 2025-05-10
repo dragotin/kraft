@@ -55,7 +55,8 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
 */
     int cnt {0};
 
-    for (DocPosition *item : doc->positions()) {
+    const auto positions = doc->positions();
+    for (DocPosition *item : positions) {
         if (item->toDelete())
             continue;
         QDomElement itemType = xmldoc.createElement("item");
@@ -84,12 +85,12 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
         itemType.appendChild(textElement(xmldoc, "itemprice", QString::number(item->overallPrice().toDouble(), 'f', 2)));
 
         const QMap<QString, KraftAttrib> attribs = item->attributes();
-        for(const auto &k : attribs.keys()) {
+        for(const auto &k : attribs) {
             QDomElement attribElem = xmldoc.createElement("attrib");
             itemType.appendChild(attribElem);
-            attribElem.appendChild(textElement(xmldoc, "name", k));
-            attribElem.appendChild(textElement(xmldoc, "value", attribs[k].value().toString()));
-            attribElem.appendChild(textElement(xmldoc, "type", attribs[k].typeString()));
+            attribElem.appendChild(textElement(xmldoc, "name", k.name()));
+            attribElem.appendChild(textElement(xmldoc, "value", k.value().toString()));
+            attribElem.appendChild(textElement(xmldoc, "type", k.typeString()));
         }
 
         const QStringList& tags = item->allTags();
@@ -162,10 +163,12 @@ QDomDocument xmlDocument(KraftDoc *doc)
 
     // -------- doc attributes and tags future extensions
     const QMap<QString,KraftAttrib> attrs = doc->attributes();
-    for (const auto &attr : attrs.values()) {
+    for (const auto &attr : attrs) {
         meta.appendChild(attr.toXml(xmldoc));
     }
-    for (const QString& tag : doc->allTags()) {
+
+    const auto allTags = doc->allTags();
+    for (const QString& tag : allTags) {
         meta.appendChild(textElement(xmldoc, "tag", tag));
     }
 
@@ -696,7 +699,6 @@ bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, boo
     QDomDocument _domDoc;
 
     const QByteArray arr = file.readAll();
-    QString errMsg;
     QDomDocument::ParseResult pe = _domDoc.setContent(arr);
     if (!pe) {
         qDebug() << "Unable to set file content as xml:" << pe.errorMessage << "in line"<<pe.errorLine;
@@ -745,7 +747,7 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
         return l < r;
     });
 
-    for( const QDate& d : dates) {
+    for( const QDate& d : std::as_const(dates)) {
         const QList<QString> files = dateMap.values(d);
         QString yearStr = QString::number(d.year());
 
@@ -760,119 +762,6 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
 
     return cnt;
 }
-#if 0
-    ----
-
-       QSqlQuery q;
-        q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
-                  "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
-        q.bindValue(":docID", id);
-        q.exec();
-        // qDebug () << "Loading document id " << id << endl;
-
-        if( q.next())
-        {
-            // qDebug () << "loading document with id " << id << endl;
-            dbID dbid;
-            dbid = id;
-            doc->setDocID(dbid);
-
-            doc->setIdent(      q.value( 0 ).toString() );
-            doc->setDocType(    q.value( 1 ).toString() );
-            doc->setAddressUid( q.value( 2 ).toString() );
-            doc->setAddress(    q.value( 3 ).toString() );
-            QString salut = q.value(4).toString();
-            doc->setSalut(      salut );
-            doc->setGoodbye(    q.value( 5 ).toString() );
-            doc->setDate (      q.value( 6 ).toDate() );
-            QDateTime dt = q.value(7).toDateTime();
-
-            // Sqlite stores the timestamp as UTC in the database. Mysql does not.
-            if (KraftDB::self()->isSqlite()) {
-                dt.setTimeSpec(Qt::UTC);
-                doc->setLastModified(dt.toLocalTime());
-            } else {
-                doc->setLastModified(dt);
-            }
-
-            // Removed, as with Kraft 0.80 there is no locale management on doc level any more
-            // doc->setCountryLanguage( q.value( 8 ).toString(),
-            //                         q.value( 9 ).toString());
-
-            doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
-            doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
-            doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
-            doc->setProjectLabel( q.value(13).toString() );
-            doc->setPredecessor(  q.value(14).toString() );
-        }
-    }
-    // load the dbID of the predecessor document from the database.
-    const QString pIdent = doc->predecessor();
-    if( ! pIdent.isEmpty() ) {
-        QSqlQuery q1;
-        q1.prepare("SELECT docID FROM document WHERE ident=:docID");
-        q1.bindValue(":docID", pIdent);
-        q1.exec();
-        if( q1.next() ) {
-            const QString pDbId = q1.value(0).toString();
-            doc->setPredecessorDbId(pDbId);
-        }
-    }
-
-    // finally load the item data.
-    loadPositions( id, doc );
-}
-/* docposition:
-  +------------+--------------+------+-----+---------+----------------+
-  | Field      | Type         | Null | Key | Default | Extra          |
-  +------------+--------------+------+-----+---------+----------------+
-  | positionID | int(11)      |      | PRI | NULL    | auto_increment |
-  | docID      | int(11)      |      | MUL | 0       |                |
-  | ordNumber  | int(11)      |      |     | 0       |                |
-  | text       | mediumtext   | YES  |     | NULL    |                |
-  | amount     | decimal(6,2) | YES  |     | NULL    |                |
-  | unit       | varchar(64)  | YES  |     | NULL    |                |
-  | price      | decimal(6,2) | YES  |     | NULL    |                |
-  +------------+--------------+------+-----+---------+----------------+
-*/
-void DocumentSaverXML::loadPositions( const QString& id, KraftDoc *doc )
-{
-    QSqlQuery q;
-    q.prepare("SELECT positionID, postype, text, amount, unit, price, taxType FROM docposition WHERE docID=:docID ORDER BY ordNumber");
-    q.bindValue(":docID", id);
-    q.exec();
-
-    // qDebug () << "* loading document positions for document id " << id << endl;
-    while( q.next() ) {
-        // qDebug () << " loading position id " << q.value( 0 ).toInt() << endl;
-
-        DocPosition::PositionType type = DocPosition::Position;
-        QString typeStr = q.value( 1 ).toString();
-        // if ( typeStr == PosTypeExtraDiscount ) {
-        //  type = DocPosition::ExtraDiscount;
-        // } else if ( typeStr == PosTypePosition ) {
-          // nice, default position type.
-        //  type = DocPosition::Position;
-        // } else {
-          // qDebug () << "ERROR: Strange type string loaded from db: " << typeStr << endl;
-        // }
-
-        DocPosition *dp = doc->createPosition( type );
-        dp->setDbId( q.value(0).toInt() );
-        dp->setText( q.value(2).toString() );
-
-        // Note: empty fields are treated as Positions which is intended because
-        // the type col was added later and thus might be empty for older entries
-
-        dp->setAmount( q.value(3).toDouble() );
-
-        dp->setUnit( UnitManager::self()->getUnit( q.value(4).toInt() ) );
-        dp->setUnitPrice( q.value(5).toDouble() );
-        dp->setTaxType( q.value(6).toInt() );
-
-        dp->loadAttributes();
-    }
-#endif
 
 DocumentSaverXML::~DocumentSaverXML( )
 {
