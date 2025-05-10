@@ -35,6 +35,7 @@ jobs:
              qt6-sql-mysql  \
              qt6-declarative-tools \
              kf6-ktexttemplate \
+             breeze6-style \
             && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
             && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
             && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-13 50 \
