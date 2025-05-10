@@ -2,7 +2,7 @@ name: Qt6 + Clazy
 
 on:
   push:
-    branches: [main]
+    branches: [portqt6_1]
   pull_request:
 
 jobs:
