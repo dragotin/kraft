@@ -20,6 +20,8 @@ scripts:
       exec "$own_path"/../conda/bin/python -m weasyprint "$@"
       EOF
       chmod +x "$BUILD_DIR"/AppDir/usr/bin/weasyprint
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
+      cp /usr/lib64/qt6/plugins/kf6/ktexttemplate/*so "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
 
 appimage:
   linuxdeploy:
@@ -30,8 +32,3 @@ appimage:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint pypdf2"
       EXTRA_QT_MODULES: "svg;"
-    files:
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaultfilters.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_defaultfilters.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaulttags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_defaulttags.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_i18ntags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_i18ntags.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_loadertags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_loadertags.so
