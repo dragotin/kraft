@@ -30,8 +30,8 @@ appimage:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint pypdf2"
       EXTRA_QT_MODULES: "svg;"
-    extra_files:
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaultfilters.so:usr/plugins/ktexttemplate_defaultfilters.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaulttags.so:usr/plugins/ktexttemplate_defaulttags.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_i18ntags.so:usr/plugins/ktexttemplate_i18ntags.so
-      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_loadertags.so:usr/plugins/ktexttemplate_loadertags.so
+    files:
+      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaultfilters.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_defaultfilters.so
+      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_defaulttags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_defaulttags.so
+      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_i18ntags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_i18ntags.so
+      - /usr/lib64/qt6/plugins/kf6/ktexttemplate/ktexttemplate_loadertags.so:usr/plugins/kf6/ktexttemplate/ktexttemplate_loadertags.so
