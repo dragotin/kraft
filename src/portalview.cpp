@@ -87,10 +87,10 @@ void PortalView::createIcons(const QSize& iconSize)
     // stackoverflow reports that svg icons cannot be scaled up.
     auto icon = [iconSize](const QIcon& i) {
         const QPixmap pix = i.pixmap(iconSize);
-        QIcon icon(pix);
-        QList<QSize> sizes = icon.availableSizes();
+        QIcon newicon(pix);
+        QList<QSize> sizes = newicon.availableSizes();
         qDebug() << "III" << sizes;
-        return icon;
+        return newicon;
     };
 
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
