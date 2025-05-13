@@ -39,6 +39,7 @@ public:
                            TargetFileMissing,
                            UnknownError,
                            WeasyPrintNotFound,
+                           WeasyPrintRunFail,
                            PDFMergerError
                          };
 

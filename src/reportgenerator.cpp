@@ -363,6 +363,9 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     case PDFConverter::ConvError::WeasyPrintNotFound:
         errMsg = i18n("The WeasyPrint tool is not installed.");
         break;
+    case PDFConverter::ConvError::WeasyPrintRunFail:
+        errMsg = i18n("WeasyPrint run failed.");
+        break;
     case PDFConverter::ConvError::PDFMergerError:
         errMsg = i18n("The PDF merger utility failed.");
         break;

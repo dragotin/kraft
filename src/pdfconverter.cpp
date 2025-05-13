@@ -208,6 +208,11 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         mFile.close();
     }
     Q_UNUSED(stat)
+    if (mProcess == nullptr) {
+        qDebug() << "Unexpected: mProcess uninitialized!";
+        Q_EMIT converterError(ConvError::UnknownError);
+        return;
+    }
     QApplication::restoreOverrideCursor();
 
     // qDebug () << "PDF Creation Process finished with status " << exitStatus;
@@ -216,16 +221,15 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         QFileInfo fi(mFile.fileName());
         if( fi.exists() ) {
             Q_EMIT docAvailable( mFile.fileName() );
-            if(mProcess) {
-                const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
-                QFile::remove(htmlFile); // remove the rmlFile
-            }
+            const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
+            QFile::remove(htmlFile); // remove the rmlFile
         } else {
             Q_EMIT  converterError(ConvError::TargetFileMissing);
         }
     } else {
         qDebug() << "Weasyprint failed: " << mProcess->arguments();
-        Q_EMIT converterError(ConvError::UnknownError);
+        qDebug() << "Weasyprint error output:" << mErrors;
+        Q_EMIT converterError(ConvError::WeasyPrintRunFail);
     }
     mProcess->deleteLater();
     mProcess = nullptr;
