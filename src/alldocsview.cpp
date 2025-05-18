@@ -16,8 +16,6 @@
  ***************************************************************************/
 #include <array>
 
-#include <QtGui>
-#include <QtCore>
 #include <QItemSelectionModel>
 #include <QLocale>
 #include <QDebug>
@@ -31,6 +29,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStackedWidget>
+#include <QContextMenuEvent>
 
 #include <KLocalizedString>
 
@@ -363,8 +362,7 @@ QString AllDocsView::currentDocumentIdent( ) const
 void AllDocsView::setErrorMsg(const QString& header, const QString& details)
 {
     // FIXME: Show in a more prominent and user friendly way.
-    mErrHeader = header;
-    mErrDetails = details;
+    mAllViewDetails->setErrorStrings(header, details);
 }
 
 void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
@@ -390,8 +388,8 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         /* get the corresponding document id */
         if( isDoc ) {
             const DocDigest& digest = model->digest( mCurrentlySelected );
-            Q_EMIT docSelected(digest.uuid());
             mAllViewDetails->slotShowDocDetails(digest);
+            Q_EMIT docSelected(digest.uuid());
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                                     DocumentModel::Treestruct_Type,

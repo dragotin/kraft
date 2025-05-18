@@ -91,8 +91,6 @@ private:
 
     QPushButton            *mNewDocButton;
     QLineEdit              *_searchLine;
-
-    QString  mErrHeader, mErrDetails;
 };
 
 #endif

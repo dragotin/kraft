@@ -349,7 +349,6 @@ void DocDigestDetailView::slotShowYearDetails( int year )
     tmpl.addToObjMapping("label", &labels);
     bool ok;
     const QString details = tmpl.render(ok);
-    mHtmlCanvas->displayContent(details);
 
     mHtmlCanvas->displayContent( details );
 
@@ -392,84 +391,19 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
     }
 
     _leftDetails->setText( content );
-
-
-#if 0
-    // tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
-    tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
-
-    KContacts::Addressee addressee = digest.addressee();
-    QString adr = digest.clientAddress();
-    adr.replace('\n', "<br/>" );
-
-    tmpl.setValue( DOCDIGEST_TAG("CUSTOMER_ADDRESS_FIELD"),adr );
-
-    QString addressBookInfo;
-    if( addressee.isEmpty() ) {
-        if( digest.clientId().isEmpty() ) {
-            addressBookInfo = i18n("The address is not listed in an address book.");
-        } else {
-            addressBookInfo = i18n("The client has the address book id %1 but cannot found in our address books.", digest.clientId());
-        }
-    } else {
-        addressBookInfo  = i18n("The client can be found in our address books.");
-        tmpl.createDictionary( "CLIENT_ADDRESS_SECTION");
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENTID" ), digest.clientId() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ADDRESS" ), digest.clientAddress() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_NAME"), addressee.realName() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ORGANISATION"), addressee.organization() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_URL"), addressee.url().toString() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_EMAIL"), addressee.preferredEmail() );
-
-        KContacts::Address clientAddress;
-        clientAddress = addressee.address( KContacts::Address::Pref );
-        QString addressType = i18n("preferred address");
-
-        if( clientAddress.isEmpty() ) {
-            clientAddress = addressee.address( KContacts::Address::Home );
-            addressType = i18n("home address");
-        }
-        if( clientAddress.isEmpty() ) {
-            clientAddress = addressee.address( KContacts::Address::Work );
-            addressType = i18n("work address");
-        }
-        if( clientAddress.isEmpty() ) {
-            clientAddress = addressee.address( KContacts::Address::Postal );
-            addressType = i18n("postal address");
-        }
-        if( clientAddress.isEmpty() ) {
-            clientAddress = addressee.address( KContacts::Address::Intl );
-            addressType = i18n("international address");
-        }
-        if( clientAddress.isEmpty() ) {
-            clientAddress = addressee.address( KContacts::Address::Dom );
-            addressType = i18n("domestic address");
-        }
-
-        if( clientAddress.isEmpty() ) {
-            addressType = i18n("unknown");
-            // qDebug () << "WRN: Address is still empty!";
-        }
-
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_POSTBOX" ), clientAddress.postOfficeBox() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_EXTENDED" ), clientAddress.extended() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_STREET" ), clientAddress.street() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_LOCALITY" ), clientAddress.locality() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_REGION" ), clientAddress.region() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_POSTCODE" ), clientAddress.postalCode() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_COUNTRY" ),  clientAddress.country() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_REGION" ), clientAddress.region() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_LABEL" ), clientAddress.label() );
-        tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ADDRESS_TYPE" ), addressType );
-
-    }
-    tmpl.setValue( DOCDIGEST_TAG("CUSTOMER_ADDRESSBOOK_INFO"), addressBookInfo );
-#endif
 }
 
-void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
+void DocDigestDetailView::setErrorStrings(const QString& header, const QString& details)
+{
+    qDebug() << "Set error strings" << header;
+    slotShowDocDetails(_currentDigest, header, details);
+}
+
+void DocDigestDetailView::slotShowDocDetails(const DocDigest& digest, const QString& errHeader, const QString& errDetails)
 {
     // qDebug () << "Showing details about this doc: " << digest.id();
+    _currentDigest = digest;
+    qDebug() << "Show doc details" << errHeader;
 
     QObject obj;
     QObject labels;
@@ -492,6 +426,10 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
     obj.setProperty("ident", digest.ident());
     const QString lmd = Format::toDateTimeString(digest.lastModified(), KraftSettings::self()-> dateFormat());
     obj.setProperty("modifiedDateDoc", lmd);
+
+    obj.setProperty("creationError", ! errHeader.isEmpty());
+    obj.setProperty("errorHeader",     errHeader);
+    obj.setProperty("errorDetails",    errDetails);
 
     // PDF file info
     XmlDocIndex indx;

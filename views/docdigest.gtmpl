@@ -13,4 +13,10 @@
   {{ label.pdfnotavailable }}
   {% endif %}
   </p>
+  {% if doc.creationError %}
+  <div class="errorBox">
+    <span class="errHeader">{{ doc.errorHeader }}</span><br/>
+    {{ doc.errorDetails }}
+  </div>
+  {% endif %}
 </div>

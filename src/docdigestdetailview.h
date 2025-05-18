@@ -44,11 +44,12 @@ public:
 
 public Q_SLOTS:
     void slotShowStart();
-    void slotShowDocDetails(const DocDigest &);
+    void slotShowDocDetails(const DocDigest &, const QString &errHeader = QString(), const QString &errDetails = QString());
     void slotClearView();
 
     void slotShowMonthDetails( int year, int month );
     void slotShowYearDetails( int year);
+    void setErrorStrings(const QString& = QString(), const QString& = QString());
 
 private:
     void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
@@ -65,6 +66,7 @@ private:
     QString   _docTemplFileName;
     QString   _monthTemplFileName;
     QString   _yearTemplFileName;
+    DocDigest _currentDigest;
     Ui::docActionsWidget *_docActionsWidget;
 };
 

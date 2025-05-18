@@ -3,3 +3,16 @@ h2 {
     color: #64ad24;
 }
 
+.errorBox {
+    background-color: #ffbfbf;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    min-width: 10em;
+    padding: 6px;
+}
+
+.errHeader {
+    font-weight: bold;
+}
