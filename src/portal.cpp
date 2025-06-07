@@ -160,23 +160,23 @@ void Portal::initActions()
     connect(_actEditPaste, &QAction::triggered, this, &Portal::slotEditPaste);
 
     newIcon = DefaultProvider::self()->icon( "settings");
-    _actPreferences = new QAction(newIcon, i18n("&Settings"), this);
+    _actPreferences = new QAction(newIcon, i18n("Settings"), this);
     _actPreferences->setShortcuts(QKeySequence::Preferences);
     connect(_actPreferences, &QAction::triggered, this, &Portal::preferences);
 
     newIcon = DefaultProvider::self()->icon( "file-plus");
-    _actNewDocument = new QAction(newIcon, i18n("&Create Document"), this);
+    _actNewDocument = new QAction(newIcon, i18n("Create Document"), this);
     _actNewDocument->setShortcuts(QKeySequence::New);
     connect(_actNewDocument, &QAction::triggered, this, &Portal::slotNewDocument);
 
     newIcon = DefaultProvider::self()->icon( "template");
-    _actCopyDocument = new QAction(newIcon, i18n("&Copy Document"), this);
+    _actCopyDocument = new QAction(newIcon, i18n("Copy Document"), this);
     // _actCopyDocument->setShortcuts();
     connect(_actCopyDocument, &QAction::triggered, this, &Portal::slotCopyCurrentDocument);
 
     newIcon = DefaultProvider::self()->icon( "file-export");
     _actFollowDocument = new QAction(newIcon, i18n("Create &Followup Document"), this);
-    _actFollowDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ));
+    _actFollowDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_F ));
     connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
 
     newIcon = DefaultProvider::self()->icon( "printer");
@@ -186,17 +186,17 @@ void Portal::initActions()
 
     newIcon = DefaultProvider::self()->icon( "eye");
     _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
-    _actViewDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    _actViewDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_S ));
     connect(_actViewDocument, &QAction::triggered, this, &Portal::slotViewCurrentDocument);
 
     newIcon = DefaultProvider::self()->icon( "check");
     _actChangeDocStatus = new QAction(newIcon, i18n("Document Status..."), this);
-    _actChangeDocStatus->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_S ));
+    _actChangeDocStatus->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_T ));
     connect(_actChangeDocStatus, &QAction::triggered, this, &Portal::slotChangeDocStatus);
 
     newIcon = DefaultProvider::self()->icon( "check");
     _actFinalizeDocument= new QAction(newIcon, i18n("Finalize Document..."), this);
-    _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ));
+    _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_D ));
     connect(_actFinalizeDocument, &QAction::triggered, this, &Portal::slotFinalizeDoc);
 
     newIcon = DefaultProvider::self()->icon( "edit");
@@ -206,48 +206,45 @@ void Portal::initActions()
 
     newIcon = DefaultProvider::self()->icon( "archive");
     _actOpenDocumentPDF = new QAction(newIcon, i18n("Open PDF Document"), this);
-    _actOpenDocumentPDF->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
+    _actOpenDocumentPDF->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_A ));
     connect(_actOpenDocumentPDF, &QAction::triggered, this, &Portal::slotOpenCurrentPDF);
 
     newIcon = DefaultProvider::self()->icon("mail-forward");
     _actMailPDF = new QAction(newIcon, i18n("Mail PDF"), this);
-    _actMailPDF->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    _actMailPDF->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_M ));
     connect(_actMailPDF, &QAction::triggered, this, &Portal::slotMailDocument);
 
     newIcon = DefaultProvider::self()->icon( "mail-forward");
     _actXRechnung = new QAction(newIcon, i18n("Export XRechnung"), this);
-    _actXRechnung->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    _actXRechnung->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_R ));
     connect(_actXRechnung, &QAction::triggered, this, &Portal::slotXRechnungCurrentDocument);
 
     newIcon = DefaultProvider::self()->icon( "settings");
     _actEditTemplates= new QAction(newIcon, i18n("Edit Tag Templates"), this);
-    _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
+    _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_E ));
     connect(_actEditTemplates, &QAction::triggered, this, &Portal::slotEditTagTemplates);
     
     newIcon = DefaultProvider::self()->icon( "settings");
     _actReconfDb = new QAction(newIcon, i18n("Redo Initial Setup…"), this);
-    _actReconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actReconfDb, &QAction::triggered, this, &Portal::slotReconfigureDatabase);
 
     newIcon = DefaultProvider::self()->icon( "settings");
-    _actXmlConvert = new QAction(newIcon, i18n("Convert documents to XML"), this);
-    _actXmlConvert->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    _actXmlConvert = new QAction(newIcon, i18n("Convert documents to XML Documents"), this);
+    // _actXmlConvert->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_M ));
     connect(_actXmlConvert, &QAction::triggered, this, &Portal::slotConvertToXML);
 
 
     newIcon = DefaultProvider::self()->icon("kraft-simple");
     _actHandbook = new QAction(newIcon, i18n("Kraft Handbook..."), this);
-    _actHandbook->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_H ));
+    _actHandbook->setShortcut(QKeySequence::HelpContents);
     connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
     newIcon = DefaultProvider::self()->icon( "help");
     _actAboutQt = new QAction(newIcon, i18n("About Qt…"), this);
-    _actAboutQt->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Q ));
     connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);
 
     newIcon = DefaultProvider::self()->icon( "kraft-simple");
     _actAboutKraft = new QAction(newIcon, i18n("About Kraft…"), this);
-    _actAboutKraft->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_K ));
     connect(_actAboutKraft, &QAction::triggered, this, &Portal::slotAboutKraft);
 
     _actFileQuit->setStatusTip(i18n("Quits the application"));
@@ -283,13 +280,7 @@ void Portal::initActions()
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
     fileMenu->addAction(_actFileQuit);
 
-#if 0
-    QMenu *editMenu = menuBar()->addMenu(i18n("&Edit"));
-    editMenu->addAction(_actEditCopy);
-    editMenu->addAction(_actEditCut);
-    editMenu->addAction(_actEditPaste);
-#endif
-    QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
+    QMenu *docMenu = menuBar()->addMenu(i18n("D&ocument"));
     docMenu->addAction(_actViewDocument);
     if (!_readOnlyMode) docMenu->addAction(_actEditDocument);
     if (!_readOnlyMode) {
