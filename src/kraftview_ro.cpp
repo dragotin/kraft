@@ -101,7 +101,7 @@ void KraftViewRO::setup(DocGuardedPtr doc)
     MyIdentity identity;
     const QString uuid = doc->uuid();
     const QString html = tmpl.expand(uuid, identity.contact(), customerContact);
-    QStringList cleanupFiles = tmpl.tempFilesCreated();
+    const QStringList cleanupFiles = tmpl.tempFilesCreated();
 
     setWindowTitle(doc->docIdentifier());
     mHtmlView->setTitle( doc->docIdentifier() );

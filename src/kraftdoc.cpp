@@ -375,7 +375,8 @@ DocDigest KraftDoc::toDigest()
     digest.setProjectLabel(projectLabel());
     digest.setState(_state);
 
-    for( const auto &attrib : attributes()) {
+    const auto att = attributes();
+    for( const auto &attrib : att) {
         digest.setAttribute(attrib);
     }
     digest.setTags(allTags());

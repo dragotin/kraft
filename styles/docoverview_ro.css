@@ -1,32 +1,25 @@
-body { margin:20px; 
-       background-image:url(pics/docoverviewbg.png);
-       color: #4e4e4e;
-       font-size:x-small;
-       font-family: 'Source Sans Pro', sans-serif;
+
+/* general document parameters */
+
+body {
+  margin:20px;
+  background-image:url(pics/docoverviewbg.png);
+  color: #4e4e4e;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: large;
 }
 
-td { 
+/* make all text content in table cells align top */
+
+td {
   vertical-align:top;
 }
 
-div {
-  border-style:none;
-  border-width:0px;
-  border-color:#00008B;
-  margin: 1px 0px 1px 0px;
-  padding: 1px;
-}
 
-.negative {
-  color: #800040;
-}
+/* for aligning content of the sum table cells */
 
-.positive {
-
-}
-
-div.header {
-  margin-top: 120;
-  margin-bottom: 20px;
-  vertical-align:bottom;
+.col-TotalSum  {
+  text-align: right;
+  vertical-align: bottom;
+  font-weight: bold;
 }
