@@ -63,16 +63,6 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     }
 }
 
-const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
-{
-    QFileInfo re;
-    if (!ident.isEmpty() && _identMap.contains(ident)) {
-        const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
-        re.setFile(dir, _identMap[ident] + ".xml");
-    }
-    return re;
-}
-
 const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& extension)
 {
     QString re;
@@ -85,8 +75,9 @@ const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& exte
                 re = re + '.' + extension;
         }
     }
+    const auto pathSelect{extension.endsWith("pdf", Qt::CaseInsensitive) ? DefaultProvider::KraftV2Dir::PdfDocs : DefaultProvider::KraftV2Dir::XmlDocs};
     QFileInfo fi;
-    const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
+    const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
 
     if (!re.isEmpty())
         fi.setFile(QDir(dir), re);
@@ -98,10 +89,34 @@ const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
     return pathByUuid(uuid, ".xml");
 }
 
+const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
+{
+    QFileInfo re;
+
+    if (!ident.isEmpty() && _identMap.contains(ident)) {
+        const QString uuid{_identMap[ident]};
+        return pathByUuid(uuid, ".xml");
+    }
+    return re;
+}
+
 // so far, for the pdf path, only the extension is changed from xml to pdf.
 const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
     return pathByUuid(uuid, ".pdf");
+}
+
+// so far, for the pdf path, only the extension is changed from xml to pdf.
+const QFileInfo XmlDocIndex::pdfPathByIdent(const QString& ident)
+{
+    QFileInfo re;
+
+    if (!ident.isEmpty() && _identMap.contains(ident)) {
+        const QString uuid{_identMap[ident]};
+        return pathByUuid(uuid, ".pdf");
+    }
+    return re;
+
 }
 
 bool XmlDocIndex::pdfOutdated(const QString& uuid)

@@ -32,14 +32,13 @@ public:
     XmlDocIndex();
 
     void setBasePath(const QString& basePath);
+    static QMultiMap<QDate, QString> const &dateMap();
 
     const QFileInfo xmlPathByIdent(const QString& ident);
     const QFileInfo xmlPathByUuid(const QString& uuid);
-    static QMultiMap<QDate, QString> const &dateMap();
 
+    const QFileInfo pdfPathByIdent(const QString& ident);
     const QFileInfo pdfPathByUuid(const QString& uuid);
-
-    const QFileInfo pathByUuid(const QString& uuid, const QString& extension = QString());
 
     // Adds an entry to the index, used with newly created documents
     void addEntry(KraftDoc *doc);
@@ -50,6 +49,8 @@ public:
     DocDigest findDigest(const QString& year, const QString& uuid);
 
 private:
+    const QFileInfo pathByUuid(const QString& uuid, const QString& extension = QString());
+
     bool buildIndexFromFile();
     void buildIndexFile();
 
