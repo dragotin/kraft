@@ -134,6 +134,14 @@ void Portal::show()
     qApp->processEvents();
     qDebug() << "Processed...";
     slotStartupChecks();
+
+    if ( mCmdLineArgs ) {
+        slotStatusMsg( i18n( "Check commandline actions" ) );
+        const QString uuid = mCmdLineArgs->value("d");
+        if ( ! uuid.isEmpty() ) {
+            slotPrintPDF(uuid);
+        }
+    }
 }
 
 void Portal::initActions()
@@ -341,15 +349,14 @@ void Portal::initActions()
 
 void Portal::initView()
 {
-    /*
-    Since we do the database version check in the slotStartupChecks, we cannot
-    do database interaction here in initView.
-  */
-    ////////////////////////////////////////////////////////////////////
+    // Since we do the database version check in the slotStartupChecks, we cannot
+    // do database interaction here in initView.
+
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView.reset(new PortalView( this, "PortalMainView" ));
-    QVector<QMenu*> menus = m_portalView->allDocsView()->contextMenus();
+
+    const QVector<QMenu*> menus = m_portalView->allDocsView()->contextMenus();
     for(QMenu *menu: menus) {
         menu->setTitle( i18n("Document Actions"));
         menu->addSection(i18n("Document Actions"));
@@ -462,16 +469,6 @@ void Portal::slotStartupChecks()
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();
-
-    if ( mCmdLineArgs ) {
-        slotStatusMsg( i18n( "Check commandline actions" ) );
-        const QString docId = mCmdLineArgs->value("d");
-        if ( ! docId.isEmpty() ) {
-            QString uuid;
-            // FIXME: find uuid by ident
-            slotPrintPDF(uuid); // FIXME: This must be a uuid
-        }
-    }
 
     // Fetch my address
     connect(&_myIdentity, &MyIdentity::myIdentityLoaded, this, &Portal::slotReceivedMyAddress);
@@ -664,8 +661,8 @@ void Portal::slotViewDocument( const QString& uuid )
 
 void Portal::slotXRechnungCurrentDocument()
 {
-    // qDebug () << "printing document " << locId;
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    qDebug () << "XRechnung document " << uuid;
 
     ExporterXRechnung *exporter = new ExporterXRechnung;
     const QString tmplFile = exporter->templateFile();
@@ -931,13 +928,24 @@ void Portal::slotPrintCurrentPDF()
 void Portal::slotPrintPDF(const QString& uuid)
 {
     XmlDocIndex indx;
-    const QString fileName = indx.pdfPathByUuid(uuid).filePath();
+    QString fileName;
+
+    if (!uuid.isEmpty()) {
+        fileName = indx.pdfPathByUuid(uuid).filePath();
+
+        if (fileName.isEmpty()) {
+            // try to interpret it as a ident rather than a uuid
+            fileName = indx.pdfPathByIdent(uuid).filePath();
+        }
+    }
 
     // Use lp on Linux to print the file
     // FIXME: make that more sophisticated
-    QProcess::execute("lp", QStringList{fileName});
-
-    slotStatusMsg(i18n("Printing document...") );
+    if( !fileName.isEmpty() && QProcess::execute("lp", QStringList{fileName}) == 0 ) {
+        slotStatusMsg(i18n("Printing document successful.") );
+    } else {
+        slotStatusMsg(i18n("Printing document %1 failed.").arg(uuid));
+    }
 }
 
 void Portal::slotOpenCurrentPDF()
@@ -1055,9 +1063,7 @@ QString Portal::slotConvertToXML()
     const QString dBase = DefaultProvider::self()->createV2BaseDir();
     const QString info{ tr("Conversion started to %1").arg(dBase)};
 
-    auto yearMap = converter.yearMap();
-
-    // No matter what this must run, also for new instances, because at lesat the
+    // No matter what this must run, also for new instances, because at least the
     // default number cycle must be created
     {
         auto dia = new QDialog(this);
@@ -1081,7 +1087,6 @@ QString Portal::slotConvertToXML()
     // switch to the new base dir
 
     if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
-
         XmlDocIndex indx;
         Q_UNUSED(indx)
     }
