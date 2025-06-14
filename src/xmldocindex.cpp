@@ -28,14 +28,9 @@
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
 QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
 QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMultiMap<QDate, QString>();
-QFuture<void> XmlDocIndex::_future;
 
 XmlDocIndex::XmlDocIndex()
 {
-    if (_future.isRunning()) {
-        qDebug() << "===== waiting to finish indexing";
-        _future.waitForFinished();
-    }
 }
 
 void XmlDocIndex::setBasePath(const QString& basePath)
@@ -48,13 +43,6 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     if (!fi.exists()) {
         QElapsedTimer timer;
         timer.start();
-#if 0
-        _future = QtConcurrent::run([=]() {
-            // Code in this block will run in another thread
-            buildIndexFile();
-        });
-        _future.waitForFinished();
-#endif
         buildIndexFile();
         fi.refresh();
     }

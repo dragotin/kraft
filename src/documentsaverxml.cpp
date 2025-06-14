@@ -513,62 +513,13 @@ DocumentSaverXML::DocumentSaverXML()
 
 }
 
-
 bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlFile)
 {
-    bool re{false};
-    // FIXME use alternative implementation
-
-#if 0
-#include <xercesc/parsers/DOMParser.hpp>
-#include <xercesc/util/XMLString.hpp>
-
-int main() {
-    // Create a DOM parser instance
-    XercesDOMParser parser;
-
-    // Set the schema location and namespace
-    parser.setSchemaLocation("http://example.com/schema.xsd");
-    parser.setNamespace("http://example.com/namespace");
-
-    // Parse and validate an XML document
-    XMLCh* xmlDoc = parser.parse("example.xml");
-
-    // Check if the validation was successful
-    if (parser.getValidationFailed()) {
-        // Handle validation errors
-    } else {
-        // XML document is valid according to the schema
-    }
-
-    return 0;
-}
-
-===========================================================
-
-    QFile file( xmlFile );
-
-    QXmlSchema schema;
-    if (!schema.load(schemaFile)) {
-        qDebug() << "Failed to load schema" << schemaFile.toLocalFile();
-    } else {
-        if (schema.isValid() && file.open(QIODevice::ReadOnly)) {
-            QXmlSchemaValidator validator(schema);
-            if (validator.validate(&file, QUrl::fromLocalFile(xmlFile))) {
-                re = true;
-                qDebug() << "instance document is valid";
-            } else {
-                qDebug() << "instance document is invalid";
-            }
-        }
-    }
-#else
-    Q_UNUSED(xmlFile)
     Q_UNUSED(schemaFile)
-    re = true;
-#endif
+    Q_UNUSED(xmlFile)
 
-    return re;
+    // FIXME implement a verification
+    return true;
 }
 
 QString DocumentSaverXML::lastSavedFileName() const
@@ -590,9 +541,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     if (!_archiveMode) {
         doc->setLastModified(QDateTime::currentDateTime());
     }
-
-    QElapsedTimer ti;
-    ti.start();
 
     bool newState{false};
     if (doc->state().isNew()) {
@@ -635,7 +583,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
     result = verifyXmlFile(schemaFile, xmlFile);
-    qDebug() << "Saving done in" << ti.elapsed() << "msec";
 
     XmlDocIndex indx;
     if (newState) {
