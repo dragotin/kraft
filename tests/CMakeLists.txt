@@ -92,6 +92,13 @@ target_link_libraries(t_xmlsaver ${test_libs})
 
 # ============================================================
 
+add_executable(t_xmldocindex t_xmldocindex.cpp)
+add_test(t_xmldocindex t_xmldocindex)
+
+target_link_libraries(t_xmldocindex ${test_libs})
+
+# ============================================================
+
 add_executable(t_kraftattrib t_kraftattrib.cpp)
 add_test(t_kraftattrib t_kraftattrib)
 

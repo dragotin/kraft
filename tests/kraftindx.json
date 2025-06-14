@@ -1,0 +1,30 @@
+{
+    "yearsData": {
+        "2024": [
+            {
+                "clientAddress": "Gundel Bradopki\nWilhelmstr. 23\n23982 Wilmensburg",
+                "date": "2024-12-26",
+                "docType": "Angebot",
+                "ident": "2-2024",
+                "lastModified": "2025-05-20T19:42:42",
+                "prjtLabel": "",
+                "state": "Draft",
+                "uuid": "40f4e553-daf5-4e46-b172-4389cde712df",
+                "whiteboard": "Das ist ein Test-Angebot."
+            }
+        ],
+        "2025": [
+            {
+                "clientAddress": "Goofy Stambulchicz\n\nRönneburger Kirchweg 4\n13211 Submistatis\t",
+                "date": "2025-05-18",
+                "docType": "Rechnung",
+                "ident": "",
+                "lastModified": "2025-06-11T22:40:32",
+                "prjtLabel": "",
+                "state": "Draft",
+                "uuid": "18d3680d-4ca8-4020-b815-0e10c6517ddd",
+                "whiteboard": ""
+            }
+        ]
+    }
+}
