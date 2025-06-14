@@ -33,7 +33,7 @@ private Q_SLOTS:
                 </kraftmeta>";
 
         QBuffer buf( &xml);
-
+        QVERIFY(buf.open(QIODeviceBase::ReadOnly));
         MetaXMLParser parser;
         QVERIFY(parser.parse(&buf));
 

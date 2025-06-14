@@ -51,30 +51,34 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     }
 }
 
-const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& extension)
+const QFileInfo XmlDocIndex::fullPathWithExtension(const QString& subPath, const QString& extension)
 {
-    QString re;
-    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
-        re = _uuidMap[uuid];
-        if (!extension.isEmpty()) {
-            if (extension.startsWith('.'))
-                re += extension;
-            else
-                re = re + '.' + extension;
+    QFileInfo fi;
+    if (subPath.isEmpty())
+        return fi;
+
+    QString re{subPath};
+    if (!extension.isEmpty()) {
+        if (!extension.startsWith('.')) {
+            re.append('.');
         }
+        re.append(extension);
     }
     const auto pathSelect{extension.endsWith("pdf", Qt::CaseInsensitive) ? DefaultProvider::KraftV2Dir::PdfDocs : DefaultProvider::KraftV2Dir::XmlDocs};
-    QFileInfo fi;
     const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
 
-    if (!re.isEmpty())
-        fi.setFile(QDir(dir), re);
+    fi.setFile(QDir(dir), re);
     return fi;
+
 }
 
 const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
 {
-    return pathByUuid(uuid, ".xml");
+    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
+        const QString sub{_uuidMap[uuid]};
+        return fullPathWithExtension(sub, ".xml");
+    }
+    return QFileInfo();
 }
 
 const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
@@ -82,8 +86,8 @@ const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
     QFileInfo re;
 
     if (!ident.isEmpty() && _identMap.contains(ident)) {
-        const QString uuid{_identMap[ident]};
-        return pathByUuid(uuid, ".xml");
+        const QString sub{_identMap[ident]};
+        return fullPathWithExtension(sub, ".xml");
     }
     return re;
 }
@@ -91,7 +95,11 @@ const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
 // so far, for the pdf path, only the extension is changed from xml to pdf.
 const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
-    return pathByUuid(uuid, ".pdf");
+    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
+        const QString sub{_uuidMap[uuid]};
+        return fullPathWithExtension(sub, ".pdf");
+    }
+    return QFileInfo();
 }
 
 // so far, for the pdf path, only the extension is changed from xml to pdf.
@@ -100,11 +108,10 @@ const QFileInfo XmlDocIndex::pdfPathByIdent(const QString& ident)
     QFileInfo re;
 
     if (!ident.isEmpty() && _identMap.contains(ident)) {
-        const QString uuid{_identMap[ident]};
-        return pathByUuid(uuid, ".pdf");
+        const QString sub{_identMap[ident]};
+        return fullPathWithExtension(sub, ".pdf");
     }
     return re;
-
 }
 
 bool XmlDocIndex::pdfOutdated(const QString& uuid)
@@ -224,7 +231,7 @@ void XmlDocIndex::buildIndexFile()
 
     const QDir::Filters filter{QDir::Dirs|QDir::NoDotAndDotDot};
     QDir d(dir);
-    QFileInfoList years = d.entryInfoList(filter, QDir::Name);
+    const QFileInfoList years = d.entryInfoList(filter, QDir::Name);
 
     QJsonObject jsonDoc; // digest of all docs.
     QJsonObject yearsMap;
@@ -233,12 +240,12 @@ void XmlDocIndex::buildIndexFile()
         QJsonArray docArr;
 
         QDir dMonth{yearFi.absoluteFilePath()};
-        QFileInfoList monthEntries = dMonth.entryInfoList(filter, QDir::Name);
+        const QFileInfoList monthEntries = dMonth.entryInfoList(filter, QDir::Name);
 
         for (const QFileInfo& mFi : monthEntries) {
             QDir dDoc{mFi.absoluteFilePath()};
 
-            QFileInfoList docEntries = dDoc.entryInfoList(QDir::Files, QDir::NoSort);
+            const QFileInfoList docEntries = dDoc.entryInfoList(QDir::Files, QDir::NoSort);
 
             for (const QFileInfo& docFi : docEntries) {
                 if (DocumentMan::self()->loadMetaFromFilename(docFi.absoluteFilePath(), &doc)) {

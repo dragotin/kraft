@@ -48,7 +48,7 @@ public:
     DocDigest findDigest(const QString& year, const QString& uuid);
 
 private:
-    const QFileInfo pathByUuid(const QString& uuid, const QString& extension = QString());
+    const QFileInfo fullPathWithExtension(const QString& subPath, const QString& extension);
 
     bool buildIndexFromFile();
     void buildIndexFile();
