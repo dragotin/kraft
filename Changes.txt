@@ -1,4 +1,24 @@
 
+Changes since version 1.2.2: #######################################
+- Save documents in XML format in separate files
+- Use a C++ object KraftObj as base object for import Kraft objects.
+  It implements base functionality such as Attributes and similar
+- Add a DB to XML converter class that exports the documents from db
+  to xml files
+- Add a dialog to report about conversion of docs
+- Add a document indexer that keeps a summary of the available docs
+- Use a uuid for all identification of documents and other objects
+- Introduce document states such as draft and final. Handle doc life
+  cycle correctly
+- Generate PDF output directly after the doc was changed, not when
+  the doc should be displayed
+- Add dialog to finalize documents. That moves them out of the draft
+  state.
+
+
+
+####################################################################
+
 Changes since version 1.2.1: #######################################
 - Fix #242: Do not push item types (Demand) to followup docs
 - Fix #241: Allow negative item sums
