@@ -34,5 +34,5 @@ appimage:
       - conda
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
-      PIP_REQUIREMENTS: "weasyprint pypdf2"
+      PIP_REQUIREMENTS: "weasyprint pypdf2 gobject"
       EXTRA_QT_MODULES: "svg;"
