@@ -21,6 +21,8 @@ private Q_SLOTS:
     {
         KraftAttrib attr("TestAttrib", QVariant("tarock"), KraftAttrib::Type::String);
         KraftAttrib attr2("AttribDate", QVariant(QDate(2023, 02, 24)), KraftAttrib::Type::Date);
+        KraftAttrib attr3("AttribBoolT", QVariant(true), KraftAttrib::Type::Bool);
+        KraftAttrib attr4("AttribBoolF", QVariant(false), KraftAttrib::Type::Bool);
 
         QCOMPARE(attr.name(), "TestAttrib");
         QCOMPARE(attr.value(), "tarock");
@@ -29,6 +31,14 @@ private Q_SLOTS:
         QCOMPARE(attr2.name(), "AttribDate");
         QCOMPARE(attr2.value().toDate(), QDate(2023, 2, 24));
         QCOMPARE(attr2.type(), KraftAttrib::Type::Date);
+
+        QCOMPARE(attr3.name(), "AttribBoolT");
+        QCOMPARE(attr3.value().toBool(), true);
+        QCOMPARE(attr3.type(), KraftAttrib::Type::Bool);
+
+        QCOMPARE(attr4.name(), "AttribBoolF");
+        QCOMPARE(attr4.value().toBool(), false);
+        QCOMPARE(attr4.type(), KraftAttrib::Type::Bool);
     }
 
     void stringToTypeTest()

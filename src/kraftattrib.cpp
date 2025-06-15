@@ -59,6 +59,8 @@ QString KraftAttrib::typeString() const
 {
     if (_type == Type::Integer)
         return QStringLiteral("integer");
+    else if(_type == Type::Bool)
+        return QStringLiteral("bool");
     else if(_type == Type::String)
         return QStringLiteral("string");
     else if(_type == Type::Date)
@@ -75,6 +77,8 @@ KraftAttrib::Type KraftAttrib::stringToType(const QString& type)
 {
     if (type == QStringLiteral("integer")) {
         return KraftAttrib::Type::Integer;
+    } else if (type == QStringLiteral("bool")) {
+        return KraftAttrib::Type::Bool;
     } else if (type == QStringLiteral("date")) {
         return KraftAttrib::Type::Date;
     } else if (type == QStringLiteral("string")) {
@@ -105,6 +109,9 @@ KraftAttrib::KraftAttrib(const QDomElement& elem)
         if (ok) {
             _value = QVariant(i);
         }
+    } else if (_type == Type::Bool) {
+        bool i  = vStr.compare("true", Qt::CaseInsensitive) == 0;
+        _value = QVariant(i);
     } else if (_type == Type::Float) {
         bool ok;
         float f = vStr.toFloat(&ok);

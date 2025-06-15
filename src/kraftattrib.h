@@ -41,6 +41,7 @@ public:
 
     enum class Type {
         Unknown,
+        Bool,
         Integer,
         String,
         Date,
