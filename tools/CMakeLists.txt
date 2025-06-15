@@ -30,4 +30,3 @@ if(${AKO_PREFIX}Akonadi_FOUND)
     install(TARGETS ${findcontact_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
-install(FILES erml2pdf.py watermarkpdf.py  DESTINATION ${KDE_INSTALL_DATADIR}/kraft/tools )

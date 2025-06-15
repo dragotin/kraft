@@ -68,26 +68,6 @@ protected:
 };
 
 // ====================================================================
-class ReportLabPDFConverter: public PDFConverter
-{
-    Q_OBJECT
-public:
-    ReportLabPDFConverter();
-
-    void convert(const QString& sourceFile, const QString& outputFile) override;
-
-private Q_SLOTS:
-    void trml2pdfFinished( int exitCode, QProcess::ExitStatus stat);
-    void slotReceivedStdout();
-
-private:
-    QFile mFile;
-
-    QDataStream mTargetStream;
-    int mOutputSize;
-};
-
-// ====================================================================
 class WeasyPrintPDFConverter : public PDFConverter
 {
     Q_OBJECT
