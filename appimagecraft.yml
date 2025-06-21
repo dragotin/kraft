@@ -17,7 +17,7 @@ scripts:
       #! /bin/bash
       set -eo pipefail
       own_path="$(dirname "$(readlink -f "$0")")"
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$own_path/usr/lib
+      export LD_LIBRARY_PATH=$own_path/../lib
       exec "$own_path"/../conda/bin/python -m weasyprint "$@"
       EOF
       chmod +x "$BUILD_DIR"/AppDir/usr/bin/weasyprint
