@@ -27,6 +27,7 @@ scripts:
       cp /usr/lib64/qt6/plugins/kstyle_config/breezestyleconfig.so "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
       mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/styles
       cp /usr/lib64/qt6/plugins/styles/breeze6.so "$BUILD_DIR"/AppDir/usr/plugins/styles
+      cp /usr/lib64/libpango* "$BUILD_DIR"/AppDir/usr/lib/
 
 appimage:
   linuxdeploy:
