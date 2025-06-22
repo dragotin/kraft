@@ -52,6 +52,7 @@ public:
     int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent = {}) const override;
 
+    const static int ColumnCount{3};
 private:
     static void setupModelData(const QList<QStringView> &lines, CTMItem *parent);
 

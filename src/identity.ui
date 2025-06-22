@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>586</width>
-    <height>428</height>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
     <layout class="QFormLayout" name="formLayout_2">
      <item row="0" column="0">
       <widget class="QLabel" name="nameLabel">
@@ -68,7 +68,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="phoneLabel">
@@ -121,6 +121,26 @@
       <widget class="QLineEdit" name="leWebsite"/>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>481</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="_butApplyManualIdentity">
+     <property name="text">
+      <string>Apply</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

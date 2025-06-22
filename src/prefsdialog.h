@@ -71,6 +71,7 @@ protected Q_SLOTS:
     void slotTaxSelected(QModelIndex);
     void slotDocTypeRemoved( const QString& );
     void slotChangeIdentity();
+    void slotApplyManual();
     void changePage(QListWidgetItem *current);
 
 private:
@@ -117,7 +118,7 @@ private:
     QStackedWidget *_pagesWidget;
 
     QTabWidget     *_tabWidget;
-    Ui::manualOwnIdentity ui;
+    Ui::manualOwnIdentity _ownIdentUi;
 
     QLineEdit *_bacName;
     QLineEdit *_bacIBAN;

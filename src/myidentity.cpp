@@ -31,7 +31,8 @@ KContacts::Addressee MyIdentity::_myContact = KContacts::Addressee();
 
 MyIdentity::MyIdentity(QObject *parent)
     : QObject{parent},
-      _addressProvider{nullptr}
+      _addressProvider{nullptr},
+      _source{Source::Unknown}
 {
 
 }
@@ -61,6 +62,7 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     email.setPreferred(true);
     email.setType(KContacts::Email::TypeFlag::Work);
     add.addEmail(email);
+
     return add;
 }
 
@@ -70,6 +72,11 @@ QString MyIdentity::identityFile()
     file += "/myidentity.vcd";
 
     return file;
+}
+
+bool MyIdentity::hasBackend()
+{
+    return (_addressProvider && _addressProvider->backendUp());
 }
 
 void MyIdentity::load()

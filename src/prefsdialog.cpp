@@ -216,7 +216,9 @@ QWidget* PrefsDialog::whoIsMeTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
   _pbChangeIdentity = new QPushButton(i18n("Select Identity…"));
-  connect( _pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
+
+  connect( _pbChangeIdentity, &QPushButton::clicked, this, &PrefsDialog::slotChangeIdentity);
+
   butLay->addWidget(_pbChangeIdentity);
   t1Lay->addLayout( butLay );
 
@@ -225,20 +227,22 @@ QWidget* PrefsDialog::whoIsMeTab()
 
   // == Tab that displays the manual widget
   QWidget *w1 = new QWidget;
-  ui.setupUi(w1);
+  _ownIdentUi.setupUi(w1);
   _tabWidget->insertTab(1, w1, QIcon(), i18n("Manual Entry"));
-  ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
-  ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
-  ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
-  ui.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
-  ui.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
-  ui.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
-  ui.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
-  ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
-  ui.emailLabel->setText(KContacts::Addressee::emailLabel());
-  ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
+  _ownIdentUi.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
+  _ownIdentUi.orgLabel->setText( KContacts::Addressee::organizationLabel());
+  _ownIdentUi.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
+  _ownIdentUi.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
+  _ownIdentUi.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
+  _ownIdentUi.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
+  _ownIdentUi.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
+  _ownIdentUi.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
+  _ownIdentUi.emailLabel->setText(KContacts::Addressee::emailLabel());
+  _ownIdentUi.websiteLabel->setText(KContacts::Addressee::urlLabel());
 
   _tabWidget->insertTab(1, w1, i18n("Manual Address"));
+
+  connect(_ownIdentUi._butApplyManualIdentity, &QPushButton::clicked, this, &PrefsDialog::slotApplyManual);
 
   // == Bank Account information
   QGroupBox *gbox = new QGroupBox(i18n("Bank Account Information"), this);
@@ -257,7 +261,18 @@ QWidget* PrefsDialog::whoIsMeTab()
   return topWidget;
 }
 
+void PrefsDialog::slotApplyManual()
+{
+    KContacts::Addressee add = MyIdentity::UIToAddressee(_ownIdentUi);
 
+    if (!add.isEmpty()) {
+        _newOwnAddress = add;
+        _newOwnAddress.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+    }
+    if( ! _newOwnAddress.isEmpty() ) {
+      displayOwnAddress(_newOwnAddress, true);
+    }
+}
 
 void PrefsDialog::slotChangeIdentity()
 {
@@ -529,11 +544,14 @@ void PrefsDialog::writeIdentity()
      * Save either the manually added address, or the Addressbook-ID
      * If the user fills in the manual form, the addressbook ID is removed.
      */
+    if (_newOwnAddress.isEmpty()) {
+        // no need to save
+        return;
+    }
 
     const QString origin = _newOwnAddress.custom( CUSTOM_ADDRESS_MARKER );
     if( origin.isEmpty() || origin == "manual") {
-        KContacts::Addressee add = MyIdentity::UIToAddressee(ui);
-        _myIdentity->save(QString(), add);
+        _myIdentity->save(QString(), _newOwnAddress);
     } else { /* AddressBook */        
         _myIdentity->save(_newOwnAddress.uid());
     }
@@ -623,23 +641,23 @@ void PrefsDialog::accept()
 
 void PrefsDialog::fillManualIdentityForm(const KContacts::Addressee& addressee)
 {
-    ui.leName->setText(addressee.formattedName());
-    ui.leStreet->setText(addressee.address(Address::Work).street());
-    ui.leCity->setText(addressee.address(Address::Work).locality());
-    ui.lePostcode->setText(addressee.address(Address::Work).postalCode());
+    _ownIdentUi.leName->setText(addressee.formattedName());
+    _ownIdentUi.leStreet->setText(addressee.address(Address::Work).street());
+    _ownIdentUi.leCity->setText(addressee.address(Address::Work).locality());
+    _ownIdentUi.lePostcode->setText(addressee.address(Address::Work).postalCode());
 
-    ui.leEmail->setText(addressee.preferredEmail());
-    ui.leFax->setText(addressee.phoneNumber(PhoneNumber::Fax).number());
-    ui.leOrganization->setText(addressee.organization());
-    ui.lePhone->setText(addressee.phoneNumber(PhoneNumber::Work).number());
-    ui.leMobile->setText(addressee.phoneNumber(PhoneNumber::Cell).number());
-    ui.leWebsite->setText(addressee.url().url().toDisplayString());
+    _ownIdentUi.leEmail->setText(addressee.preferredEmail());
+    _ownIdentUi.leFax->setText(addressee.phoneNumber(PhoneNumber::Fax).number());
+    _ownIdentUi.leOrganization->setText(addressee.organization());
+    _ownIdentUi.lePhone->setText(addressee.phoneNumber(PhoneNumber::Work).number());
+    _ownIdentUi.leMobile->setText(addressee.phoneNumber(PhoneNumber::Cell).number());
+    _ownIdentUi.leWebsite->setText(addressee.url().url().toDisplayString());
 }
 
 void PrefsDialog::setMyIdentity(MyIdentity *identity)
 {
     _myIdentity = identity;
-    displayOwnAddress(identity->contact(), identity->source() == MyIdentity::Source::Backend);
+    displayOwnAddress(identity->contact(), identity->hasBackend());
 }
 
 void PrefsDialog::displayOwnAddress(const KContacts::Addressee& addressee, bool backendUp)

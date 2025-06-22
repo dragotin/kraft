@@ -49,7 +49,7 @@ int CTMItem::childCount() const
 
 int CTMItem::columnCount() const
 {
-    return int(_headers.count());
+    return ContactsDirModel::ColumnCount;
 }
 
 QVariant CTMItem::data(int column) const
@@ -109,6 +109,7 @@ ContactsDirModel::ContactsDirModel(const QString& baseDir, QObject *parent)
     rootAdr.setFormattedName(baseDir);
     _rootItem = std::make_unique<CTMItem>(rootAdr);
 
+    // FIXME: SHould this rather happpen in the addressproviderlocal class?
     for (const auto &dirEntry : QDirListing(baseDir, QDirListing::IteratorFlag::Recursive)) {
         if (dirEntry.fileName().endsWith(u".vcf")) {
             const QString file = dirEntry.fileInfo().canonicalFilePath();
@@ -123,7 +124,7 @@ ContactsDirModel::ContactsDirModel(const QString& baseDir, QObject *parent)
                     auto contact = list.at(0);
                     auto item = std::make_unique<CTMItem>(contact, _rootItem.get());
                     _rootItem.get()->appendChild(item);
-                    qDebug() << "Appending" << contact.formattedName();
+                    qDebug() << "Appending" << contact.formattedName() <<"with uuid"<< contact.uid();
                     // contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
 
                 }
@@ -151,13 +152,13 @@ Qt::ItemFlags ContactsDirModel::flags(const QModelIndex &index) const
 
 QVariant ContactsDirModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    return orientation == Qt::Horizontal && role == Qt::DisplayRole && section < CTMItem::_headers.size()
+    return orientation == Qt::Horizontal && role == Qt::DisplayRole && section < ColumnCount
         ? CTMItem::_headers.at(section) : QVariant{};
 }
 
 QModelIndex ContactsDirModel::index(int row, int column, const QModelIndex &parent) const
 {
-     if (!hasIndex(row, column, parent))
+    if (!(row < rowCount(parent) && column < ColumnCount))
         return {};
 
     CTMItem *parentItem = parent.isValid()
