@@ -71,7 +71,6 @@ protected Q_SLOTS:
     void slotTaxSelected(QModelIndex);
     void slotDocTypeRemoved( const QString& );
     void slotChangeIdentity();
-    void slotApplyManual();
     void changePage(QListWidgetItem *current);
 
 private:
@@ -82,7 +81,7 @@ private:
     QWidget* doctypeTab();
     QWidget *taxTab();
     void writeTaxes();
-    void writeIdentity();
+    void writeIdentity(int currIndx);
     QWidget *whoIsMeTab();
     void fillManualIdentityForm(const KContacts::Addressee& addressee);
 
@@ -128,6 +127,7 @@ private:
     KContacts::Addressee _newOwnAddress;
 
     int _maxNavBarTextWidth;
+    int _whoIndx;
 };
 
 class TaxItemDelegate : public QItemDelegate

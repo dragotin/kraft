@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>586</width>
-    <height>474</height>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,26 +121,6 @@
       <widget class="QLineEdit" name="leWebsite"/>
      </item>
     </layout>
-   </item>
-   <item row="2" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>481</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="_butApplyManualIdentity">
-     <property name="text">
-      <string>Apply</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

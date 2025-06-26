@@ -101,7 +101,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   addDialogPage(mPrefsWages, DefaultProvider::self()->icon( "cash-banknote" ), i18n( "Wages" ));
   mPrefsUnits = new PrefsUnits(this);
   addDialogPage(mPrefsUnits, DefaultProvider::self()->icon( "atom" ), i18n("Units"));
-  addDialogPage( whoIsMeTab(), DefaultProvider::self()->icon( "id-badge-2" ), i18n( "Own Identity" ));
+  _whoIndx = addDialogPage( whoIsMeTab(), DefaultProvider::self()->icon( "id-badge-2" ), i18n( "Own Identity" ));
 
   readConfig();
 
@@ -242,8 +242,6 @@ QWidget* PrefsDialog::whoIsMeTab()
 
   _tabWidget->insertTab(1, w1, i18n("Manual Address"));
 
-  connect(_ownIdentUi._butApplyManualIdentity, &QPushButton::clicked, this, &PrefsDialog::slotApplyManual);
-
   // == Bank Account information
   QGroupBox *gbox = new QGroupBox(i18n("Bank Account Information"), this);
   QFormLayout *formLayout = new QFormLayout;
@@ -259,19 +257,6 @@ QWidget* PrefsDialog::whoIsMeTab()
   topWidget->setLayout( vboxLay );
 
   return topWidget;
-}
-
-void PrefsDialog::slotApplyManual()
-{
-    KContacts::Addressee add = MyIdentity::UIToAddressee(_ownIdentUi);
-
-    if (!add.isEmpty()) {
-        _newOwnAddress = add;
-        _newOwnAddress.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
-    }
-    if( ! _newOwnAddress.isEmpty() ) {
-      displayOwnAddress(_newOwnAddress, true);
-    }
 }
 
 void PrefsDialog::slotChangeIdentity()
@@ -538,12 +523,26 @@ void PrefsDialog::readConfig()
 
 }
 
-void PrefsDialog::writeIdentity()
+void PrefsDialog::writeIdentity(int currIndx)
 {
     /*
      * Save either the manually added address, or the Addressbook-ID
      * If the user fills in the manual form, the addressbook ID is removed.
      */
+
+    if (currIndx ==_whoIndx) { // own Identity page
+        bool isManualPage = (_tabWidget->currentIndex() == 1);
+        if (isManualPage) {  // if it is the address book page, newOwnAddress is already set
+            KContacts::Addressee add = MyIdentity::UIToAddressee(_ownIdentUi);
+
+            if (!add.isEmpty()) {
+                _newOwnAddress = add;
+                _newOwnAddress.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+            }
+
+        }
+    }
+
     if (_newOwnAddress.isEmpty()) {
         // no need to save
         return;
@@ -627,13 +626,15 @@ PrefsDialog::~PrefsDialog()
 
 void PrefsDialog::accept()
 {
-  mDocTypeEdit->saveDocTypes();
-  mPrefsWages->save();
-  mPrefsUnits->save();
-  writeTaxes();
-  writeConfig();
-  writeIdentity();
-  QDialog::accept();
+    int currIndx = _pagesWidget->currentIndex();
+
+    mDocTypeEdit->saveDocTypes();
+    mPrefsWages->save();
+    mPrefsUnits->save();
+    writeTaxes();
+    writeConfig();
+    writeIdentity(currIndx);
+    QDialog::accept();
 }
 
 #define IDENTITY_TAG(X) (X)
