@@ -124,6 +124,7 @@ class Portal : public QMainWindow
     void slotChangeDocStatus();
     void slotFinalizeDoc();
     void slotOpenCurrentPDF();
+    void slotGenerateCurrentPDF();
 
     void slotFollowUpDocument();
     void slotDocumentSelected( const QString& );
@@ -175,6 +176,7 @@ class Portal : public QMainWindow
     QAction* _actFinalizeDocument;
     QAction* _actChangeDocStatus;
     QAction* _actOpenDocumentPDF;
+    QAction* _actGeneratePDF;
     QAction* _actPrintPDF;
     QAction* _actMailPDF;
 

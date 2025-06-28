@@ -372,7 +372,6 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
     QDir dir(dirStr);
 
     const QString fd{dir.absoluteFilePath("numbercycles.xml")};
-    QFileInfo fi{fd};
     SaveResult res{SaveResult::SaveOk};
     bool re{false};
 

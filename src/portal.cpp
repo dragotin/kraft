@@ -217,6 +217,11 @@ void Portal::initActions()
     _actOpenDocumentPDF->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_A ));
     connect(_actOpenDocumentPDF, &QAction::triggered, this, &Portal::slotOpenCurrentPDF);
 
+    newIcon = DefaultProvider::self()->icon( "files");
+    _actGeneratePDF = new QAction(newIcon, i18n("Generate PDF Document"), this);
+    _actGeneratePDF->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_G ));
+    connect(_actGeneratePDF, &QAction::triggered, this, &Portal::slotGenerateCurrentPDF);
+
     newIcon = DefaultProvider::self()->icon("mail-forward");
     _actMailPDF = new QAction(newIcon, i18n("Mail PDF"), this);
     _actMailPDF->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_M ));
@@ -273,6 +278,7 @@ void Portal::initActions()
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
     _actOpenDocumentPDF->setStatusTip( i18n( "Open a viewer on an archived document" ) );
     _actFinalizeDocument->setStatusTip( i18n("Finalize the document to send it to the customer"));
+    _actGeneratePDF->setStatusTip( i18n("Regenerate the current PDF"));
 
     _actEditDocument->setEnabled( false );
     _actViewDocument->setEnabled( false );
@@ -284,6 +290,7 @@ void Portal::initActions()
     _actXRechnung->setEnabled( false );
     _actChangeDocStatus->setEnabled( false );
     _actFinalizeDocument->setEnabled( false );
+    _actGeneratePDF->setEnabled(false);
 
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
     fileMenu->addAction(_actFileQuit);
@@ -300,6 +307,7 @@ void Portal::initActions()
         docMenu->addAction(_actOpenDocumentPDF);
         docMenu->addAction(_actPrintPDF);
         docMenu->addAction(_actMailPDF);
+        docMenu->addAction(_actGeneratePDF);
         docMenu->addAction(_actXRechnung);
         docMenu->addSeparator();
         docMenu->addAction(_actChangeDocStatus);
@@ -335,6 +343,7 @@ void Portal::initActions()
         toolBar->addAction(_actFinalizeDocument);
         toolBar->addAction(_actPrintPDF);
         toolBar->addAction(_actMailPDF);
+        toolBar->addAction(_actGeneratePDF);
     } else {
         toolBar->addAction(_actOpenDocumentPDF);
         toolBar->addAction(_actXRechnung);
@@ -373,6 +382,7 @@ void Portal::initView()
         menu->addAction(_actOpenDocumentPDF);
         menu->addAction( _actPrintPDF );
         menu->addAction( _actMailPDF );
+        menu->addAction(_actGeneratePDF);
         menu->addAction( _actXRechnung);
     }
 
@@ -444,6 +454,7 @@ void Portal::slotStartupChecks()
         _actOpenDocumentPDF->setEnabled( false );
         _actXRechnung->setEnabled(false);
         _actMailPDF->setEnabled( false );
+        _actGeneratePDF->setEnabled(false);
 
         slotStatusMsg( i18n( "Database Problem." ) );
         return;
@@ -901,7 +912,15 @@ void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KC
         _actOpenDocumentPDF->setEnabled(true);
         _actPrintPDF->setEnabled(true);
         _actMailPDF->setEnabled(true);
+        _actGeneratePDF->setEnabled(true);
     }
+}
+
+void Portal::slotGenerateCurrentPDF()
+{
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+
+    slotGeneratePDF(uuid);
 }
 
 void Portal::slotGeneratePDF(const QString& uuid)
@@ -1027,6 +1046,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actOpenDocumentPDF->setEnabled(pdfEnabled);
     _actPrintPDF->setEnabled(pdfEnabled);
     _actMailPDF->setEnabled(pdfEnabled);
+    _actGeneratePDF->setEnabled(pdfEnabled);
 
     if (enable) {
         _actXRechnung->setEnabled(docWriteEnabled && docPtr->isInvoice());
