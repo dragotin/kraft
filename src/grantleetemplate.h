@@ -17,15 +17,9 @@
 #ifndef GRANTLEETEMPLATE_H
 #define GRANTLEETEMPLATE_H
 
-<<<<<<< HEAD
 #include <QObject>
 #include <QHash>
 #include <QString>
-=======
-#include <qobject.h>
-#include <qmap.h>
-#include <qstring.h>
->>>>>>> master
 
 class GrantleeFileTemplate : public QObject
 {
