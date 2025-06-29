@@ -16,9 +16,11 @@ SET(KF_IGNORE_PLATFORM_CHECK TRUE)
 set(QT_MIN_VERSION 6.2.4)
 
 set(CMAKE_AUTOMOC TRUE)
+SET(KF_IGNORE_PLATFORM_CHECK TRUE)
+set(QT_MIN_VERSION 6.2.4)
+set(KF5_MIN_VERSION 5.68.0)
 
 set(AKO_PREFIX "KPim6")
-
 message("Akonadi Prefix is ${AKO_PREFIX}")
 
 include(GetGitRevisionDescription)
