@@ -43,7 +43,7 @@ public:
 
     void save();
 
-public slots:
+public Q_SLOTS:
     void slotAddWage();
     void slotEditWage(QModelIndex index = QModelIndex());
     void slotDeleteWage();
@@ -68,7 +68,7 @@ class WagesEditDialog: public QDialog, protected Ui::WagesEditBase
 public:
   WagesEditDialog( QAbstractItemModel *model, int row, QWidget *parent );
 
-public slots:
+public Q_SLOTS:
   void accept();
   void reject();
 

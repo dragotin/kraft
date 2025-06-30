@@ -24,18 +24,10 @@ void init_test_db()
 
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
 
-    // create the tagTemplate table which is required by DocPositionBase::hasTag
+    // create the tagTemplate table which is required by DocPosition::hasTag
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("10_dbmigrate.sql");
     QVERIFY(sqls.size() > 0);
     KraftDB::self()->processSqlCommands(sqls);
-
-#if 0
-    sqls = KraftDB::self()->parseCommandFile("10_dbmigrate.sql");
-    KraftDB::self()->processSqlCommands(sqls);
-
-    sqls = KraftDB::self()->parseCommandFile("11_dbmigrate.sql");
-    KraftDB::self()->processSqlCommands(sqls);
-#endif
 }
 
 namespace {
@@ -44,7 +36,7 @@ namespace {
 
 class T_JsonIndexFile: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         QVERIFY(_dir.isValid());
@@ -156,7 +148,6 @@ private slots:
         QCOMPARE(d23["uuid"].toString(), QStringLiteral("1c55c452-5527-429d-ab91-e6839888509e"));
         QCOMPARE(d23["state"].toString(), QStringLiteral("Final"));
     }
-
 
 private:
     KraftDoc _kDoc;

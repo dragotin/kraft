@@ -63,12 +63,12 @@ public:
   virtual void saveState() = 0;
   void updateChapterSort(int catChapterId);
 
-signals:
+Q_SIGNALS:
   void templateHoovered( CatalogTemplate* );
   void sequenceUpdateProgress( int );
   void sequenceUpdateMaximum( int );
 
-public slots:
+public Q_SLOTS:
 
   virtual void setCheckboxes( bool );
 
@@ -84,7 +84,7 @@ public slots:
 
   virtual void removeTemplateItem( QTreeWidgetItem* );
 
-protected slots:
+protected Q_SLOTS:
   virtual void slotItemEntered( QTreeWidgetItem*, int);
   // run an update of the sort key in a chapter.
   void updateSort(QTreeWidgetItem *chapter);

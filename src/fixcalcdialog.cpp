@@ -56,7 +56,7 @@ void FixCalcDialog::accept()
   }
 
   if( m_part && m_part->isDirty() ) {
-    emit fixCalcPartChanged(m_part);
+    Q_EMIT fixCalcPartChanged(m_part);
   }
 
   CalcDialogBase::accept();

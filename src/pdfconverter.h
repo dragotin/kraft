@@ -39,6 +39,7 @@ public:
                            TargetFileMissing,
                            UnknownError,
                            WeasyPrintNotFound,
+                           WeasyPrintRunFail,
                            PDFMergerError
                          };
 
@@ -52,11 +53,11 @@ public:
      */
     void setTemplatePath(const QString& path) { _templatePath = path; }
 
-signals:
+Q_SIGNALS:
     void docAvailable(const QString& fileName);
     void converterError( ConvError );
 
-protected slots:
+protected Q_SLOTS:
     void slotReceivedStderr();
 
 protected:    
@@ -64,26 +65,6 @@ protected:
     QProcess *mProcess;
     QFile     mFile;
     QString   _templatePath;
-};
-
-// ====================================================================
-class ReportLabPDFConverter: public PDFConverter
-{
-    Q_OBJECT
-public:
-    ReportLabPDFConverter();
-
-    void convert(const QString& sourceFile, const QString& outputFile) override;
-
-private slots:
-    void trml2pdfFinished( int exitCode, QProcess::ExitStatus stat);
-    void slotReceivedStdout();
-
-private:
-    QFile mFile;
-
-    QDataStream mTargetStream;
-    int mOutputSize;
 };
 
 // ====================================================================
@@ -95,7 +76,7 @@ public:
 
     void convert(const QString& sourceFile, const QString& outputFile) override;
 
-private slots:
+private Q_SLOTS:
     void slotReceivedStdout();
     void weasyPrintFinished(int exitCode, QProcess::ExitStatus stat);
 

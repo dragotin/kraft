@@ -34,7 +34,7 @@ public:
 
     void done(int r);
 
-private slots:
+private Q_SLOTS:
     void slotAddresseeSelected(const KContacts::Addressee&);
 
 private:

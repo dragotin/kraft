@@ -80,7 +80,7 @@ void FilterHeader::slotTextChanged( const QString& filter )
                 }
             }
             if (filter.isEmpty()) {
-                for( auto item : _openedItems.uniqueKeys()) {
+                for( auto item : _openedItems.keys()) {
                     item->setExpanded(false);
                 }
                 _openedItems.clear();

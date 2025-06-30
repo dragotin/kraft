@@ -43,7 +43,7 @@ public:
 
   static const QString MaterialCatalogName;
 
-protected slots:
+protected Q_SLOTS:
   void slNewTemplate();
   void slEditTemplate();
   void slDeleteTemplate();

@@ -51,13 +51,13 @@ public:
   DocText currentDocText() const;
   bool    validSelection() const;
 
-signals:
+Q_SIGNALS:
   void actionCurrentTextToDoc();
   void currentTextChanged( const QString& );
   void validTemplateSelected();
   void editCurrentTemplate();
 
-public slots:
+public Q_SLOTS:
   void addNewDocText( const DocText& );
   void deleteCurrentText();
   void updateDocText( const DocText& );
@@ -69,7 +69,7 @@ protected:
   void buildTextList( KraftDoc::Part );
   void showDocText( DocText );
 
-protected slots:
+protected Q_SLOTS:
   // void slotSelectionChanged( QTreeWidgetItem* );
   void slotTemplateNameSelected( const QModelIndex&, const QModelIndex& );
   void showHelp( const QString& help = QString() );

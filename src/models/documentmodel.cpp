@@ -80,7 +80,7 @@ void DocumentModel::updateData(const DocDigest& digest)
         _digests[r] = digest;
         QModelIndex indx1 = index(r, 0, QModelIndex());
         QModelIndex indx2 = index(r+1, 0, QModelIndex());
-        emit dataChanged(indx1, indx2);
+        Q_EMIT dataChanged(indx1, indx2);
     }
 
    // for (const DocDigest& d)
@@ -125,6 +125,12 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
         int h = fm.height();
 
         return QSize( 0, h + 4 );
+    } else if (role == Qt::FontRole) {
+        if (idx.column() == Document_StateStr && ! digest.state().is(KraftDocState::State::Final)) {
+            QFont boldFont;
+            boldFont.setBold(true);
+            return boldFont;
+        }
     }
     return QVariant();
 }

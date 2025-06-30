@@ -36,15 +36,15 @@
 #include <kcontacts/addressee.h>
 #include <kcontacts/contactgroup.h>
 
+#include "defaultprovider.h"
+
 #ifdef HAVE_AKONADI
-#include <akonadi_version.h>
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/EntityTreeModel>
 #include <Akonadi/EntityTreeView>
 #else
-#include <entitytreemodel.h>
-#include <entitytreeview.h>
-#endif
+#include "htmlview.h"
+#include "grantleetemplate.h"
+#include "documenttemplate.h"
 #endif
 
 /* ==================================================================== */
@@ -204,7 +204,7 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
     if( contact.isEmpty() ) {
         return true;
     } else {
-        const QString p = filterRegExp().pattern();
+        const QString p = filterRegularExpression().pattern();
         return contactMatchesFilter(contact, p );
     }
 
@@ -232,17 +232,15 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
 #endif
 {
     QVBoxLayout *lay = new QVBoxLayout;
-    lay->setMargin(0);
+    lay->setContentsMargins(0,0,0,0);
     setLayout(lay);
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    _contactViewer = new ContactEditor::ContactViewer;
-#else
     _contactViewer = new Akonadi::ContactViewer;
-#endif
     _contactViewer->setShowQRCode(false);
-
     lay->addWidget(_contactViewer);
+#else
+    _htmlView = new HtmlView(this);
+    lay->addWidget(_htmlView);
 #endif
 }
 
@@ -251,7 +249,18 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 #ifdef HAVE_AKONADI
     _contactViewer->setRawContact(contact);
 #else
-    Q_UNUSED(contact);
+    const QString templateFile = DefaultProvider::self()->locateFile( "views/contact.gtmpl" );
+
+    GrantleeFileTemplate tmpl(templateFile);
+
+    const auto contactHash = Template::contactToVariantHash(contact);
+    tmpl.addToMappingHash("contact", contactHash);
+    const auto labelHash = Template::labelVariantHash();
+    tmpl.addToMappingHash("label", labelHash);
+
+    bool ok;
+    const QString rendered = tmpl.render(ok);
+    _htmlView->setHtml(rendered);
 #endif
 
 }
@@ -260,7 +269,8 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 
 AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
     : QSplitter(parent),
-      _provider(0)
+      mButEditContact(nullptr),
+      _provider(nullptr)
 {
     setupUi();
     restoreState();
@@ -304,8 +314,7 @@ void AddressSelectorWidget::setupUi()
     mProxyModel = new AddressSortProxyModel(_provider, this);
     mProxyModel->setSourceModel(_provider->model());
     _addressTreeView->setModel(mProxyModel);
-    connect(_addressTreeView, SIGNAL(activated(QModelIndex)),
-            this, SLOT(slotAddresseeSelected(QModelIndex)));
+    connect(_addressTreeView, &QTreeView::clicked, this, &AddressSelectorWidget::slotAddresseeSelected);
 
     mProxyModel->sort(0);
 
@@ -314,7 +323,7 @@ void AddressSelectorWidget::setupUi()
     QVBoxLayout *rightLay = new QVBoxLayout;
     rightW->setLayout(rightLay);
     this->addWidget(rightW);
-    _contactViewer = new KraftContactViewer;
+    _contactViewer = new KraftContactViewer(this);
     _contactViewer->setMinimumWidth(200);
     rightLay->addWidget(_contactViewer);
 
@@ -322,6 +331,7 @@ void AddressSelectorWidget::setupUi()
     QHBoxLayout *hboxBot = new QHBoxLayout;
     hboxBot->addStretch(4);
     rightLay->addLayout( hboxBot );
+#ifdef HAVE_AKONADI
     mButEditContact = new QPushButton(i18n("Edit Contact…"));
     mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
     mButEditContact->setEnabled( false );
@@ -332,6 +342,10 @@ void AddressSelectorWidget::setupUi()
 
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact, SIGNAL(clicked()),SLOT(slotEditContact()));
+#else
+    QLabel *lab = new QLabel(i18n("Addresses read from directory (read only)"), rightW);
+    hboxBot->addWidget(lab);
+#endif
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -340,8 +354,7 @@ void AddressSelectorWidget::setupUi()
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
 {
     // qDebug() << "Filter: " << filter;
-    mProxyModel->setFilterRegExp(QRegExp(filter, Qt::CaseInsensitive, QRegExp::RegExp));
-    // mProxyModel.setFilterFixedString(filter);
+    mProxyModel->setFilterRegularExpression(filter);
 }
 
 void AddressSelectorWidget::restoreState()
@@ -376,11 +389,7 @@ bool AddressSelectorWidget::backendUp() const
 void AddressSelectorWidget::slotCreateNewContact()
 {
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
-#else
     _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
-#endif
     _addressEditor->show();
 #endif
 }
@@ -393,12 +402,14 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
         qDebug() << "----------- " << contact.formattedName() << contact.uid();
         _contactViewer->setContact(contact);
 
-        emit addressSelected(contact);
+        Q_EMIT addressSelected(contact);
 
-        mButEditContact->setEnabled( true );
+        if(mButEditContact)
+            mButEditContact->setEnabled( true );
     } else {
         // qDebug () << "No address was selected!";
-        mButEditContact->setEnabled( false );
+        if(mButEditContact)
+            mButEditContact->setEnabled( false );
     }
 }
 
@@ -410,11 +421,7 @@ void AddressSelectorWidget::slotEditContact()
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-        _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
-#else
         _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
-#endif
         _addressEditor->setContact( item );
         _addressEditor->show();
       }

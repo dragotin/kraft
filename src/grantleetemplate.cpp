@@ -21,12 +21,11 @@
 #include <QDebug>
 
 #include <QFileInfo>
-#include <string.h>
 
-#include <grantlee/engine.h>
-#include <grantlee/context.h>
-#include <grantlee/template.h>
-#include <grantlee/templateloader.h>
+#include <KTextTemplate/Engine>
+#include <KTextTemplate/Context>
+#include <KTextTemplate/Template>
+#include <KTextTemplate/TemplateLoader>
 
 // make this class a QObject to parent the created QObjects in addToMappingHash()
 // to it. That way, the allocated objects are automatically freed by the Qt mechanism
@@ -37,20 +36,25 @@ GrantleeFileTemplate::GrantleeFileTemplate( const QString& file)
 
 }
 
-void GrantleeFileTemplate::addToMappingHash( const QString& prefix, const QVariantHash& hash)
+bool GrantleeFileTemplate::isOk() const
+{
+    return true; // FIXME
+}
+
+void GrantleeFileTemplate::addToMappingHash( const QString& key, const QVariantHash& hash)
 {
     QObject *obj;
 
-    if (prefix.isNull()) {
+    if (key.isNull()) {
         return;
     }
 
-    if (_objs.contains(prefix)) {
-        obj = _objs[prefix];
+    if (_objs.contains(key)) {
+        obj = _objs[key];
     } else {
         // make the created objects a child of the _p QObject
         obj = new QObject(this);
-        _objs[prefix] = obj;
+        _objs[key] = obj;
     }
 
     QHash<QString, QVariant>::const_iterator i = hash.constBegin();
@@ -69,25 +73,25 @@ void GrantleeFileTemplate::addToObjMapping(const QString& key, QObject *obj)
 
 QString GrantleeFileTemplate::render(bool &ok) const
 {
-    QScopedPointer<Grantlee::Engine> engine(new Grantlee::Engine());
+    QScopedPointer<KTextTemplate::Engine> engine(new KTextTemplate::Engine());
 
     QFileInfo fi(_tmplFileName);
     ok = true; // assume all goes well.
 
-    auto loader = QSharedPointer<Grantlee::FileSystemTemplateLoader>::create();
+    auto loader = QSharedPointer<KTextTemplate::FileSystemTemplateLoader>::create();
     loader->setTemplateDirs( {fi.absolutePath()} );
     engine->addTemplateLoader( loader );
 
     QString output;
     auto t = engine->loadByName(fi.fileName());
-    if (t->error() != Grantlee::Error::NoError) {
+    if (t->error() != KTextTemplate::Error::NoError) {
         ok = false;
         output = t->errorString();
-        qDebug() << "Grantlee template load failed:" << output;
+        qDebug() << "TextTemplate template load failed:" << output;
     }
 
     if (ok) {
-        Grantlee::Context c;
+        KTextTemplate::Context c;
 
         QHash<QString, QObject*>::const_iterator i = _objs.constBegin();
         while (i != _objs.constEnd()) {
@@ -98,11 +102,11 @@ QString GrantleeFileTemplate::render(bool &ok) const
         }
 
         output = t->render(&c);
-        if (t->error() != Grantlee::Error::NoError) {
+        if (t->error() != KTextTemplate::Error::NoError) {
             ok = false;
             // Rendering error.
             output = t->errorString();
-            qDebug() << "Grantlee template err:" << output;
+            qDebug() << "TextTemplate template err:" << output;
         }
     }
 

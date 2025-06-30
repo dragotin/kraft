@@ -33,7 +33,6 @@
 #include "headertemplateprovider.h"
 #include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
-#include "addresstemplateprovider.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
@@ -43,7 +42,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   QWidget *topWidget = new QWidget;
   QVBoxLayout *topVBox = new QVBoxLayout;
-  topVBox->setMargin(0);
+  topVBox->setContentsMargins(0,0,0,0);
   topWidget->setLayout( topVBox );
 
   QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -51,8 +50,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   QPushButton *pb = new QPushButton( i18n( "Show &Templates" ) );
   buttonLayout->addWidget( pb );
-  connect( pb, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleShowTemplates( bool ) ) );
+  connect( pb, &QPushButton::toggled, this, &DocAssistant::slotToggleShowTemplates);
   pb->setCheckable( true );
   pb->setToolTip( i18n( "Show mask to create or select templates to be used in the document" ) );
 
@@ -68,7 +66,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mTemplatePane = new QWidget;
   QVBoxLayout *bottomVBox = new QVBoxLayout;
-  bottomVBox->setMargin(0);
+  bottomVBox->setContentsMargins(0,0,0,0);
 
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );
@@ -115,14 +113,14 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QIcon icons = DefaultProvider::self()->icon( "arrow-narrow-left" );
   mPbAdd  = new QPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
+  connect( mPbAdd, &QPushButton::clicked, this, &DocAssistant::slotAddToDocument);
   butHBox2->addWidget( mPbAdd );
   mPbAdd->setToolTip( i18n( "Add a template to the document" ) );
 
   icons = DefaultProvider::self()->icon( "arrow-bar-to-left" );
   mPbInsert  = new QPushButton( icons, QString() );
   mPbInsert->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  connect( mPbInsert, SIGNAL( clicked() ), this, SLOT( slotInsertIntoDocument() ) );
+  connect( mPbInsert, &QPushButton::clicked, this, &DocAssistant::slotInsertIntoDocument);
   butHBox2->addWidget( mPbInsert);
   mPbInsert->setToolTip( i18n( "Insert the template to the document" ) );
 
@@ -131,21 +129,21 @@ DocAssistant::DocAssistant( QWidget *parent ):
   icons = DefaultProvider::self()->icon( "plus" );
   mPbNew  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
+  connect( mPbNew, &QPushButton::clicked, this, &DocAssistant::slotNewTemplate);
   mPbNew->setToolTip( i18n( "Create a new template" ) );
   butHBox2->addWidget( mPbNew );
 
   icons = DefaultProvider::self()->icon( "edit" );
   mPbEdit  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
+  connect( mPbEdit, &QPushButton::clicked, this, &DocAssistant::slotEditTemplate);
   mPbEdit->setToolTip( i18n( "Edit the current template" ) );
   butHBox2->addWidget( mPbEdit );
 
   icons = DefaultProvider::self()->icon( "x" );
   mPbDel  = new QPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
+  connect( mPbDel, &QPushButton::clicked, this, &DocAssistant::slotDeleteTemplate);
   mPbDel->setToolTip( i18n( "Delete the current template" ) );
   butHBox2->addWidget( mPbDel );
 
@@ -161,30 +159,27 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mHeaderTemplateProvider = new HeaderTemplateProvider( parent );
 
   /* get a new header text from the default provider */
-  connect( mHeaderTemplateProvider, SIGNAL( newHeaderText( const DocText& ) ),
-           this,  SLOT( slotNewHeaderDocText( const DocText& ) ) );
-  connect( mHeaderTemplateProvider, SIGNAL( updateHeaderText( const DocText& ) ),
-           this,  SLOT( slotUpdateHeaderDocText( const DocText& ) ) );
+  connect( mHeaderTemplateProvider, &HeaderTemplateProvider::newHeaderText,
+           this,  &DocAssistant::slotNewHeaderDocText);
+  connect( mHeaderTemplateProvider, &HeaderTemplateProvider::updateHeaderText,
+           this,  &DocAssistant::slotUpdateHeaderDocText);
   connect( mHeaderTemplateProvider, &HeaderTemplateProvider::headerTextToDocument,
            this, &DocAssistant::headerTextTemplate);
-
-  connect( mHeaderTemplateProvider, SIGNAL( headerTextToDocument( const DocText& ) ),
-           this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
-  connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
-           this,  SLOT( slotHeaderTextDeleted( const DocText& ) ) );
+  connect( mHeaderTemplateProvider, &HeaderTemplateProvider::deleteHeaderText,
+           this,  &DocAssistant::slotHeaderTextDeleted);
   mHeaderTemplateProvider->setSelection( mHeaderSelector );
 
   mFooterTemplateProvider = new FooterTemplateProvider( parent );
 
   /* get a new Footer text from the default provider */
-  connect( mFooterTemplateProvider, SIGNAL( newFooterText( const DocText& ) ),
-           this,  SLOT( slotNewFooterDocText( const DocText& ) ) );
-  connect( mFooterTemplateProvider, SIGNAL( updateFooterText( const DocText& ) ),
-           this,  SLOT( slotUpdateFooterDocText( const DocText& ) ) );
+  connect( mFooterTemplateProvider, &FooterTemplateProvider::newFooterText,
+           this, &DocAssistant::slotNewFooterDocText);
+  connect( mFooterTemplateProvider, &FooterTemplateProvider::updateFooterText,
+           this, &DocAssistant::slotUpdateFooterDocText);
   connect( mFooterTemplateProvider, &FooterTemplateProvider::footerTextToDocument,
            this, &DocAssistant::footerTextTemplate);
-  connect( mFooterTemplateProvider, SIGNAL( deleteFooterText( const DocText& ) ),
-           this,  SLOT( slotFooterTextDeleted( const DocText& ) ) );
+  connect( mFooterTemplateProvider, &FooterTemplateProvider::deleteFooterText,
+           this, &DocAssistant::slotFooterTextDeleted);
   mFooterTemplateProvider->setSelection( mFooterSelection );
 
   /* Catalog Template Provider */
@@ -359,7 +354,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
     // hide the details
     setFullPreview( true, mActivePage );
   }
-  emit toggleShowTemplates( on );
+  Q_EMIT toggleShowTemplates( on );
 }
 
 DocPostCard *DocAssistant::postCard()
@@ -385,7 +380,7 @@ void DocAssistant::slotSelectDocPart( KraftDoc::Part p )
   } else {
     // qDebug () << "Alert: Unknown document part id: " << p;
   }
-  emit selectPage( p );
+  Q_EMIT selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
   slotTemplateSelectionChanged( ); // hide the add, edit- and del buttons
 }

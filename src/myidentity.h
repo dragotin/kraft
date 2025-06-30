@@ -64,12 +64,15 @@ public:
 
     MyIdentity::Source source() const;
 
-signals:
+    QString errorMsg(const QString& uid);
+
+    bool hasBackend();
+Q_SIGNALS:
 
     // final signal after the contact could be loaded
     void myIdentityLoaded(const QString& uuid, const KContacts::Addressee& contact);
 
-private slots:
+private Q_SLOTS:
     void slotAddresseeFound(const QString& uid, const KContacts::Addressee &contact);
 
 private:

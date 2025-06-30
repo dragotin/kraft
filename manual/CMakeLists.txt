@@ -1,6 +1,6 @@
 
 FIND_PACKAGE(Asciidoctor)
-SET (install_files kraft-en.html kraft-de.html)
+SET (install_files kraft-en.html kraft-nl.html kraft-de.html)
 
 if (ASCIIDOCTOR_FOUND)
   SET( manual_src ${PROJECT_SOURCE_DIR}/manual/kraft.adoc )
@@ -17,14 +17,14 @@ if (ASCIIDOCTOR_FOUND)
     DEPENDS "${out_file}"
   )
 
-  INSTALL(FILES ${CMAKE_BINARY_DIR}/manual/kraft-en.html ${CMAKE_BINARY_DIR}/manual/kraft-de.html ${CMAKE_BINARY_DIR}/manual/kraft-nl.html
-          DESTINATION ${DATA_INSTALL_DIR}/kraft/manual)
+  INSTALL(FILES ${install_files}
+	  DESTINATION ${KDE_INSTALL_DATADIR}/kraft/manual)
 
 else(ASCIIDOCTOR_FOUND)
   # Maybe there are preinstalled html files in the tarball
   message("Asciidoctor not found, installing pre built manual.")
-  install(FILES "kraft-de.html" "kraft-en.html" DESTINATION ${DATA_INSTALL_DIR}/kraft/manual)
+  install(FILES "kraft-de.html" "kraft-en.html" DESTINATION ${KDE_INSTALL_DATADIR}/kraft/manual)
 endif(ASCIIDOCTOR_FOUND)
 
-INSTALL(FILES kraftmanual.css DESTINATION ${DATA_INSTALL_DIR}/kraft/manual)
-INSTALL(DIRECTORY images DESTINATION ${DATA_INSTALL_DIR}/kraft/manual)
+INSTALL(FILES kraftmanual.css DESTINATION ${KDE_INSTALL_DATADIR}/kraft/manual)
+INSTALL(DIRECTORY images DESTINATION ${KDE_INSTALL_DATADIR}/kraft/manual)

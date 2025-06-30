@@ -30,14 +30,14 @@ class FindContact : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     void quitLoop();
 
-public slots:
+public Q_SLOTS:
     void slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
     {
         dumpContact(contact, _options._outputType);
-        emit quitLoop();
+        Q_EMIT quitLoop();
     }
 
     void run()
@@ -46,7 +46,7 @@ public slots:
             search();
         } else {
             help();
-            emit quitLoop();
+            Q_EMIT quitLoop();
         }
     }
 
@@ -186,11 +186,11 @@ public:
             }
             out += QLatin1Char('\n');
 
-            foreach( KContacts::PhoneNumber pnum, contact.phoneNumbers() ) {
+            for( const KContacts::PhoneNumber& pnum: contact.phoneNumbers() ) {
                 out += QString( "Phone %1: %2").arg(pnum.typeLabel()).arg(pnum.number()) + NL;
             }
 
-            foreach( QString mail, contact.emails() ) {
+            for( const QString& mail: contact.emails() ) {
                 out += QString( "Mail: %1" ).arg(mail) + NL;
             }
 

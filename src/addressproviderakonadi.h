@@ -23,82 +23,54 @@
 
 #include <kcontacts/addressee.h>
 
+#include "addressproviderprivate.h"
+
 #ifdef HAVE_AKONADI
 #include <kjob.h>
-#include <akonadi_version.h>
 
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
-#include <AkonadiContact/akonadi-contact_version.h>
-#else
-#define AKONADICONTACT_VERSION AKONADI_VERSION
-#endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
-#include <AkonadiContact/akonadi/contactstreemodel.h>
-#else
-#include <akonadi/contact/contactstreemodel.h>
-#endif
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/ContactsTreeModel>
 #include <Akonadi/Session>
 #include <Akonadi/ChangeRecorder>
-#else
-#include <AkonadiCore/session.h>
-#include <AkonadiCore/changerecorder.h>
-#endif
-#endif
+#endif // HAVE_AKONADI
+
 
 class QAbstractItemModel;
 class AddressItemModel;
 
 // An akonadi based provider.
-class AddressProviderPrivate : public QObject
+class AddressProviderAkonadi : public AddressProviderPrivate
 {
-    Q_OBJECT
 public:
-    AddressProviderPrivate( QObject* parent = 0 );
+    AddressProviderAkonadi( QObject* parent = 0 );
 
     // initialize the backend and return true if that worked.
     bool init();
     // returns the result of the init process later on
-    bool backendUp();
-    QString backendName() const;
+    bool backendUp() override;
+    QString backendName() const override;
 
-    bool lookupAddressee( const QString& uid );
-    QString formattedAddress( const KContacts::Addressee& ) const;
+    bool lookupAddressee( const QString& uid ) override;
 
-    QAbstractItemModel *model();
+    QAbstractItemModel *model() override;
 
-    KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
-    KContacts::Addressee getAddressee(const QModelIndex& indx);
+    KContacts::Addressee getAddressee(int row, const QModelIndex &parent) override;
+    KContacts::Addressee getAddressee(const QModelIndex& indx) override;
 
-    bool isSearchOngoing(const QString& uid);
+    bool isSearchOngoing(const QString& uid) override;
+
 #ifdef HAVE_AKONADI
-public slots:
+public Q_SLOTS:
     void searchResult( KJob* );
 #endif
-signals:
-    //
-    void addresseeFound( const QString&, const KContacts::Addressee& );
-    void addresseeNotFound( const QString& );
-
-    // error message when looking up the address for a UID
-    void lookupError( const QString&, const QString&);
-
-    // emitted when the search is finished, even if there was no result.
-    void finished( int );
-
 private:
-    QSet<QString>        mUidSearches;
     bool                 _akonadiUp;
 
 #ifdef HAVE_AKONADI
     Akonadi::Session *mSession;
     Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
-    Akonadi::ContactsTreeModel *_model;
 #else
     void *mSession;
     void *mMonitor;
-    void *_model;
 #endif
 };
 

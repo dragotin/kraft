@@ -40,14 +40,17 @@ QString localeDoubleToString(double val, const QLocale& loc)
 
 QString toDateString( const QDate& date, const QString& format )
 {
+    QLocale locale;
     if (format == Format::DateFormatIso) {
         return date.toString(Qt::ISODate);
     }
     if (format == DateFormatShort || format.isEmpty()) {
-        return date.toString(Qt::DefaultLocaleShortDate);
+        const QString shortDateFormat = locale.dateFormat(QLocale::ShortFormat);
+        return date.toString(shortDateFormat);
     }
     if (format == DateFormatLong) {
-        return date.toString(Qt::DefaultLocaleLongDate);
+        const QString longDateFormat = locale.dateFormat(QLocale::LongFormat);
+        return date.toString(longDateFormat);
     }
     if (format == DateFormatRFC) {
         return date.toString(Qt::RFC2822Date);

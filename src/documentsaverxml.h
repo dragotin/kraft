@@ -22,7 +22,6 @@
 #include "geld.h"
 
 #include <QDir>
-#include <QXmlSchema>
 #include <QDomDocument>
 
 class KraftDoc;

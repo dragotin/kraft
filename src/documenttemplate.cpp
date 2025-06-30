@@ -1,5 +1,5 @@
 /***************************************************************************
-            Template for Kraft Documents - Grantlee and ctemplate
+            KTextTemplate based template for Kraft Documents
                              -------------------
     begin                : March 2020
     copyright            : (C) 2020 by Klaas Freitag
@@ -18,7 +18,6 @@
 #include "documenttemplate.h"
 #include "defaultprovider.h"
 #include "epcqrcode.h"
-#include "texttemplate.h"
 #include "grantleetemplate.h"
 #include "format.h"
 #include "kraftsettings.h"
@@ -26,9 +25,9 @@
 #include "documentman.h"
 #include "kraftdoc.h"
 #include "docposition.h"
-#include "reportitem.h"
 #include "reportitemlist.h"
 
+#include <QTemporaryFile>
 #include <klocalizedstring.h>
 
 #define TAG( THE_TAG )  QStringLiteral( THE_TAG )
@@ -36,35 +35,15 @@
 
 // ==================================================================================
 
-namespace {
-
-QString escapeTrml2pdfXML( const QString& str )
-{
-    return( str.toHtmlEscaped() );
-}
-
-QString rmlString( const QString& str, const QString& paraStyle = QString() )
-{
-    QString rml;
-
-    QString style( paraStyle );
-    if ( style.isEmpty() ) style = QStringLiteral("text");
-
-    // QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
-    QStringList li = escapeTrml2pdfXML( str ).split( "\n" );
-    rml = QString( "<para style=\"%1\">" ).arg( style );
-    rml += li.join( QString( "</para><para style=\"%1\">" ).arg( style ) ) + "</para>";
-    // qDebug () << "Returning " << rml;
-    return rml;
-}
+namespace Template {
 
 QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
 {
     QVariantHash hash;
 
     QString n = contact.realName();
-    if (n.isEmpty()) n = QStringLiteral("Not set!");
-    hash.insert( QStringLiteral( "NAME" ),  escapeTrml2pdfXML(n) );
+    if (n.isEmpty()) n = TAG("Not set!");
+    hash.insert( TAG( "NAME" ),  n.toHtmlEscaped());
 
     if( contact.isEmpty() ) return hash;
 
@@ -73,13 +52,13 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( co.isEmpty() ) {
         co = contact.realName();
     }
-    hash.insert( QStringLiteral( "ORGANISATION" ), escapeTrml2pdfXML( co ) );
+    hash.insert( TAG( "ORGANISATION" ), co.toHtmlEscaped());
     const QUrl url = contact.url().url();
-    hash.insert( QStringLiteral( "URL" ),   escapeTrml2pdfXML( url.url() ) );
-    hash.insert( QStringLiteral( "EMAIL" ), escapeTrml2pdfXML( contact.preferredEmail() ) );
-    hash.insert( QStringLiteral( "PHONE" ), escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Work ).number() ) );
-    hash.insert( QStringLiteral( "FAX" ),   escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Fax ).number() ) );
-    hash.insert( QStringLiteral( "CELL" ),  escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Cell ).number() ) );
+    hash.insert( TAG( "URL" ),   url.url().toHtmlEscaped());
+    hash.insert( TAG( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
+    hash.insert( TAG( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
+    hash.insert( TAG( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
+    hash.insert( TAG( "MOBILE" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
 
     KContacts::Address address;
     address = contact.address( KContacts::Address::Pref );
@@ -90,25 +69,16 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
     if( address.isEmpty() )
         address = contact.address(KContacts::Address::Postal );
 
-    hash.insert( QStringLiteral( "POSTBOX" ),
-                 escapeTrml2pdfXML( address.postOfficeBox() ) );
+    hash.insert( TAG( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
 
-    hash.insert( QStringLiteral( "EXTENDED" ),
-                 escapeTrml2pdfXML( address.extended() ) );
-    hash.insert( QStringLiteral( "STREET" ),
-                 escapeTrml2pdfXML( address.street() ) );
-    hash.insert( QStringLiteral( "LOCALITY" ),
-                 escapeTrml2pdfXML( address.locality() ) );
-    hash.insert( QStringLiteral( "REGION" ),
-                 escapeTrml2pdfXML( address.region() ) );
-    hash.insert( QStringLiteral( "POSTCODE" ),
-                 escapeTrml2pdfXML( address.postalCode() ) );
-    hash.insert( QStringLiteral( "COUNTRY" ),
-                 escapeTrml2pdfXML( address.country() ) );
-    hash.insert( QStringLiteral( "REGION" ),
-                 escapeTrml2pdfXML( address.region() ) );
-    hash.insert( QStringLiteral("LABEL" ),
-                 escapeTrml2pdfXML( address.label() ) );
+    hash.insert( TAG( "EXTENDED" ), address.extended().toHtmlEscaped());
+    hash.insert( TAG( "STREET" ), address.street().toHtmlEscaped());
+    hash.insert( TAG( "LOCALITY" ), address.locality().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG( "POSTCODE" ), address.postalCode().toHtmlEscaped());
+    hash.insert( TAG( "COUNTRY" ), address.country().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG("LABEL" ), address.label().toHtmlEscaped());
     return hash;
 }
 
@@ -143,6 +113,11 @@ QVariantHash labelVariantHash()
 
     return hash;
 }
+}
+
+namespace {
+
+
 
 QVariantHash kraftVariantHash()
 {
@@ -166,31 +141,6 @@ QVariantHash kraftVariantHash()
         hash.insert(TAG("HOSTNAME"), h);
 
     return hash;
-}
-
-void variantHashToTemplate( TextTemplate& tmpl, const QString& prefix, const QVariantHash& hash)
-{
-    QVariantHash::const_iterator i;
-    for (i = hash.constBegin(); i != hash.constEnd(); ++i) {
-        QString key = i.key();
-        if (!prefix.isEmpty()) {
-            key = QString("%1_%2").arg(prefix).arg(i.key());
-        }
-        tmpl.setValue(key, i.value().toString());
-    }
-}
-
-void contactToTemplate( TextTemplate& tmpl, const QString& prefix, const KContacts::Addressee& contact )
-{
-    const QVariantHash hash = contactToVariantHash(contact);
-
-    variantHashToTemplate(tmpl, prefix, hash);
-}
-
-void addLabelsToTemplate(TextTemplate& tmpl)
-{
-    const QVariantHash hash = labelVariantHash();
-    variantHashToTemplate(tmpl, QStringLiteral("LAB"), hash);
 }
 
 QString generateEPCQRCodeFile(KraftDoc *doc)
@@ -226,201 +176,9 @@ QString generateEPCQRCodeFile(KraftDoc *doc)
 // ==================================================================================
 
 DocumentTemplate::DocumentTemplate( const QString& tmplFile )
-      :_tmplFile(tmplFile)
+    :_tmplFile(tmplFile)
 {
 
-}
-
-// ==================================================================================
-CTemplateDocumentTemplate::CTemplateDocumentTemplate(const QString& tmplFile)
-    :DocumentTemplate(tmplFile)
-{
-
-}
-
-const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KContacts::Addressee& myContact,
-                                                const KContacts::Addressee& customerContact)
-{
-    if (uuid.isEmpty()) {
-        return QString();
-    }
-    // create a text template
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(_tmplFile);
-
-    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
-
-    /* replace the placeholders */
-    /* A placeholder has the format <!-- %VALUE --> */
-
-    const DocPositionList posList = doc->positions();
-
-    bool individualTax = posList.hasIndividualTaxes();
-    /* Check for the tax settings: If the taxType is not the same for all items,
- * we have individual Tax setting and show the tax marker etc.
- */
-#if 0
-    DocPositionBase::TaxType ttype = posList.listTaxation();
-    for ( DocPositionBase *p : posList) {
-        DocPositionBase pos = *p;
-        if( ttype == DocPositionBase::TaxInvalid  ) {
-            ttype = pos.taxType();
-        } else {
-            if( ttype != pos.taxType() ) { // different from previous one?
-                individualTax = true;
-                break;
-            }
-        }
-    }
-#endif
-    /* now loop over the items to fill the template structures */
-    int specialPosCnt{0};
-    int taxFreeCnt{0}, reducedTaxCnt{0}, fullTaxCnt{0};
-    QString h;
-
-    for (DocPositionBase *p : posList) {
-        DocPosition *posPtr = static_cast<DocPosition*>(p);
-        DocPosition pos = *posPtr;
-        tmpl.createDictionary( "POSITIONS" );
-        tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" ), QString::number(pos.positionNumber()));
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),
-                       rmlString(pos.text(), QString( "text" )));
-
-        // format the amount value of the item, do not show the precision if there is no fraction
-        double amount = pos.amount();
-        h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale());
-
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
-        h = pos.unit().einheitSingular();
-        if (pos.amount() > 1.0) h = pos.unit().einheitPlural();
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML(h) );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toLocaleString() );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.overallPrice().toLocaleString() );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), QString() );
-
-        QString taxType;
-
-        if( individualTax ) {
-            if( pos.taxType() == 1 ) {
-                taxFreeCnt++;
-                taxType = "TAX_FREE";
-            } else if( pos.taxType() == 2 ) {
-                reducedTaxCnt++;
-                taxType = "REDUCED_TAX";
-            } else {
-                // ATTENTION: Default for all non known tax types is full tax.
-                fullTaxCnt++;
-                taxType = "FULL_TAX";
-            }
-
-            tmpl.createSubDictionary( "POSITIONS", taxType );
-        }
-
-        /* item kind: Normal, alternative or demand item. For normal items, the kind is empty.
-   */
-        if (pos.type() == DocPositionBase::Demand || pos.type() == DocPositionBase::Alternative) {
-            specialPosCnt++;
-        }
-    }
-    if ( specialPosCnt ) {
-        tmpl.createDictionary( "SPECIAL_POS" );
-        tmpl.setValue( DICT("SPECIAL_POS"), TAG("COUNT"), QString::number( specialPosCnt ) );
-        tmpl.setValue( DICT("SPECIAL_POS"), TAG("LAB_SPECIAL_ITEMS"),
-                       i18n("Please note: This offer contains %1 alternative or demand positions, printed in italic font. These do not add to the overall sum.",
-                            QString::number( specialPosCnt ) ) );
-    }
-
-    /*
- * Just show the tax index if we have multiple tax settings
- */
-    if( individualTax ) {
-        tmpl.createDictionary( "TAX_FREE_ITEMS" );
-        tmpl.setValue( DICT("TAX_FREE_ITEMS"), TAG("COUNT"), QString::number( taxFreeCnt ));
-        tmpl.setValue( DICT("TAX_FREE_ITEMS"), TAG( "LAB_TAX_FREE_ITEMS"),
-                       i18n("tax free items (%1 pcs.)", QString::number( taxFreeCnt )) );
-
-        tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
-        tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("COUNT"), QString::number( reducedTaxCnt ));
-        tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), doc->reducedTaxPercentStr());
-        tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("LAB_TAX_REDUCED_ITEMS"),
-                       i18n("items with reduced tax of %1% (%2 pcs.)",
-                            doc->reducedTaxPercentStr(),
-                            QString::number(reducedTaxCnt)) );
-
-
-        tmpl.createDictionary( "FULL_TAX_ITEMS" );
-        tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("COUNT"), QString::number( fullTaxCnt ));
-        tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), doc->fullTaxPercentStr() );
-        tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("LAB_TAX_FULL_ITEMS"),
-                       i18n("No label: items with full tax of %1% (%2 pcs.)",
-                            doc->fullTaxPercentStr(), QString::number( fullTaxCnt )));
-    }
-
-    /* now replace stuff in the whole document */
-    tmpl.setValue( TAG( "DATE" ), Format::toDateString(doc->date(), KraftSettings::self()->dateFormat()));
-    tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( doc->docType() ) );
-    tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( doc->address() ) );
-
-    contactToTemplate( tmpl, "CLIENT", customerContact );
-    contactToTemplate( tmpl, "MY", myContact );
-
-    tmpl.setValue( TAG( "DOCID" ),   escapeTrml2pdfXML( doc->ident() ) );
-    tmpl.setValue( TAG( "PROJECTLABEL" ),   escapeTrml2pdfXML( doc->projectLabel() ) );
-    tmpl.setValue( TAG( "SALUT" ),   escapeTrml2pdfXML( doc->salut() ) );
-    tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( doc->goodbye() ) );
-    tmpl.setValue( TAG( "PRETEXT" ),   rmlString( doc->preText() ) );
-    tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( doc->postText() ) );
-    tmpl.setValue( TAG( "BRUTTOSUM" ), doc->bruttoSumStr());
-    tmpl.setValue( TAG( "NETTOSUM" ),  doc->nettoSumStr());
-
-    // qDebug () << "Tax in archive document: " << h;
-    if ( doc->reducedTaxSum().toLong() != 0 ) {
-        tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
-        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
-                       doc->reducedTaxSumStr());
-        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG("REDUCED_TAX"), doc->reducedTaxPercentStr());
-        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG("REDUCED_TAX_LABEL"), i18n("reduced VAT"));
-    }
-    if ( doc->fullTaxSum().toLong() != 0 ) {
-        tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
-        tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
-                       doc->fullTaxSumStr());
-        tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), doc->fullTaxPercentStr() );
-        tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
-    }
-
-    // legacy values, not used in the official doc
-    tmpl.setValue( TAG( "VAT" ), doc->fullTaxPercentStr());
-    tmpl.setValue( TAG( "VATSUM" ), doc->fullTaxSumStr());
-
-    addLabelsToTemplate(tmpl);
-
-    delete doc;
-#if 0
-    /* this is still disabled as reportlab cannot read SVG files
-     * When it can or the EPC QR Code can be generated as PNG, this needs to be added
-     * to the template:
-     *
-     *   {{#EPC_QR_CODE}}
-     *    <hr/>
-     *    <illustration width="120" height="120">
-     *      <image x="5" y="5" width="110" height="110" file="{{SVG_FILE_NAME}}" />
-     *    </illustration>
-     *    {{/EPC_QR_CODE}}
-     */
-
-    QString qrcodefile;
-    if (archDoc->isInvoice()) {
-        qrcodefile = generateEPCQRCodeFile(archDoc);
-        _tmpFiles.append(qrcodefile);
-        tmpl.createDictionary( DICT( "EPC_QR_CODE" ) );
-        tmpl.setValue( DICT("EPC_QR_CODE"), TAG( "SVG_FILE_NAME" ), qrcodefile);
-    }
-#endif
-    // finalize the template
-    const QString output = tmpl.expand();
-
-    return output;
 }
 
 // ==================================================================================
@@ -432,8 +190,8 @@ GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
 }
 
 const QString GrantleeDocumentTemplate::expand( const QString& uuid,
-                                               const KContacts::Addressee &myContact,
-                                               const KContacts::Addressee &customerContact)
+                                                const KContacts::Addressee &myContact,
+                                                const KContacts::Addressee &customerContact)
 {
 
     // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP;
@@ -461,13 +219,13 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
         gtmpl.addToObjMapping("doc", doc);
 
-        const auto mtt = contactToVariantHash(myContact);
+        const auto mtt = Template::contactToVariantHash(myContact);
         gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
 
-        const auto cct = contactToVariantHash(customerContact);
+        const auto cct = Template::contactToVariantHash(customerContact);
         gtmpl.addToMappingHash(QStringLiteral("customer"), cct);
 
-        const QVariantHash labelHash = labelVariantHash();
+        const QVariantHash labelHash = Template::labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
 
         // -- save the EPC QR Code which is written into a temp file

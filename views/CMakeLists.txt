@@ -1,14 +1,15 @@
 ########### install files ###############
 
 install(FILES
-	docdigest.thtml
-	identity.thtml
-	kraftdoc_ro.thtml
-	monthdigest.thtml
-	systemviewdetails.thtml
-	systemviewerror.thtml
-	yeardigest.thtml
-
-	welcome.gtmpl
+	contact.gtmpl
 	docdigest.gtmpl
-	DESTINATION ${DATA_INSTALL_DIR}/kraft/views)
+	identity.gtmpl
+	kraftdoc_ro.gtmpl
+	monthdigest.gtmpl
+	yeardigest.gtmpl
+	systemviewdetails.gtmpl
+	welcome.gtmpl
+
+	systemviewerror.gtmpl
+
+	DESTINATION ${KDE_INSTALL_DATADIR}/kraft/views)

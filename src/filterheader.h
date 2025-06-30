@@ -36,11 +36,11 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
   public:
     FilterHeader(QWidget *parent = 0, QTreeWidget *tree = 0);
 
-  public slots:
+  public Q_SLOTS:
     void clear();
     void setListView( QTreeWidget* );
 
-private slots:
+private Q_SLOTS:
     void slotTextChanged( const QString& filter );
 
   private:

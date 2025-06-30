@@ -39,7 +39,7 @@ void init_test_db()
 
 class T_XmlSaver: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
 
     // copies the example xml document to a temporary path that simulates the
     // storage tree of kraft.
@@ -144,23 +144,23 @@ private slots:
         DocPositionList list = doc.positions();
         QCOMPARE(list.count(), 4);
 
-        DocPosition *dp = static_cast<DocPosition*>(list[0]);
-        QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
+        DocPosition *dp = list[0];
+        QCOMPARE(dp->type(), DocPosition::Type::Position);
         QCOMPARE(dp->text(), QStringLiteral("first item"));
         QCOMPARE(dp->amount(), 8.4);
         QCOMPARE(dp->unit().einheitSingular(), QStringLiteral("sm"));
-        QCOMPARE(dp->taxType(), DocPositionBase::TaxType::TaxFull);
+        QCOMPARE(dp->taxType(), DocPosition::Tax::Full);
         QCOMPARE(dp->unitPrice().toDouble(), 22.21);
         QCOMPARE(dp->overallPrice().toDouble(), 186.56);
 
         QVERIFY(dp->hasTag("Work"));
 
-        dp = static_cast<DocPosition*>(list[1]);
-        QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
+        dp = list[1];
+        QCOMPARE(dp->type(), DocPosition::Type::Position);
         QCOMPARE(dp->text(), QStringLiteral("second item"));
         QCOMPARE(dp->amount(), 4.4);
         QCOMPARE(dp->unit().einheitSingular(), QStringLiteral("cbm"));
-        QCOMPARE(dp->taxType(), DocPositionBase::TaxType::TaxReduced);
+        QCOMPARE(dp->taxType(), DocPosition::Tax::Reduced);
         QCOMPARE(dp->unitPrice().toDouble(), 33.33);
         QCOMPARE(dp->overallPrice().toDouble(), 146.65);
 

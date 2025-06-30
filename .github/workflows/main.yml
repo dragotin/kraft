@@ -5,38 +5,44 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   appimage-build:
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.3
+    container: opensuse/leap:15.6
     steps:
       # need to install Git >= 2.18 before checkout according to GitHub actions
       # we can just install all the dependencies beforehand, though
       - name: Install dependencies
         run: |
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_15.6 QT6 && \
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.6 KF && \
           zypper install -y \
-            gcc \
-            gcc-c++ \
             cmake \
             make \
             wget \
             git \
-            extra-cmake-modules \
-            libctemplate-devel pkgconf \
-            "cmake(Grantlee5)" \
-            "cmake(KF5Codecs)" \
-            "cmake(KF5Config)" \
-            "cmake(KF5Contacts)" \
-            "cmake(KF5I18n)" \
-            "cmake(Qt5Core)" \
-            "cmake(Qt5Concurrent)" \
-            "cmake(Qt5Gui)" \
-            "cmake(Qt5Sql)" \
-            "cmake(Qt5Test)" \
-            "cmake(Qt5Widgets)" \
-            "cmake(Qt5Xml)" \
-            "cmake(Qt5XmlPatterns)" \
-            "cmake(Qt5Svg)" \
-            libQt5Sql5-sqlite \
-            libQt5Sql5-mysql \
-            libqt5-qtdeclarative-tools
+            pkgconf \
+            "cmake(KF6TextTemplate)" \
+            "cmake(KF6Codecs)" \
+            "cmake(KF6Contacts)" \
+            "cmake(KF6I18n)" \
+            "cmake(Qt6Core)" \
+            "cmake(Qt6Concurrent)" \
+            "cmake(Qt6Gui)" \
+            "cmake(Qt6Sql)" \
+            "cmake(Qt6Test)" \
+            "cmake(Qt6Widgets)" \
+            "cmake(Qt6Xml)" \
+            "cmake(Qt6Svg)" \
+             qt6-sql-sqlite \
+             qt6-sql-mysql  \
+             qt6-declarative-tools \
+             kf6-ktexttemplate \
+             breeze6-style \
+             libcairo-gobject2 \
+             libpango-1_0-0 \
+            && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
+            && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
+            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-13 50 \
+            && update-alternatives --install /usr/bin/cpp cpp /usr/bin/g++-13 50
+
 
       - uses: actions/checkout@v4
         with:
@@ -63,7 +69,7 @@ jobs:
     name: Create release and upload artifacts
     needs:
       - appimage-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4

@@ -46,9 +46,8 @@ bool KraftObj::hasAttribute(const QString& name)
 
 void KraftObj::setAttribute(const KraftAttrib& attrib)
 {
-    const QString name = attrib.name();
-
-    _attribs.insert(attrib.name(), attrib);
+    if (!attrib.name().isEmpty())
+        _attribs.insert(attrib.name(), attrib);
 }
 
 void KraftObj::removeAttribute(const QString& name)
@@ -84,6 +83,7 @@ bool KraftObj::hasTag(const QString& tag) const
 
 void KraftObj::setTags(const QStringList& list)
 {
+    _tags.clear();
     for( const auto &l : list) {
         addTag(l);
     }

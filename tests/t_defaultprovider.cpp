@@ -3,6 +3,7 @@
 #include <QSql>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QStandardPaths>
 
 #include "defaultprovider.h"
 
@@ -20,7 +21,7 @@ void createTestFile( const QString& testFile, const QString& content = QString()
     QVERIFY (file.open(QIODevice::WriteOnly));
     {
         QTextStream stream(&file);
-        stream << c << endl;
+        stream << c << Qt::endl;
     }
 }
 
@@ -32,13 +33,13 @@ class T_Defaultprovider: public QObject {
 private:
     QString _systemDir;
 
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         const QStringList dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
         const QString home = QDir::homePath();
         const QString appName = qAppName();
-        const QString testDir = QString("%1/.local/share/%2").arg(home).arg(appName);
+        const QString testDir = QString("%1/.local/share/%2").arg(home, appName);
 
         int indx = dirs.indexOf(testDir);
         QVERIFY(indx > -1);

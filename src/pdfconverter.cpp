@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QTemporaryFile>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QDebug>
 #include <QApplication>
@@ -33,113 +32,6 @@ void PDFConverter::slotReceivedStderr( )
     QByteArray arr  = mProcess->readAllStandardError();
     mErrors.append( arr );
 }
-
-// ====================================================================
-
-ReportLabPDFConverter::ReportLabPDFConverter()
-    :PDFConverter()
-{
-
-}
-
-
-
-void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &outputFile)
-{
-    // qDebug() << "Report BASE:\n" << templ;
-
-    if ( sourceFile.isEmpty() ) {
-        return;
-    }
-
-    // findTrml2Pdf returns a list of command line parts for the converter, such as
-    // /usr/bin/pyhton3 /usr/local/share/erml2pdf.py
-    QStringList rmlbin = DefaultProvider::self()->locatePythonTool("erml2pdf.py");
-
-    if ( ! rmlbin.size() ) {
-      emit converterError(ConvError::TrmlToolFail);
-    }
-
-    QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
-
-    QStringList args;
-
-    QString prg = rmlbin.at(0);
-
-    if( rmlbin.size() > 1 ) {
-        // something like "python3 erml2pdf.py
-        args.append(rmlbin.at(1));
-    }
-
-    args.append(sourceFile);
-
-    mFile.setFileName(outputFile);
-    mOutputSize = 0;
-    if ( mFile.open( QIODevice::WriteOnly ) ) {
-        qDebug() << "Converting " << mFile.fileName() << "using" << prg << args.join(QChar(' '));
-        mProcess = new QProcess();
-        connect(mProcess, &QProcess::readyReadStandardOutput, this, &ReportLabPDFConverter::slotReceivedStdout);
-        connect(mProcess, &QProcess::readyReadStandardError,  this, &ReportLabPDFConverter::slotReceivedStderr);
-        connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                this, &ReportLabPDFConverter::trml2pdfFinished);
-
-        mProcess->setProgram( prg );
-        mProcess->setArguments(args);
-        mTargetStream.setDevice( &mFile );
-
-        mProcess->start( );
-
-        if (!mProcess->waitForStarted(1000)) {
-            emit converterError(ConvError::TrmlToolFail);
-        }
-    }
-}
-
-void ReportLabPDFConverter::slotReceivedStdout( )
-{
-    QByteArray arr  = mProcess->readAllStandardOutput();
-    mOutputSize += arr.size();
-    mTargetStream.writeRawData( arr.data(), arr.size());
-}
-
-
-void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
-{
-    if( mFile.isOpen() ) {
-        mFile.close();
-    }
-    Q_UNUSED(stat)
-    QApplication::restoreOverrideCursor();
-
-    // qDebug () << "PDF Creation Process finished with status " << exitStatus;
-    // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
-    if ( exitCode == 0 ) {
-        QFileInfo fi(mFile.fileName());
-        if( fi.exists() ) {
-            emit docAvailable( mFile.fileName() );
-            if( mProcess) {
-                const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
-                QFile::remove(rmlFile); // remove the rmlFile
-            }
-        } else {
-            emit  converterError(ConvError::TargetFileMissing);
-        }
-    } else {
-        if( mErrors.contains(QLatin1String("No module named 'reportlab"))) {
-            emit converterError(ConvError::NoReportLabMod);
-        } else if (mErrors.contains("No module named 'PyPDF2")){
-            emit converterError(ConvError::NoPyPDFMod);
-        } else {
-            qDebug() << "Trml2Pdf Error:" << mErrors;
-            emit converterError(ConvError::UnknownError);
-        }
-    }
-    mProcess->deleteLater();
-    mProcess = nullptr;
-
-    mFile.setFileName( QString() );
-}
-
 
 // ====================================================================
 
@@ -161,7 +53,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
 
     QFileInfo prgInfo(prg);
     if ( ! prgInfo.exists() || ! prgInfo.isExecutable() ) {
-        emit converterError(ConvError::WeasyPrintNotFound);
+        Q_EMIT converterError(ConvError::WeasyPrintNotFound);
         return;
     }
 
@@ -209,6 +101,11 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         mFile.close();
     }
     Q_UNUSED(stat)
+    if (mProcess == nullptr) {
+        qDebug() << "Unexpected: mProcess uninitialized!";
+        Q_EMIT converterError(ConvError::UnknownError);
+        return;
+    }
     QApplication::restoreOverrideCursor();
 
     // qDebug () << "PDF Creation Process finished with status " << exitStatus;
@@ -216,20 +113,22 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
     if ( exitCode == 0 ) {
         QFileInfo fi(mFile.fileName());
         if( fi.exists() ) {
-            emit docAvailable( mFile.fileName() );
-            if(mProcess) {
-                const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
-                QFile::remove(htmlFile); // remove the rmlFile
-            }
+            Q_EMIT docAvailable( mFile.fileName() );
+	    const auto args = mProcess->arguments();
+            const QString htmlFile = args.first(); // the file name of the temp rmlfile
+            QFile::remove(htmlFile); // remove the rmlFile
         } else {
-            emit  converterError(ConvError::TargetFileMissing);
+            Q_EMIT  converterError(ConvError::TargetFileMissing);
         }
     } else {
         qDebug() << "Weasyprint failed: " << mProcess->arguments();
-        emit converterError(ConvError::UnknownError);
+        qDebug() << "Weasyprint error output:" << mErrors;
+        Q_EMIT converterError(ConvError::WeasyPrintRunFail);
     }
-    mProcess->deleteLater();
-    mProcess = nullptr;
+    if (mProcess) {
+        mProcess->deleteLater();
+        mProcess = nullptr;
+    }
 
     mFile.setFileName( QString() );
 }

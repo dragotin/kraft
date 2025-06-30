@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <QObject>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QDebug>
@@ -63,7 +64,7 @@ void TimeCalcDialog::accept()
   }
 
   if( _part && _part->isDirty() ) {
-    emit timeCalcPartChanged(_part);
+    Q_EMIT timeCalcPartChanged(_part);
   }
 
   CalcDialogBase::accept();

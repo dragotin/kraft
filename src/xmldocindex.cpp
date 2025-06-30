@@ -27,15 +27,10 @@
 
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
 QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
-QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
-QFuture<void> XmlDocIndex::_future;
+QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMultiMap<QDate, QString>();
 
 XmlDocIndex::XmlDocIndex()
 {
-    if (_future.isRunning()) {
-        qDebug() << "===== waiting to finish indexing";
-        _future.waitForFinished();
-    }
 }
 
 void XmlDocIndex::setBasePath(const QString& basePath)
@@ -48,13 +43,6 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     if (!fi.exists()) {
         QElapsedTimer timer;
         timer.start();
-#if 0
-        _future = QtConcurrent::run([=]() {
-            // Code in this block will run in another thread
-            buildIndexFile();
-        });
-        _future.waitForFinished();
-#endif
         buildIndexFile();
         fi.refresh();
     }
@@ -63,45 +51,67 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     }
 }
 
-const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
+const QFileInfo XmlDocIndex::fullPathWithExtension(const QString& subPath, const QString& extension)
 {
-    QFileInfo re;
-    if (!ident.isEmpty() && _identMap.contains(ident)) {
-        const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
-        re.setFile(dir, _identMap[ident] + ".xml");
-    }
-    return re;
-}
-
-const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& extension)
-{
-    QString re;
-    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
-        re = _uuidMap[uuid];
-        if (!extension.isEmpty()) {
-            if (extension.startsWith('.'))
-                re += extension;
-            else
-                re = re + '.' + extension;
-        }
-    }
     QFileInfo fi;
-    const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
+    if (subPath.isEmpty())
+        return fi;
 
-    if (!re.isEmpty())
-        fi.setFile(QDir(dir), re);
+    QString re{subPath};
+    if (!extension.isEmpty()) {
+        if (!extension.startsWith('.')) {
+            re.append('.');
+        }
+        re.append(extension);
+    }
+    const auto pathSelect{extension.endsWith("pdf", Qt::CaseInsensitive) ? DefaultProvider::KraftV2Dir::PdfDocs : DefaultProvider::KraftV2Dir::XmlDocs};
+    const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
+
+    fi.setFile(QDir(dir), re);
     return fi;
+
 }
 
 const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
 {
-    return pathByUuid(uuid, ".xml");
+    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
+        const QString sub{_uuidMap[uuid]};
+        return fullPathWithExtension(sub, ".xml");
+    }
+    return QFileInfo();
+}
+
+const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
+{
+    QFileInfo re;
+
+    if (!ident.isEmpty() && _identMap.contains(ident)) {
+        const QString sub{_identMap[ident]};
+        return fullPathWithExtension(sub, ".xml");
+    }
+    return re;
 }
 
 // so far, for the pdf path, only the extension is changed from xml to pdf.
 const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
-    return pathByUuid(uuid, ".pdf");
+    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
+        const QString sub{_uuidMap[uuid]};
+        return fullPathWithExtension(sub, ".pdf");
+    }
+    return QFileInfo();
+}
+
+// so far, for the pdf path, only the extension is changed from xml to pdf.
+const QFileInfo XmlDocIndex::pdfPathByIdent(const QString& ident)
+{
+    QFileInfo re;
+
+    if (!ident.isEmpty() && _identMap.contains(ident)) {
+        const QString sub{_identMap[ident]};
+        return fullPathWithExtension(sub, ".pdf");
+    }
+    return re;
 }
 
 bool XmlDocIndex::pdfOutdated(const QString& uuid)
@@ -139,7 +149,9 @@ DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
         // dd.setClientId()
         dd.setDate(QDate::fromString(obj["date"].toString(), Qt::ISODate));
         dd.setIdent(obj["ident"].toString());
-        dd.setStateStr(obj["state"].toString());
+        KraftDocState state;
+        state.setStateFromString(obj["state"].toString());
+        dd.setState(state);
         dd.setUuid(obj["uuid"].toString());
         dd.setProjectLabel(obj["prjtLabel"].toString());
         dd.setLastModified(QDateTime::fromString(obj["lastModified"].toString(), Qt::ISODate));
@@ -219,7 +231,7 @@ void XmlDocIndex::buildIndexFile()
 
     const QDir::Filters filter{QDir::Dirs|QDir::NoDotAndDotDot};
     QDir d(dir);
-    QFileInfoList years = d.entryInfoList(filter, QDir::Name);
+    const QFileInfoList years = d.entryInfoList(filter, QDir::Name);
 
     QJsonObject jsonDoc; // digest of all docs.
     QJsonObject yearsMap;
@@ -228,12 +240,12 @@ void XmlDocIndex::buildIndexFile()
         QJsonArray docArr;
 
         QDir dMonth{yearFi.absoluteFilePath()};
-        QFileInfoList monthEntries = dMonth.entryInfoList(filter, QDir::Name);
+        const QFileInfoList monthEntries = dMonth.entryInfoList(filter, QDir::Name);
 
         for (const QFileInfo& mFi : monthEntries) {
             QDir dDoc{mFi.absoluteFilePath()};
 
-            QFileInfoList docEntries = dDoc.entryInfoList(QDir::Files, QDir::NoSort);
+            const QFileInfoList docEntries = dDoc.entryInfoList(QDir::Files, QDir::NoSort);
 
             for (const QFileInfo& docFi : docEntries) {
                 if (DocumentMan::self()->loadMetaFromFilename(docFi.absoluteFilePath(), &doc)) {

@@ -86,7 +86,7 @@ public:
 private:
     static SaveResult save(const QMap<QString, NumberCycle>& ncs);
 
-    static int increaseCounter(const QString& nc);
+    static int increaseLocalCounter(const QString& nc);
     static bool tryLock();
     static void unlock();
 };

@@ -16,8 +16,6 @@
  ***************************************************************************/
 #include <array>
 
-#include <QtGui>
-#include <QtCore>
 #include <QItemSelectionModel>
 #include <QLocale>
 #include <QDebug>
@@ -31,6 +29,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStackedWidget>
+#include <QContextMenuEvent>
 
 #include <KLocalizedString>
 
@@ -51,7 +50,7 @@ AllDocsView::AllDocsView( QWidget *parent )
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
 
-  box->setMargin( 0 );
+  box->setContentsMargins(0,0,0,0);
   box->setSpacing( 0 );
 
   _searchLine = new QLineEdit(this);
@@ -117,8 +116,8 @@ void AllDocsView::slotAmountFilterChanged(int entryNo)
 
 void AllDocsView::slotSearchTextChanged(const QString& newStr )
 {
-    mTableModel->setFilterRegExp(newStr);
-    mDateModel->setFilterRegExp(newStr);
+    mTableModel->setFilterRegularExpression(newStr);
+    mDateModel->setFilterRegularExpression(newStr);
 }
 
 void AllDocsView::initDetailViewActions(const std::array<QAction *, 4> actions)
@@ -140,7 +139,7 @@ QWidget* AllDocsView::initializeTreeWidget()
 
   //Add treewidgets to the toolbox: All docs view
   QVBoxLayout *vb1 = new QVBoxLayout;
-  vb1->setMargin(0);
+  vb1->setContentsMargins(0,0,0,0);
   _stack = new QStackedWidget(this);
   _stack->addWidget(_tableView);
   _stack->addWidget(_dateView);
@@ -360,6 +359,12 @@ QString AllDocsView::currentDocumentIdent( ) const
     return id;
 }
 
+void AllDocsView::setErrorMsg(const QString& header, const QString& details)
+{
+    // FIXME: Show in a more prominent and user friendly way.
+    mAllViewDetails->setErrorStrings(header, details);
+}
+
 void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 {
     Q_UNUSED(previous);
@@ -383,8 +388,8 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         /* get the corresponding document id */
         if( isDoc ) {
             const DocDigest& digest = model->digest( mCurrentlySelected );
-            emit docSelected(digest.uuid());
-            mAllViewDetails->slotShowDocDetails( digest );
+            mAllViewDetails->slotShowDocDetails(digest);
+            Q_EMIT docSelected(digest.uuid());
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                                     DocumentModel::Treestruct_Type,
@@ -411,7 +416,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
-        emit docSelected( QString() );
+        Q_EMIT docSelected( QString() );
         mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

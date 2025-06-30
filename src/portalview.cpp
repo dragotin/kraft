@@ -34,8 +34,8 @@
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "reportgenerator.h"
-#include "texttemplate.h"
 #include "format.h"
+#include "grantleetemplate.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
@@ -87,10 +87,10 @@ void PortalView::createIcons(const QSize& iconSize)
     // stackoverflow reports that svg icons cannot be scaled up.
     auto icon = [iconSize](const QIcon& i) {
         const QPixmap pix = i.pixmap(iconSize);
-        QIcon icon(pix);
-        QList<QSize> sizes = icon.availableSizes();
+        QIcon newicon(pix);
+        QList<QSize> sizes = newicon.availableSizes();
         qDebug() << "III" << sizes;
-        return icon;
+        return newicon;
     };
 
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
@@ -259,135 +259,139 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 {
     if ( ! mSystemBrowser ) return QString ("");
 
-    const QString templateName = ( htmlMsg.isNull() ? QString( "views/systemviewdetails.thtml" ) : QString ( "views/systemviewerror.thtml" ) );
+    const QString templateName = ( htmlMsg.isNull() ? QString( "views/systemviewdetails.gtmpl" ) : QString ( "views/systemviewerror.gtmpl" ) );
     const QString tmplFile = DefaultProvider::self()->locateFile( templateName );
 
-    // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
-    // It should be refactored.
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(tmplFile);
+    GrantleeFileTemplate tmpl(tmplFile);
     if( !tmpl.isOk() ) {
-        return QString ("");
+        return QString();
     }
+    bool ok;
 
     const QString logoFile = DefaultProvider::self()->locateFile("styles/pics/kraftapp_logo_trans.png" );
+    QObject obj;
 
-    tmpl.setValue( "KRAFT_LOGO_FILE", logoFile );
-    tmpl.setValue( "KRAFT_WEBSITE", i18n( "Kraft Website" ) );
+    obj.setProperty( "KRAFT_LOGO_FILE", logoFile );
+    obj.setProperty("KRAFT_WEBSITE", i18n( "Kraft Website" ));
     QDate d = QDate::currentDate();
-    tmpl.setValue( "KRAFT_COPYRIGHT_YEAR", QString::number(d.year()) );
-    tmpl.setValue( "KRAFT_LICENSE_TEXT", i18nc("The string is followed by a link to the GPL2 text", "Kraft is free software licensed under the"));
-    tmpl.setValue( "KRAFT_GITHUB", i18nc("The string is followed by the link to github", "Kraft is maintained on "));
-    tmpl.setValue( "KRAFT_AUTHORS", i18n("Authors"));
-    tmpl.setValue( "KRAFT_MAINTAINER", i18n("Developer and Maintainer"));
-    tmpl.setValue( "KRAFT_DEVELOPER", i18n("Developer"));
-    tmpl.setValue( "KRAFT_GRAPHICS", i18nc("The person who provided the logo graphics", "Logo design"));
-    tmpl.setValue( "KRAFT_MANUAL", i18nc("The person who provided the user manual", "User Manual"));
+    obj.setProperty("KRAFT_COPYRIGHT_YEAR", QString::number(d.year()));
+    obj.setProperty( "KRAFT_LICENSE_TEXT", i18nc("The string is followed by a link to the GPL2 text", "Kraft is free software licensed under the"));
+    obj.setProperty( "KRAFT_GITHUB", i18nc("The string is followed by the link to github", "Kraft is maintained on "));
+    obj.setProperty( "KRAFT_AUTHORS", i18n("Authors"));
+    obj.setProperty( "KRAFT_MAINTAINER", i18n("Developer and Maintainer"));
+    obj.setProperty( "KRAFT_DEVELOPER", i18n("Developer"));
+    obj.setProperty( "KRAFT_GRAPHICS", i18nc("The person who provided the logo graphics", "Logo design"));
+    obj.setProperty( "KRAFT_MANUAL", i18nc("The person who provided the user manual", "User Manual"));
     // kraft infos
-    tmpl.setValue("KRAFT_INTRO_DESC", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
-    tmpl.setValue( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );
-    tmpl.setValue( "KRAFT_VERSION_LABEL", i18n( "Kraft Version" ) );
-    tmpl.setValue( "KRAFT_VERSION", Kraft::Version::number());
-    tmpl.setValue( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
-    tmpl.setValue( "KRAFT_CODENAME", Kraft::Version::codeName() );
+    obj.setProperty("KRAFT_INTRO_DESC", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
+    obj.setProperty( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );
+    obj.setProperty( "KRAFT_VERSION_LABEL", i18n( "Kraft Version" ) );
+    obj.setProperty( "KRAFT_VERSION", Kraft::Version::number());
+    obj.setProperty( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
+    obj.setProperty( "KRAFT_CODENAME", Kraft::Version::codeName() );
 
     // string like
     // git sha <sha> on branch <branch> built on <host> (<distro>)
-    tmpl.setValue( "GIT_BRANCH", Kraft::Version::gitBranch());
-    tmpl.setValue( "GIT_SHA1", Kraft::Version::gitSha());
-    tmpl.setValue( "BUILD_HOST", Kraft::Version::buildHost());
-    tmpl.setValue( "BUILD_HOST_DISTRO", Kraft::Version::buildHostDistro());
-    tmpl.setValue( "GIT_BUILD_LABEL", i18n("Git Information"));
-    tmpl.setValue( "GIT_BUILD_STRING", QString("git sha %1 on branch %2 built on %3 (%4)")
+    obj.setProperty( "GIT_BRANCH", Kraft::Version::gitBranch());
+    obj.setProperty( "GIT_SHA1", Kraft::Version::gitSha());
+    obj.setProperty( "BUILD_HOST", Kraft::Version::buildHost());
+    obj.setProperty( "BUILD_HOST_DISTRO", Kraft::Version::buildHostDistro());
+    obj.setProperty( "GIT_BUILD_LABEL", i18n("Git Information"));
+    obj.setProperty( "GIT_BUILD_STRING", QString("git sha %1 on branch %2 built on %3 (%4)")
                    .arg(Kraft::Version::gitSha())
                    .arg(Kraft::Version::gitBranch())
                    .arg(Kraft::Version::buildHost())
                    .arg(Kraft::Version::buildHostDistro()));
 
-    const QString countryName = DefaultProvider::self()->locale()->nativeCountryName();
-    tmpl.setValue( "COUNTRY_SETTING_LABEL", i18n( "Country Setting" ) );
-    tmpl.setValue( "COUNTRY_SETTING", QString( "%1 (%2)" ).arg( countryName ).arg( DefaultProvider::self()->locale()->country() ));
+    const QString countryName = DefaultProvider::self()->locale()->nativeTerritoryName();
+    obj.setProperty( "COUNTRY_SETTING_LABEL", i18n( "Country Setting" ) );
+    obj.setProperty( "COUNTRY_SETTING", QString( "%1 (%2)" ).arg( countryName ).arg( DefaultProvider::self()->locale()->territory() ));
     const QString languageName = DefaultProvider::self()->locale()->nativeLanguageName();
-    tmpl.setValue( "LANGUAGE_SETTING_LABEL", i18n( "Language Setting" ) );
-    tmpl.setValue( "LANGUAGE_SETTING", QString( "%1 (%2)" ).arg( languageName ).arg( DefaultProvider::self()->locale()->language() ));
+    obj.setProperty( "LANGUAGE_SETTING_LABEL", i18n( "Language Setting" ) );
+    obj.setProperty( "LANGUAGE_SETTING", QString( "%1 (%2)" ).arg( languageName ).arg( DefaultProvider::self()->locale()->language() ));
 
     if ( !htmlMsg.isNull() ) {
-        tmpl.setValue( "ERROR_TITLE_LABEL", i18n( "Kraft Initialisation Problem" ) );
+        obj.setProperty( "ERROR_TITLE_LABEL", i18n( "Kraft Initialisation Problem" ) );
         QString errorMessage = i18n( "There is a initialisation error on your system. Kraft will not work that way." );
         errorMessage += htmlMsg;
-        tmpl.setValue( "ERROR_TEXT", errorMessage );
-        return tmpl.expand();
+        obj.setProperty( "ERROR_TEXT", errorMessage );
+        return tmpl.render(ok);
     }
 
     // database infos
-    tmpl.setValue( "DATABASE_TITLE_LABEL", i18n( "Database Information" ) );
-    tmpl.setValue( "DATABASE_NAME_LABEL", i18n( "Kraft database name" ) );
-    tmpl.setValue( "DATABASE_NAME", KraftDB::self()->databaseName() );
+    obj.setProperty( "DATABASE_TITLE_LABEL", i18n( "Database Information" ) );
+    obj.setProperty( "DATABASE_NAME_LABEL", i18n( "Kraft database name" ) );
+    obj.setProperty( "DATABASE_NAME", KraftDB::self()->databaseName() );
 
     QString schemaVersion = QString::number( KraftDB::self()->currentSchemaVersion() );
     if ( KraftDB::self()->currentSchemaVersion() != Kraft::Version::dbSchemaVersion() ) {
         schemaVersion += " - " + QString( "<font color='red'>%1: %2</font>" ).arg( i18n ( "Required Version" ))
                 .arg( Kraft::Version::dbSchemaVersion() );
     }
-    tmpl.setValue( "DATABASE_SCHEMA_VERSION_LABEL", i18n( "Database schema version" ) );
-    tmpl.setValue( "DATABASE_SCHEMA_VERSION", schemaVersion );
-    tmpl.setValue( "DATABASE_DRIVER_LABEL", i18n( "Qt database driver" ) );
-    tmpl.setValue( "DATABASE_DRIVER", KraftDB::self()->qtDriver() );
+    obj.setProperty( "DATABASE_SCHEMA_VERSION_LABEL", i18n( "Database schema version" ) );
+    obj.setProperty( "DATABASE_SCHEMA_VERSION", schemaVersion );
+    obj.setProperty( "DATABASE_DRIVER_LABEL", i18n( "Qt database driver" ) );
+    obj.setProperty( "DATABASE_DRIVER", KraftDB::self()->qtDriver() );
 
     bool dbOk = KraftDB::self()->getDB()->isOpen();
     const QString databaseConnection = ( dbOk ? i18n("established") : QString( "<font color='red'>%1</font>" ).arg( i18n( "NOT AVAILABLE!" ) ) );
-    tmpl.setValue( "DATABASE_CONNECTION_LABEL", i18n( "Database connection" ) );
-    tmpl.setValue( "DATABASE_CONNECTION", databaseConnection );
+    obj.setProperty( "DATABASE_CONNECTION_LABEL", i18n( "Database connection" ) );
+    obj.setProperty( "DATABASE_CONNECTION", databaseConnection );
 
     if( dbOk ) {
-        QSqlQuery q("SHOW VARIABLES like 'version';");
+        QString query{"select sqlite_version()"}; //
+        if (KraftDB::self()->qtDriver() == "MYSQL")
+            query = "SHOW VARIABLES like 'version';";
+
+        QSqlQuery q(query);
         if( q.isActive() ) {
             q.next();
-            const QString version = q.value(1).toString();
-            tmpl.createDictionary("DATABASE_VERSION_SECTION");
-            tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION_LABEL", i18n( "Database Version" ) );
-            tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION", version );
+            const QString version = q.value(0).toString();
+            obj.setProperty("DATABASE_VERSION_LABEL", i18n("Database Version"));
+            obj.setProperty("DATABASE_VERSION", version);
         }
     }
 
     // Akonadi and friends
     QScopedPointer<AddressProvider> aprov;
     aprov.reset( new AddressProvider);
-    tmpl.setValue( "ADDRESSBOOK_BACKEND_LABEL", i18n( "Addressbook Backend" ) );
-    tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE_LABEL", i18n( "Backend type" ) );
+    obj.setProperty( "ADDRESSBOOK_BACKEND_LABEL", i18n( "Addressbook Backend" ) );
+    obj.setProperty( "ADDRESSBOOK_BACKEND_TYPE_LABEL", i18n( "Backend type" ) );
     const QString backendTypeValue = QString( "%1 (%2)").arg( aprov->backendName())
             .arg(aprov->backendUp() ? i18n("running") : i18n("not running") );
-    tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE", backendTypeValue );
+    obj.setProperty( "ADDRESSBOOK_BACKEND_TYPE", backendTypeValue );
 
     // external tools
-    tmpl.setValue( "EXTERNAL_TOOLS_LABEL", i18n( "External Tools" ) );
+    obj.setProperty( "EXTERNAL_TOOLS_LABEL", i18n( "External Tools" ) );
 
-    tmpl.setValue( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
+    obj.setProperty( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
     const QStringList trml2pdf = DefaultProvider::self()->locatePythonTool("erml2pdf.py");
     QString trml2pdfValue = (trml2pdf.count() ? trml2pdf.join(" ") : i18n("not found!") );
-    tmpl.setValue( "RML2PDF_TOOL", trml2pdfValue );
+    obj.setProperty( "RML2PDF_TOOL", trml2pdfValue );
 
-    tmpl.setValue( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
-    tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
+    obj.setProperty( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
+    obj.setProperty( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
 
-    tmpl.setValue( "WEASYPRINT_TOOL_LABEL", i18n( "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation" ) );
+    obj.setProperty( "WEASYPRINT_TOOL_LABEL", i18n( "weasyprint for PDF generation" ) );
 
     QString wp = DefaultProvider::self()->locateBinary("weasyprint");
     if (wp.isEmpty()) {
         wp = i18n("not available");
     }
-    tmpl.setValue( "WEASYPRINT_TOOL", wp);
+    obj.setProperty( "WEASYPRINT_TOOL", wp);
 
     // aknowledgement
-    tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
-    tmpl.setValue( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
+    obj.setProperty( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
+    obj.setProperty( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
 
-    tmpl.setValue( "KRAFT_V2_LABEL", i18n("Kraft Version 2"));
-    tmpl.setValue( "KRAFT_V2_ROOT_DIR_LABEL", i18n("Kraft Version 2 Data Directory"));
+    obj.setProperty( "KRAFT_V2_LABEL", i18n("Kraft Version 2"));
+    obj.setProperty( "KRAFT_V2_ROOT_DIR_LABEL", i18n("Kraft Version 2 Data Directory"));
     const QString v2dir = DefaultProvider::self()->kraftV2Dir();
-    tmpl.setValue( "KRAFTV2_ROOT_DIR", v2dir);
+    obj.setProperty( "KRAFTV2_ROOT_DIR", v2dir);
 
-    return tmpl.expand();
+    tmpl.addToObjMapping("system", &obj);
+
+    return tmpl.render(ok);
 }
 
 void PortalView::fillSystemDetails()

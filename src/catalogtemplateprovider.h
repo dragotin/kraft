@@ -34,11 +34,11 @@ public:
 
   Katalog *currentCatalog();
 
-signals:
+Q_SIGNALS:
   void templatesToDocument( Katalog*, CatalogTemplateList, const QString& );
   void catalogSelected(Katalog*);
 
-public slots:
+public Q_SLOTS:
   void slotNewTemplate() override;
   void slotEditTemplate() override;
   void slotDeleteTemplate() override;

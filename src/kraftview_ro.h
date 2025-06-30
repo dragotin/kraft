@@ -58,11 +58,11 @@ public:
     void setup( DocGuardedPtr doc );
     QString htmlify( const QString& str ) const;
 
-protected slots:
+protected Q_SLOTS:
     void done( int );
     void slotLinkClicked(const QString& link);
 
-signals:
+Q_SIGNALS:
     void positionSelected( Katalog*, void* );
 
 

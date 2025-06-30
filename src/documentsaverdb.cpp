@@ -175,13 +175,13 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
     while( q.next() ) {
         // qDebug () << " loading position id " << q.value( 0 ).toInt();
 
-        DocPositionBase::PositionType type = DocPositionBase::Position;
+        DocPosition::Type type = DocPosition::Type::Position;
         QString typeStr = q.value( 1 ).toString();
         if ( typeStr == PosTypeExtraDiscount ) {
-          type = DocPositionBase::ExtraDiscount;
+          type = DocPosition::Type::ExtraDiscount;
         } else if ( typeStr == PosTypePosition ) {
           // nice, default position type.
-          type = DocPositionBase::Position;
+          type = DocPosition::Type::Position;
         } else {
           // qDebug () << "ERROR: Strange type string loaded from db: " << typeStr;
         }

@@ -44,8 +44,8 @@ TagTemplate::TagTemplate( const dbID& id, const QString& name, const QString& de
 QPalette TagTemplate::palette() const
 {
   QPalette palette;
-  palette.setColor( QPalette::Light, mColor.light() );
-  palette.setColor( QPalette::Dark,  mColor.dark() );
+  palette.setColor( QPalette::Light, mColor.lighter() );
+  palette.setColor( QPalette::Dark,  mColor.darker() );
   palette.setColor( QPalette::Mid,   mColor );
   return palette;
 }

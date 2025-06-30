@@ -20,20 +20,28 @@
 
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
-
-#include "addressprovider_akonadi.h"
+#include "defaultprovider.h"
+#ifdef HAVE_AKONADI
+#include "addressproviderakonadi.h"
+#else
+#include "addressproviderlocal.h"
+#endif
 
 /* ==================================================================================== */
 
 AddressProvider::AddressProvider( QObject *parent )
-  :QObject( parent ),
-    _d( new AddressProviderPrivate(parent) )
+  :QObject( parent )
 {
-    connect(_d, SIGNAL(addresseeFound(QString, KContacts::Addressee)),
-            this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
-    connect(_d, SIGNAL(lookupError( QString, QString)), this,
-            SLOT(slotErrorMsg(QString, QString)));
-    connect(_d, SIGNAL(addresseeNotFound(QString)), SLOT(slotAddresseeNotFound(QString)));
+#ifdef HAVE_AKONADI
+    _d = std::make_unique<AddressProviderAkonadi>(this);
+#else
+    const QString p = DefaultProvider::self()->kraftV2AddressDir();
+    qDebug() << "reading addresses from directory" << p;
+    _d = std::make_unique<AddressProviderLocal>(p, this);
+#endif
+    connect(_d.get(), &AddressProviderPrivate::addresseeFound, this, &AddressProvider::slotAddresseeFound);
+    connect(_d.get(), &AddressProviderPrivate::lookupError, this, &AddressProvider::slotErrorMsg);
+    connect(_d.get(), &AddressProviderPrivate::addresseeNotFound, this, &AddressProvider::slotAddresseeNotFound);
 }
 
 bool AddressProvider::backendUp()
@@ -54,14 +62,14 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
     }
     _addressCache[uid] = contact;
     _addressCache[uid].insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
-    emit lookupResult(uid, _addressCache[uid]);
+    Q_EMIT lookupResult(uid, _addressCache[uid]);
 }
 
 void AddressProvider::slotAddresseeNotFound( const QString& uid )
 {
     KContacts::Addressee contact; // Empty for not found.
     _notFoundUids.insert(uid);
-    emit lookupResult(uid, contact);
+    Q_EMIT lookupResult(uid, contact);
 }
 
 void AddressProvider::slotResetNotFoundCache()
@@ -152,12 +160,8 @@ QString AddressProvider::formattedAddress( const KContacts::Addressee& contact )
   if( address.isEmpty() ) {
     re = contact.realName();
   } else {
-#if KContacts_VERSION >= QT_VERSION_CHECK(5, 92, 0)
       re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
                               contact.realName(), contact.organization() );
-#else
-      re = address.formattedAddress( contact.realName(), contact.organization() );
-#endif
   }
   return re;
 }

@@ -25,7 +25,6 @@
 #include <QDialog>
 
 class QWidget;
-class QStringList;
 class QTreeWidget;
 class QTreeWidgetItem;
 

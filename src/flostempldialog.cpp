@@ -154,7 +154,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
 
   QList<CatalogChapter> chapters = m_katalog->getKatalogChapters( );
   QStringList chapNames;
-  foreach( CatalogChapter chap, chapters ) {
+  for(const CatalogChapter& chap: chapters ) {
     chapNames.append( chap.name() );
   }
   cbChapter->insertItems(-1, chapNames );
@@ -382,7 +382,7 @@ void FlosTemplDialog::accept()
         _calcPartsModified = false;
 
         if( m_template->save() ) {
-            emit( editAccepted( m_template ) );
+            Q_EMIT( editAccepted( m_template ) );
             KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
         } else {
             QMessageBox::warning(0, i18n("Template Error"), i18n("Saving of this template failed, sorry"));
@@ -434,7 +434,7 @@ bool FlosTemplDialog::confirmClose()
 
     if ( m_templateIsNew ) {
       // remove the listview item if it was created newly
-      emit editRejected();
+      Q_EMIT editRejected();
     }
 
     return true;
@@ -829,7 +829,7 @@ void FlosTemplDialog::slSetNewText()
                 longest = p;
         }
         QFontMetrics fm(m_textDispFix->font());
-        int w = 10+fm.width(longest);
+        int w = 10+fm.boundingRect(longest).width();
 
         if( m_textDispTime) {
             m_textDispTime->setText(t);

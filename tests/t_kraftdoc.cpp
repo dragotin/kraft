@@ -8,7 +8,6 @@
 #include "kraftdoc.h"
 #include "attribute.h"
 #include "docposition.h"
-#include "dbids.h"
 #include "format.h"
 #include "kraftsettings.h"
 #include "format.h"
@@ -26,7 +25,7 @@ void init_test_db()
 
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
 
-    // create the tagTemplate table which is required by DocPositionBase::hasTag
+    // create the tagTemplate table which is required by DocPosition::hasTag
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("10_dbmigrate.sql");
     QVERIFY(sqls.size() > 0);
     KraftDB::self()->processSqlCommands(sqls);
@@ -77,7 +76,7 @@ DocPositionList buildPosList() {
 
 class T_KraftDoc: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         QLocale::setDefault(QLocale::German);

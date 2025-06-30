@@ -1,8 +1,3 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(kraft)
-
-cmake_policy(SET CMP0063 NEW)
-
 enable_testing()
 
 # Tell CMake to run moc when necessary:
@@ -14,9 +9,7 @@ enable_testing()
 
 # include_directories( "${CMAKE_CURRENT_BINARY_DIR}/../src" )
 
-find_package(Qt5Test REQUIRED)
-
-set(test_libs Qt5::Test kraftlib)
+set(test_libs Qt6::Test kraftlib)
 
 add_executable(t_unitman t_unitman.cpp)
 target_link_libraries(t_unitman ${test_libs})
@@ -79,6 +72,13 @@ target_link_libraries(t_kraftdoc ${test_libs})
 
 # ============================================================
 
+add_executable(t_docposition t_docposition.cpp)
+add_test(t_docposition t_docposition)
+
+target_link_libraries(t_docposition ${test_libs})
+
+# ============================================================
+
 
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")
@@ -89,6 +89,13 @@ add_executable(t_xmlsaver t_xmlsaver.cpp)
 add_test(t_xmlsaver t_xmlsaver)
 
 target_link_libraries(t_xmlsaver ${test_libs})
+
+# ============================================================
+
+add_executable(t_xmldocindex t_xmldocindex.cpp)
+add_test(t_xmldocindex t_xmldocindex)
+
+target_link_libraries(t_xmldocindex ${test_libs})
 
 # ============================================================
 

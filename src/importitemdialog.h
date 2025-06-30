@@ -44,10 +44,10 @@ public:
   
   QComboBox *getPositionCombo();
 
-signals:
+Q_SIGNALS:
   void positionImported( const DocPosition& );
 
-protected slots:
+protected Q_SLOTS:
   void slotSchemaChanged( const QString& );
 
 protected:

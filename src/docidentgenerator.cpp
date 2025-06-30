@@ -29,10 +29,9 @@ DocIdentGenerator::DocIdentGenerator(QObject *parent)
 
 }
 
-
 bool DocIdentGenerator::generate(KraftDoc *doc)
 {
-    if (!doc) {
+    if (doc == nullptr) {
         _error = i18n("Ident Generator: Called with empty doc object");
         return false;
     }
@@ -42,7 +41,7 @@ bool DocIdentGenerator::generate(KraftDoc *doc)
 
     const QString ident = NumberCycles::generateIdent(ncName, dt.name(), doc->date(), doc->addressUid());
 
-    emit newIdent(ident);
+    Q_EMIT newIdent(ident);
     return true;
 }
 

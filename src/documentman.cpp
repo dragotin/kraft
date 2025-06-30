@@ -79,7 +79,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             if( newDocType.substractPartialInvoice() ) {
                 if( sourceDocType.partialInvoice()  ) {
                     Geld g = sourceDoc->nettoSum();
-                    DocPosition *pos = doc->createPosition(DocPositionBase::Position);
+                    DocPosition *pos = doc->createPosition(DocPosition::Type::Position);
                     if(pos) {
                         Einheit e;
                         pos->setUnit(e);
@@ -141,8 +141,9 @@ DocGuardedPtr DocumentMan::openDocumentByUuid(const QString& uuid)
 bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
 {
     DocumentSaverXML docLoad;
+    QFileInfo fi(xmlFile);
 
-    if (doc && docLoad.loadFromFile(xmlFile, doc, true)) {
+    if (doc && docLoad.loadFromFile(fi, doc, true)) {
         return true;
     }
     qDebug() << "Failed to load file" << xmlFile;

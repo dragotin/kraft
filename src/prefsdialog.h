@@ -63,7 +63,7 @@ protected:
     void readConfig();
     void writeConfig();
 
-protected slots:
+protected Q_SLOTS:
     void accept();
 
     void slotAddTax();
@@ -81,7 +81,7 @@ private:
     QWidget* doctypeTab();
     QWidget *taxTab();
     void writeTaxes();
-    void writeIdentity();
+    void writeIdentity(int currIndx);
     QWidget *whoIsMeTab();
     void fillManualIdentityForm(const KContacts::Addressee& addressee);
 
@@ -117,7 +117,7 @@ private:
     QStackedWidget *_pagesWidget;
 
     QTabWidget     *_tabWidget;
-    Ui::manualOwnIdentity ui;
+    Ui::manualOwnIdentity _ownIdentUi;
 
     QLineEdit *_bacName;
     QLineEdit *_bacIBAN;
@@ -127,6 +127,7 @@ private:
     KContacts::Addressee _newOwnAddress;
 
     int _maxNavBarTextWidth;
+    int _whoIndx;
 };
 
 class TaxItemDelegate : public QItemDelegate

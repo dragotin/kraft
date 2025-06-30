@@ -5,7 +5,7 @@
 
 class T_MetaParser : public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
 
@@ -33,7 +33,7 @@ private slots:
                 </kraftmeta>";
 
         QBuffer buf( &xml);
-
+        QVERIFY(buf.open(QIODeviceBase::ReadOnly));
         MetaXMLParser parser;
         QVERIFY(parser.parse(&buf));
 

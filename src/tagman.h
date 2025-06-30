@@ -20,8 +20,8 @@
 
 // include files
 #include <QVector>
+#include <QColor>
 
-#include "geld.h"
 #include "dbids.h"
 
 class QString;

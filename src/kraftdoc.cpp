@@ -17,10 +17,12 @@
 
 // include files for Qt
 #include <QDir>
+#include <QJsonObject>
 #include <QWidget>
 
 #include <QDebug>
 #include <klocalizedstring.h>
+#include <KLazyLocalizedString>
 
 // application specific includes
 #include "kraftdoc.h"
@@ -35,7 +37,6 @@
 #include "docdigest.h"
 #include "docidentgenerator.h"
 
-// FIXME: Make KraftDoc inheriting DocDigest!
 namespace {
 
 QString multilineHtml( const QString& str )
@@ -47,6 +48,22 @@ QString multilineHtml( const QString& str )
 }
 
 } // end namespace
+
+const QString KraftDocState::StateUndefinedStr = QStringLiteral("Undefined");
+const QString KraftDocState::StateNewStr = QStringLiteral("New");
+const QString KraftDocState::StateDraftStr{"Draft"};
+const QString KraftDocState::StateFinalStr{"Final"};
+const QString KraftDocState::StateRetractedStr{"Retracted"};
+const QString KraftDocState::StateInvalidStr{"Invalid"};
+const QString KraftDocState::StateConvertedStr{"Converted"};
+
+const KLazyLocalizedString KraftDocState::StateUndefinedI18n = kli18n("Undefined");
+const KLazyLocalizedString KraftDocState::StateNewI18n = kli18n("New");
+const KLazyLocalizedString KraftDocState::StateDraftI18n = kli18n("Draft");
+const KLazyLocalizedString KraftDocState::StateFinalI18n = kli18n("Final");
+const KLazyLocalizedString KraftDocState::StateRetractedI18n = kli18n("Retracted");
+const KLazyLocalizedString KraftDocState::StateInvalidI18n = kli18n("Invalid");
+const KLazyLocalizedString KraftDocState::StateConvertedI18n = kli18n("Converted");
 
 // =====================================================================================
 void KraftDocState::setStateFromString(const QString& s)
@@ -71,6 +88,33 @@ void KraftDocState::setStateFromString(const QString& s)
     } else {
         _state = State::Invalid;
     }
+}
+
+QString KraftDocState::stateStringI18n() const
+{
+    switch(_state) {
+    case State::New:
+        return StateNewI18n.toString();
+        break;
+    case State::Draft:
+        return StateDraftI18n.toString();
+        break;
+    case State::Final:
+        return StateFinalI18n.toString();
+        break;
+    case State::Retracted:
+        return StateRetractedI18n.toString();
+        break;
+    case State::Invalid:
+        return StateInvalidI18n.toString();
+        break;
+    case State::Undefined:
+        return StateUndefinedI18n.toString();
+        break;
+    case State::Converted:
+        return StateConvertedI18n.toString();
+    }
+    return StateUndefinedI18n.toString();
 }
 
 QString KraftDocState::stateString() const
@@ -205,7 +249,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   DocPositionListIterator it( origDoc.mPositions );
 
   while ( it.hasNext() ) {
-    DocPosition *dp = static_cast<DocPosition*>( it.next() );
+    DocPosition *dp = it.next();
 
     DocPosition *newPos = new DocPosition();
     *newPos = *dp;
@@ -219,7 +263,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   _state.setState(KraftDocState::State::New);
   KraftObj::operator=(origDoc);
-  _uuid = QString(); // clear the Uuid
+  _uuid = QUuid(); // clear the Uuid
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -298,7 +342,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
         // database.
         DocPositionListIterator it( mPositions );
         while( it.hasNext() ) {
-            DocPositionBase *dp = it.next();
+            DocPosition *dp = it.next();
             if( dp->toDelete() ) {
                 // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object";
                 mPositions.removeAll( dp );
@@ -307,7 +351,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
         _modified = false;
     }
 
-    emit saved(result);
+    Q_EMIT saved(result);
 
     // FIXME - add this check
     // if (res) {
@@ -329,9 +373,10 @@ DocDigest KraftDoc::toDigest()
     digest.setIdent(ident());
     digest.setWhiteboard(whiteboard());
     digest.setProjectLabel(projectLabel());
-    digest.setStateStr(_state.stateString());
+    digest.setState(_state);
 
-    for( const auto &attrib : attributes()) {
+    const auto att = attributes();
+    for( const auto &attrib : att) {
         digest.setAttribute(attrib);
     }
     digest.setTags(allTags());
@@ -391,17 +436,23 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
 
   DocPositionListIterator it( newList );
   while ( it.hasNext() ) {
-    DocPositionBase *dpb = it.next();
-    DocPosition *dp = static_cast<DocPosition*>( dpb );
-    DocPosition *newDp = createPosition( dp->type() );
-    *newDp = *dp;
+    DocPosition *dpb = it.next();
+    DocPosition *newDp = createPosition( dpb->type() );
+    *newDp = *dpb;
+
+    // copy attribs and tags as they are not copied otherwise
+    newDp->setTags(dpb->allTags());
+    QMap<QString, KraftAttrib> attribs = dpb->attributes();
+    for (const auto& attrib : attribs.values()) {
+        newDp->setAttribute(attrib);
+    }
     if(isNew) {
-        newDp->setDbId(-1);
+        newDp->createUuid();
     }
   }
 }
 
-DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
+DocPosition* KraftDoc::createPosition(DocPosition::Type t )
 {
     DocPosition *dp = new DocPosition( t );
     mPositions.append( dp );
@@ -412,7 +463,7 @@ void KraftDoc::slotRemovePosition( int pos )
 {
   // qDebug () << "Removing position " << pos;
 
-  foreach( DocPositionBase *dp, mPositions ) {
+  for( DocPosition *dp: mPositions ) {
     // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString();
     if( dp->dbId() == pos ) {
       if( ! mPositions.removeAll( dp ) ) {
@@ -440,7 +491,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
 
   // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos < mPositions.size()-1 ) {
-    mPositions.swap( curPos, curPos+1 );
+    mPositions.swapItemsAt( curPos, curPos+1 );
   }
 }
 
@@ -459,16 +510,8 @@ void KraftDoc::slotMoveDownPosition( int dbid )
 
   // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos > 0 ) {
-    mPositions.swap( curPos, curPos-1 );
+    mPositions.swapItemsAt( curPos, curPos-1 );
   }
-}
-
-int KraftDoc::slotAppendPosition( const DocPosition& pos )
-{
-  DocPosition *dp = createPosition();
-  *dp = pos; // FIXME: Proper assignment operator
-
-  return mPositions.count();
 }
 
 void KraftDoc::setTaxValues(double fullTax, double redTax)
@@ -522,10 +565,10 @@ Geld KraftDoc::vatSum() const
 
 QString KraftDoc::taxPercentStr() const
 {
-     DocPositionBase::TaxType tt = mPositions.listTaxation();
-     if (tt == DocPositionBase::TaxType::TaxFull) {
+     DocPosition::Tax tt = mPositions.listTaxation();
+     if (tt == DocPosition::Tax::Full) {
          return fullTaxPercentStr();
-     } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+     } else if (tt == DocPosition::Tax::Reduced) {
          return reducedTaxPercentStr();
      }
      return QString();
@@ -533,10 +576,10 @@ QString KraftDoc::taxPercentStr() const
 
 QString KraftDoc::taxPercentNum() const
 {
-    DocPositionBase::TaxType tt = mPositions.listTaxation();
-    if (tt == DocPositionBase::TaxType::TaxFull) {
+    DocPosition::Tax tt = mPositions.listTaxation();
+    if (tt == DocPosition::Tax::Full) {
         return fullTaxPercentNum();
-    } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+    } else if (tt == DocPosition::Tax::Reduced) {
         return reducedTaxPercentNum();
     }
     return QString();
@@ -569,7 +612,7 @@ QString KraftDoc::reducedTaxPercentStr() const
 QString KraftDoc::country() const
 {
     QLocale *loc = DefaultProvider::self()->locale();
-    return loc->countryToString(loc->country());
+    return loc->territoryToString(loc->territory());
 }
 
 QString KraftDoc::language() const
@@ -667,7 +710,6 @@ void KraftDoc::slotNewIdent(const QString& ident)
     delete generator;
 }
 
-
  /**
   * @brief KraftDoc::resolveMacros
   * @param txtWithMacros - the string that might contain any macros
@@ -688,72 +730,71 @@ void KraftDoc::slotNewIdent(const QString& ident)
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
 
-     QRegExp rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxEndif("\\s{1}END_HAS_TAG");
-     QRegExp rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
+     QRegularExpression rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxEndif("\\s{1}END_HAS_TAG");
+     QRegularExpression rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
      // look for tag SUM_PER_TAG( HNDL )
-     QRegExp rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
 
      int pos{0};
      QMap<QString, Geld> bruttoSums;
      QMap<QString, Geld> vatSums;
      Geld nettoSum;
+     QRegularExpressionMatch match;
 
-     while ((pos = rx.indexIn(myStr, pos)) != -1) {
+    while((pos = myStr.indexOf(rx, pos, &match)) > -1) {
+        const QString lookupTag = match.captured(1);
+        bruttoSums[lookupTag] = Geld();
+        vatSums[lookupTag] = Geld();
 
-         const QString lookupTag = rx.cap(1);
-         bruttoSums[lookupTag] = Geld();
-         vatSums[lookupTag] = Geld();
+        for (DocPosition *pb : dposList) {
+            if (!pb->toDelete() && pb->hasTag(lookupTag)) {
+                Geld netto = pb->overallPrice();
 
-         for (DocPositionBase *pb : dposList) {
-             DocPosition *p = static_cast<DocPosition*>(pb);
-             if (!p->toDelete() && p->hasTag(lookupTag)) {
-                 Geld netto = p->overallPrice();
+                Geld tax;
+                if (pb->taxType() == DocPosition::Tax::Full)
+                    tax = netto.percent(fullTax);
+                else if (pb->taxType() == DocPosition::Tax::Reduced)
+                    tax = netto.percent(redTax);
 
-                 Geld tax;
-                 if (p->taxType() == DocPositionBase::TaxType::TaxFull)
-                     tax = netto.percent(fullTax);
-                 else if (p->taxType() == DocPositionBase::TaxType::TaxReduced)
-                     tax = netto.percent(redTax);
+                bruttoSums[lookupTag] += netto;
+                bruttoSums[lookupTag] += tax;
+                vatSums[lookupTag] += tax;
+                nettoSum += netto;
+            }
+        }
 
-                 bruttoSums[lookupTag] += netto;
-                 bruttoSums[lookupTag] += tax;
-                 vatSums[lookupTag] += tax;
-                 nettoSum += netto;
-             }
-         }
+        myStr.replace(pos, match.captured().length(), nettoSum.toLocaleString());
+    }
 
-         myStr.replace(pos, rx.matchedLength(), nettoSum.toLocaleString());
-     }
-
-     // replace the Brutto- and vat tags if exist
+    // replace the Brutto- and vat tags if exist
      pos = 0;
-     while ((pos = rxBrutto.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxBrutto.cap(1);
+     while ((pos = myStr.indexOf(rxBrutto, pos, &match)) > -1) {
+         const QString lookupTag = match.captured(1);
          if (bruttoSums.contains(lookupTag)) {
-             myStr.replace(pos, rxBrutto.matchedLength(), bruttoSums[lookupTag].toLocaleString());
+             myStr.replace(pos, match.captured().length(), bruttoSums[lookupTag].toLocaleString());
          } else {
              qDebug() << "No Brutto sums computed for" << lookupTag;
          }
      }
 
-     // vat tags
      pos = 0;
-     while ((pos = rxVat.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxVat.cap(1);
+     while ((pos = myStr.indexOf(rxVat, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          if (vatSums.contains(lookupTag)) {
-             myStr.replace(pos, rxVat.matchedLength(), vatSums[lookupTag].toLocaleString());
+             myStr.replace(pos, match.captured().length(), vatSums[lookupTag].toLocaleString());
          }
+
      }
 
+
      // generate a list of all tags in any position
-     for (DocPositionBase *pb : dposList) {
-         DocPosition *p = static_cast<DocPosition*>(pb);
-         if (!p->toDelete()) {
-             const auto tags = p->allTags();
+     for (DocPosition *pb : dposList) {
+         if (!pb->toDelete()) {
+             const auto tags = pb->allTags();
              for (const QString& lookupTag : tags) {
                  if (seenTags.contains(lookupTag)) {
                      seenTags[lookupTag] = 1+seenTags[lookupTag];
@@ -765,34 +806,34 @@ void KraftDoc::slotNewIdent(const QString& ident)
      }
 
      pos = 0;
-     while ((pos = rxAmount.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxAmount.cap(1);
+     while ((pos = myStr.indexOf(rxAmount, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          int amount{0};
          if (seenTags.contains(lookupTag)) {
              amount = seenTags[lookupTag];
          }
-         myStr.replace(pos, rxAmount.matchedLength(), QString::number(amount));
+         myStr.replace(pos, match.captured().length(), QString::number(amount));
      }
 
      pos = 0;
-     while ((pos = rxAddDate.indexIn(myStr, pos)) != -1) {
-         const QString addDaysStr = rxAddDate.cap(1);
+     while ((pos = myStr.indexOf(rxAddDate, pos, &match))> -1) {
+         const QString addDaysStr = match.captured(1);
          qint64 addDays = addDaysStr.toInt();
          QDate newDate = date.addDays(addDays);
          const QString newDateStr = Format::toDateString(newDate, dateFormat.isEmpty() ? KraftSettings::self()->dateFormat() : dateFormat);
-         myStr.replace(pos, rxAddDate.matchedLength(), newDateStr);
+         myStr.replace(pos, match.captured().length(), newDateStr);
      }
 
      // IF_ANY_HAS_TAG(tag) ..... END_HAS_TAG
      // check the IF_HAS_TAG(tag) ... END_HAS_TAG macro
      pos = 0;
-     while ((pos = rxIf.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxIf.cap(1);
+     while ((pos = myStr.indexOf(rxIf, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          int endpos = myStr.lastIndexOf(rxEndif);
          if (endpos == -1) endpos = myStr.length();
          if (seenTags.contains(lookupTag)) {
              myStr.remove(endpos, 12 /* length of END_HAS_TAG */);
-             myStr.remove(pos, rxIf.matchedLength());
+             myStr.remove(pos, match.captured().length());
          } else {
              // the tag was not seen, so this needs to be deleted.
              int len = endpos-pos+12;

@@ -159,28 +159,28 @@ void KraftView::setupMappers()
 {
 
   mDeleteMapper = new QSignalMapper( this );
-  connect( mDeleteMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotDeletePosition( int ) ) );
+  connect(mDeleteMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotDeletePosition);
 
   mMoveUpMapper = new QSignalMapper( this );
-  connect( mMoveUpMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotMovePositionUp( int  ) ) );
+  connect(mMoveUpMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotMovePositionUp);
 
   mMoveDownMapper = new QSignalMapper( this );
-  connect( mMoveDownMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotMovePositionDown( int ) ) );
+  connect(mMoveDownMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotMovePositionDown);
 
   mLockPositionMapper = new QSignalMapper( this );
-  connect( mLockPositionMapper, SIGNAL( mapped( int )),
-           this, SLOT( slotLockPosition( int ) ) );
+  connect(mLockPositionMapper, &QSignalMapper::mappedInt,
+           this, &KraftView::slotLockPosition);
 
   mUnlockPositionMapper = new QSignalMapper( this );
-  connect( mUnlockPositionMapper, SIGNAL( mapped( int )),
-           this, SLOT( slotUnlockPosition( int ) ) );
+  connect(mUnlockPositionMapper, &QSignalMapper::mappedInt,
+           this, &KraftView::slotUnlockPosition);
 
   mModifiedMapper = new QSignalMapper( this );
-  connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
-           this,  SLOT( slotPositionModified( int ) ) );
+  connect( mModifiedMapper,  &QSignalMapper::mappedInt,
+           this,  &KraftView::slotPositionModified);
   // block signals as long as the widget is built up.
   // unblocking happens in redrawDocument()
   mModifiedMapper->blockSignals(true);
@@ -225,7 +225,7 @@ void KraftView::slotSwitchToPage(KraftDoc::Part p)
     QPalette palette;
     palette.setColor(mDetailHeader->backgroundRole(), edit->color());
     // FIXME: color
-    palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
+    palette.setColor(mDetailHeader->foregroundRole(), QColor(0x00008b));
     mDetailHeader->setPalette( palette );
 
     mAssistant->slotSelectDocPart(p);
@@ -244,7 +244,6 @@ void KraftView::setupDocHeaderView()
     m_headerEdit = edit->docHeaderEdit();
 
     m_headerEdit->m_cbType->clear();
-    // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
     m_headerEdit->mButtLang->hide();
 
@@ -254,7 +253,7 @@ void KraftView::setupDocHeaderView()
         DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByUuid(predecessorUuid);
         if( predecDoc ) {
             QString id{predecDoc->docIdentifier()};
-            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid).arg(id)};
+            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid, id)};
             m_headerEdit->_labFollowup->setText(i18nc("this is a document successor for followup documents", "Successor of %1", link));
             predecIsVisible = true;
             connect( m_headerEdit->_labFollowup, &QLabel::linkActivated, this, &KraftView::slotLinkClicked);
@@ -263,14 +262,11 @@ void KraftView::setupDocHeaderView()
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
-    connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
-             this, SLOT( slotDocTypeChanged( const QString& ) ) );
+    connect( m_headerEdit->m_cbType, &QComboBox::textActivated, this, &KraftView::slotDocTypeChanged);
 
-    connect( m_headerEdit->mButtLang, SIGNAL( clicked() ),
-             this, SLOT( slotLanguageSettings() ) );
-    connect( edit, SIGNAL( modified() ),
-              this, SLOT( slotModifiedHeader() ) );
-    connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
+    connect( m_headerEdit->mButtLang, &QPushButton::clicked, this, &KraftView::slotLanguageSettings);
+    connect( edit, &KraftDocHeaderEdit::modified, this, &KraftView::slotModifiedHeader);
+    connect( edit, &KraftDocHeaderEdit::pickAddressee, this, &KraftView::slotPickAddressee);
 }
 
 void KraftView::slotLinkClicked(const QString& link)
@@ -284,7 +280,7 @@ void KraftView::slotLinkClicked(const QString& link)
         }
         qDebug() << "Link clicked to open document " << uuid;
         if (!uuid.isEmpty()) {
-            emit openROView(uuid);
+            Q_EMIT openROView(uuid);
         }
     }
 }
@@ -296,9 +292,8 @@ void KraftView::setupItems()
 
     m_positionScroll = edit->positionScroll();
 
-    connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddNewItem() ) );
-    connect( edit, SIGNAL( addExtraClicked() ), SLOT( slotAddExtraPosition() ) );
-    connect( edit, SIGNAL( importItemsClicked() ), SLOT( slotImportItems() ) );
+    connect( edit, &KraftDocPositionsEdit::addPositionClicked, this, &KraftView::slotAddNewItem);
+    connect( edit, &KraftDocPositionsEdit::addExtraClicked, this, &KraftView::slotAddExtraPosition);
 
 }
 
@@ -470,11 +465,11 @@ void KraftView::redrawDocPositions( )
   int cnt = 0;
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
-    DocPositionBase *dp = it.next();
+    DocPosition *dp = it.next();
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition(dp);
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
-      w->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+      w->slotAllowIndividualTax( currentTaxSetting() == DocPosition::Tax::Individual );
     }
     cnt++;
     // qDebug () << "now position " << dp->positionNumber();
@@ -511,7 +506,7 @@ void KraftView::setMappingId( QWidget *widget, int pos )
 // create a new position widget.
 // The position parameter comes in as list counter, starting at 0
 
-PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
+PositionViewWidget *KraftView::createPositionViewWidget( DocPosition *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
   
@@ -561,20 +556,20 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   return w;
 }
 
-DocPositionBase::TaxType KraftView::currentTaxSetting()
+DocPosition::Tax KraftView::currentTaxSetting()
 {
   // add 1 to the currentItem since that starts with zero.
   int taxKind = 1+( m_footerEdit->ui()->mTaxCombo->currentIndex() );
-  DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
+  DocPosition::Tax tt = DocPosition::Tax::Invalid;
 
   if ( taxKind == 1 ) { // No Tax at all
-    tt = DocPositionBase::TaxNone;
+    tt = DocPosition::Tax::None;
   } else if ( taxKind == 2 ) { // Reduced tax for all items
-    tt = DocPositionBase::TaxReduced;
+    tt = DocPosition::Tax::Reduced;
   } else if ( taxKind == 3 ) { // Full tax for all items
-    tt = DocPositionBase::TaxFull;
+    tt = DocPosition::Tax::Full;
   } else { // individual level
-    tt = DocPositionBase::TaxIndividual;
+    tt = DocPosition::Tax::Individual;
   }
   return tt;
 }
@@ -618,14 +613,14 @@ void KraftView::refreshPostCard()
 
 
   DocPositionListIterator it( positions );
-  DocPositionBase *dp;
+  DocPosition *dp;
   while( it.hasNext()) {
     dp = it.next();
 
-    if (  dp->type() == DocPositionBase::ExtraDiscount ) {
-      PositionViewWidget *w = ( static_cast<DocPosition*>( dp ) )->associatedWidget();
+    if (  dp->type() == DocPosition::Type::ExtraDiscount ) {
+      PositionViewWidget *w = dp->associatedWidget();
       if( w ) {
-        w->slotSetOverallPrice( ( static_cast<DocPosition*>( dp ) )->overallPrice() );
+        w->slotSetOverallPrice( dp->overallPrice() );
       } else {
         // qDebug () << "Warning: Position object has no associated widget!";
       }
@@ -651,7 +646,7 @@ void KraftView::setupFooter()
   DocPositionList list = m_doc->positions();
 
   int tt = -1;
-  DocPositionBase *dp = nullptr;
+  DocPosition *dp = nullptr;
 
   DocPositionListIterator it( list );
   int taxIndex = 0;
@@ -708,14 +703,14 @@ void KraftView::slotTaxComboChanged(int newId)
       return;
     }
   }
-  DocPositionBase::TaxType tax = DocPositionBase::TaxFull;
+  DocPosition::Tax tax = DocPosition::Tax::Full;
 
   if( newId == INDI_TAX ) {
     allowTaxSetting = true;
   } else if( newId == RED_TAX ) {
-    tax = DocPositionBase::TaxReduced;
+    tax = DocPosition::Tax::Reduced;
   } else if( newId == NO_TAX ) {
-    tax = DocPositionBase::TaxNone;
+    tax = DocPosition::Tax::None;
   }
 
   PositionViewWidgetListIterator it( mPositionWidgetList );
@@ -746,7 +741,7 @@ void KraftView::slotMovePositionUp( int pos )
     return;
   }
 
-  mPositionWidgetList.swap( pos, pos-1 );
+  mPositionWidgetList.swapItemsAt( pos, pos-1 );
   w1 = mPositionWidgetList.at( pos-1 );
   w2 = mPositionWidgetList.at( pos ); // Porting ATTENTION: check assignment of w1, w1
 
@@ -783,7 +778,7 @@ void KraftView::slotMovePositionDown( int pos )
     return;
   }
 
-  mPositionWidgetList.swap( pos, pos+1);
+  mPositionWidgetList.swapItemsAt( pos, pos+1);
   w1 = mPositionWidgetList.at( pos+1 );
   w2 = mPositionWidgetList.at( pos );  // Porting ATTENTION: check assignment of w1, w1
 
@@ -1008,10 +1003,10 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
         *dp = diaPos;
 
         // set the tax settings
-        if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+        if( currentTaxSetting() == DocPosition::Tax::Individual ) {
             // FIXME: In case a new item is added, add the default tax type.
             // otherwise add the tax of the template
-            dp->setTaxType( DocPositionBase::TaxFull );
+            dp->setTaxType( DocPosition::Tax::Full );
         } else {
             dp->setTaxType( currentTaxSetting() );
         }
@@ -1067,7 +1062,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
         widget->slotModified();
-        widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+        widget->slotAllowIndividualTax( currentTaxSetting() == DocPosition::Tax::Individual );
 
         // Check if the new widget is supposed to display prices, based on the doc type
         // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
@@ -1081,49 +1076,19 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
     }
 }
 
-void KraftView::slotImportItems()
-{
-  ImportItemDialog dia( this );
-  DocPositionList list = currentPositionList();
-  int newpos = list.count();
-  dia.setPositionList( list, newpos );
-
-  if ( dia.exec() ) {
-    DocPositionList list = dia.positionList();
-    if ( list.count() > 0 ) {
-      // qDebug () << "Importlist amount of entries: " << list.count();
-      int cnt = 0;
-      int newpos = dia.getPositionCombo()->currentIndex();
-      // qDebug () << "Newpos is " << newpos;
-
-      DocPositionListIterator posIt( list );
-      while( posIt.hasNext() ) {
-        DocPosition *dp_old = static_cast<DocPosition*>(posIt.next());
-
-        DocPosition *dp = new DocPosition( *(dp_old) );
-        dp->setTaxType( currentTaxSetting() );
-        PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
-        widget->slotSetTax( DocPositionBase::TaxFull ); // FIXME: Value from Import?
-        widget->slotModified();
-      }
-      refreshPostCard();
-    }
-  }
-}
-
 void KraftView::slotAddExtraPosition()
 {
   // newpos is a list position, starts counting at 0
   int newpos = mPositionWidgetList.count();
   // qDebug () << "Adding EXTRA Position at position " << newpos;
 
-  DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
+  DocPosition *dp = new DocPosition( DocPosition::Type::ExtraDiscount );
   dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
   Einheit e = UnitManager::self()->getPauschUnit();
   dp->setUnit(e);
-  if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
-    dp->setTaxType( DocPositionBase::TaxFull );
+  if( currentTaxSetting() == DocPosition::Tax::Individual ) {
+    dp->setTaxType( DocPosition::Tax::Full );
   } else {
     dp->setTaxType( currentTaxSetting() );
   }
@@ -1156,21 +1121,19 @@ DocPositionList KraftView::currentPositionList()
 
         while ( outerIt.hasNext() ) {
             widget = outerIt.next();
-            DocPositionBase *dpb = widget->position();
+            DocPosition *dpb = widget->position();
 
             QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
-                // FIXME what about discount?
-                // FIXME get rid of PostionViewWidget::Kind
-                const PositionViewWidget::Kind k = widget->kind();
-                DocPositionBase::PositionType t {DocPositionBase::PositionType::Position};
-                if (k == PositionViewWidget::Kind::Demand) {
-                    t = DocPositionBase::PositionType::Demand;
-                } else if (k == PositionViewWidget::Kind::Alternative) {
-                    t = DocPositionBase::PositionType::Alternative;
-                } else if (k == PositionViewWidget::Kind::Demand) {
-                    t = DocPositionBase::PositionType::Demand;
+                const DocPosition::Type k = widget->kind();
+                DocPosition::Type t = dpb->type();
+                if (t == DocPosition::Type::Position) {
+                    if (k == DocPosition::Type::Demand) {
+                        t = DocPosition::Type::Demand;
+                    } else if (k == DocPosition::Type::Alternative) {
+                        t = DocPosition::Type::Alternative;
+                    }
                 }
                 DocPosition *newDp = new DocPosition(t);
 
@@ -1183,14 +1146,12 @@ DocPositionList KraftView::currentPositionList()
 
                 bool calculatable = true;
 
-                if ( dpb->type() == DocPosition::ExtraDiscount ) {
+                if ( dpb->type() == DocPosition::Type::ExtraDiscount ) {
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    if (discount > 0.0) {
-                        KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
-                        newDp->setAttribute(a);
-                    }
+                    KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
+                    newDp->setAttribute(a);
 
                     // get the required tag as String.
                     const QString tagRequiredStr = widget->extraDiscountTagRestriction();
@@ -1213,7 +1174,7 @@ DocPositionList KraftView::currentPositionList()
 
                         if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
                             if ( tagRequiredStr.isEmpty()  // means that all positions are to calculate
-                                 || w1->tagList().contains( tagRequiredStr ) ) { // tagList() returns strings, not Ids.
+                                 || w1->position()->allTags().contains( tagRequiredStr ) ) {
                                 if ( w1->priceValid() ) {
                                     sum += w1->currentPrice();
                                     // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "
@@ -1268,12 +1229,12 @@ DocPositionList KraftView::currentPositionList()
                     newDp->setUnit( e );
 
                     /* set the tags */
-                    const QStringList tagStrings = widget->tagList();
+                    const QStringList tagStrings = widget->position()->allTags();
                     newDp->setTags(tagStrings);
                     // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings
-                    if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+                    if( currentTaxSetting() == DocPosition::Tax::Individual ) {
                         newDp->setTaxType( widget->taxType() );
                     } else {
                         newDp->setTaxType( currentTaxSetting() );
@@ -1374,7 +1335,7 @@ void KraftView::done( int r )
         //Closed using the OK button .. it can be closed, but data needs saved
         if( doSave)
             saveChanges();
-        emit viewClosed( r == 1, m_doc, mModified );
+        Q_EMIT viewClosed( r == 1, m_doc, mModified );
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
@@ -1405,7 +1366,9 @@ void KraftView::saveChanges()
     if (mModified) m_doc->setModified();
 
     DocPositionList list = currentPositionList();
-    m_doc->setPositionList( list );
+
+    // this does not need to be a deep copy
+    m_doc->setPositionList(list);
 
     bool ok = DocumentMan::self()->saveDocument(m_doc);
     if (!ok) {

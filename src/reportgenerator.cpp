@@ -19,15 +19,15 @@
 #include <QSqlIndex>
 #include <QFile>
 #include <QTextStream>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 #include <QTextDocument>
 #include <QApplication>
-#include <QTextCodec>
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDebug>
 #include <QUrl>
+#include <QTemporaryFile>
 
 #include <KLocalizedString>
 
@@ -53,13 +53,6 @@ QString saveToTempFile( const QString& doc )
 
         if ( temp.open() ) {
             QTextStream s(&temp);
-
-            // The following explicit coding settings were needed for Qt 4.7.3, former Qt versions
-            // seemed to default on UTF-8. Try to comment the following two lines for older Qt versions
-            // if needed and see if the trml file on the disk still is UTF-8 encoded.
-            QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-            s.setCodec( codec );
-
             s << doc;
             temp.close();
         } else {
@@ -111,7 +104,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
         qDebug() << "===> WRN: Process still running, try again later.";
-        emit failure(uuid, i18n("Document generation process is still running."), "");
+        Q_EMIT failure(uuid, i18n("Document generation process is still running."), "");
         _uuid.clear();
         return;
     }
@@ -164,24 +157,17 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        emit failure(_uuid, i18n("Template file is not accessible."), "");
+        Q_EMIT failure(_uuid, i18n("Template file is not accessible."), "");
         _uuid.clear();
         return;
     }
-    const QString ext = fi.completeSuffix();
 
     QScopedPointer<DocumentTemplate> templateEngine;
     QPointer<PDFConverter> converter;
 
-    if (QString::compare(ext, QStringLiteral("trml"), Qt::CaseInsensitive) == 0) {
-        // use the old ctemplate engine with reportlab.
-        templateEngine.reset(new CTemplateDocumentTemplate(_tmplFile));
-        converter = new ReportLabPDFConverter;
-    } else {
-        // use Grantlee.
-        templateEngine.reset(new GrantleeDocumentTemplate(_tmplFile));
-        converter = new WeasyPrintPDFConverter;
-    }
+    // use Grantlee.
+    templateEngine.reset(new GrantleeDocumentTemplate(_tmplFile));
+    converter = new WeasyPrintPDFConverter;
 
     converter->setTemplatePath(fi.path());
 
@@ -191,7 +177,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
-        emit failure(_uuid, i18n("The template conversion failed."), templateEngine->error());
+        Q_EMIT failure(_uuid, i18n("The template conversion failed."), templateEngine->error());
         delete converter;
         _uuid.clear();
         return;
@@ -200,7 +186,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(_uuid, i18n("Saving to temporar file failed."), "");
+        Q_EMIT failure(_uuid, i18n("Saving to temporar file failed."), "");
         delete converter;
         _uuid.clear();
         return;
@@ -235,7 +221,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
     // Remove tmp files that might have been created during the template expansion,
     // ie. the EPC QR Code SVG file.
 #ifndef QT_DEBUG
-    for (const auto &subfile : _cleanupFiles) {
+    for (const auto &subfile : std::as_const(_cleanupFiles)) {
         QFile::remove(subfile);
     }
 #endif
@@ -331,7 +317,7 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
         }
         mProcess->deleteLater();
         mProcess = nullptr;
-        emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
+        Q_EMIT docAvailable(_requestedFormat, _uuid, mCustomerContact);
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
     }
@@ -378,11 +364,14 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     case PDFConverter::ConvError::WeasyPrintNotFound:
         errMsg = i18n("The WeasyPrint tool is not installed.");
         break;
+    case PDFConverter::ConvError::WeasyPrintRunFail:
+        errMsg = i18n("WeasyPrint run failed.");
+        break;
     case PDFConverter::ConvError::PDFMergerError:
         errMsg = i18n("The PDF merger utility failed.");
         break;
     }
-    emit failure(_uuid, errMsg, errors);
+    Q_EMIT failure(_uuid, errMsg, errors);
     _uuid.clear();
     converter->deleteLater();
 }
@@ -401,16 +390,16 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        emit failure(_uuid, i18n("There is not template defined for %1.").arg(dType.name()), "");
+        Q_EMIT failure(_uuid, i18n("There is not template defined for %1.").arg(dType.name()), "");
     } else {
         // a few file checks
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
+            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile, dType.name()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
+            Q_EMIT failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile, dType.name()), "");
             return QString();
         }
     }

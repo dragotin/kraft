@@ -47,7 +47,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
   /* a view for the entry text repository */
   QVBoxLayout *vbox = new QVBoxLayout;
-  vbox->setMargin(0);
+  vbox->setContentsMargins(0, 0, 0, 0);
 
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
@@ -120,7 +120,7 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
   } else {
     mCurrTemplateName.clear();
   }
-  emit validTemplateSelected( );
+  Q_EMIT validTemplateSelected( );
 }
 
 void TextSelection::showDocText( DocText dt )
@@ -146,7 +146,7 @@ void TextSelection::slotSelectDocType( const QString& doctype )
     showHelp( i18n("There is no %1 template text available for document type %2.<br/>"
                    "Click the add-button below to create one.", partStr, doctype ) );
   } else {
-    foreach( DocText dt, dtList ) {
+    for( const DocText& dt: dtList ) {
       templNames << dt.name();
     }
     showHelp();
@@ -168,7 +168,7 @@ void TextSelection::addNewDocText( const DocText& dt )
   } else {
     // qDebug () << "Unable to find the new item named " << dt.name();
   }
-  emit validTemplateSelected();
+  Q_EMIT validTemplateSelected();
 }
 
 /* requires the QListViewItem set as a member in the doctext */
@@ -230,7 +230,7 @@ void TextSelection::showHelp( const QString& help )
 DocText TextSelection::currentDocText() const
 {
   DocTextList dtList = DefaultProvider::self()->documentTexts( mDocType, mPart );
-  foreach( DocText dt, dtList ) {
+  for( const DocText& dt: dtList ) {
     if( dt.name() == mCurrTemplateName ) {
       return dt;
     }

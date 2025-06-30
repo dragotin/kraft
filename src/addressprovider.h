@@ -18,6 +18,7 @@
 #ifndef ADDRESSPROVIDER_H
 #define ADDRESSPROVIDER_H
 
+#include "addressproviderprivate.h"
 #include <QSet>
 #include <QAbstractItemModel>
 
@@ -90,15 +91,15 @@ public:
    */
   QString errorMsg( const QString& uid );
 
-public slots:
+public Q_SLOTS:
   void slotResetNotFoundCache();
 
-protected slots:
+protected Q_SLOTS:
   void slotErrorMsg(const QString& uid, const QString& msg);
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
   void slotAddresseeNotFound( const QString& uid );
 
-signals:
+Q_SIGNALS:
   /**
    * @brief lookupResult - deliver lookup result
    * @param uid - the uid of the lookup, and the contact
@@ -113,7 +114,7 @@ signals:
 private:
   QHash<QString, KContacts::Addressee> _addressCache;
 
-  AddressProviderPrivate *_d;
+  std::unique_ptr<AddressProviderPrivate> _d;
   QHash<QString, QString> _errMessages;
   QSet<QString> _notFoundUids;
 };

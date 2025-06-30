@@ -15,63 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "addressprovider_akonadi.h"
+#include "addressproviderakonadi.h"
 #include <kcontacts/contactgroup.h>
 
 #include <QDebug>
 
 #ifdef HAVE_AKONADI
-#include <akonadi_version.h>
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
-#include <AkonadiContact/akonadi-contact_version.h>
-#else
-#define AKONADICONTACT_VERSION AKONADI_VERSION
-#endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
-#include <AkonadiContact/akonadi/contactsearchjob.h>
-#else
-#include <akonadi/contact/contactsearchjob.h>
-#endif
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/ContactSearchJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-
 #include <Akonadi/CollectionFetchJob>
-
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Control>
 #include <Akonadi/ServerManager>
-#else
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-
-#include <AkonadiCore/CollectionFetchJob>
-
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/entitydisplayattribute.h>
-#include <AkonadiCore/control.h>
-#include <AkonadiCore/servermanager.h>
-#endif
 
 using namespace Akonadi;
 #endif
 
-AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
-  :QObject( parent ),
+AddressProviderAkonadi::AddressProviderAkonadi( QObject *parent )
+  :AddressProviderPrivate(parent),
     _akonadiUp(false),
     mSession(0),
-    mMonitor(0),
-    _model(0)
+    mMonitor(0)
 {
     init();
 }
 
-bool AddressProviderPrivate::init()
+bool AddressProviderAkonadi::init()
 {
     _akonadiUp = false;
 #ifdef HAVE_AKONADI
@@ -79,17 +51,25 @@ bool AddressProviderPrivate::init()
         // should be handled in Akonadi::Control::start().
         // See https://invent.kde.org/pim/akonadi/-/merge_requests/189
         qDebug() << "Akonadi broken: " << Akonadi::ServerManager::brokenReason();
-    } else if ( !Akonadi::Control::start( ) ) {
-        qDebug() << "Failed to start Akonadi!";
-    } else {
-        mSession = new Akonadi::Session( "KraftSession" );
+    } else if (Akonadi::ServerManager::state() == Akonadi::ServerManager::Running) {
+        qDebug() << "** Akonadi is already running";
+        mSession = Session::defaultSession();
         _akonadiUp = true;
+    } else if (Akonadi::Control::start()) {
+        qDebug() << "Akonadi Started!";
+        mSession = new Akonadi::Session("KraftSession", this);
+        _akonadiUp = true;
+    } else {
+        qDebug() << "Akonadi Start failed";
     }
+    if (_akonadiUp)
+        qDebug() << "** Akonadi Session available.";
+
 #endif
     return _akonadiUp;
 }
 
-QString AddressProviderPrivate::backendName() const
+QString AddressProviderAkonadi::backendName() const
 {
 #ifdef HAVE_AKONADI
     return QStringLiteral("Akonadi");
@@ -99,17 +79,17 @@ QString AddressProviderPrivate::backendName() const
 }
 
 
-bool AddressProviderPrivate::backendUp()
+bool AddressProviderAkonadi::backendUp()
 {
     return _akonadiUp;
 }
 
-bool AddressProviderPrivate::isSearchOngoing(const QString& uid)
+bool AddressProviderAkonadi::isSearchOngoing(const QString& uid)
 {
     return mUidSearches.contains(uid);
 }
 
-bool AddressProviderPrivate::lookupAddressee( const QString& uid )
+bool AddressProviderAkonadi::lookupAddressee( const QString& uid )
 {
     if( uid.isEmpty() ) {
         qDebug() << "Invalid: UID to lookup is empty.";
@@ -122,13 +102,15 @@ bool AddressProviderPrivate::lookupAddressee( const QString& uid )
         return false;
     }
 #ifdef HAVE_AKONADI
+    qDebug() << "Looking up uid" << uid << "in the Akonadi backend";
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
     csjob->setLimit( 1 );
+    csjob->fetchScope().fetchFullPayload();
     csjob->setQuery(ContactSearchJob::ContactUid , uid, ContactSearchJob::ExactMatch);
 
+    // Store the lookup uid in an extra property
     csjob->setProperty("UID", uid);
-    connect( csjob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    csjob->start();
+    connect(csjob, &Akonadi::ItemFetchJob::result, this, &AddressProviderAkonadi::searchResult);
 
     mUidSearches.insert( uid );
 
@@ -139,34 +121,33 @@ bool AddressProviderPrivate::lookupAddressee( const QString& uid )
 }
 
 #ifdef HAVE_AKONADI
-void AddressProviderPrivate::searchResult( KJob* job )
+void AddressProviderAkonadi::searchResult( KJob* job )
 {
     if( !job ) return;
 
-    QString uid;
+    const QString uid {job->property("UID").toString()};
     KContacts::Addressee contact;
-
-    uid = job->property("UID").toString();
 
     if( job->error() ) {
         // both uid and err message can be empty
         const QString errMsg = job->errorString();
-        emit lookupError(uid, errMsg );
+        Q_EMIT lookupError(uid, errMsg );
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
-	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-        const KContacts::Addressee::List contacts =
-                searchJob->contacts();
-                KContacts::Addressee::List();
-        // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
+        Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+        if (searchJob) {
+            const KContacts::Addressee::List contacts = searchJob->contacts();
+            // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
-        if( contacts.size() > 0 ) {
-            contact = contacts[0];
-            // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-            emit addresseeFound(uid, contact);
-        } else {
-            // qDebug() << "No search result for UID" << uid;
-            emit addresseeNotFound(uid);
+            if (contacts.size() > 0) {
+                auto contact = contacts.at(0);
+
+                // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+                Q_EMIT addresseeFound(uid, contact);
+            } else {
+                // qDebug() << "No search result for UID" << uid;
+                Q_EMIT addresseeNotFound(uid);
+            }
         }
     }
 
@@ -179,7 +160,7 @@ void AddressProviderPrivate::searchResult( KJob* job )
 }
 #endif
 
-QAbstractItemModel* AddressProviderPrivate::model()
+QAbstractItemModel* AddressProviderAkonadi::model()
 {
     if( !_akonadiUp ) {
         return 0;
@@ -204,21 +185,22 @@ QAbstractItemModel* AddressProviderPrivate::model()
         mMonitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
     }
     if( !_model ) {
-        _model = new Akonadi::ContactsTreeModel( mMonitor );
+        auto model = new Akonadi::ContactsTreeModel(mMonitor);
         Akonadi::ContactsTreeModel::Columns columns;
         columns << Akonadi::ContactsTreeModel::FullName;
         columns << Akonadi::ContactsTreeModel::HomeAddress;
         // columns << Akonadi::ContactsTreeModel::FamilyName;
         // columns << Akonadi::ContactsTreeModel::GivenName;
+        model->setColumns( columns );
 
-        _model->setColumns( columns );
+        _model.reset(model);
     }
-    return _model;
+    return _model.get();
 #endif
     return 0;
 }
 
-KContacts::Addressee AddressProviderPrivate::getAddressee(const QModelIndex& indx)
+KContacts::Addressee AddressProviderAkonadi::getAddressee(const QModelIndex& indx)
 {
     KContacts::Addressee contact;
 #ifdef HAVE_AKONADI
@@ -234,7 +216,7 @@ KContacts::Addressee AddressProviderPrivate::getAddressee(const QModelIndex& ind
 
 }
 
-KContacts::Addressee AddressProviderPrivate::getAddressee(int row, const QModelIndex &parent)
+KContacts::Addressee AddressProviderAkonadi::getAddressee(int row, const QModelIndex &parent)
 {
 #ifdef HAVE_AKONADI
     const QModelIndex index = _model->index(row, 0, parent);
@@ -243,25 +225,3 @@ KContacts::Addressee AddressProviderPrivate::getAddressee(int row, const QModelI
 #endif
     return KContacts::Addressee();
 }
-
-QString AddressProviderPrivate::formattedAddress( const KContacts::Addressee& contact ) const
-{
-  QString re;
-  KContacts::Address address;
-
-  address = contact.address( KContacts::Address::Pref );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Work );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Home );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Postal );
-
-  if( address.isEmpty() ) {
-    re = contact.realName();
-  } else {
-    re = address.formattedAddress( contact.realName(), contact.organization() );
-  }
-  return re;
-}
-

@@ -31,7 +31,8 @@ KContacts::Addressee MyIdentity::_myContact = KContacts::Addressee();
 
 MyIdentity::MyIdentity(QObject *parent)
     : QObject{parent},
-      _addressProvider{nullptr}
+      _addressProvider{nullptr},
+      _source{Source::Unknown}
 {
 
 }
@@ -56,15 +57,12 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     resUrl.setUrl(QUrl(ui.leWebsite->text()));
     add.setUrl(resUrl);
 
-#if KContacts_VERSION >= QT_VERSION_CHECK(5, 88, 0)
     KContacts::Email email;
     email.setEmail(ui.leEmail->text());
     email.setPreferred(true);
     email.setType(KContacts::Email::TypeFlag::Work);
     add.addEmail(email);
-#else
-    add.insertEmail(ui.leEmail->text(), true /* prefered */ );
-#endif
+
     return add;
 }
 
@@ -74,6 +72,11 @@ QString MyIdentity::identityFile()
     file += "/myidentity.vcd";
 
     return file;
+}
+
+bool MyIdentity::hasBackend()
+{
+    return (_addressProvider && _addressProvider->backendUp());
 }
 
 void MyIdentity::load()
@@ -88,6 +91,7 @@ void MyIdentity::load()
 
     KContacts::Addressee contact;
     if( ! myUid.isEmpty() ) {
+        qDebug() << "looking up my identity" << myUid << "in address provider";
         _source = Source::Backend;
         // qDebug () << "Got My UID: " << myUid;
         AddressProvider::LookupState state = _addressProvider->lookupAddressee( myUid );
@@ -107,8 +111,10 @@ void MyIdentity::load()
         }
     } else {
         // check if the vcard can be read
+
         _source = Source::Manual;
         const QString file = identityFile();
+        qDebug() << "looking up my identity in vcard file"<< file;
         QFile f(file);
         if( f.exists() ) {
             if( f.open( QIODevice::ReadOnly )) {
@@ -121,15 +127,22 @@ void MyIdentity::load()
                     contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
                 }
             }
+        } else {
+            qDebug() << "VCard file does not exist!";
         }
         slotAddresseeFound(myUid, contact);
     }
 }
 
+QString MyIdentity::errorMsg(const QString& uid)
+{
+    return _addressProvider->errorMsg(uid);
+}
+
 void MyIdentity::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
     _myContact = contact;
-    emit myIdentityLoaded(uid, contact);
+    Q_EMIT myIdentityLoaded(uid, contact);
 }
 
 KContacts::Addressee MyIdentity::contact() const
@@ -166,7 +179,7 @@ void MyIdentity::save(const QString& uuid, const KContacts::Addressee& contact)
         QFile::remove(file); // remove a maybe existing file
     }
 
-    // emit the signal for consumers of the address
+    // Q_EMIT the signal for consumers of the address
     slotAddresseeFound(uuid, contact);
 
     // update the settings - clear the user name as it is deprecated anyway

@@ -47,7 +47,7 @@ public:
 protected:
   void setupCatalogList();
 
-signals:
+Q_SIGNALS:
   /*
    * a template was selected to be inserted into the document. This
    * transports a ptr to the katalog and the item in it. Since the
@@ -61,7 +61,7 @@ signals:
   void selectionChanged(QTreeWidgetItem * current,QTreeWidgetItem * previous);
   void actionAppendPosition();
 
-protected slots:
+protected Q_SLOTS:
   void slotSelectCatalog( const QString& );
   // void slotAppendToDoc( QListViewItem *item = 0 );
   void slotCatalogDoubleClicked( QModelIndex );

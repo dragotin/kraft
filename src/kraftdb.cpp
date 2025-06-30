@@ -19,7 +19,7 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QSqlError>
 #include <QDir>
@@ -210,7 +210,9 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
     }
     int re = 0;
 
-    m_db.setConnectOptions("MYSQL_OPT_RECONNECT=1");
+    if (!isSqlite()) {
+        m_db.setConnectOptions("MYSQL_OPT_RECONNECT=1");
+    }
     m_db.open();
     if ( m_db.isOpenError() ) {
          qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
@@ -331,14 +333,13 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
             qDebug () << "FATAL: Could not open " << sqlFile;
         } else {
             QTextStream ts( &f );
-            ts.setCodec("UTF-8");
 
             QString allSql = ts.readAll(); //Not sure of this one!
             QStringList sqlList = allSql.split(";");
 
-            QRegExp reg( "\\s*(#|--)\\s*message:? ?(.*)\\s*\\n" );
-            QRegExp failreg( "\\s*(#|--)\\s*mayfail\\s*\\n" );
-            reg.setMinimal( true );
+            QRegularExpression reg( "\\s*(#|--)\\s*message:? ?(.*)\\s*\\n" );
+            QRegularExpression failreg( "\\s*(#|--)\\s*mayfail\\s*\\n" );
+            // reg.setMinimal( true ); FIXME Qt6 port
 
             QListIterator<QString> it(sqlList);
 
@@ -346,19 +347,19 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
                 QString msg, command;
 
                 QString sqlFragment = it.next().trimmed();
-
-                int pos = reg.indexIn( sqlFragment.toLower(),  0 );
+                QRegularExpressionMatch match;
+                int pos = sqlFragment.toLower().indexOf(reg, 0, &match);
                 if ( pos > -1 ) {
-                    msg = reg.cap( 2 );
+                    msg = match.captured(2);
                     // qDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<";
                 }
 
-                bool mayfail = false;
-                pos = failreg.indexIn( sqlFragment.toLower(), 0 );
+                bool mayfail{false};
+                pos = sqlFragment.toLower().indexOf(failreg, 0, &match);
                 if( pos > -1 ) {
                     mayfail = true;
                 }
-                bool clean = false;
+                bool clean{false};
                 while( ! clean ) {
                     if(  sqlFragment.startsWith("#") || sqlFragment.startsWith("--") ) {
                         // remove the comment line.
@@ -424,7 +425,6 @@ QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
             qWarning() << "FATAL: Could not open " << xmlFile;
         } else {
             QTextStream ts( &f );
-            ts.setCodec("UTF-8");
             parser.parse( &f );
         }
     } else {
@@ -463,9 +463,9 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
         }
     }
 
-    foreach( SqlCommand cmd, commands ) {
+    for( SqlCommand cmd: commands ) {
         if( !cmd.message().isEmpty() ) {
-            emit statusMessage( cmd.message() );
+            Q_EMIT statusMessage( cmd.message() );
         }
 
         if( !cmd.command().isEmpty() ) {
@@ -483,7 +483,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
                 qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text();
             }
             q.clear();
-            emit processedSqlCommand( res );
+            Q_EMIT processedSqlCommand( res );
 
         }
     }

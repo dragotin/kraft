@@ -31,7 +31,6 @@ class dbID;
 class KJob;
 class QFile;
 class AddressProvider;
-class TextTemplate;
 
 enum class ReportFormat { PDF, PDFMail, HTML };
 
@@ -43,15 +42,15 @@ public:
     ReportGenerator();
     ~ReportGenerator();
 
-signals:
+Q_SIGNALS:
     void docAvailable( ReportFormat, const QString& file,
                        const KContacts::Addressee& customerContact);
     void failure(const QString&, const QString&, const QString&);
 
-public slots:
+public Q_SLOTS:
     void createDocument(ReportFormat, const QString&uuid);
 
-private slots:
+private Q_SLOTS:
     void slotPdfDocAvailable(const QString& file);
     void slotConverterError(PDFConverter::ConvError err);
     void mergePdfWatermark(const QString &file);
@@ -66,12 +65,11 @@ private:
 protected:
     QStringList _cleanupFiles;
 
-protected slots:
+protected Q_SLOTS:
     void slotAddresseeFound( const QString&, const KContacts::Addressee& );
 
 private:
     void convertTemplate( const QString& );
-    void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
     QString registerDictTag( const QString&, const QString&, const QString& ) const;

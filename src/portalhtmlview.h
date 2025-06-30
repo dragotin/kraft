@@ -24,10 +24,10 @@ class PortalHtmlView : public HtmlView
 
 public:
     PortalHtmlView( QWidget *parent );
-signals:
+Q_SIGNALS:
     void openCatalog( const QString& );
 
-protected slots:
+protected Q_SLOTS:
     void slotLinkClicked(const QUrl& url);
 
 };

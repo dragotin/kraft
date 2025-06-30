@@ -43,12 +43,11 @@ class PositionViewWidget : public QWidget, public Ui_positionWidget
     Q_OBJECT
 public:
     enum State { Active, New, Deleted, Locked };
-    enum Kind  { Normal, Demand, Alternative, Invalid };
 
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition(DocPositionBase*);
+    void setDocPosition(DocPosition*pos);
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -57,11 +56,11 @@ public:
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
-    Kind  kind()  { return mKind; }
+    DocPosition::Type  kind()  { return mKind; }
 
-    static QString techKindString(Kind kind);
-    static Kind techStringToKind( const QString& kindStr );
-    static QString kindLabel( Kind );
+    static QString techKindString(DocPosition::Type kind);
+    static DocPosition::Type techStringToKind( const QString& kindStr );
+    static QString kindLabel(DocPosition::Type);
 
     QString stateString( const State& state ) const;
     QString cleanKindString(const QString &src);
@@ -69,11 +68,10 @@ public:
     bool priceValid();
     void setCurrentPrice( Geld );
     Geld unitPrice();
-    QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
-    DocPositionBase::TaxType taxType() const;
+    DocPosition::Tax taxType() const;
 
-public slots:
+public Q_SLOTS:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
     void slotModified();
@@ -85,13 +83,13 @@ public slots:
     void slotSetEnabled( bool );
     void slotEnableKindMenu( bool );
     void slotAllowIndividualTax( bool );
-    void slotSetTax( DocPosition::TaxType );
+    void slotSetTax( DocPosition::Tax);
     void slotShowPrice( bool show );  // hide the price entries for certain doc types.
 
-protected slots:
+protected Q_SLOTS:
     void slotLockPosition();
     void slotUnlockPosition();
-    void slotSetPositionKind(Kind kind, bool alterText);
+    void slotSetPositionKind(DocPosition::Type kind, bool alterText);
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
 
@@ -99,7 +97,7 @@ protected slots:
     void slotSetReducedTax();
     void slotSetFullTax();
 
-signals:
+Q_SIGNALS:
     void positionModified();
     void deletePosition();
     void moveUp();
@@ -121,7 +119,6 @@ private:
     QMenu *mStateSubmenu;
     QMenu *mTaxSubmenu;
 
-    QStringList mTags;
     QAction * mDeleteId;
     QAction * mLockId;
     QAction * mUnlockId;
@@ -131,10 +128,10 @@ private:
 
     Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
-    Kind  mKind;
+    DocPosition::Type  mKind;
     bool mPositionPriceValid;
     QLocale *mLocale;
-    DocPosition::TaxType mTax;
+    DocPosition::Tax mTax;
 };
 
 class PositionViewWidgetList : public QList<PositionViewWidget*>

@@ -1,8 +1,0 @@
-#!/bin/bash
-# (c) Klaas Freitag <freitag@kde.org>, 2010
-# Start script for the python erml2pdf
-# to see error output, remove the 2>... part
-# 
-python $0.py $* 2>/dev/null
-
-#

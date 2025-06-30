@@ -39,7 +39,7 @@ class TaxEditDialog: public QDialog, protected Ui::TaxEditBase
 public:
   TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent );
 
-public slots:
+public Q_SLOTS:
   void accept();
   void reject();
 

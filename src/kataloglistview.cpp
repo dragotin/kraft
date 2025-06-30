@@ -21,15 +21,11 @@
 
 #include <klocalizedstring.h>
 
-#include "kraftglobals.h"
 #include "katalog.h"
 #include "katalogman.h"
 #include "kataloglistview.h"
 #include "defaultprovider.h"
 #include "materialcalcpart.h"
-#include "stockmaterial.h"
-#include "templkatalog.h"
-#include "timecalcpart.h"
 #include "dbids.h"
 #include "catalogchapter.h"
 #include "addeditchapterdialog.h"
@@ -136,8 +132,8 @@ void KatalogListView::setupChapters()
 
     QList<CatalogChapter> strayCats;
 
-    foreach( CatalogChapter chapter, chapters ) {
-        QTreeWidgetItem *item = tryAddingCatalogChapter( chapter );
+    for( const CatalogChapter& chapter: chapters ) {
+        QTreeWidgetItem *item = tryAddingCatalogChapter(chapter);
         if( ! item ) {
             strayCats.append( chapter );
         } else {
@@ -150,7 +146,7 @@ void KatalogListView::setupChapters()
         QList<CatalogChapter> newStrayCats;
         oldStrayCatCount = strayCats.count();
         // loop as long as the overall number of straycats goes down in every round
-        foreach( CatalogChapter chapter, strayCats ) {
+        for( const CatalogChapter& chapter: strayCats ) {
             QTreeWidgetItem *katItem = tryAddingCatalogChapter( chapter );
             if( katItem ) {
                 // qDebug () << "Successfully added catalog chapter from strayCats";
@@ -217,7 +213,7 @@ CatalogTemplateList KatalogListView::selectedTemplates()
     if( ! mCheckboxes || templates.isEmpty() ) {
         QList<QTreeWidgetItem*> items = selectedItems();
 
-        foreach( QTreeWidgetItem* item, items ) {
+        for( QTreeWidgetItem* item: items ) {
             if( isChapter(item) && !isRoot(item) ) {
                 // for chapters, the children are lined up.
                 int kidCnt = item->childCount();
@@ -417,7 +413,7 @@ void KatalogListView::dropEvent( QDropEvent *event )
         QModelIndex dropParentIndex;
         int col = -1;
         int row = -1;
-        QModelIndex dropIndx = indexAt( event->pos() );
+        QModelIndex dropIndx = indexAt( event->position().toPoint());
         QTreeWidgetItem *droppedOnItem = itemFromIndex( dropIndx );
         if( ! droppedOnItem ) {
             event->ignore();
@@ -567,7 +563,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
 
     int childrenCnt = chapter->childCount();
 
-    emit sequenceUpdateMaximum(childrenCnt);
+    Q_EMIT sequenceUpdateMaximum(childrenCnt);
 
     QSqlQuery chapQuery;
     chapQuery.prepare("UPDATE CatalogChapters SET sortKey = :sk WHERE chapterID = :id");
@@ -577,7 +573,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
     for (int indx = 0; indx < childrenCnt; indx++) {
         QTreeWidgetItem *item = chapter->child(indx);
 
-        emit sequenceUpdateProgress(indx);
+        Q_EMIT sequenceUpdateProgress(indx);
 
         if (isChapter(item)) {
             CatalogChapter *chapter = static_cast<CatalogChapter*>(itemData(item));
@@ -591,7 +587,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
         }
     }
     endUpdateItemSequence();
-    emit sequenceUpdateProgress(childrenCnt);
+    Q_EMIT sequenceUpdateProgress(childrenCnt);
 }
 
 void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
@@ -605,7 +601,7 @@ void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
     } else {
         CatalogTemplate *tmpl = static_cast<FloskelTemplate*>(itemData(item));
         // qDebug () << "hoovering this template: " << tmpl;
-        emit templateHoovered( tmpl );
+        Q_EMIT templateHoovered( tmpl );
     }
 }
 

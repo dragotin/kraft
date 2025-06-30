@@ -24,8 +24,6 @@
 #include "htmlview.h"
 #include "ui_documentactions.h"
 
-class TextTemplate;
-
 class DocDigestHtmlView : public HtmlView
 {
     Q_OBJECT
@@ -33,7 +31,7 @@ class DocDigestHtmlView : public HtmlView
 public:
     DocDigestHtmlView( QWidget *parent );
 
-protected slots:
+protected Q_SLOTS:
     void slotLinkClicked(const QUrl& url);
 };
 
@@ -44,18 +42,18 @@ public:
     explicit DocDigestDetailView(QWidget *parent = 0);
     void initViewActions(const std::array<QAction *, 4> actions);
 
-public slots:
+public Q_SLOTS:
     void slotShowStart();
-    void slotShowDocDetails(const DocDigest &);
+    void slotShowDocDetails(const DocDigest &, const QString &errHeader = QString(), const QString &errDetails = QString());
     void slotClearView();
 
     void slotShowMonthDetails( int year, int month );
     void slotShowYearDetails( int year);
-
+    void setErrorStrings(const QString& = QString(), const QString& = QString());
 
 private:
     void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
-    void documentListing( TextTemplate *tmpl, int year, int month );
+    QList<QObject*> documentListing(int year, int month );
 
     enum Location { Left, Middle, Right };
     enum Detail { Start, Month, Year, Document };
@@ -68,6 +66,7 @@ private:
     QString   _docTemplFileName;
     QString   _monthTemplFileName;
     QString   _yearTemplFileName;
+    DocDigest _currentDigest;
     Ui::docActionsWidget *_docActionsWidget;
 };
 

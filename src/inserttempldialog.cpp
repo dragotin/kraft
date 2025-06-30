@@ -55,8 +55,8 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   mBaseWidget->dmAmount->setDecimals( 2 );
   mBaseWidget->dmAmount->setRange( 0, 100000 );
+  mBaseWidget->dmAmount->setValue(1.0);
   mBaseWidget->dmAmount->setSingleStep( 1 );
-  // mBaseWidget->dmAmount->setSteps( 1, 10 );
 
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
@@ -77,7 +77,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   groupLay->addStretch();
 
   QVBoxLayout *lay = new QVBoxLayout(this);
-  lay->setMargin(0);
+  lay->setContentsMargins(0, 0, 0, 0);
   lay->addWidget(w);
   setLayout(lay);
 

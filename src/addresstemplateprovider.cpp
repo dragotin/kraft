@@ -68,7 +68,7 @@ void AddressTemplateProvider::slotTemplateToDocument()
   }
 
   // qDebug () << "Moving address of " << mCurrentAddress.realName() << " to document";
-  emit addressToDocument( mCurrentAddress );
+  Q_EMIT addressToDocument( mCurrentAddress );
 }
 
 void AddressTemplateProvider::slotInsertTemplateToDocument()

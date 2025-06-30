@@ -24,13 +24,6 @@
 #include "kataloglistview.h"
 #include "kraftcat_export.h"
 
-// include files
-
-/**
- *
- */
-class QStringList;
-
 
 class KRAFTCAT_EXPORT KatalogMan : public QObject
 {

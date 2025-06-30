@@ -21,6 +21,7 @@
 #include <QTextEdit>
 #include <QMenu>
 #include <QIcon>
+#include <QActionGroup>
 #include <QDebug>
 #include <qdrawutil.h>
 
@@ -41,7 +42,7 @@ PositionViewWidget::PositionViewWidget()
    mExecPopup( new QMenu( this ) ) ,
    mStateSubmenu( 0 ),
    mState( Active ),
-   mKind( Normal ),
+   mKind(DocPosition::Type::Position),
    mPositionPriceValid( false ),
    mLocale( 0 )
 {
@@ -66,25 +67,22 @@ PositionViewWidget::PositionViewWidget()
   pbTagging->setCheckable( false );
   pbTagging->setIcon( DefaultProvider::self()->icon( "flag" ) );
 
-  connect( m_sbAmount, SIGNAL( valueChanged( double )),
-             this, SLOT( slotRefreshPrice( ) ) );
-  connect( m_sbUnitPrice, SIGNAL( valueChanged( double )),
-             this, SLOT( slotRefreshPrice( ) ) );
-  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ),
-           this, SLOT( slotRefreshPrice() ) );
+  connect( m_sbAmount, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
+  connect( m_sbUnitPrice, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
+  connect( mDiscountPercent, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotRefreshPrice);
 
-  connect( pbExec, SIGNAL( pressed() ),     this,  SLOT( slotExecButtonPressed() ) );
-  connect( pbTagging,  SIGNAL( pressed() ), this,  SLOT( slotTaggingButtonPressed() ) );
+  connect( pbExec, &QPushButton::pressed, this, &PositionViewWidget::slotExecButtonPressed);
+  connect( pbTagging, &QPushButton::pressed, this, &PositionViewWidget::slotTaggingButtonPressed);
 
 
   /* modified signals */
-  connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
-  connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
+  connect( m_cbUnit, &QComboBox::activated, this, &PositionViewWidget::slotModified);
+  connect( m_teFloskel, &QTextEdit::textChanged, this, &PositionViewWidget::slotModified);
 
-  connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
-  connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
-  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
-  connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
+  connect( m_sbAmount, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( m_sbUnitPrice, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( mDiscountPercent, &QDoubleSpinBox::valueChanged, this, &PositionViewWidget::slotModified);
+  connect( mDiscountTag, &QComboBox::activated, this, &PositionViewWidget::slotModified);
 
   mExecPopup->setTitle(i18n("Item Actions") );
 
@@ -134,19 +132,19 @@ PositionViewWidget::PositionViewWidget()
                            i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
   connect(this, &PositionViewWidget::positionStateNormal, this, [this]() {
-      slotSetPositionKind(Normal, true);
+      slotSetPositionKind(DocPosition::Type::Position, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
   connect(this, &PositionViewWidget::positionStateAlternative, this, [this]() {
-      slotSetPositionKind(Alternative, true);
+      slotSetPositionKind(DocPosition::Type::Alternative, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
   connect(this, &PositionViewWidget::positionStateDemand, this, [this]() {
-      slotSetPositionKind(Demand, true);
+      slotSetPositionKind(DocPosition::Type::Demand, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
 
   connect(this, &PositionViewWidget::lockPosition, this, &PositionViewWidget::slotLockPosition);
@@ -161,17 +159,15 @@ PositionViewWidget::PositionViewWidget()
 
   this->setAutoFillBackground(true);
   this->setBaseSize(this->width(), 100);
-  this->layout()->setMargin( 6 );
+  this->layout()->setContentsMargins(6, 6, 6, 6);
 }
 
-void PositionViewWidget::setDocPosition( DocPositionBase *dp)
+void PositionViewWidget::setDocPosition( DocPosition *pos)
 {
-  if( ! dp ) {
+  if( ! pos ) {
     qCritical() << "setDocPosition got empty position!";
     return;
   }
-
-  DocPosition *pos = static_cast<DocPosition*>(dp);
 
   // FIXME: Do not keep this pointer ...
   mPositionPtr = pos;
@@ -185,27 +181,30 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   QString unit = pos->unit().einheitSingular();
   m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
 
-  if( dp->type() == DocPositionBase::Position ) {
+  if( pos->type() == DocPosition::Type::Position ||
+          pos->type() == DocPosition::Type::Demand ||
+          pos->type() == DocPosition::Type::Alternative) {
+
     positionDetailStack->setCurrentWidget( positionPage );
 
     m_sbAmount->setValue( pos->amount() );
 
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
 
-    const QString kindStr = dp->typeStr();
-    Kind kind = techStringToKind(kindStr);
+    const QString kindStr = pos->typeStr();
+    DocPosition::Type kind = techStringToKind(kindStr);
     slotSetPositionKind(kind, false);
 
     // qDebug () << "Setting position ptr. in viewwidget: " << pos;
-  } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
+  } else if ( pos->type() == DocPosition::Type::ExtraDiscount ) {
     positionDetailStack->setCurrentWidget( discountPage );
-    // qDebug() << " " << dp->type();
-    KraftAttrib discount = dp->attribute(DocPosition::Discount);
+    // qDebug() << " " << pos->type();
+    KraftAttrib discount = pos->attribute(DocPosition::Discount);
     mDiscountPercent->setValue( discount.value().toDouble() );
 
     QString selTag;
-    if ( dp->hasAttribute( DocPosition::ExtraDiscountTagRequired ) ) {
-        const QString tagName = dp->attribute(DocPosition::ExtraDiscountTagRequired).value().toString();
+    if ( pos->hasAttribute( DocPosition::ExtraDiscountTagRequired ) ) {
+        const QString tagName = pos->attribute(DocPosition::ExtraDiscountTagRequired).value().toString();
         const TagTemplate tt = TagTemplateMan::self()->getTagTemplateFromId(tagName);
         selTag = tt.name();
     }
@@ -229,14 +228,13 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
     }
     mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
-    // qDebug () << "unknown doc position type " << dp->type();
+      qDebug () << "unknown doc position type " << pos->typeStr();
   }
   slotSetOverallPrice( currentPrice() );
 
   // set tags marked
-  mTags = dp->allTags();
   slotUpdateTagToolTip();
-  slotSetTax( dp->taxType() );
+  slotSetTax( pos->taxType() );
 
   this->blockSignals(false);
 }
@@ -252,16 +250,18 @@ void PositionViewWidget::slotUpdateTagToolTip()
   QString tip;
   bool first = true;
 
-  if ( mTags.count() == 1 ) {
-    tip = i18n( "Tag: %1", mTags.first() );
-  } else if ( mTags.count() > 1 ) {
+  const QStringList& tags = position()->allTags();
+
+  if ( tags.count() == 1 ) {
+    tip = i18n( "Tag: %1", tags.first() );
+  } else if ( tags.count() > 1 ) {
     tip = i18n( "Tags:<ul>" );
-    for ( QStringList::Iterator it = mTags.begin(); it != mTags.end(); ++it ) {
+    for (const auto& t:tags) {
       if ( first ) {
-        tip += QString( "<li>%1</li>" ).arg( *it );
+        tip += QString( "<li>%1</li>" ).arg(t);
         first = false;
       } else {
-        tip += QString( "<li>%1</li>" ).arg( *it );
+        tip += QString( "<li>%1</li>" ).arg(t);
       }
     }
     tip += "</ul>";
@@ -293,49 +293,53 @@ void PositionViewWidget::slotTaggingButtonPressed()
 
   ItemTagDialog dia( 0 );
 
-  dia.setPositionTags( mTags );
+  const QStringList& tags = position()->allTags();
+  dia.setPositionTags(tags);
   if ( dia.exec() ) {
-    mTags = dia.getSelectedTags();
-    slotUpdateTagToolTip();
-    slotModified();
-    update();
-    // qDebug () << "Selected tags: " << mTags.join( ", " );
+    QStringList newTags = dia.getSelectedTags();
+    if (newTags != tags) {
+        position()->setTags(newTags);
+        slotUpdateTagToolTip();
+        slotModified();
+        update();
+    }
+    qDebug () << "Selected tags: " << newTags.join( ", " );
   }
 }
 
 void PositionViewWidget::slotSetNilTax()
 {
-  slotSetTax( DocPositionBase::TaxNone );
+  slotSetTax( DocPosition::Tax::None );
 }
 
 void PositionViewWidget::slotSetReducedTax()
 {
-  slotSetTax( DocPositionBase::TaxReduced );
+  slotSetTax( DocPosition::Tax::Reduced );
 }
 
 void PositionViewWidget::slotSetFullTax()
 {
-  slotSetTax( DocPositionBase::TaxFull );
+  slotSetTax( DocPosition::Tax::Full );
 }
 
-void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
+void PositionViewWidget::slotSetTax(DocPosition::Tax tt )
 {
   mTax = tt;
 
   QString icon;
-  if( tt == DocPositionBase::TaxFull ) {
+  if( tt == DocPosition::Tax::Full ) {
     icon = QString::fromLatin1("coin");
     mFullTaxAction->setChecked( true );
-  } else if( tt == DocPositionBase::TaxReduced ) {
+  } else if( tt == DocPosition::Tax::Reduced ) {
     icon = QString::fromLatin1("circle-half-2");
     mRedTaxAction->setChecked( true );
-  } else if( tt == DocPositionBase::TaxNone ) {
+  } else if( tt == DocPosition::Tax::None ) {
     icon = QString::fromLatin1("circle-0");
     mNilTaxAction->setChecked( true );
   }
 
   mTaxSubmenu->setIcon( DefaultProvider::self()->icon( icon ));
-  emit positionModified();
+  Q_EMIT positionModified();
 }
 
 void PositionViewWidget::slotAllowIndividualTax( bool allow )
@@ -346,7 +350,7 @@ void PositionViewWidget::slotAllowIndividualTax( bool allow )
   mTaxSubmenu->setEnabled( allow );
 }
 
-DocPositionBase::TaxType PositionViewWidget::taxType() const
+DocPosition::Tax PositionViewWidget::taxType() const
 {
   return mTax;
 }
@@ -363,7 +367,7 @@ void PositionViewWidget::slotExecButtonPressed()
 void PositionViewWidget::slotMenuAboutToShow()
 {
   QPalette palette;
-  palette.setColor(this->backgroundRole(), QColor("#757476"));
+  palette.setColor(this->backgroundRole(), QColor(0x757476));
   this->setPalette(palette);
 }
 
@@ -472,7 +476,7 @@ bool PositionViewWidget::priceValid()
 {
   bool isValid = true;
 
-  if ( position()->type() == DocPosition::ExtraDiscount ) {
+  if ( position()->type() == DocPosition::Type::ExtraDiscount ) {
     isValid = mPositionPriceValid;
   }
 
@@ -482,7 +486,7 @@ bool PositionViewWidget::priceValid()
 void PositionViewWidget::setCurrentPrice( Geld g )
 {
   // do nothing for normal positions
-  if ( position()->type() == DocPosition::ExtraDiscount ) {
+  if ( position()->type() == DocPosition::Type::ExtraDiscount ) {
     mPositionPrice = g;
     mPositionPriceValid = true;
   }
@@ -491,8 +495,8 @@ void PositionViewWidget::setCurrentPrice( Geld g )
 Geld PositionViewWidget::currentPrice()
 {
   Geld sum;
-  if ( mKind == Normal ) {
-    if ( position()->type() == DocPosition::ExtraDiscount ) {
+  if ( mKind == DocPosition::Type::Position ) {
+    if ( position()->type() == DocPosition::Type::ExtraDiscount ) {
       sum = mPositionPrice;
       if ( ! mPositionPriceValid ) {
         qWarning() << "Asking for price of Discount item, but invalid!";
@@ -516,12 +520,12 @@ void PositionViewWidget::slotRefreshPrice()
 {
   const Geld sum = currentPrice();
   slotSetOverallPrice( sum );
-  emit priceChanged( sum );
+  Q_EMIT priceChanged( sum );
 }
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-  // if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
+  // if ( mPositionPtr->type() == DocPosition::Type::ExtraDiscount ) {
   //   m_sumLabel->setText( "--" );
   // } else {
     m_sumLabel->setText( g.toLocaleString() );
@@ -537,7 +541,7 @@ void PositionViewWidget::slotModified()
 
     m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
-    emit positionModified();
+    Q_EMIT positionModified();
 }
 
 PositionViewWidget::~PositionViewWidget()
@@ -578,33 +582,33 @@ Geld PositionViewWidgetList::nettoPrice()
 QString PositionViewWidget::cleanKindString(const QString& src)
 {
     QString current {src};
-    if ( current.startsWith( kindLabel( Alternative ) ) ) {
-        current.remove( 0, kindLabel(Alternative).length() );
-    } else if ( current.startsWith( kindLabel( Demand ) ) ) {
-        current.remove( 0, kindLabel(Demand).length());
+    if ( current.startsWith( kindLabel(DocPosition::Type::Alternative) ) ) {
+        current.remove( 0, kindLabel(DocPosition::Type::Alternative).length() );
+    } else if ( current.startsWith( kindLabel(DocPosition::Type::Demand) ) ) {
+        current.remove( 0, kindLabel(DocPosition::Type::Demand).length());
     }
     return current;
 }
 
-void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
+void PositionViewWidget::slotSetPositionKind(DocPosition::Type kind, bool alterText)
 {
     QString tt;
     QIcon icon;
     bool showLabel {false};
-    Kind oldKind = mKind;
+    auto oldKind = mKind;
 
     mKind = kind;
-    if (kind == Kind::Normal) {
+    if (kind == DocPosition::Type::Position) {
 
-    } else if (kind == Kind::Demand) {
+    } else if (kind == DocPosition::Type::Demand) {
         tt = i18n( "This item is either completely optional or its "
                    "amount varies depending on the needs.<br/><br/>"
                    "Use the item toolbox to change the item type." );
         showLabel = true;
         icon = DefaultProvider::self()->icon("arrow-move-right");
-    } else if (kind == Kind::Alternative) {
+    } else if (kind == DocPosition::Type::Alternative) {
         tt = i18n( "This is an alternative item.<br/><br/>"
-                   " Use the position toolbox to change the item type." );
+                   "Use the item toolbox to change the item type." );
         showLabel = true;
         icon = DefaultProvider::self()->icon("arrow-ramp-right");
     }
@@ -614,19 +618,19 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
 
     if (alterText) {
         QString text =  m_teFloskel->toPlainText();
-        if (oldKind == Kind::Normal) {
+        if (oldKind == DocPosition::Type::Position) {
             QString pre;
-            if (kind == Kind::Alternative) {
-                pre = kindLabel(Kind::Alternative);
-            } else if (kind == Kind::Demand) {
-                pre = kindLabel(Kind::Demand);
+            if (kind == DocPosition::Type::Alternative) {
+                pre = kindLabel(DocPosition::Type::Alternative);
+            } else if (kind == DocPosition::Type::Demand) {
+                pre = kindLabel(DocPosition::Type::Demand);
             }
             if (!pre.isEmpty()) {
                 m_teFloskel->setPlainText(pre + text);
             }
         } else {
               // from demand to normal or alternative for example
-            if (kind == Kind::Normal) {
+            if (kind == DocPosition::Type::Position) {
                 text = cleanKindString(text);
             } else {
                 text = kindLabel(kind) + cleanKindString(text);
@@ -638,16 +642,16 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
 
 // The technical label
 // Do not
-QString PositionViewWidget::techKindString( Kind kind)
+QString PositionViewWidget::techKindString(DocPosition::Type kind)
 {
     switch(kind) {
-    case Normal:
+    case DocPosition::Type::Position:
         return QStringLiteral("Normal");
         break;
-    case Demand:
+    case DocPosition::Type::Demand:
         return QStringLiteral("Demand");
         break;
-    case Alternative:
+    case DocPosition::Type::Alternative:
         return QStringLiteral("Alternative");
         break;
     default:
@@ -656,33 +660,33 @@ QString PositionViewWidget::techKindString( Kind kind)
     }
 }
 
-PositionViewWidget::Kind PositionViewWidget::techStringToKind( const QString& kindStr )
+DocPosition::Type PositionViewWidget::techStringToKind( const QString& kindStr )
 {
-    if (kindStr == techKindString(Normal)) {
-        return Kind::Normal;
-    } else if (kindStr == techKindString(Demand)) {
-        return Kind::Demand;
-    } else if (kindStr == techKindString(Alternative)) {
-        return Kind::Alternative;
+    if (kindStr == techKindString(DocPosition::Type::Position)) {
+        return DocPosition::Type::Position;
+    } else if (kindStr == techKindString(DocPosition::Type::Demand)) {
+        return DocPosition::Type::Demand;
+    } else if (kindStr == techKindString(DocPosition::Type::Alternative)) {
+        return DocPosition::Type::Alternative;
     }
-    return Kind::Invalid;
+    return DocPosition::Type::Position;
 }
 
 // The label that is prepended to a positions text
-QString PositionViewWidget::kindLabel( Kind k )
+QString PositionViewWidget::kindLabel( DocPosition::Type k )
 {
-  Kind kind = k;
+  auto kind = k;
 
   QString re;
-  if ( kind == Normal ) {
+  if ( kind == DocPosition::Type::Position) {
     re = KraftSettings::self()->normalLabel();
     if ( re.isEmpty() ) re = i18n( "Normal" );
   }
-  if ( kind == Demand ) {
+  if ( kind == DocPosition::Type::Demand ) {
     re = KraftSettings::self()->demandLabel();
     if ( re.isEmpty() ) re = i18n( "Demand" );
   }
-  if ( kind == Alternative ) {
+  if ( kind == DocPosition::Type::Alternative ) {
     re = KraftSettings::self()->alternativeLabel();
     if ( re.isEmpty() ) re = i18n( "Alternative" );
   }
@@ -697,11 +701,13 @@ void PositionViewWidget::paintEvent ( QPaintEvent*)
 {
   QScopedPointer<QPainter> painter(new QPainter( this ));
 
+  if (position() == nullptr) return;
+
   // visualize the tags
-  const QStringList taglist = tagList();
+  const QStringList taglist = position()->allTags();
   if ( taglist.count() ) {
-    int share = ( height() - 24 ) / taglist.count();
-    int cnt = 0;
+      int share = ( height() - 24 ) / taglist.count();
+      int cnt = 0;
 
     for ( QStringList::ConstIterator it = taglist.begin(); it != taglist.end(); ++it ) {
       const QString tag(*it);

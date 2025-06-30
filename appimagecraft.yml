@@ -17,18 +17,25 @@ scripts:
       #! /bin/bash
       set -eo pipefail
       own_path="$(dirname "$(readlink -f "$0")")"
+      export LD_LIBRARY_PATH=$own_path/../lib
       exec "$own_path"/../conda/bin/python -m weasyprint "$@"
       EOF
       chmod +x "$BUILD_DIR"/AppDir/usr/bin/weasyprint
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
+      cp /usr/lib64/qt6/plugins/kf6/ktexttemplate/*so "$BUILD_DIR"/AppDir/usr/plugins/kf6/ktexttemplate
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
+      cp /usr/lib64/qt6/plugins/kstyle_config/breezestyleconfig.so "$BUILD_DIR"/AppDir/usr/plugins/kstyle_config
+      mkdir -p "$BUILD_DIR"/AppDir/usr/plugins/styles
+      cp /usr/lib64/qt6/plugins/styles/breeze6.so "$BUILD_DIR"/AppDir/usr/plugins/styles
+      mkdir -p "$BUILD_DIR"/AppDir/usr/lib
+      cp /usr/lib64/libpango* "$BUILD_DIR"/AppDir/usr/lib/
 
 appimage:
   linuxdeploy:
     plugins:
       - qt
       - conda
-      - https://github.com/linuxdeploy/misc-plugins/raw/master/grantlee5/linuxdeploy-plugin-grantlee5.sh 
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
-      PIP_REQUIREMENTS: "weasyprint reportlab pypdf2"
-      GRANTLEE5_PLUGINS_DIR: "/usr/lib64/grantlee/5.2/"
-
+      PIP_REQUIREMENTS: "weasyprint pypdf2"
+      EXTRA_QT_MODULES: "svg;"

@@ -5,7 +5,7 @@
 
 class T_KraftString : public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void simple1() {
         QString tmpl{"Foo %nn baz"};
         QMap<QString, QString> rep;

@@ -77,7 +77,7 @@ void MaterialSelectDialog::accept()
     if( !( mKatalogListView->isChapter( item ) || mKatalogListView->isRoot( item ))) {
       StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( item ) );
       if ( mat ) {
-        emit materialSelected( mat->getID(), 1 );
+        Q_EMIT materialSelected( mat->getID(), 1 );
       }
     }
     ++it;

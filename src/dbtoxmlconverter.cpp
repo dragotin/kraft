@@ -8,6 +8,7 @@
 #include <klocalizedstring.h>
 #include <utime.h>
 
+#include <QSaveFile>
 #include <QSqlQuery>
 #include <QStandardPaths>
 #include <QVariant>
@@ -50,11 +51,10 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 {
     QMap<int, int> years = yearMap();
 
-    // defaults to $HOME/.local/kraft/v2/current
-    // QString dBase = DefaultProvider::self()->createV2BaseDir();
+    // dBase defaults to $HOME/.local/kraft/v2/current
 
     if (dBase.isEmpty()) {
-        qDebug() << "A new v2 base path can not be created";
+        qDebug() << "convert called with empty database dir";
 
         return {};
     }
@@ -66,11 +66,11 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 
     for (int year : keys) {
         int amount = years.value(year);
-        emit conversionOut(i18n("Transforming %1 documents for year %2...").arg(amount).arg(year));
+        Q_EMIT conversionOut(i18n("Transforming %1 documents for year %2...").arg(amount).arg(year));
 
         QMap<QByteArray, int> results;
         convertDocsOfYear(year, dBase, results);
-        emit conversionOut(i18n("     result: %1 ok, %2 fails, %3 PDF fails").arg(results[okStr]).arg(results[failsStr]).arg(results[pdfFailsStr]));
+        Q_EMIT conversionOut(i18n("     result: %1 ok, %2 fails, %3 PDF fails").arg(results[okStr]).arg(results[failsStr]).arg(results[pdfFailsStr]));
 
         overallResults[okStr] += results[okStr];
         overallResults[failsStr] += results[failsStr];
@@ -79,22 +79,22 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
         // FIXME Check for errors and set ok flag
     }
 
-    emit conversionOut(i18n("<br/><b>Overall document conversion result:</b>"));
-    emit conversionOut(i18n("    Successfully transformed documents: %1").arg(overallResults[okStr]));
-    emit conversionOut(i18n("    Failed transformed documents: %1").arg(overallResults[failsStr]));
-    emit conversionOut(i18n("    PDF transformed fails: %1").arg(overallResults[pdfFailsStr]));
+    Q_EMIT conversionOut(i18n("<br/><b>Overall document conversion result:</b>"));
+    Q_EMIT conversionOut(i18n("    Successfully transformed documents: %1").arg(overallResults[okStr]));
+    Q_EMIT conversionOut(i18n("    Failed transformed documents: %1").arg(overallResults[failsStr]));
+    Q_EMIT conversionOut(i18n("    PDF transformed fails: %1").arg(overallResults[pdfFailsStr]));
 
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
     overallResults["numberCyclesOk"] = nc_cnt;
-    emit conversionOut(i18n("<br/>Transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
+    Q_EMIT conversionOut(i18n("<br/>Transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
     for( const auto& k : overallResults.keys()) {
         qDebug() << "Tranformation result" << k << ":" << overallResults[k];
     }
 
     if (convertOwnIdentity(dBase)) {
         qDebug() << "manual own Identity converted";
-        emit conversionOut(i18n("<br/>Converted manual created identity successfully"));
+        Q_EMIT conversionOut(i18n("<br/>Converted manual created identity successfully"));
     }
 
     if (nc_cnt == 0) {

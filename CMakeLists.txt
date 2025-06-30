@@ -1,19 +1,24 @@
 cmake_minimum_required(VERSION 3.16.0)
-project(kraft)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project(kraft LANGUAGES CXX)
 cmake_policy(SET CMP0063 NEW)
 
-find_package(ECM REQUIRED NO_MODULE)
+FIND_PACKAGE(ECM 6.0.0 REQUIRED NO_MODULE)
+
+option(BUILD_WITH_AKONADI "Enable build checks for Akonadi" ON)
+
+set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+SET(KF_IGNORE_PLATFORM_CHECK TRUE)
+set(QT_MIN_VERSION 6.2.4)
+
 set(CMAKE_AUTOMOC TRUE)
 
-option(AKONADI_LEGACY_BUILD "Build with older versions of Akonadi (KF5 Prefix)" OFF)
-# Akonadi Prefix: Set this to KF5 for builds with Akonadi Libs before 5.23
-set(AKO_PREFIX "KPim5")
+set(AKO_PREFIX "KPim6")
 
-if (AKONADI_LEGACY_BUILD)
-  set(AKO_PREFIX "KF5")
-endif()
 message("Akonadi Prefix is ${AKO_PREFIX}")
 
 include(GetGitRevisionDescription)
@@ -60,90 +65,51 @@ endif()
 message("Build host name: ${BUILD_HOST_NAME}")
 message("Build host distribution: ${BUILD_HOST_DISTRI}")
 
-include(KDEInstallDirs)
-include(KDECMakeSettings)
+include(ExternalProject)
 include(ECMInstallIcons)
-include(KDEFrameworkCompilerSettings)
+include(ECMAddAppIcon)
+include(KDEInstallDirs6)
+include(ECMQtDeclareLoggingCategory)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 include(FeatureSummary)
-
-# Uncomment to enable some tweaks for AppImage build
-# add_definitions(-DBUILD_APPIMAGE=1)
 
 kde_enable_exceptions()
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-find_package(Qt5 CONFIG REQUIRED
-    Core
-    Gui
-    Sql
-    Widgets
-    Xml
-    Svg
-    XmlPatterns
-)
+find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core Gui Xml Sql Svg SvgWidgets Network Concurrent Test)
 
-# XmlGui for the ConfigSkeleton
-find_package(KF5 REQUIRED COMPONENTS
+qt_standard_project_setup()
+
+find_package(KF6 REQUIRED COMPONENTS
     I18n
     Config
     Contacts
+    TextTemplate
 )
 
-# Grantlee templating engine
-find_package(Grantlee5 REQUIRED)
-set_package_properties(Grantlee5 PROPERTIES
-    DESCRIPTION "Library for templating html and pdf output"
-    URL "https://www.grantlee.org/"
-    PURPOSE "Optionally used for templating"
-    TYPE OPTIONAL
-)
+# Disable lookup of Akonadi with -DBUILD_WITH_AKONADI=OFF
+if (BUILD_WITH_AKONADI)
+    find_package(${AKO_PREFIX}Akonadi)
+    find_package(${AKO_PREFIX}AkonadiContactCore)
+    find_package(${AKO_PREFIX}AkonadiContactWidgets)
 
-find_package(${AKO_PREFIX}Akonadi)
-set_package_properties(${AKO_PREFIX}Akonadi PROPERTIES
-    DESCRIPTION "Library for general Access to Akonadi"
-    URL "https://www.kde.org/"
-    PURPOSE "Optionally used for addressbook integration"
-    TYPE OPTIONAL
-)
-
-find_package(${AKO_PREFIX}AkonadiContact)
-set_package_properties(${AKO_PREFIX}AkonadiContact PROPERTIES
-    DESCRIPTION "Library for Accessing Contacts stored in Akonadi"
-    URL "https://www.kde.org/"
-    PURPOSE "Optionally used for addressbook integration"
-    TYPE OPTIONAL
-)
-
-find_package(${AKO_PREFIX}ContactEditor)
-set_package_properties(${AKO_PREFIX}ContactEditor PROPERTIES
-    DESCRIPTION "Library for editing contacts stored in Akonadi"
-    URL "https://www.kde.org/"
-    PURPOSE "Optionally used for addressbook integration"
-    TYPE OPTIONAL
-)
-
-if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND AND ${AKO_PREFIX}ContactEditor_FOUND)
-   add_definitions(-DHAVE_AKONADI)
+    if( ${AKO_PREFIX}AkonadiContactCore_FOUND AND ${AKO_PREFIX}AkonadiContactWidgets_FOUND )
+        message ("## Defined Akonadi FOUND")
+        add_definitions(-DHAVE_AKONADI)
+    endif()
+else()
+    message("Akonadi Check disabled")
 endif()
-
-find_package(Ctemplate REQUIRED)
 
 find_package(Asciidoctor)
 # Sets the variable ASCIIDOCTOR_FOUND
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
-
-set(QT_DEFINITIONS "${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Widgets_DEFINITIONS}")
-add_definitions(${QT_DEFINITIONS} )
-
-include_directories(${QT_INCLUDES} src)
-include_directories( /usr/include/${AKO_PREFIX}/AkonadiCore )
-include_directories(/usr/include/${AKO_PREFIX}/)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++fs")
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)

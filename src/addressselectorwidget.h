@@ -23,23 +23,10 @@
 #include <QSplitter>
 
 #ifdef HAVE_AKONADI
-#include <akonadi_version.h>
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
-#include <AkonadiContact/akonadi-contact_version.h>
+#include <Akonadi/ContactViewer>
+#include <Akonadi/ContactEditorDialog>
 #else
-#define AKONADICONTACT_VERSION AKONADI_VERSION
-#endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-#include <AkonadiContactEditor/Akonadi/ContactViewer>
-#include <AkonadiContactEditor/Akonadi/ContactEditorDialog>
-#elif AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
-#include <AkonadiContact/Akonadi/ContactViewer>
-#include <AkonadiContact/Akonadi/ContactEditorDialog>
-#else
-#include <Akonadi/Contact/ContactViewer>
-#include <Akonadi/Contact/ContactEditorDialog>
-#endif
+#include "htmlview.h"
 #endif
 
 #include <kcontacts/addressee.h>
@@ -69,11 +56,9 @@ class KraftContactViewer : public QWidget
 
 private:
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    ContactEditor::ContactViewer *_contactViewer;
-#else
     Akonadi::ContactViewer *_contactViewer;
-#endif
+#else
+    HtmlView *_htmlView;
 #endif
 };
 
@@ -106,19 +91,19 @@ public:
 
     bool backendUp() const;
 
-signals:
+Q_SIGNALS:
   void addressSelected(KContacts::Addressee);
 
-public slots:
+public Q_SLOTS:
   void saveState();
 
-protected slots:
+protected Q_SLOTS:
   void slotCreateNewContact();
   void slotEditContact();
   void restoreState();
   void slotFilterTextChanged( const QString& filter);
 
-private slots:
+private Q_SLOTS:
   void slotAddresseeSelected(QModelIndex index);
 
 private:
@@ -131,11 +116,7 @@ private:
   QTreeView *_addressTreeView;
   KraftContactViewer *_contactViewer;
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    ContactEditor::ContactEditorDialog *_addressEditor;
-#else
     Akonadi::ContactEditorDialog *_addressEditor;
-#endif
 #endif
 };
 

@@ -35,6 +35,7 @@ class Geld;
 class DocDigest;
 
 class KraftView;
+class KLazyLocalizedString;
 
 class KraftDocState
 {
@@ -49,16 +50,27 @@ public:
         Invalid     // Invalidated. Never sent out
     };
 
-    const QString StateUndefinedStr{"Undefined"};
-    const QString StateNewStr{"New"};
-    const QString StateDraftStr{"Draft"};
-    const QString StateFinalStr{"Final"};
-    const QString StateRetractedStr{"Retracted"};
-    const QString StateInvalidStr{"Invalid"};
-    const QString StateConvertedStr{"Converted"};
+    static const QString StateUndefinedStr;
+    static const QString StateNewStr;
+    static const QString StateDraftStr;
+    static const QString StateFinalStr;
+    static const QString StateRetractedStr;
+    static const QString StateInvalidStr;
+    static const QString StateConvertedStr;
+
+    static const KLazyLocalizedString StateUndefinedI18n;
+    static const KLazyLocalizedString StateNewI18n;
+    static const KLazyLocalizedString StateDraftI18n;
+    static const KLazyLocalizedString StateFinalI18n;
+    static const KLazyLocalizedString StateRetractedI18n;
+    static const KLazyLocalizedString StateInvalidI18n;
+    static const KLazyLocalizedString StateConvertedI18n;
+
+    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
     KraftDocState::State state() const { return _state; }
     QString stateString() const;
+    QString stateStringI18n() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
     bool forcesReadOnly();
@@ -66,7 +78,6 @@ public:
     bool is(State s) const { return _state == s; }
     bool isNew() const { return is(State::New); }
     bool canBeFinalized() const;
-    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
 private:
     State _state;
@@ -75,6 +86,7 @@ private:
 class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
+
     Q_PROPERTY(QString docType READ docType)
     Q_PROPERTY(QString state READ (_state.stateString))
     Q_PROPERTY(bool isDraftState READ isDraftState)
@@ -141,7 +153,7 @@ public:
 
     KraftDoc& operator=( KraftDoc& );
 
-    DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
+    DocPosition *createPosition( DocPosition::Type t = DocPosition::Type::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
     QList<ReportItem*> reportItemList() const;
@@ -247,7 +259,7 @@ public:
 
     static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
     static QString taxMarkerReduced() { return QStringLiteral("2"); }
-    static QString taxMarkerFull()    { return QStringLiteral("");  }
+    static QString taxMarkerFull()    { return QLatin1String("");  }
 
     bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
@@ -260,13 +272,7 @@ public:
 
     KraftDocState& state() { return _state; }
 
-public slots:
-    /** calls redrawDocument() on all views connected to the document object and is
-   *  called by the view by which the document has been changed.
-   *  As this view normally repaints itself, it is excluded from the paintEvent.
-   */
-    int slotAppendPosition( const DocPosition& );
-
+ public Q_SLOTS:
     // The following slots take get the db id as argument
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );
@@ -276,7 +282,7 @@ public slots:
     void finalize();
     void slotNewIdent(const QString&);
 
-signals:
+Q_SIGNALS:
     void saved(bool);
 
 protected:
@@ -332,5 +338,6 @@ private:
     double _fullTax, _redTax;
     friend class DocumentMan;
 };
+
 
 #endif // KraftDoc_H

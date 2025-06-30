@@ -29,7 +29,7 @@ class HeaderTemplateProvider : public TemplateProvider
 public:
   HeaderTemplateProvider( QWidget* );
 
-public slots:
+public Q_SLOTS:
   void slotNewTemplate() override;
   void slotEditTemplate() override;
   void slotDeleteTemplate() override;
@@ -37,7 +37,7 @@ public slots:
   void slotTemplateToDocument() override;
   void slotInsertTemplateToDocument() override;
 
-signals:
+Q_SIGNALS:
   void newHeaderText( const DocText& );
   void updateHeaderText( const DocText& );
   void headerTextToDocument(const DocText&, bool replace);

@@ -1,10 +1,10 @@
-include_directories(${QT_INCLUDES} src)
+# include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 
 ########### next target ###############
-qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
+qt6_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
 
 set(kraft_SRCS
     attribute.cpp
@@ -85,7 +85,6 @@ set(kraft_SRCS
     headertemplateprovider.cpp
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
-    texttemplate.cpp
     grantleetemplate.cpp
     tagman.cpp
     itemtagdialog.cpp
@@ -101,11 +100,14 @@ set(kraft_SRCS
     models/documentproxymodels.cpp
     models/datemodel.cpp
     models/docbasemodel.cpp
+    models/contactsdirmodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp
-    addressprovider_akonadi.cpp
+    addressproviderakonadi.cpp
+    addressproviderlocal.cpp
     addressselectordialog.cpp
+    addressproviderprivate.cpp
     kraftdb.cpp
     geld.cpp
     defaultprovider.cpp
@@ -132,7 +134,7 @@ kconfig_add_kcfg_files(kraft_SRCS
     kraftsettings.kcfgc
 )
 
-ki18n_wrap_ui(kraft_SRCS
+set( kraft_UIS
     calctemplate.ui
     dbinit.ui
     createdb.ui
@@ -164,37 +166,44 @@ ki18n_wrap_ui(kraft_SRCS
     dbtoxml.ui
 )
 
+ki18n_wrap_ui(kraft_SRCS ${kraft_UIS})
+
 set(KRAFT_LINK_LIBS
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Sql
-    Qt5::Xml
-    Qt5::XmlPatterns
-    
-    KF5::I18n
-    KF5::Contacts
-    KF5::ConfigCore
-    KF5::ConfigGui
-    ${CTEMPLATE_LIBRARIES} pthread
-    Grantlee5::Templates
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Sql
+    Qt6::Xml
+
+    KF6::I18n
+    KF6::Contacts
+    KF6::ConfigCore
+    KF6::ConfigGui
+    pthread
+    KF6::TextTemplate
 )
 if(${AKO_PREFIX}Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
     ${AKO_PREFIX}::AkonadiCore
-    ${AKO_PREFIX}::AkonadiContact
-    ${AKO_PREFIX}::ContactEditor
-    ${AKO_PREFIX}::AkonadiAgentBase
     ${AKO_PREFIX}::AkonadiWidgets
-    ${AKO_PREFIX}::AkonadiXml
+    ${AKO_PREFIX}::AkonadiContactCore
+    ${AKO_PREFIX}::AkonadiContactWidgets
   )
 endif()
 
-add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
-target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
+qt_add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
 
-add_executable(kraft main.cpp)
+# Use this with newer versions of Qt and remove the AUTOMOC in main CMakeLists.txt
+# qt_add_ui(kraftlib  SOURCES ${kraft_UIS})
+
+target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
+target_include_directories(kraftlib PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/models ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
+
+qt_add_executable(kraft
+    MANUAL_FINALIZATION
+    main.cpp)
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
+target_include_directories(kraft PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(kraftlib
 PUBLIC
@@ -202,13 +211,15 @@ PUBLIC
 )
 
 target_link_libraries(kraft
-  PUBLIC
+  PRIVATE
     kraftlib
 )
+
+qt_finalize_executable(kraft)
+
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)
+install(FILES  kraftui.rc katalogview.rc DESTINATION ${KDE_INSTALL_KXMLGUIDIR}/kraft)

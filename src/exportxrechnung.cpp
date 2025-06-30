@@ -18,6 +18,8 @@
 // include files for Qt
 #include <QDebug>
 #include <QDir>
+#include <QTemporaryFile>
+#include <QTimer>
 
 #include "exportxrechnung.h"
 #include "documentman.h"
@@ -113,6 +115,7 @@ void ExporterXRechnung::slotSkipLookup()
 
 void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
+    Q_UNUSED(uid)
     KContacts::Addressee myContact; // leave empty for now
     // now the three pillars archDoc, myContact and mCustomerContact are defined.
 
@@ -131,7 +134,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     const QString expanded = templateEngine->expand(uuid, myContact, contact);
 
     if (expanded.isEmpty()) {
-        // emit failure(i18n("The template expansion failed."));
+        // Q_EMIT failure(i18n("The template expansion failed."));
         qDebug() << "Expansion failed, empty result";
         return;
     }
@@ -148,7 +151,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
         outStream << expanded;
         tempFile.close();
 
-        emit xRechnungTmpFile(fName);
+        Q_EMIT xRechnungTmpFile(fName);
 #if 0
         if (_validateWithSchema && _schema.isValid()) {
             QFile file(fName);

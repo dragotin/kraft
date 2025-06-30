@@ -31,7 +31,7 @@ void PortalHtmlView::slotLinkClicked(const QUrl& url)
     const QString action  = q.queryItemValue(QLatin1String("action"));
     if ( action == QLatin1String("open") ) {
       // qDebug () << "open catalog " << katName;
-      emit( openCatalog( katName ) );
+      Q_EMIT openCatalog( katName );
     } else {
         if( url.isValid() ) {
             QDesktopServices::openUrl(url);

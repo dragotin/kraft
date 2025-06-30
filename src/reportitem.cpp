@@ -19,7 +19,7 @@
 #include "format.h"
 
 
-ReportItem::ReportItem(DocPositionBase *dpb)
+ReportItem::ReportItem(DocPosition *dp)
     : QObject()
 {
 //    int     _itemNo;
@@ -31,7 +31,6 @@ ReportItem::ReportItem(DocPositionBase *dpb)
 //    QString _nettoPrice;
 //    QString _taxMarker;
 
-    DocPosition *dp = static_cast<DocPosition*>(dpb);
     _kind = dp->typeStr();
     _text = dp->text();
     _itemNo = dp->positionNumber();
@@ -40,23 +39,23 @@ ReportItem::ReportItem(DocPositionBase *dpb)
     _nettoPrice = dp->overallPrice().toLocaleString();
 
     QString re;
-    DocPositionBase::TaxType tt = dp->taxType();
-    if ( tt == DocPositionBase::TaxReduced ) {
+    DocPosition::Tax tt = dp->taxType();
+    if ( tt == DocPosition::Tax::Reduced ) {
         re = QStringLiteral("1");
-    } else if ( tt == DocPositionBase::TaxNone) {
+    } else if ( tt == DocPosition::Tax::None) {
         re = QStringLiteral("");
-    } else if (tt == DocPositionBase::TaxFull) {
+    } else if (tt == DocPosition::Tax::Full) {
         re = QStringLiteral("2");
     }
 
-    _unit = dp->unit().einheit(_amount > 1 ? 2 : 1);
+    _unit = dp->unit().einheit(dp->amount() > 1 ? 2 : 1);
     _taxMarker = re;
     _uuid = dp->uuid();
 }
 
 QString ReportItem::htmlText()
 {
-    const QStringList li = _text.toHtmlEscaped().split( "\n", QString::KeepEmptyParts );
+    const QStringList li = _text.toHtmlEscaped().split( "\n", Qt::KeepEmptyParts );
     QString re = li.join("<br/>");
 
     return re;

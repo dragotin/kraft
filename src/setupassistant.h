@@ -116,7 +116,7 @@ class CreateDbPage:public QWizardPage
   void setFillCmdsCurrent( int );
 
   int nextId() const;
-  public slots:
+  public Q_SLOTS:
   void slotStatusMessage( const QString& );
   void slotCountCreateProgress( bool );
   void slotCountFillProgress( bool );
@@ -138,7 +138,7 @@ class UpgradeDbPage:public QWizardPage
 
   int nextId() const;
 
-  public slots:
+  public Q_SLOTS:
   void slotSetStatusText( const QString& );
   void slotSetOverallCount( int );
   void slotCountFillProgress( bool );
@@ -167,7 +167,7 @@ class OwnAddressPage:public QWizardPage
   KContacts::Addressee mMe;
   Ui::manualOwnIdentity ui;
 
-  private slots:
+  private Q_SLOTS:
   void gotMyAddress( const KContacts::Addressee& addressee);
 
 };
@@ -182,7 +182,7 @@ class FinalStatusPage:public QWizardPage
   FinalStatusPage( QWidget *parent = 0 );
   int nextId() const;
 
-  public slots:
+  public Q_SLOTS:
   void slotSetStatusText( const QString& );
 
   private:
@@ -215,10 +215,10 @@ public:
     bool handleSqLiteDetails();
     bool handleMysqlDetails();
 
-public slots:
+public Q_SLOTS:
     void done( int );
 
-private slots:
+private Q_SLOTS:
     void slotCurrentPageChanged(int currId);
 
 private:

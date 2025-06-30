@@ -29,7 +29,7 @@ public:
   // FIXME: Remove access to internal widgets
   Ui::DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
 
-signals:
+Q_SIGNALS:
   void pickAddressee();
 
 private:

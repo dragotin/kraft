@@ -17,8 +17,6 @@
 #ifndef DEFAULTPROVIDER_H
 #define DEFAULTPROVIDER_H
 
-#include <QtCore>
-
 #include "kraftcat_export.h"
 
 #include "kraftdoc.h"
@@ -26,8 +24,6 @@
 #include "docguardedptr.h"
 #include "documentsaverxml.h"
 
-class QSqlRecord;
-class QStringList;
 class dbID;
 
 /**
@@ -89,6 +85,10 @@ public:
 
     // utility - returns the name of the subdir for a given enum type
     QString kraftV2Subdir(KraftV2Dir dir);
+
+    // returns the path to the directory where vcd files are stored as file based addressbook
+    // if Akonadi is not enabled
+    QString kraftV2AddressDir();
 
     DefaultProvider();
 

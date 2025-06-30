@@ -36,7 +36,6 @@
 #include <klocalizedstring.h>
 
 #include "tagtemplatesdialog.h"
-#include "defaultprovider.h"
 #include "tagman.h"
 
 TagTemplateEditor::TagTemplateEditor( QWidget *parent )
@@ -258,7 +257,7 @@ void TagTemplatesDialog::setTags()
   mListView->clear();
   QStringList tags = TagTemplateMan::self()->allTagTemplates();
 
-  foreach( const QString t, tags ) {
+  for( const QString& t: tags ) {
     TagTemplate templ = TagTemplateMan::self()->getTagTemplate( t );
 
     // TagItem *item = new QListViewItem( mListView, templ.name(), QCheckListItem::CheckBox );

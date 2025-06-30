@@ -21,13 +21,13 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QCheckBox>
-#include <QSqlQuery>
 #include <QSpinBox>
 #include <QListWidget>
 #include <QLocale>
 #include <QIcon>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QSqlQuery>
 
 #include <QDialog>
 #include <QDebug>
@@ -117,27 +117,18 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
   connect( mCbXRechnung, &QCheckBox::toggled, this, &DocTypeEdit::slotXRechnungToggled);
 
-  connect( mPbAdd, SIGNAL( clicked() ),
-           SLOT( slotAddDocType() ) );
-  connect( mPbEdit, SIGNAL( clicked() ),
-           SLOT( slotEditDocType() ) );
-  connect( mPbRemove, SIGNAL( clicked() ),
-           SLOT( slotRemoveDocType() ) );
+  connect( mPbAdd, &QPushButton::clicked, this, &DocTypeEdit::slotAddDocType);
+  connect( mPbEdit, &QPushButton::clicked, this, &DocTypeEdit::slotEditDocType);
+  connect( mPbRemove, &QPushButton::clicked, this, &DocTypeEdit::slotRemoveDocType);
 
-  connect( mNumberCycleCombo, SIGNAL( activated( const QString& ) ),
-           SLOT( slotNumberCycleChanged( const QString& ) ) );
+  connect(mNumberCycleCombo, &QComboBox::currentTextChanged, this, &DocTypeEdit::slotNumberCycleChanged);
 
-  connect( mPbEditCycles, SIGNAL( clicked() ),
-           SLOT( slotEditNumberCycles() ) );
+  connect( mPbEditCycles, &QPushButton::clicked, this, &DocTypeEdit::slotEditNumberCycles);
 
-  connect( mWatermarkCombo, SIGNAL( activated( int ) ),
-           SLOT( slotWatermarkModeChanged( int ) ) );
+  connect( mWatermarkCombo, &QComboBox::activated, this, &DocTypeEdit::slotWatermarkModeChanged);
 
-  connect( mWatermarkUrl, SIGNAL( textChanged( const QString& ) ),
-           SLOT( slotWatermarkUrlChanged( const QString& ) ) );
-
-  connect( mTemplateUrl, SIGNAL( textChanged( const QString& ) ),
-           SLOT( slotTemplateUrlChanged( const QString& ) ) );
+  connect( mWatermarkUrl, &QLineEdit::textChanged, this, &DocTypeEdit::slotWatermarkUrlChanged);
+  connect( mTemplateUrl, &QLineEdit::textChanged, this, &DocTypeEdit::slotTemplateUrlChanged);
 
   connect( mAppendUrl, &QLineEdit::textChanged, this, &DocTypeEdit::slotAppendPDFUrlChanged );
 
@@ -158,15 +149,11 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
 void DocTypeEdit::fillNumberCycleCombo()
 {
-  QSqlQuery q;
-  q.prepare( "SELECT name FROM numberCycles ORDER BY name" );
-  q.exec();
-  QStringList cycles;
-  while ( q.next() ) {
-    cycles << q.value( 0 ).toString();
-  }
+  QMap<QString, NumberCycle> ncs = NumberCycles::load();
+
+  const QStringList cycles = ncs.keys();
   mNumberCycleCombo->clear();
-  mNumberCycleCombo->insertItems(-1, cycles );
+  mNumberCycleCombo->addItems(cycles);
 }
 
 void DocTypeEdit::slotAddDocType()
@@ -280,7 +267,7 @@ void DocTypeEdit::slotRemoveDocType()
 
   delete currItem;
   // qDebug () << "removed type: " << mRemovedTypes;
-  emit removedType( currName );
+  Q_EMIT removedType( currName );
 }
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
@@ -441,10 +428,9 @@ void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
-  const QString docTypeName = mTypeListBox->currentItem()->text();
   DocType dt = currentDocType();
   dt.setNumberCycleName( newCycle );
-  mChangedDocTypes[docTypeName] = dt;
+  mChangedDocTypes[newCycle] = dt;
 
   NumberCycle nc = NumberCycles::get(newCycle);
   // qDebug () << "Changing the cycle name of " << docTypeName << " to " << newCycle;
@@ -452,24 +438,9 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   mIdent->setText( nc.getTemplate() );
   int nextNum = nc.counter();
   mCounter->setText( QString::number( nextNum ) );
-  mExampleId->setText( nc.exampleIdent(docTypeName,
+  mExampleId->setText( nc.exampleIdent(newCycle,
                                        QDate::currentDate(),
                                        mExampleAddressUid) );
-}
-
-QStringList DocTypeEdit::allNumberCycles()
-{
-  QStringList re;
-  re << NumberCycle::defaultName();
-  QSqlQuery q( "SELECT av.value FROM attributes a, attributeValues av "
-               "WHERE a.id=av.attributeId AND a.hostObject='DocType' "
-               "AND a.name='identNumberCycle'" );
-
-  while ( q.next() ) {
-    QString cycleName = q.value(0).toString();
-    re << cycleName;
-  }
-  return re;
 }
 
 void DocTypeEdit::saveDocTypes()
@@ -482,7 +453,7 @@ void DocTypeEdit::saveDocTypes()
       removeTypeFromDb( *it );
       mOrigDocTypes.remove( *it );
       mChangedDocTypes.remove( *it );
-      emit removedType( *it );
+      Q_EMIT removedType( *it );
     }
   }
 

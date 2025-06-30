@@ -53,7 +53,7 @@ public:
   bool isDocument(const QModelIndex& indx) const;
 
 
-// protected slots:
+// protected Q_SLOTS:
 //  void slotAddresseeFound( const QString&, const KContacts::Addressee& );
 
 protected:

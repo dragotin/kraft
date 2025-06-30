@@ -21,6 +21,8 @@
 #include <QDir>
 #include <QString>
 #include <QDateTime>
+#include <QThread>
+#include <QSaveFile>
 
 #include "numbercycle.h"
 #include "stringutil.h"
@@ -212,7 +214,7 @@ QString NumberCycles::generateIdent(const QString& name, const QString& docType,
     NumberCycle nc;
     nc = get(name);
 
-    int newCounter = increaseCounter(name);
+    int newCounter = increaseLocalCounter(name);
 
     if (newCounter > -1) {
         return generateDocumentIdent(nc.getTemplate(), docType,
@@ -222,7 +224,7 @@ QString NumberCycles::generateIdent(const QString& name, const QString& docType,
     return QString();
 }
 
-int NumberCycles::increaseCounter(const QString& ncName)
+int NumberCycles::increaseLocalCounter(const QString& ncName)
 {
     NumberCycle nc;
     const int MaxAttempt{10};
@@ -254,7 +256,6 @@ int NumberCycles::increaseCounter(const QString& ncName)
         }
         attempt++;
         QThread::msleep(2*attempt); // Sleep a short time before trying agian. Lock should be gone after that.
-
     }
     if (attempt == MaxAttempt) {
         qDebug() << "Could not lock the numbercycle file";
@@ -309,11 +310,11 @@ QMap<QString, NumberCycle> NumberCycles::load()
     }
 
     QDomDocument domDoc;
-
     const QByteArray arr = file.readAll();
-    QString errMsg;
-    if (!domDoc.setContent(arr, &errMsg)) {
-        qDebug() << "Unable to set file content as xml:" << errMsg;
+    QDomDocument::ParseResult pr = domDoc.setContent(arr);
+
+    if (!pr) {
+        qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
         file.close();
         return map;
     }
@@ -371,7 +372,6 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
     QDir dir(dirStr);
 
     const QString fd{dir.absoluteFilePath("numbercycles.xml")};
-    QFileInfo fi{fd};
     SaveResult res{SaveResult::SaveOk};
     bool re{false};
 
@@ -393,12 +393,11 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
 
 }
 
-//
+// this lock code does not do anything at all because the local file
+// is exclusive anyway.
 bool NumberCycles::tryLock()
 {
     bool re{true};
-    // Consider case that file does not exist at all.
-
     qDebug() << "Try to lock numbercycles:" << re;
     return re;
 }

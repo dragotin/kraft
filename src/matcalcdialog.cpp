@@ -46,7 +46,7 @@ void MatCalcDialog::accept()
 {
     double val = _matWidget->m_inpMenge->value();
     m_mc->setCalcAmount(val);
-    emit( matCalcPartChanged(m_mc));
+    Q_EMIT( matCalcPartChanged(m_mc));
 
     CalcDialogBase::accept();
 }

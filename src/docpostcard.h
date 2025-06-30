@@ -35,12 +35,12 @@ public:
 
   DocPostCard( QWidget *parent = 0 );
 
-signals:
+Q_SIGNALS:
   void selectPage( KraftDoc::Part );
 
-public slots:
+public Q_SLOTS:
   void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
-  void setPositions( DocPositionList, DocPositionBase::TaxType, double, double );
+  void setPositions( DocPositionList, DocPosition::Tax, double, double );
   void setFooterData( const QString&,  const QString& );
   void renderDoc( KraftDoc::Part p );
   void slotSetMode( DisplayMode, KraftDoc::Part p);
@@ -52,7 +52,7 @@ protected:
   QString header(bool, const QString&, const QString&, const QString& protocol,
                   const QString& = QString() ) const;
 
-private slots:
+private Q_SLOTS:
   void slotUrlSelected( const QUrl& kurl);
 
 private:

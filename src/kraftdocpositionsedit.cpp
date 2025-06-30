@@ -83,7 +83,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout();
-  topLayout->setMargin( 0 );
+  topLayout->setContentsMargins(0, 0, 0, 0);
 //TODO PORT QT5   topLayout->setSpacing( 0 ); // QDialog::spacingHint() );
 
   QHBoxLayout *upperHBoxLayout = new QHBoxLayout;
@@ -102,12 +102,6 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   upperHBoxLayout->addWidget(m_discountBtn);
   m_discountBtn->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 
-#if 0 // commented, rarely used feature.
-  button = new QPushButton( i18n("Import Items…") );
-  connect( button, SIGNAL( clicked() ), SIGNAL( importItemsClicked() ) );
-  upperHBoxLayout->addWidget(button);
-  button->setToolTip( i18n( "Opens a dialog where multiple items can be imported from a text file." ) );
-#endif
   QWidget *spaceEater = new QWidget( );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
   upperHBoxLayout->addWidget(spaceEater);

@@ -84,7 +84,7 @@
         <tr><td>EMAIL</td><td></td><td>{{ me.URL }}</td></tr>
         <tr><td>PHONE</td><td></td><td>{{ me.PHONE }}</td></tr>
         <tr><td>FAX</td><td></td><td>{{ me.FAX }}</td></tr>
-        <tr><td>CELL</td><td></td><td>{{ me.CELL }}</td></tr>
+        <tr><td>MOBILE</td><td></td><td>{{ me.MOBILE }}</td></tr>
      </table>
     </DIV>
 
