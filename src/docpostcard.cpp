@@ -31,8 +31,8 @@ DocPostCard::DocPostCard( QWidget *parent )
 {
   setStylesheetFile( "docoverview.css" );
   setTitle( i18n( "Document Overview" ) );
-
-  connect( this, SIGNAL(openUrl(QUrl)), this, SLOT(slotUrlSelected(QUrl)) );
+  setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+  connect(this, &DocPostCard::openUrl, this, &DocPostCard::slotUrlSelected);
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,

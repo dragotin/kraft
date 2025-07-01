@@ -28,7 +28,8 @@ HtmlView::HtmlView( QWidget *parent )
 {
     this->setReadOnly(true);
     this->setOpenLinks(false); // get only the signal below
-    this->setTextInteractionFlags(Qt::NoTextInteraction | Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+    this->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard |
+                                  Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
     connect (this, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(openUrl(QUrl)));
 }
 
