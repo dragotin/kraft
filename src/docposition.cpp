@@ -28,11 +28,14 @@
 #include "ui_positionwidget.h"
 #include "positionviewwidget.h"
 #include "defaultprovider.h"
+#include "stringutil.h"
 #include "tagman.h"
 
 /**
 @author Klaas Freitag
 */
+
+using namespace KraftXml;
 
 DocPosition::DocPosition() : KraftObj(),
     m_dbId( -1 ),
@@ -309,15 +312,6 @@ bool DocPositionList::hasIndividualTaxes() const
 {
     bool re = listTaxation() == DocPosition::Tax::Individual;
     return re;
-}
-
-
-QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
-{
-    QDomElement elem = doc.createElement( name );
-    QDomText t = doc.createTextNode( value );
-    elem.appendChild( t );
-    return elem;
 }
 
 DocPosition *DocPositionList::positionFromId( int id )

@@ -29,7 +29,9 @@ class QDateTime;
 
 class KRAFTCAT_EXPORT NumberCycle
 {
+    friend class DbToXMLConverter;
     friend class NumberCycles;
+
 public:
     NumberCycle();
 
@@ -67,15 +69,17 @@ private:
 class KRAFTCAT_EXPORT NumberCycles
 {    
 public:
+    friend class DbToXMLConverter;
+
     enum class SaveResult {
         SaveOk,
         OpenFail,
-        Locked
+        NameFail,
+        Locked,
+        PartialFail
     };
 
     NumberCycles();
-
-    static SaveResult addUpdate(const NumberCycle& nc);
 
     static NumberCycle get(const QString& name);
 
@@ -83,8 +87,11 @@ public:
 
     static QMap<QString, NumberCycle> load();
 
+    static SaveResult save(const NumberCycle& ncs, const QString& baseDir = QString());
+    static SaveResult saveAll(const QMap<QString, NumberCycle>& ncs);
+
 private:
-    static SaveResult save(const QMap<QString, NumberCycle>& ncs);
+    static bool saveNCXml(const QString& name, const QString& xml, const QString& baseDir = QString());
 
     static int increaseLocalCounter(const QString& nc);
     static bool tryLock();

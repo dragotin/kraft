@@ -45,94 +45,88 @@
 
 
 NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
- :QDialog( parent ) //  "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
+    :QDialog( parent ) //  "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
 {
-  setObjectName( "NUMBER_CYCLES_EDIT" );
-  setModal( true );
-  setWindowTitle( i18n( "Edit Number Cycles" ) );
+    setObjectName( "NUMBER_CYCLES_EDIT" );
+    setModal( true );
+    setWindowTitle( i18n( "Edit Number Cycles" ) );
 
-  QVBoxLayout *layout = new QVBoxLayout;
-  setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    setLayout(layout);
 
-  QWidget *w = new QWidget;
-  layout->addWidget(w);
-  mBaseWidget = new Ui::NumberCycleEditBase( );
-  mBaseWidget->setupUi( w );
+    QWidget *w = new QWidget;
+    layout->addWidget(w);
+    mBaseWidget = new Ui::NumberCycleEditBase( );
+    mBaseWidget->setupUi( w );
 
-  mBaseWidget->mPbAdd->setIcon( DefaultProvider::self()->icon( "list-add" ) );
-  mBaseWidget->mPbRemove->setIcon( DefaultProvider::self()->icon( "list-remove" ) );
-  mBaseWidget->mCounterEdit->setMaximum( 1000000 );
-  mBaseWidget->mCounterEdit->setSingleStep( 1 );
+    mBaseWidget->mPbAdd->setIcon( DefaultProvider::self()->icon( "list-add" ) );
+    mBaseWidget->mPbRemove->setIcon( DefaultProvider::self()->icon( "list-remove" ) );
+    mBaseWidget->mCounterEdit->setMaximum( 1000000 );
+    mBaseWidget->mCounterEdit->setSingleStep( 1 );
 
-  const QString tip = i18n( "The template may contain the following tags:"
-                            "<ul><li>%y or %yyyy - the year of the documents date.</li>"
-                            "<li>%yy - the year of the document (two digits).</li>"
+    const QString tip = i18n( "The template may contain the following tags:"
+                              "<ul><li>%y or %yyyy - the year of the documents date.</li>"
+                              "<li>%yy - the year of the document (two digits).</li>"
 
-                            "<li>%w - the week number of the documents date.</li>"
-                            "<li>%ww - the week number of the documents date with leading zero.</li>"
+                              "<li>%w - the week number of the documents date.</li>"
+                              "<li>%ww - the week number of the documents date with leading zero.</li>"
 
-                            "<li>%d - the day number of the documents date.</li>"
-                            "<li>%dd - the day number of the documents date with leading zero.</li>"
+                              "<li>%d - the day number of the documents date.</li>"
+                              "<li>%dd - the day number of the documents date with leading zero.</li>"
 
-                            "<li>%m or %M - the month number of the documents date.</li>"
-                            "<li>%MM - the month number with leading zero.</li>"
+                              "<li>%m or %M - the month number of the documents date.</li>"
+                              "<li>%MM - the month number with leading zero.</li>"
 
-                            "<li>%c - the customer id from kaddressbook</li>"
-                            "<li>%i - the unique counter</li>"
-                            "<li>%ii .. %iiiiii - the counter padded with leading 0, ie. 012</li>"
-                            "<li>%n - a day based counter, resets every day. Combined with date, it makes the number unique.</li>"
-                            "<li>%nn .. %nnnnnn - the day based counter padded with leading 0.</li>"
-                            "<li>%type - the localised doc type (offer, invoice etc.)</li>"
-                            "<li>%uid - the contact id of the client.</li>"
-                            "</ul>%i or %n need to be part of the template." );
-  mBaseWidget->mIdTemplEdit->setToolTip( tip );
+                              "<li>%c - the customer id from kaddressbook</li>"
+                              "<li>%i - the unique counter</li>"
+                              "<li>%ii .. %iiiiii - the counter padded with leading 0, ie. 012</li>"
+                              "<li>%n - a day based counter, resets every day. Combined with date, it makes the number unique.</li>"
+                              "<li>%nn .. %nnnnnn - the day based counter padded with leading 0.</li>"
+                              "<li>%type - the localised doc type (offer, invoice etc.)</li>"
+                              "<li>%uid - the contact id of the client.</li>"
+                              "</ul>%i or %n need to be part of the template." );
+    mBaseWidget->mIdTemplEdit->setToolTip( tip );
 
-  connect( mBaseWidget->mPbAdd, SIGNAL( clicked() ),
-           SLOT( slotAddCycle() ) );
-  connect( mBaseWidget->mPbRemove, SIGNAL( clicked() ),
-           SLOT( slotRemoveCycle() ) );
+    connect( mBaseWidget->mPbAdd, SIGNAL( clicked() ),
+             SLOT( slotAddCycle() ) );
+    connect( mBaseWidget->mPbRemove, SIGNAL( clicked() ),
+             SLOT( slotRemoveCycle() ) );
 
-  loadCycles();
+    loadCycles();
 
-  connect( mBaseWidget->mCycleListBox, SIGNAL( currentRowChanged( int ) ),
-           SLOT( slotNumberCycleSelected( int ) ) );
+    connect(mBaseWidget->mCycleListBox, &QListWidget::currentRowChanged,
+            this, &NumberCycleDialog::slotNumberCycleSelected);
 
-  QListWidgetItem *initItem = mBaseWidget->mCycleListBox->findItems( initType, Qt::MatchExactly ).first();
-  if ( initItem ) {
-    mBaseWidget->mCycleListBox->setCurrentItem( initItem,  QItemSelectionModel::Select );
-  }
+    QListWidgetItem *initItem = mBaseWidget->mCycleListBox->findItems( initType, Qt::MatchExactly ).first();
+    if ( initItem ) {
+        mBaseWidget->mCycleListBox->setCurrentItem( initItem,  QItemSelectionModel::Select );
+    }
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  _okButton = buttonBox->button(QDialogButtonBox::Ok);
-  _okButton->setDefault(true);
-  _okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  layout->addWidget(buttonBox);
-  slotUpdateExample();
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    _okButton = buttonBox->button(QDialogButtonBox::Ok);
+    _okButton->setDefault(true);
+    _okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    layout->addWidget(buttonBox);
+    slotUpdateExample();
 
-  connect( mBaseWidget->mIdTemplEdit, SIGNAL( textChanged( const QString& ) ),
-           SLOT( slotTemplTextChanged( const QString& ) ) );
-  connect( mBaseWidget->mCounterEdit, SIGNAL( valueChanged( int ) ),
-           SLOT( slotUpdateExample() ) );
+    connect( mBaseWidget->mIdTemplEdit, &QLineEdit::textChanged,
+             this, &NumberCycleDialog::slotTemplTextChanged);
+    connect( mBaseWidget->mCounterEdit, &QSpinBox::valueChanged,
+             this, &NumberCycleDialog::slotUpdateExample);
 }
 
 void NumberCycleDialog::loadCycles()
 {
-  QSqlQuery q( "SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles ORDER BY name" );
+    QMap<QString, NumberCycle> ncs = NumberCycles::load();
 
-  mBaseWidget->mCycleListBox->clear();
+    mBaseWidget->mCycleListBox->clear();
 
-  while ( q.next() ) {
-    dbID id( q.value( 0 ).toInt() );
-    NumberCycle nc;
-    nc.setName( q.value( 1 ).toString() );
-    nc.setCounter( q.value( 2 ).toInt() );
-    nc.setTemplate( q.value( 3 ).toString() );
-
-    mNumberCycles[nc.name()] = nc;
-    mBaseWidget->mCycleListBox->addItem( nc.name() );
-  }
+    for(const auto& nc : ncs) {
+        mNumberCycles[nc.name()] = nc;
+        mBaseWidget->mCycleListBox->addItem( nc.name() );
+    }
 }
 
 void NumberCycleDialog::slotUpdateExample()
@@ -146,130 +140,125 @@ void NumberCycleDialog::slotUpdateExample()
     const QString tmpl = mBaseWidget->mIdTemplEdit->text();
     nc.setTemplate(tmpl);
 
-  QString idText = nc.exampleIdent( QStringLiteral("Doc-Type"),
-                                    QDate::currentDate(),
-                                    QLatin1String("<addressUid>"));
+    QString idText = nc.exampleIdent( QStringLiteral("Doc-Type"),
+                                      QDate::currentDate(),
+                                      QLatin1String("<addressUid>"));
 
-  // generateDocumentIdent automatically adds a %i to the pattern, if it has neither
-  // %i nor %n. A note is added here to the dialog text
-  if ( !(tmpl.contains("%i") || tmpl.contains("%n"))) {
-      idText.append(" ");
-      idText.append(i18nc("do not translate %i, it is a template variable.", "(%i added)"));
-  }
-  mBaseWidget->mExampleId->setText( idText );
+    // generateDocumentIdent automatically adds a %i to the pattern, if it has neither
+    // %i nor %n. A note is added here to the dialog text
+    if ( !(tmpl.contains("%i") || tmpl.contains("%n"))) {
+        idText.append(" ");
+        idText.append(i18nc("do not translate %i, it is a template variable.", "(%i added)"));
+    }
+    mBaseWidget->mExampleId->setText( idText );
 }
 
 void NumberCycleDialog::slotTemplTextChanged( const QString& str )
 {
-  bool state = false;
+    bool state = false;
 
-  if ( !str.isEmpty() &&
-       (str.contains( "%i" ) || str.contains("%n") )) {
-    state = true;
-  }
+    if ( !str.isEmpty() &&
+         (str.contains( "%i" ) || str.contains("%n") )) {
+        state = true;
+    }
 
-  if( _okButton ) {
-      _okButton->setEnabled( state );
-  }
-  slotUpdateExample();
+    if( _okButton ) {
+        _okButton->setEnabled( state );
+    }
+    slotUpdateExample();
 }
 
 void NumberCycleDialog::updateCycleDataFromGUI()
 {
-  // Store the updated values
-  if ( !mSelectedCycle.isEmpty() ) {
-    // qDebug () << "Updating the cycle: " << mSelectedCycle;
+    // Store the updated values
+    if ( !mSelectedCycle.isEmpty() ) {
+        // qDebug () << "Updating the cycle: " << mSelectedCycle;
 
-    if ( mNumberCycles.contains( mSelectedCycle ) ) {
-      QString h = mBaseWidget->mIdTemplEdit->text();
-      mNumberCycles[mSelectedCycle].setTemplate( h );
-      // qDebug () << "Number Cycle Template: " << h;
+        if ( mNumberCycles.contains( mSelectedCycle ) ) {
+            const QString h = mBaseWidget->mIdTemplEdit->text();
+            mNumberCycles[mSelectedCycle].setTemplate(h);
+            // qDebug () << "Number Cycle Template: " << h;
 
-      int num = mBaseWidget->mCounterEdit->value();
-      // qDebug () << "Number Edit: " << num;
-      mNumberCycles[mSelectedCycle].setCounter( num );
+            int num = mBaseWidget->mCounterEdit->value();
+            // qDebug () << "Number Edit: " << num;
+            mNumberCycles[mSelectedCycle].setCounter( num );
+        } else {
+            // qDebug () << "WRN: NumberCycle " << mSelectedCycle << " is not known";
+        }
     } else {
-      // qDebug () << "WRN: NumberCycle " << mSelectedCycle << " is not known";
+        // qDebug () << "The selected cycle name is Empty!";
     }
-  } else {
-    // qDebug () << "The selected cycle name is Empty!";
-  }
 
 }
 
 void NumberCycleDialog::slotNumberCycleSelected( int num )
 {
-  updateCycleDataFromGUI();
+    updateCycleDataFromGUI();
 
-  // set the new data of the selected cycle
-  QString name = mBaseWidget->mCycleListBox->item( num )->text();
-  if ( ! mNumberCycles.contains( name ) ) {
-    // qDebug () << "No numbercycle found at pos " << num;
-  }
-  NumberCycle nc = mNumberCycles[name];
-  // qDebug () << "Selected number cycle number " << num;
+    // set the new data of the selected cycle
+    QString name = mBaseWidget->mCycleListBox->item( num )->text();
+    if ( ! mNumberCycles.contains( name ) ) {
+        qDebug () << "No numbercycle found at pos " << num;
+    }
+    NumberCycle nc = mNumberCycles[name];
+    // qDebug () << "Selected number cycle number " << num;
 
-  mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
-  mBaseWidget->mCounterEdit->setMinimum( 0 ); // nc.counter() );
-  mBaseWidget->mCounterEdit->setValue( nc.counter() );
-  mBaseWidget->mNameEdit->setText( nc.name() );
-  mBaseWidget->mNameEdit->setReadOnly( true );
+    mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
+    mBaseWidget->mCounterEdit->setMinimum( 0 ); // nc.counter() );
+    mBaseWidget->mCounterEdit->setValue( nc.counter() );
+    mBaseWidget->mNameEdit->setText( nc.name() );
+    mBaseWidget->mNameEdit->setReadOnly( true );
 
-  // remember the cycle name
-  mSelectedCycle = name;
+    // remember the cycle name
+    mSelectedCycle = name;
 
-  bool state = true;
-  if ( name == NumberCycle::defaultName() ) {
-    state = false;
-  }
-  mBaseWidget->mPbRemove->setEnabled( state );
+    bool state = true;
+    if ( name == NumberCycle::defaultName() ) {
+        state = false;
+    }
+    mBaseWidget->mPbRemove->setEnabled( state );
 }
 
 void NumberCycleDialog::slotAddCycle()
 {
-  QString newName = QInputDialog::getText( this, i18n( "Add Number Cycle" ),
-                                           i18n( "Enter the name of a new number cycle." ) );
-  if ( newName.isEmpty() ) return;
+    QString newName = QInputDialog::getText( this, i18n( "Add Number Cycle" ),
+                                             i18n( "Enter the name of a new number cycle." ) );
+    if ( newName.isEmpty() ) return;
 
-  bool uniq = true;
-  if ( mNumberCycles.contains( newName ) ) {
-    uniq = false;
-  }
-
-  if ( uniq ) {
-    NumberCycle numCycle;
-    numCycle.setName( newName );
-    numCycle.setTemplate( QString::fromLatin1( "%y%w-%i" ) );
-
-    QSqlQuery q( "SELECT 1+MAX(lastIdentNumber) FROM numberCycles" );
-
-    if ( q.next() ) {
-      numCycle.setCounter( q.value( 0 ).toInt() );
+    bool uniq = true;
+    if ( mNumberCycles.contains( newName ) ) {
+        uniq = false;
     }
 
-    mNumberCycles[newName] = numCycle;
-    mBaseWidget->mCycleListBox->addItem( numCycle.name() );
-  } else {
-    // qDebug () << "The name is not unique!";
-  }
-  QListWidgetItem *item = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly ).first();
-  if ( item ) {
-    mBaseWidget->mCycleListBox->setCurrentItem( item );
-  }
+    if ( uniq ) {
+        NumberCycle numCycle;
+        numCycle.setName( newName );
+        numCycle.setTemplate( QString::fromLatin1( "%y%w-%i" ) );
+        numCycle.setCounter(1);
+
+        mNumberCycles[newName] = numCycle;
+        mBaseWidget->mCycleListBox->addItem( numCycle.name() );
+    } else {
+        // qDebug () << "The name is not unique!";
+    }
+    QListWidgetItem *item = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly ).first();
+    if ( item ) {
+        mBaseWidget->mCycleListBox->setCurrentItem( item );
+    }
 }
 
 void NumberCycleDialog::slotRemoveCycle()
 {
-  QString entry = mBaseWidget->mCycleListBox->currentItem()->text();
-  QListWidgetItem *item = mBaseWidget->mCycleListBox->currentItem();
-  if ( entry.isEmpty() || !item ) return;
+    const QString entry = mBaseWidget->mCycleListBox->currentItem()->text();
+    QListWidgetItem *item = mBaseWidget->mCycleListBox->currentItem();
+    if ( entry.isEmpty() || !item ) return;
 
-  mRemovedCycles << entry;
+    mRemovedCycles << entry;
 
-  if ( item ) {
-    mNumberCycles.remove( entry );
-    delete item;
-  }
+    if ( item ) {
+        mNumberCycles.remove( entry );
+        delete item;
+    }
 }
 
 bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
@@ -287,8 +276,8 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
         if ( cnt > 0 ) {
             QMessageBox msgBox;
             msgBox.setText(i18n( "The numbercycle %1 is still assigned to a document type."));
-                    msgBox.setInformativeText(i18n("The number cycle cannot be deleted as long as it "
-                                                   "is assigned to a document type." ).arg( name ));
+            msgBox.setInformativeText(i18n("The number cycle cannot be deleted as long as it "
+                                           "is assigned to a document type." ).arg( name ));
             msgBox.setStandardButtons(QMessageBox::Ok);
         }
         return cnt == 0;
@@ -299,99 +288,17 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
 
 void NumberCycleDialog::accept()
 {
-  // qDebug () << "Slot Ok hit";
+    // qDebug () << "Slot Ok hit";
 
-  // get the changed stuff from the gui elements
-  updateCycleDataFromGUI();
+    // get the changed stuff from the gui elements
+    updateCycleDataFromGUI();
 
-  // First remove the dropped cycles
-  if ( mRemovedCycles.count() > 0 ) {
-    QSqlQuery qDel;
-    qDel.prepare( "DELETE FROM numberCycles WHERE name=:name" );
-    for ( QStringList::Iterator it = mRemovedCycles.begin();
-          it != mRemovedCycles.end(); ++it ) {
-      // qDebug () << "about to drop the number cycle " << *it;
-      if ( dropOfNumberCycleOk( *it ) ) {
-        qDel.bindValue( ":name", *it );
-        qDel.exec();
-      }
+    auto res = NumberCycles::saveAll(mNumberCycles);
+
+    if (res != NumberCycles::SaveResult::SaveOk) {
+        qDebug() << "Saving numbercycles failed!";
     }
-  }
-
-  // update existing entries and insert new ones
-//  CREATE TABLE numberCycles (
-//    id INTEGER PRIMARY KEY ASC autoincrement,
-//    name VARCHAR(64) NOT NULL,
-//    lastIdentNumber  INT NOT NULL,
-//    identTemplate VARCHAR(64) NOT NULL
-//  );
-
-  QSqlQuery q;
-  q.prepare( "SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles WHERE name=:name" );
-  QMap<QString, NumberCycle>::Iterator it;
-  for ( it = mNumberCycles.begin(); it != mNumberCycles.end(); ++it ) {
-    QString cycleName = it.key();
-    NumberCycle cycle = it.value();
-
-    q.bindValue( ":name", cycleName );
-    // name changes cannot happen by design
-    q.exec();
-    if ( q.next() ) {
-        // qDebug () << "Checking existing number cycle " << cycleName << " for update";
-        // there is an entry
-        if ( q.value( 2 ).toInt() != cycle.counter() ) {
-            bool doUpdate = true;
-            if ( q.value( 2 ).toInt() > cycle.counter() ) {
-                if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
-                    // The number has become smaller but the template remains the same.
-                    // That has high potential to end up with duplicate doc numbers.
-                    QMessageBox msgBox;
-                    msgBox.setWindowTitle(i18n("Dangerous Counter Change"));
-                    msgBox.setText(i18n("The new counter is lower than the old one. " ));
-                    msgBox.setInformativeText(i18n("That has potential to create duplicate document numbers. Do you really want to decrease it?" ));
-
-                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msgBox.setDefaultButton( QMessageBox::Yes );
-
-                    int re = msgBox.exec();
-                    if( re != QMessageBox::Yes ) {
-                        doUpdate = false;
-                    }
-                }
-            }
-            if ( doUpdate ) {
-                updateField( q.value( 0 ).toInt(),
-                             "lastIdentNumber", QString::number( cycle.counter() ) );
-            }
-        }
-        if ( q.value( 3 ).toString() != cycle.getTemplate() ) {
-            updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
-        }
-    } else {
-        // qDebug () << "This number cycle is new: " << cycleName;
-        QSqlQuery qIns;
-        qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
-                      "VALUES (:name, :number, :templ)" );
-
-        qIns.bindValue( ":name", cycleName );
-        qIns.bindValue( ":number", cycle.counter() );
-        qIns.bindValue( ":templ", cycle.getTemplate() );
-
-        qIns.exec();
-    }
-  }
-  QDialog::accept();
+    QDialog::accept();
 }
 
-void NumberCycleDialog::updateField( int id, const QString& field, const QString& value )
-{
-  QSqlQuery qUpdate;
-  QString sql = "UPDATE numberCycles SET " + field + "=:value WHERE id=:id";
-  qUpdate.prepare( sql );
-  // qUpdate.bindValue( ":field", field );
-  qUpdate.bindValue( ":value", value );
-  qUpdate.bindValue( ":id", id );
-
-  qUpdate.exec();
-}
 

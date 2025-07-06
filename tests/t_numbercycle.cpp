@@ -65,7 +65,7 @@ private Q_SLOTS:
         nc.setName("TestCycle1");
         nc.setTemplate("TEST1-%y-%w-%d-%i");
 
-        auto res = _ncs.addUpdate(nc);
+        auto res = _ncs.save(nc);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
     }
 
@@ -75,16 +75,16 @@ private Q_SLOTS:
         nc.setCounter(12);
         nc.setName("TestCycle2");
         nc.setTemplate("TEST2-%y-%w-%d-%i");
-        auto res = _ncs.addUpdate(nc);
+        auto res = _ncs.save(nc);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
     }
 
     void updateNC()
     {
         NumberCycle nc = _ncs.get("TestCycle2");
-
+        QVERIFY(!nc.name().isEmpty());
         nc.setTemplate("NEWTEST2-%y-%w-%i");
-        auto res = _ncs.addUpdate(nc);
+        auto res = _ncs.save(nc);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
 
         NumberCycle nc2 = _ncs.get("TestCycle2");
@@ -117,7 +117,7 @@ private Q_SLOTS:
         QCOMPARE(i, "TEST1-2023-4-23-122");
 
         // clash the nc file
-        QVERIFY(directFileChange(_baseDir + "/numbercycles/numbercycles.xml", 122, 158));
+        QVERIFY(directFileChange(_baseDir + "/numbercycles/TestCycle1.xml", 122, 158));
 
         i = _ncs.generateIdent("TestCycle1", "Rechnung", QDate(2023, 1, 24), "addressUid");
         QCOMPARE(i, "TEST1-2023-4-24-159");

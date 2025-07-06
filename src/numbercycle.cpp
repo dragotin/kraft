@@ -130,6 +130,8 @@ QString generateDocumentIdent(const QString& templ,
 
     return re;
 }
+
+
 }
 
 // =====================================================================================================
@@ -175,7 +177,7 @@ int  NumberCycle::counter() const
 
 QString NumberCycle::defaultName()
 {
-    return QString( "default" );
+    return QStringLiteral( "default" );
 }
 
 // ====================================================================================
@@ -238,14 +240,13 @@ int NumberCycles::increaseLocalCounter(const QString& ncName)
             if (map.contains(ncName)) {
                 nc = map[ncName];
             } else {
-                nc.setName(ncName); // FIXME default template
+                nc.setName(ncName);
             }
 
             int cnt = nc.counter();
             nc.setCounter(cnt+1);
 
-            map[ncName] = nc;
-            SaveResult res = save(map);
+            SaveResult res = save(nc);
             if (res == SaveResult::SaveOk) {
                 newCnt = cnt+1;
             } else {
@@ -263,37 +264,6 @@ int NumberCycles::increaseLocalCounter(const QString& ncName)
     return -1;
 }
 
-NumberCycles::SaveResult NumberCycles::addUpdate(const NumberCycle& nc)
-{
-    SaveResult res;
-    const int MaxAttempt{10};
-    int attempt{0};
-
-    QMap<QString, NumberCycle> ncMap = load();
-
-    ncMap.insert(nc.name(), nc); // insert the new numbercylce
-
-    while( attempt < MaxAttempt) {
-        if (tryLock()) {
-            QMap<QString, NumberCycle> map = load();
-            map[nc.name()] = nc;
-            res = save(map);
-
-            if (res == SaveResult::SaveOk) {
-                qDebug() << "Successfully updated" << nc.name();
-            } else {
-                qDebug() << "Could not save nc file in addUpdate";
-            }
-            unlock();
-            return res;
-        }
-        attempt++;
-        QThread::msleep(2*attempt); // Sleep a short time before trying agian. Lock should be gone after that.
-    }
-
-    return SaveResult::Locked;
-}
-
 QMap<QString, NumberCycle> NumberCycles::load()
 {
     QMap<QString, NumberCycle> map;
@@ -301,52 +271,80 @@ QMap<QString, NumberCycle> NumberCycles::load()
     const QString bDir = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
     Q_ASSERT(!bDir.isEmpty());
     const QDir dir(bDir);
-    const QString xmlFileName {dir.absoluteFilePath("numbercycles.xml")};
 
-    QFile file(xmlFileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Unable to open xml document file:" << xmlFileName ;
-        return map;
-    }
+    const QStringList names {"*.xml"};
+    QStringList entries = dir.entryList(names);
 
-    QDomDocument domDoc;
-    const QByteArray arr = file.readAll();
-    QDomDocument::ParseResult pr = domDoc.setContent(arr);
+    for (const QString& xmlFileName : entries) {
+        QString const fullPathName = bDir + QDir::separator() + xmlFileName;
+        QFile file(fullPathName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            qDebug() << "Unable to open xml document file:" << xmlFileName ;
+            continue;
+        }
 
-    if (!pr) {
-        qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
+        QDomDocument domDoc;
+        const QByteArray arr = file.readAll();
+        QDomDocument::ParseResult pr = domDoc.setContent(arr);
+
+        if (!pr) {
+            qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
+            file.close();
+            continue;
+        }
         file.close();
-        return map;
-    }
-    file.close();
 
-    // ---- Parsing starts here
+        // ---- Parsing starts here
 
-    QDomElement ncs = domDoc.firstChildElement("kraftNumberCycles");
-    QDomElement cycleElem = ncs.firstChildElement("cycle");
-
-    while( !cycleElem.isNull()) {
+        QDomElement ncs = domDoc.firstChildElement("kraftNumberCycle");
         NumberCycle nc;
-        QString t = KraftXml::childElemText(cycleElem, "name");
+        QString t = KraftXml::childElemText(ncs, "name");
         nc.setName(t);
-        t = KraftXml::childElemText(cycleElem, "lastNumber");
+        t = KraftXml::childElemText(ncs, "lastNumber");
         nc.setCounter(t.toInt());
-        t = KraftXml::childElemText(cycleElem, "template");
+        t = KraftXml::childElemText(ncs, "template");
         nc.setTemplate(t);
-        t = KraftXml::childElemText(cycleElem, "dbId");
+        t = KraftXml::childElemText(ncs, "dbId");
         nc.setDbId(t.toInt());
-        cycleElem = cycleElem.nextSiblingElement("cycle");
 
         map.insert(nc.name(), nc);
     }
-
     return map;
 }
 
-NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& ncs)
+bool NumberCycles::saveNCXml(const QString& name, const QString& xml, const QString& baseDir)
 {
-    int cnt{0};
-    const QString kncStr{"kraftNumberCycles"};
+    Q_ASSERT(!name.isEmpty());
+
+    QString saveName{name};
+    QString v2Dir{baseDir};
+    if (baseDir.isEmpty()) {
+        v2Dir = DefaultProvider::self()->kraftV2Dir();
+    }
+
+    QDir dir(v2Dir);
+    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
+
+    bool re{false};
+    if (!saveName.endsWith(".xml")) saveName.append(".xml");
+    QSaveFile file(dir.absoluteFilePath(saveName));
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
+        re = file.write(xml.toUtf8());
+
+        if (re) {
+            re = file.commit();
+        }
+    }
+    return re;
+}
+
+NumberCycles::SaveResult NumberCycles::save(const NumberCycle& nc, const QString& baseDir)
+{
+    if (nc.name().isEmpty()) {
+        qDebug() << "Can not save numbercylce without name";
+        return SaveResult::OpenFail;
+    }
+    const QString kncStr{"kraftNumberCycle"};
 
     QDomDocument xmldoc(kncStr);
     QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
@@ -356,41 +354,39 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
     root.setAttribute("schemaVersion", "1");
     xmldoc.appendChild( root );
 
+    root.appendChild(KraftXml::textElement(xmldoc, "name", nc.name()));
+    root.appendChild(KraftXml::textElement(xmldoc, "lastNumber", QString::number(nc.counter())));
+    root.appendChild(KraftXml::textElement(xmldoc, "template", nc.getTemplate()));
+    root.appendChild(KraftXml::textElement(xmldoc, "dbId", nc.dbId()));
+
+    const QString xml = xmldoc.toString();
+
+    // Save to file
+    SaveResult re{SaveResult::OpenFail};
+    if (saveNCXml(nc.name(), xml, baseDir)) {
+        re = SaveResult::SaveOk;
+    }
+
+    return re;
+}
+
+NumberCycles::SaveResult NumberCycles::saveAll(const QMap<QString, NumberCycle>& ncs)
+{
+    int cnt{0};
     for (const NumberCycle& nc : ncs.values()){
-        QDomElement cycle = xmldoc.createElement( "cycle" );
-        root.appendChild(cycle);
-        cycle.appendChild(KraftXml::textElement(xmldoc, "name", nc.name()));
-        cycle.appendChild(KraftXml::textElement(xmldoc, "lastNumber", QString::number(nc.counter())));
-        cycle.appendChild(KraftXml::textElement(xmldoc, "template", nc.getTemplate()));
-        cycle.appendChild(KraftXml::textElement(xmldoc, "dbId", nc.dbId()));
-        cnt++;
+        SaveResult re = save(nc);
+        if (re == SaveResult::SaveOk)
+            cnt++;
     }
 
-    const QString& xml = xmldoc.toString();
-    const QString dirStr{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles)};
-    Q_ASSERT(!dirStr.isEmpty());
-    QDir dir(dirStr);
-
-    const QString fd{dir.absoluteFilePath("numbercycles.xml")};
-    SaveResult res{SaveResult::SaveOk};
-    bool re{false};
-
-    QSaveFile file(fd);
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
-        re = file.write(xml.toUtf8());
-
-        if (re) {
-            re = file.commit();
-        }
-    }
-    if (re) {
-        res = SaveResult::SaveOk;
+    SaveResult re{SaveResult::OpenFail};
+    if (cnt == ncs.values().count()) {
+        re = SaveResult::SaveOk;
         qDebug() << "Saved" << cnt << "numbercycles successfully";
     } else {
-        res = SaveResult::OpenFail;
+        re = SaveResult::PartialFail;
     }
-    return res;
-
+    return re;
 }
 
 // this lock code does not do anything at all because the local file

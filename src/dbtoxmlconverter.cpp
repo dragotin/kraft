@@ -4,6 +4,7 @@
 #include "xmldocindex.h"
 #include "defaultprovider.h"
 #include "documentsaverdb.h"
+#include "numbercycle.h"
 
 #include <klocalizedstring.h>
 #include <utime.h>
@@ -257,46 +258,27 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
 
 int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
 {
-    const QString kncStr{"kraftNumberCycles"};
     const QString sql {"SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles order by id"};
     QSqlQuery q;
     q.prepare(sql);
 
     q.exec();
+
     int cnt{0};
-
-    QDomDocument xmldoc(kncStr);
-    QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
-    xmldoc.appendChild(instr);
-
-    QDomElement root = xmldoc.createElement(kncStr);
-    root.setAttribute("schemaVersion", "1");
-    xmldoc.appendChild( root );
-
     while( q.next()) {
-        QDomElement cycle = xmldoc.createElement( "cycle" );
-        root.appendChild(cycle);
-        cycle.appendChild(xmlTextElement(xmldoc, "name", q.value(1).toString()));
-        cycle.appendChild(xmlTextElement(xmldoc, "lastNumber", q.value(2).toString()));
-        cycle.appendChild(xmlTextElement(xmldoc, "template", q.value(3).toString()));
-        cycle.appendChild(xmlTextElement(xmldoc, "dbId", q.value(0).toString()));
         cnt++;
-    }
-
-    const QString xml = xmldoc.toString();
-    QDir dir(baseDir);
-    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
-
-    bool re{false};
-    QSaveFile file(dir.absoluteFilePath("numbercycles.xml"));
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
-        re = file.write(xml.toUtf8());
-
-        if (re) {
-            re = file.commit();
+        NumberCycle nc;
+        nc.setName(q.value(1).toString());
+        nc.setCounter(q.value(2).toInt());
+        nc.setTemplate(q.value(3).toString());
+        nc.setDbId(q.value(0).toInt());
+        if (NumberCycles::save(nc, baseDir) == NumberCycles::SaveResult::SaveOk) {
+            qDebug() << "Saved numbercycle successfully:" << nc.name();
+            cnt++;
+        } else {
+            qDebug() << "Failed to save Numbercycle" << nc.name();
         }
     }
-    if (!re) cnt = 0;
     return cnt;
 }
 
