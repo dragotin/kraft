@@ -1,22 +1,39 @@
 
 Changes since version 1.2.2: #######################################
-- Save documents in XML format in separate files
-- Use a C++ object KraftObj as base object for import Kraft objects.
-  It implements base functionality such as Attributes and similar
+- Build against Qt6 and KDE Frameworks 6 components
+- Drop dependency of ctemplate, use KTextTemplate instead
+- Save documents not longer in database but in XML format in separate
+  files in a date base directory structure to enable file based
+  cloud synchronisation of documents
+- Use a C++ object KraftObj as base object for import Kraft objects
+  to provide base attributes to the objects such as tags
 - Add a DB to XML converter class that exports the documents from db
-  to xml files
+  to xml files to be executed once for migration
 - Add a dialog to report about conversion of docs
 - Add a document indexer that keeps a summary of the available docs
-- Use a uuid for all identification of documents and other objects
+  in the file system
+- Use a individual uuid for identification of all documents and other
+  objects in Kraft
 - Introduce document states such as draft and final. Handle doc life
   cycle correctly
 - Generate PDF output directly after the doc was changed, not when
   the doc should be displayed
 - Add dialog to finalize documents. That moves them out of the draft
-  state.
+  state, and afterwards changes are not longer possible
 - Show a welcome text on the main page after start of Kraft
+- Visual freshup of the display of the document details
+- Switch default document generator to weasyprint, deprecate Reportlab
+- Display doc conversion error messages in the main UI
+- Code cleanups, eg. unite DocPositionBase with DocPosition
+- Upgrade the AppImage build to use Qt6/KF6 puh...
+- Add a directory based addressbook for use with environments without
+  proper Akonadi such as AppImage builds
+- Reworked the read only document view
+- Added some unit tests
+- PDF watermark happens through Qt code now
+- Countless bug fixes, code cleanups and refinements
 
-
+=> release v. 2.0.0 ( , 2025)
 
 ####################################################################
 
