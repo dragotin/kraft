@@ -188,7 +188,6 @@ bool XmlDocIndex::buildIndexFromFile()
                 dateStr = docObject["date"].toString();
                 // Remove zeros in case there are any
                 QString m = dateStr.mid(5,2);
-                if (m.startsWith("0")) m.remove(QChar('0'));
                 path.append(m);
                 path.append("/");
                 components++;
@@ -276,7 +275,9 @@ void XmlDocIndex::addEntry(KraftDoc *doc)
     if (!doc) return;
     // cut the extension .xml
     const QDate d = doc->date();
-    const QString entry = QString("%1/%2/%3").arg(d.year()).arg(d.month()).arg(doc->uuid());
+    const QString entry = QString("%1/%2/%3").arg(d.year(), 4, 10, QLatin1Char('0'))
+            .arg(d.month(), 2, 10, QLatin1Char('0'))
+            .arg(doc->uuid());
 
     Q_ASSERT(!entry.isEmpty());
 

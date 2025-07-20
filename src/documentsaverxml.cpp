@@ -486,7 +486,7 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 
     QString path{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
 
-    path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
+    path.append(QString("/%1/%2/").arg(d.year(), 4, 10, QLatin1Char('0')).arg(d.month(), 2, 10, QLatin1Char('0')));
     QDir dir(path);
     if (!dir.exists()) {
         dir.mkpath(path);
