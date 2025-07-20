@@ -35,6 +35,8 @@ class KRAFTCAT_EXPORT NumberCycle
 public:
     NumberCycle();
 
+    bool operator==(const NumberCycle& other) const;
+
     void setName( const QString& );
     QString name() const;
 
@@ -76,7 +78,8 @@ public:
         OpenFail,
         NameFail,
         Locked,
-        PartialFail
+        PartialFail,
+        RemoveFail
     };
 
     NumberCycles();
@@ -88,7 +91,8 @@ public:
     static QMap<QString, NumberCycle> load();
 
     static SaveResult save(const NumberCycle& ncs, const QString& baseDir = QString());
-    static SaveResult saveAll(const QMap<QString, NumberCycle>& ncs);
+    static SaveResult saveAll(const QMap<QString, NumberCycle>& ncs, const QString& baseDir = QString());
+    static SaveResult remove(const QString& name, const QString& baseDir = QString());
 
 private:
     static bool saveNCXml(const QString& name, const QString& xml, const QString& baseDir = QString());

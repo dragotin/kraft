@@ -62,7 +62,6 @@ private:
   void updateField( int, const QString&, const QString& );
   void loadCycles();
   void updateCycleDataFromGUI();
-  bool dropOfNumberCycleOk( const QString& );
 
   Ui::NumberCycleEditBase *mBaseWidget;
   QStringList mRemovedCycles;

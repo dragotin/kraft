@@ -35,11 +35,7 @@
 #include <QVBoxLayout>
 
 #include "prefsdialog.h"
-#include "kraftsettings.h"
-#include "kraftdb.h"
-#include "kraftdoc.h"
 #include "defaultprovider.h"
-#include "doctype.h"
 #include "doctypeedit.h"
 #include "numbercycledialog.h"
 
@@ -241,7 +237,8 @@ void NumberCycleDialog::slotAddCycle()
     } else {
         // qDebug () << "The name is not unique!";
     }
-    QListWidgetItem *item = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly ).first();
+    const auto items = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly );
+    QListWidgetItem *item = items.first();
     if ( item ) {
         mBaseWidget->mCycleListBox->setCurrentItem( item );
     }
@@ -260,31 +257,6 @@ void NumberCycleDialog::slotRemoveCycle()
         delete item;
     }
 }
-
-bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
-{
-    QSqlQuery q;
-    q.prepare( "SELECT count(att.id) FROM attributes att, attributeValues attVal WHERE att.id=attVal.attributeId AND att.hostObject=:dtype AND att.name=:attName AND attVal.value=:val" );
-    q.bindValue( ":dtype", "DocType" );
-    q.bindValue( ":attName", "identNumberCycle" );
-    q.bindValue( ":val", name );
-    q.exec();
-
-    if ( q.next() ) {
-        int cnt = q.value( 0 ).toInt();
-
-        if ( cnt > 0 ) {
-            QMessageBox msgBox;
-            msgBox.setText(i18n( "The numbercycle %1 is still assigned to a document type."));
-            msgBox.setInformativeText(i18n("The number cycle cannot be deleted as long as it "
-                                           "is assigned to a document type." ).arg( name ));
-            msgBox.setStandardButtons(QMessageBox::Ok);
-        }
-        return cnt == 0;
-    }
-    return true;
-}
-
 
 void NumberCycleDialog::accept()
 {

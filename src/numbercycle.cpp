@@ -144,6 +144,13 @@ NumberCycle::NumberCycle()
 
 }
 
+bool NumberCycle::operator==(const NumberCycle& other) const
+{
+    return _name == other._name &&
+            _template == other._template &&
+            _counter == other._counter &&
+            _dbId == other._dbId;
+}
 
 void NumberCycle::setName( const QString& n )
 {
@@ -273,7 +280,7 @@ QMap<QString, NumberCycle> NumberCycles::load()
     const QDir dir(bDir);
 
     const QStringList names {"*.xml"};
-    QStringList entries = dir.entryList(names);
+    const QStringList entries = dir.entryList(names);
 
     for (const QString& xmlFileName : entries) {
         QString const fullPathName = bDir + QDir::separator() + xmlFileName;
@@ -370,23 +377,61 @@ NumberCycles::SaveResult NumberCycles::save(const NumberCycle& nc, const QString
     return re;
 }
 
-NumberCycles::SaveResult NumberCycles::saveAll(const QMap<QString, NumberCycle>& ncs)
+NumberCycles::SaveResult NumberCycles::remove(const QString& name, const QString& baseDir)
 {
-    int cnt{0};
-    for (const NumberCycle& nc : ncs.values()){
-        SaveResult re = save(nc);
-        if (re == SaveResult::SaveOk)
-            cnt++;
+    QString saveName{name};
+    QString v2Dir{baseDir};
+    if (baseDir.isEmpty()) {
+        v2Dir = DefaultProvider::self()->kraftV2Dir();
     }
 
-    SaveResult re{SaveResult::OpenFail};
-    if (cnt == ncs.values().count()) {
+    QDir dir(v2Dir);
+    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
+
+    SaveResult re{SaveResult::RemoveFail};
+    if (!saveName.endsWith(".xml")) saveName.append(".xml");
+
+    const QString file(dir.absoluteFilePath(saveName));
+    if (QFile::remove(file)) {
         re = SaveResult::SaveOk;
-        qDebug() << "Saved" << cnt << "numbercycles successfully";
-    } else {
-        re = SaveResult::PartialFail;
     }
     return re;
+}
+
+NumberCycles::SaveResult NumberCycles::saveAll(const QMap<QString, NumberCycle>& ncs, const QString& baseDir)
+{
+    bool error{false};
+    QMap<QString, NumberCycle> existNCs = load();
+    int cnt{0};
+    const auto values = ncs.values();
+    for (const NumberCycle& nc : values){
+        if (existNCs.contains(nc.name())) {
+            const NumberCycle ncOld = existNCs[nc.name()];
+            if (ncOld == nc) {
+                existNCs.remove(nc.name());
+                continue;
+            }
+        }
+        SaveResult re = save(nc, baseDir);
+        existNCs.remove(nc.name());
+        if (re == SaveResult::SaveOk){
+            cnt++;
+        } else {
+            error = true;
+        }
+    }
+
+    // if existNCs still contains names, these need to be deleted because
+    // they have not been in ncs
+    int rems{0};
+    const QStringList keys = existNCs.keys();
+    for (const auto &k : keys) {
+        remove(k, baseDir);
+        rems++;
+    }
+
+    qDebug() << "Saved" << cnt << "numbercycles and removed"<< rems <<"successfully";
+    return error ? SaveResult::PartialFail : SaveResult::SaveOk;
 }
 
 // this lock code does not do anything at all because the local file
