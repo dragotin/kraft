@@ -48,6 +48,13 @@ QDate childElemDate(const QDomElement& elem, const QString& childName)
     return QDate::fromString(t, "yyyy-MM-dd");
 }
 
+double childElemDouble(const QDomElement& elem, const QString& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return t.toDouble();
+}
+
 };
 
 namespace KraftString {

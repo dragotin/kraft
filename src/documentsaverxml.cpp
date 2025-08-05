@@ -37,6 +37,10 @@
 
 using namespace KraftXml;
 
+const QString DocumentSaverXML::TaxReducedStr = QStringLiteral("Reduced");
+const QString DocumentSaverXML::TaxFullStr = QStringLiteral("Full");
+const QString DocumentSaverXML::TaxNoneStr = QStringLiteral("None");
+
 namespace {
 
 
@@ -71,11 +75,11 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
         DocPosition::Tax tt = item->taxType();
         // The Full Taxtype is default.
         if (tt == DocPosition::Tax::Full)
-            ttStr = QStringLiteral("Full");
+            ttStr = DocumentSaverXML::TaxFullStr;
         else if (tt == DocPosition::Tax::Reduced)
-            ttStr = QStringLiteral("Reduced");
+            ttStr = DocumentSaverXML::TaxReducedStr;
         else if (tt == DocPosition::Tax::None)
-            ttStr = QStringLiteral("None");
+            ttStr = DocumentSaverXML::TaxNoneStr;
         else
             ttStr = QStringLiteral("Invalid");
 
@@ -131,13 +135,13 @@ QDomDocument xmlDocument(KraftDoc *doc)
     // -------- taxes
     QDomElement taxReduced = xmldoc.createElement("tax");
     meta.appendChild(taxReduced);
-    taxReduced.appendChild(textElement(xmldoc, "type", "Reduced"));
+    taxReduced.appendChild(textElement(xmldoc, "type", DocumentSaverXML::TaxReducedStr));
     double t = UnitManager::self()->reducedTax(doc->date());
     taxReduced.appendChild(textElement(xmldoc, "percent", QString::number(t, 'f', 2)));
 
     QDomElement taxFull = xmldoc.createElement("tax");
     meta.appendChild(taxFull);
-    taxFull.appendChild(textElement(xmldoc, "type", "Full"));
+    taxFull.appendChild(textElement(xmldoc, "type", DocumentSaverXML::TaxFullStr));
     t = UnitManager::self()->tax(doc->date());
     taxFull.appendChild(textElement(xmldoc, "percent", QString::number(t, 'f', 2)));
 
@@ -227,13 +231,13 @@ QDomDocument xmlDocument(KraftDoc *doc)
 
     QDomElement taxSumReduced = xmldoc.createElement("taxsum");
     itemGroupTotals.appendChild(taxSumReduced);
-    taxSumReduced.appendChild(textElement(xmldoc, "type", "Reduced"));
+    taxSumReduced.appendChild(textElement(xmldoc, "type", DocumentSaverXML::TaxReducedStr));
     t = doc->reducedTaxSum().toDouble();
     taxSumReduced.appendChild(textElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
     QDomElement taxSumFull = xmldoc.createElement("taxsum");
     itemGroupTotals.appendChild(taxSumFull);
-    taxSumFull.appendChild(textElement(xmldoc, "type", "Full"));
+    taxSumFull.appendChild(textElement(xmldoc, "type", DocumentSaverXML::TaxFullStr));
     t = doc->fullTaxSum().toDouble();
     taxSumFull.appendChild(textElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
@@ -277,10 +281,19 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
     QDomElement taxElem = metaElem.firstChildElement("tax");
+    double redTax{0}, fullTax{0};
     while (!taxElem.isNull()) {
         t = childElemText(taxElem, "type");
-        t = childElemText(taxElem, "value");
+        double d = childElemDouble(taxElem, "percent");
+        if (t == DocumentSaverXML::TaxFullStr)
+            fullTax = d;
+        else if(t == DocumentSaverXML::TaxReducedStr)
+            redTax = d;
         taxElem = taxElem.nextSiblingElement("tax");
+    }
+
+    if (fullTax > 0) { // reduced tax might be fine to be zero
+        doc->setTaxValues(fullTax, redTax);
     }
 
     // owner
@@ -462,10 +475,10 @@ bool loadTotals(const QDomDocument& domDoc, XML::Totals& totals)
         t = childElemText(taxSumElem, "type");
         QString sum = childElemText(taxSumElem, "value");
         Geld g(sum.toDouble());
-        if (t == "Reduced") {
+        if (t == DocumentSaverXML::TaxReducedStr) {
             totals._redTax = g;
         }
-        if (t == "Full") {
+        if (t == DocumentSaverXML::TaxFullStr) {
             totals._fullTax = g;
         }
         taxSumElem = taxSumElem.nextSiblingElement("taxSum");

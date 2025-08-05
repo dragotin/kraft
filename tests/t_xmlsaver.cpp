@@ -105,6 +105,8 @@ private Q_SLOTS:
         QCOMPARE(doc.owner(), "kf");
         QCOMPARE(doc.lastModified(), QDateTime::fromString("2018-12-15T18:22:20", Qt::ISODate));
         QCOMPARE(doc.predecessor(), "id");
+        QCOMPARE(doc.fullTax(), 19.0);
+        QCOMPARE(doc.reducedTax(), 7.0);
 
         KraftAttrib attrib = doc.attribute("valid until");
         QCOMPARE(attrib.name(), "valid until");

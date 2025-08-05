@@ -65,6 +65,10 @@ public:
 
     XML::Totals getLastTotals() const;
 
+    static const QString TaxReducedStr;
+    static const QString TaxFullStr;
+    static const QString TaxNoneStr;
+
 protected:
 
 private:

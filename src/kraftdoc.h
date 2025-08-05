@@ -176,7 +176,7 @@ public:
     QString address() const { return mAddress; }
     void setAddress( const QString& adr ) { mAddress = adr; }
 
-    QString ident() const   { return mIdent; }
+    QString ident() const;
     void setIdent( const QString& str ) { mIdent = str; }
 
     QString salut() const   { return mSalut;    }
@@ -222,6 +222,8 @@ public:
     QString docIdentifier() const;
     DBIdList removePositionList() { return mRemovePositions; }
 
+    double  fullTax() const { return _fullTax; }
+    double  reducedTax() const { return _redTax; }
     QString taxPercentStr() const;
     QString taxPercentNum() const;
     QString reducedTaxPercentStr() const;

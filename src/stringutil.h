@@ -34,6 +34,7 @@ QString childElemText(const QDomElement& elem, const QByteArray& childName);
 
 QDate childElemDate(const QDomElement& elem, const QString& childName);
 
+double childElemDouble(const QDomElement& elem, const QString& childName);
 }
 
 namespace KraftString {
