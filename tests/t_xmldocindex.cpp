@@ -49,7 +49,7 @@ private Q_SLOTS:
 
     void checkPathesByUuid()
     {
-        const QString sExp{_baseDir + "/xmldoc/2025/5/18d3680d-4ca8-4020-b815-0e10c6517ddd"};
+        const QString sExp{_baseDir + "/xmldoc/2025/05/18d3680d-4ca8-4020-b815-0e10c6517ddd"};
         {
             const QFileInfo s{ _indx.xmlPathByUuid("18d3680d-4ca8-4020-b815-0e10c6517ddd")};
             QCOMPARE(s.filePath(), sExp+".xml");

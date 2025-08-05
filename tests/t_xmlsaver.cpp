@@ -188,7 +188,7 @@ private Q_SLOTS:
 private:
     QString _docTypeName;
     // needs to be defined according the example document in $KRAFT_HOME/xml
-    const QString _subdir {"/xmldoc/2011/1"};
+    const QString _subdir {"/xmldoc/2011/01"};
     const QString _docIdent {"20110127"};
     const QString _docUuid{"f4deb784-6131-4e49-bd6d-92bd1355ea4d"};
     QTemporaryDir _dir;
