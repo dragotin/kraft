@@ -98,7 +98,7 @@
       {% endif %}
     </dl>
 
-    <h1>{{ doc.docType }} {{ doc.ident }}</h1>
+    <h1>{{ doc.docType }} {{ label.NO }} {{ doc.ident }}</h1>
 
     <p class="salut">{{ doc.salut }}</p>
     {% if enableHtmlInTexts %}
@@ -112,10 +112,10 @@
       <thead>
         <th class="col-No col-left">{{ label.NO_SHORT }}</th>
         <th class="col-Text col-left">{{ label.ITEM }}</th>
-        <th class="col-Amount col-center">{{ label.QUANTITY_SHORT }}</th>
-        <th class="col-Unit col-center">{{ label.UNIT }}</th>
-        <th class="col-SPrice col-center">{{ label.PRICE }}</th>
-        <th class="col-Sum col-center">{{ label.SUM }}</th>
+        <th class="col-Amount col-right">{{ label.QUANTITY_SHORT }}</th>
+        <th class="col-Unit col-left">{{ label.UNIT }}</th>
+        <th class="col-SPrice col-right">{{ label.PRICE }}</th>
+        <th class="col-Sum col-right">{{ label.SUM }}</th>
         <th></th>
       </thead>
       <tbody>
