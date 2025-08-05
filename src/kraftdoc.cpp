@@ -608,6 +608,12 @@ QString KraftDoc::reducedTaxPercentStr() const
    return Format::localeDoubleToString(_redTax, *DefaultProvider::self()->locale());
 }
 
+QString KraftDoc::ident() const
+{
+    if (mIdent.isEmpty())
+        return QStringLiteral("draft");
+    return mIdent;
+}
 
 QString KraftDoc::country() const
 {
