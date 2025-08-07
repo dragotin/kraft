@@ -105,7 +105,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After the document was finalized it can not be changed any more. The finalized document can be sent to the customer. &lt;br/&gt;This fulfills legal requirements.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;After the document was finalized, it can not be changed any more. &lt;/p&gt;&lt;p&gt;The finalized document can be sent to the customer.  This fulfills legal requirements.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="textFormat">
       <enum>Qt::TextFormat::RichText</enum>
