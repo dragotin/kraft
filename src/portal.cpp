@@ -596,7 +596,7 @@ void Portal::slotFollowUpDocument()
             }
         }
 
-        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), selectedUuid, posToCopy);
+        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), uuid, posToCopy);
         doc->setDate( wiz.date() );
         doc->setWhiteboard( wiz.whiteboard() );
         createView( doc );
