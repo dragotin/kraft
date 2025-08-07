@@ -155,7 +155,6 @@
           <td>{{ label.NET }}</td>
           <td class="col-TotalSum">{{ doc.nettoSumStr }}</td>
         </tr>
-        <tr>
         {% if doc.hasIndividualTaxation %}
          {# This section is shown for documents with individual tax rates #}
         <tr>
