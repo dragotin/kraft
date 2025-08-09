@@ -43,7 +43,7 @@ public:
                            PDFMergerError
                          };
 
-    virtual void convert(const QString& sourceFile, const QString& outputFile) = 0;
+    virtual void convert(const QString& uuid, const QString& sourceFile, const QString& outputFile) = 0;
 
     QString getErrors() { return mErrors; }
 
@@ -74,7 +74,7 @@ class WeasyPrintPDFConverter : public PDFConverter
 public:
     WeasyPrintPDFConverter();
 
-    void convert(const QString& sourceFile, const QString& outputFile) override;
+    void convert(const QString& uuid, const QString& sourceFile, const QString& outputFile) override;
 
 private Q_SLOTS:
     void slotReceivedStdout();

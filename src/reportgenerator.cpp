@@ -204,7 +204,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     QTemporaryFile tmpFile;
     if (tmpFile.open()) {
         tmpFile.close();
-        converter->convert(tempFile, QString("%1.pdf").arg(tmpFile.fileName()));
+        converter->convert(_uuid, tempFile, QString("%1.pdf").arg(tmpFile.fileName()));
     } else {
         qWarning() << "Can not write to the temporary file" << tmpFile.fileName();
     }

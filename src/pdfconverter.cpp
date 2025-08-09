@@ -44,7 +44,7 @@ WeasyPrintPDFConverter::WeasyPrintPDFConverter()
 
 }
 
-void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& outputFile)
+void WeasyPrintPDFConverter::convert(const QString& uuid, const QString& sourceFile, const QString& outputFile)
 {
     mErrors.clear();
 
@@ -77,6 +77,12 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     if (!_templatePath.isEmpty() && _templatePath != styleSheetDir) {
         args << "-u";
         args << _templatePath;
+    }
+    args << "--pdf-variant";
+    args << "pdf/a-3b";
+    if (!uuid.isEmpty()) {
+        args << "--pdf-identifier";
+        args << uuid;
     }
     args << sourceFile;
     args << mFile.fileName();
