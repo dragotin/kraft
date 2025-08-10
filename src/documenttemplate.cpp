@@ -249,7 +249,7 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
             // the QR code should not be displayed.
             double maxEPCSum = KraftSettings::self()->displayEPCCodeMaxSum();
 
-            if (doc->bruttoSum().toDouble() > maxEPCSum) {
+            if (maxEPCSum > 0.0 && doc->bruttoSum().toDouble() > maxEPCSum) {
                 epcHash["show"] = false;
             }
             gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
