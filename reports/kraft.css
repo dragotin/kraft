@@ -41,6 +41,17 @@ html aside {
 }
 
 /*
+ * Absolut positioned logo
+ */
+img#logo {
+  position: absolute;
+  right: 0px;
+  top: -100px;
+  width: 178px;
+  z-index: -1;
+}
+
+/*
  * A absolute positioned block to display document extra info
  * on the right top of the document.
  */

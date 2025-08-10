@@ -79,6 +79,10 @@
   </head>
   {% autoescape off %}
   <body>
+
+   <!-- Example how to add a logo to the document, see kraft.css for positioning: -->
+   <!-- <img id="logo" src="file:///home/klaas/opensource/kraft/reports/logo.png" /> -->
+
     <p id="letterheader">
     {{ me.ORGANISATION }} - {{ me.STREET }} - {{ me.POSTCODE }} {{ me.LOCALITY }}
     </p>
