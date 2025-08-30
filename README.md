@@ -1,10 +1,9 @@
 
 # The Kraft Project
 
-**Kraft is free software to help to handle documents like quotes and invoices
-in your small business.**
+**Kraft is free software to handle documents like quotes and invoices in your small business.**
 
-It is a Qt/KF5 based desktop software with a strong focus on ease of use
+It is a Qt/KF6 based linux desktop software with a strong focus on ease of use
 and the just enough feature set for the use case. With Kraft, creating documents
 will run smooth and free time for more enjoyable things than office work.
 
@@ -17,15 +16,14 @@ Repeating tasks are supported, documents can be generated semi automatically,
 ie. invoices from offers sent out before.
 
 For efficient work, Kraft supports catalogs to organize materials and
-template texts. It focuses on high quality printouts because paper is
+template items. It focuses on high quality printouts because paper is
 still the main communication media in the small business world. However,
-it also sends documents via email.
+it also sends documents via email and supports electronic invoicing with XRechnung.
 
-Kraft utilizes a bunch of very useful tools of the free softare world:
+Kraft utilizes very useful tools of the free softare world:
 - KDE addressbook for customer management
 - MySQL or alternatively SQLite for database support
-- [WeasyPrint](https://weasyprint.org) or [ReportLab](http://www.reportlab.com/opensource/) for PDF generation.
-- [Grantlee](https://github.com/steveire/grantlee) or [ctemplate](https://github.com/OlafvdSpek/ctemplate) templating library.
+- [WeasyPrint](https://weasyprint.org) for PDF generation.
 
 ## Interested?
 
@@ -34,6 +32,6 @@ Kraft utilizes a bunch of very useful tools of the free softare world:
 For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/Main/Contribution)
 for contact details.
 
-Jun 2005-2024, Klaas Freitag <kraft@freisturz.de>
+Jun 2005-2025, Klaas Freitag <kraft@freisturz.de>
 
 
