@@ -3,7 +3,9 @@
 
 **Kraft is free software to handle documents like quotes and invoices in your small business.**
 
-It is a Qt/KF6 based linux desktop software with a strong focus on ease of use
+![Kraft screenshot](/screenshot1.png?raw=true "Kraft Main Window")
+
+Kraft is a Qt/KF6 based linux desktop software with a strong focus on ease of use
 and the just enough feature set for the use case. With Kraft, creating documents
 will run smooth and free time for more enjoyable things than office work.
 
