@@ -15,21 +15,24 @@ include::locale/attributes.adoc[]
 
 == Introduction
 
-Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating tasks.
+Kraft is a desktop application to create and organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating office tasks.
 
-Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.
+Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output documents for printing, mailing and archiving.
 
 Feature Overview::
 
+* Simple but efficient and beautiful UI.
 * Simple creation of offers, invoices and similar documents.
 * Customer management, deeply integrated with the mature KDE KAddressbook.
-* Maintenance of document relations, ie. Partial invoices vs. invoices.
-* Templates for document header- and footertexts and for document items.
+* Maintenance of document relations, featuring partial invoices and final invoices or invoices generated out of offers semi automatically.
+* Text templates for document header- and footertexts and for document items.
+* Catalogues of template items that can be reused.
 * Pre calculation of item prices.
-* Material management.
-* Configurable document creation in PDF format for print and email.
+* Simple material management.
+* Configurable document creation in PDF format for print and email incl. EPC QR code.
+* Support for EPC QR Code and XRechnung
 
-The code of Kraft is open source and is released under the https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License].
+The code of Kraft is open source and is released under the https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License]. 
 
 NOTE: Kraft is driven by community of users, coders, artists and others by voluntary work. +
 Also this manual needs contributions! +
@@ -41,14 +44,16 @@ Also this manual needs contributions! +
 
 When Kraft is started for the first time, it automatically enters the initial setup process.
 
-During the initial setup you are asked to select a database to use and give the name and address of your company.
+During the initial setup you are asked to select a database type to use and give the name and address of your company.
 
-You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab *Select from Addressbook* for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab *Manual entry* for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.
+You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab *Select from Addressbook* for to select your own address in KAddressBook. For that there must be an entry of your own address in the address book. Alternatively the second tab *Manual entry* can be used to fill in the information of the address of your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.
+
+To generate the EPC QR Code that can be printed on the output document, the bank account details need to be added as well.
 
 image:company_adress1.png[Company adress,float="right"]
 
 After the initial setup, select menu:Preferences[Settings].
-That allows to prepare Kraft correctly so it can be used in a proper way.
+That allows to prepare Kraft correctly for individual needs.
 
 In the Preferences dialog we have the tabs:
 
@@ -87,12 +92,12 @@ All documents of a certain type have identifiers taken out of one number cycle. 
 Number cycles are identified by their name.
 User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
 
-The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.
+The format of the document numbers can be customized by a template. A template can contain normal characters and also some variables that are replaced by the respective values when the document is created.
 
-Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document. The other (variable `%n`) is reset every day and starts at 1 again on every new day.
+Each document number needs to be unique, and thus has to contain a counter. Kraft supports two types of counters: One (variable `%i`) is incremented globally for every new document. The other (variable `%n`) is reset every day and starts at 1 again on every new day.
 In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.
 
-The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
+The default numbercycle delivered with Kraft contains the year, the month and a serial number. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
 
 See the following table for available variables which can be used:
 
@@ -114,7 +119,7 @@ See the following table for available variables which can be used:
 
 |===
 
-A number cycle template needs to contain either `%i` or `%n`, if not, `%i` is appended automatically.
+A number cycle format template needs to contain either `%i` or `%n`, if not, `%i` is appended automatically.
 
 Both `%i` and `%n` are numeric values. They can also be padded with with leading zeros. The length is defined by the number of i's or n's put into the template. For example, if a daily counter with length of three and leading zeros is desired, `%nnn` has to be put into the template. This works up to a length of six characters.
 ____
@@ -126,7 +131,7 @@ ____
 
 In the entry field Template File: the user can select a custom template for this specific document type.
 
-If the file extension of the template file is `.trml`, the ReportLab based document converter is used. If the file extension is `.gtmpl`, Kraft automatically uses the Weasyprint based converter.
+If the file extension of the template file is `.trml`, the ReportLab based document converter is used. If the file extension is `.gtmpl`, Kraft automatically uses the Weasyprint based converter which is default from Kraft 2.0.
 ____
 NOTE:
 The ReportLab system for PDF creation is deprecated in Kraft. Please, for new templates, always use Grantlee- and Weasyprint based templates.
@@ -136,7 +141,7 @@ ____
 
 After Kraft has created the PDF document it is possible to merge the created PDF with static, customized PDFs created by the user. With that, it is easy to add a custom stationery with a logo to the resulting PDF ("Watermark").
 
-The static PDFs should have the same page size as the generated documents. Keep in mind to use  optimized images for logos etc. to not blow up the size of the result document.
+The static PDFs should have the same page size as the generated documents. Keep in mind to use optimized images for logos etc. when preparing the watermark PDF to not blow up the size of the result document.
 
 image:pdfpostproc.png[PDF Postprocessing,float?"right"]
 
@@ -165,7 +170,7 @@ If the tax-level is changing, then you add here the start date with the new tax-
 
 image:wages.png[Wages,float="right"]
 A list of wage costs is maintained in Kraft. The items are used in
-templates and during calculation.
+item templates during calculation.
 
 All data can be edited, customized and new items can be added in the
 Kraft Configuration Dialog reachable through the Settings menu.
@@ -194,8 +199,7 @@ If you made the choice to use the information from KaddressBook then is
 the information from a later manual entry ignored.
 ____
 
-After we have made some corrections to the configuration, we go back to
-the main window.Here we see three tabs:
+After the configuration is finalized, we go back to the main window which consists of the three main tabs:
 
 * Documents
 * Timeline
@@ -728,7 +732,7 @@ On the PDF output it is nice to have a logo image included, if the documents sho
 
 This chapter describes a few methods to achieve that with the weasyprint based template.
 
-====== PDF Watermark Funktionality
+===== PDF Watermark Funktionality
 
 The first, and easiest way to add a logo and other details on the print out is to use the so called PDF Watermark option.
 
@@ -738,9 +742,9 @@ In the Kraft doc type settings dialog, the watermark options for a specific doc 
 
 Once set up, Kraft automatically merges the generated document with the watermark PDF. The result document contains the content of both documents merged together. This is not only useful for logos, but also other details in the document footer.
 
-====== CSS Directives for Pages
+===== CSS Directives for Pages
 
-The second option is to use the CSS directive for page content on printed HTML pages. This only works with the new weasyprint based doc generation.
+The second option is to use the CSS directive for page content on printed HTML pages. This only works with weasyprint based doc generation.
 
 It uses Cascading Style Sheet (CSS) directives for paged media. CSS uses the `@page` keyword to define attributes of the page on which the content is printed. Weasyprint makes heavy use of that, for example to define the page size.
 
@@ -776,17 +780,38 @@ To add a logo on in the top left corner of the first page of the result doc, the
 
 This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.
 
+A more fine granular way of placing the logo can be achieved by placing an `img` tag into the template like this:
+
+[source,html]
+----
+<img id="logo" src="file:///path/to/your/logo.png" />
+----
+
+The CSS code to place the logo accordingly is like
+[source,css]
+----
+
+/*
+ * Absolut positioned logo
+ */
+img#logo {
+  position: absolute;
+  right: 0px;
+  top: -100px;
+  width: 178px;
+  z-index: -1;
+}
+----
+
+With that, the logo is independent from the @page positioning from the first example.
+
 ==== EPC QR Code
 
 With Weasyprint based PDF generation Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for payments by computer and mobile devices.
 
 In Germany it is also known as _Giro Code_, in Belgium as _Bancontact QR_, in the Netherlands as _iDEAL QR-code_ and in Spain it is also known as _Bizum QR-code_.
 
-In Germany it is accepted by the _Giro Code_ and in Holland it is accepted by the official https://www.ideal.nl/consumenten/ideal-app/[_iDEAL QR-code_] app.
-
-In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.
-
-To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
+To use the EPC QR code on the invoice printout, the bank account information has to be added to the own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
 
 To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:
 
