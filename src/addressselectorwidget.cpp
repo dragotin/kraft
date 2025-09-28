@@ -45,6 +45,7 @@
 #include "htmlview.h"
 #include "grantleetemplate.h"
 #include "documenttemplate.h"
+#include "addressproviderlocal.h"
 #endif
 
 /* ==================================================================== */
@@ -343,7 +344,10 @@ void AddressSelectorWidget::setupUi()
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact, SIGNAL(clicked()),SLOT(slotEditContact()));
 #else
-    QLabel *lab = new QLabel(i18n("Addresses read from directory (read only)"), rightW);
+    QLabel *lab = new QLabel(rightW);
+    lab->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    const auto p = DefaultProvider::self()->kraftV2AddressDir();
+    lab->setText(i18n("Addresses read from directory (read only)") + u"<br/>"+p);
     hboxBot->addWidget(lab);
 #endif
 
