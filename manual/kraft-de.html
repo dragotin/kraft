@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>Das Kraft Handbuch</title>
 <style>
@@ -674,6 +674,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#Acceptance_of_order">Creating an Acceptance of Order</a></li>
 </ul>
 </li>
+<li><a href="#Address_Books">Address Books</a></li>
 <li><a href="#Customization">Customization</a>
 <ul class="sectlevel2">
 <li><a href="#_output_document_customization">Output Document Customization</a></li>
@@ -701,10 +702,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_einführung">Einführung</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating tasks.</p>
+<p>Kraft is a desktop application to create and organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating office tasks.</p>
 </div>
 <div class="paragraph">
-<p>Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.</p>
+<p>Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output documents for printing, mailing and archiving.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -713,25 +714,34 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="ulist">
 <ul>
 <li>
+<p>Simple but efficient and beautiful UI.</p>
+</li>
+<li>
 <p>Simple creation of offers, invoices and similar documents.</p>
 </li>
 <li>
-<p>Customer management, deeply integrated with the mature KDE KAddressbook.</p>
+<p>Customer management, deeply integrated with the mature KDE KAddressbook or an address collection based on a local directory.</p>
 </li>
 <li>
-<p>Maintenance of document relations, ie. Partial invoices vs. invoices.</p>
+<p>Maintenance of document relations, featuring partial invoices and final invoices or invoices generated out of offers semi automatically.</p>
 </li>
 <li>
-<p>Vorlagen für Dokument-Kopf- und Fusstexte sowie Dokumentposten.</p>
+<p>Text templates for document header- and footertexts and for document items.</p>
+</li>
+<li>
+<p>Catalogues of template items that can be reused.</p>
 </li>
 <li>
 <p>Pre calculation of item prices.</p>
 </li>
 <li>
-<p>Materialverwaltung.</p>
+<p>Simple material management.</p>
 </li>
 <li>
-<p>Konfigurierbare Dokument-Erstellung im PDF Format zum Druck und Versenden per Email.</p>
+<p>Configurable document creation in PDF format for print and email incl. EPC QR code.</p>
+</li>
+<li>
+<p>Support for EPC QR Code and XRechnung</p>
 </li>
 </ul>
 </div>
@@ -765,16 +775,19 @@ Also this manual needs contributions!<br>
 <p>When Kraft is started for the first time, it automatically enters the initial setup process.</p>
 </div>
 <div class="paragraph">
-<p>During the initial setup you are asked to select a database to use and give the name and address of your company.</p>
+<p>During the initial setup you are asked to select a database type to use and give the name and address of your company.</p>
 </div>
 <div class="paragraph">
-<p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab <strong>Manual entry</strong> for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+<p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your own address in KAddressBook. For that there must be an entry of your own address in the address book. Alternatively the second tab <strong>Manual entry</strong> can be used to fill in the information of the address of your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+</div>
+<div class="paragraph">
+<p>To generate the EPC QR Code that can be printed on the output document, the bank account details need to be added as well.</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/de/company_adress1.png" alt="Company adress"></span></p>
 </div>
 <div class="paragraph">
-<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly so it can be used in a proper way.</p>
+<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly for individual needs.</p>
 </div>
 <div class="paragraph">
 <p>In the Preferences dialog we have the tabs:</p>
@@ -831,13 +844,13 @@ Also this manual needs contributions!<br>
 <p>All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even thought they are different document types in Kraft. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
 </div>
 <div class="paragraph">
-<p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
+<p>The format of the document numbers can be customized by a template. A template can contain normal characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
+<p>Each document number needs to be unique, and thus has to contain a counter. Kraft supports two types of counters: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
-<p>The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
+<p>The default numbercycle delivered with Kraft contains the year, the month and a serial number. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
 </div>
 <div class="paragraph">
 <p>Folgende Variablen stehen zur Verfügung:</p>
@@ -903,7 +916,7 @@ Also this manual needs contributions!<br>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A number cycle template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
+<p>A number cycle format template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
 </div>
 <div class="paragraph">
 <p>Both <code>%i</code> and <code>%n</code> are numeric values. They can also be padded with with leading zeros. The length is defined by the number of i&#8217;s or n&#8217;s put into the template. For example, if a daily counter with length of three and leading zeros is desired, <code>%nnn</code> has to be put into the template. This works up to a length of six characters.</p>
@@ -931,7 +944,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>In the entry field Template File: the user can select a custom template for this specific document type.</p>
 </div>
 <div class="paragraph">
-<p>If the file extension of the template file is <code>.trml</code>, the ReportLab based document converter is used. If the file extension is <code>.gtmpl</code>, Kraft automatically uses the Weasyprint based converter.</p>
+<p>If the file extension of the template file is <code>.trml</code>, the ReportLab based document converter is used. If the file extension is <code>.gtmpl</code>, Kraft automatically uses the Weasyprint based converter which is default from Kraft 2.0.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -956,7 +969,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <p>After Kraft has created the PDF document it is possible to merge the created PDF with static, customized PDFs created by the user. With that, it is easy to add a custom stationery with a logo to the resulting PDF ("Watermark").</p>
 </div>
 <div class="paragraph">
-<p>The static PDFs should have the same page size as the generated documents. Keep in mind to use optimized images for logos etc. to not blow up the size of the result document.</p>
+<p>The static PDFs should have the same page size as the generated documents. Keep in mind to use optimized images for logos etc. when preparing the watermark PDF to not blow up the size of the result document.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/de/pdfpostproc.png" alt="PDF Postprocessing" width="float?"right""></span></p>
@@ -1003,7 +1016,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect2">
 <h3 id="_wages">Wages</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/de/wages.png" alt="Wages"></span> A list of wage costs is maintained in Kraft. The items are used in templates and during calculation.</p>
+<p>A list of wage costs is maintained in Kraft. The items are used in item templates during calculation. <span class="image right"><img src="images/de/wages.png" alt="Wages"></span></p>
 </div>
 <div class="paragraph">
 <p>All data can be edited, customized and new items can be added in the Kraft Configuration Dialog reachable through the Settings menu.</p>
@@ -1043,7 +1056,7 @@ If you made the choice to use the information from KaddressBook then is the info
 </blockquote>
 </div>
 <div class="paragraph">
-<p>After we have made some corrections to the configuration, we go back to the main window.Here we see three tabs:</p>
+<p>After the configuration is finalized, we go back to the main window which consists of the three main tabs:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1783,6 +1796,42 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 </div>
 </div>
 <div class="sect1">
+<h2 id="Address_Books">Address Books</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For efficient usage of Kraft, the address management is very important. Contact information of customers and suppliers needs to be managed and used daily.</p>
+</div>
+<div class="paragraph">
+<p>Kraft does not come with its own address book implementation, but uses an established and mature solution called <a href="https://apps.kde.org/de/kaddressbook/">KAddressbook</a> which is provided as part of the PIM (Personal Information Management) software collection of <a href="https://www.kde.org">KDE</a>. Integration with KAddressBook is the recommendation and default of Kraft.</p>
+</div>
+<div class="paragraph">
+<p>However, in some situations the KAddressBook Integration can not be set up. In that cases, Kraft can also read a address collection of a local directory. The directory can be set in the Kraft config file in group <code>[KraftV2]</code>, key <code>KraftV2AddressDir</code>. If not explicitely set, it defaults to <code>$HOME/.local/share/contacts</code>.</p>
+</div>
+<div class="paragraph">
+<p>This directory needs to contain single files in the vCard format, with file extension <code>.vcf</code>. All these files are read and presented as addresses in Kraft.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Anmerkung</div>
+</td>
+<td class="content">
+Kraft does not alter the entries in the addressbook directory. It is accessed read only.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>To edit addresses and add new ones, users can still use KAddressBook, which has support for local address books. It is also possible to synchronize addresses into a local directory from other remote address collections such as Google Addresses utilizing a tool like <a href="https://vdirsyncer.pimutils.org/en/stable/index.html">vdirsyncer</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="Customization">Customization</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -1849,8 +1898,8 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <div class="paragraph">
 <p>This chapter describes a few methods to achieve that with the weasyprint based template.</p>
 </div>
-<div class="sect5">
-<h6 id="_pdf_watermark_funktionality">PDF Watermark Funktionality</h6>
+<div class="sect4">
+<h5 id="_pdf_watermark_funktionality">PDF Watermark Funktionality</h5>
 <div class="paragraph">
 <p>The first, and easiest way to add a logo and other details on the print out is to use the so called PDF Watermark option.</p>
 </div>
@@ -1864,10 +1913,10 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <p>Once set up, Kraft automatically merges the generated document with the watermark PDF. The result document contains the content of both documents merged together. This is not only useful for logos, but also other details in the document footer.</p>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_css_directives_for_pages">CSS Directives for Pages</h6>
+<div class="sect4">
+<h5 id="_css_directives_for_pages">CSS Directives for Pages</h5>
 <div class="paragraph">
-<p>The second option is to use the CSS directive for page content on printed HTML pages. This only works with the new weasyprint based doc generation.</p>
+<p>The second option is to use the CSS directive for page content on printed HTML pages. This only works with weasyprint based doc generation.</p>
 </div>
 <div class="paragraph">
 <p>It uses Cascading Style Sheet (CSS) directives for paged media. CSS uses the <code>@page</code> keyword to define attributes of the page on which the content is printed. Weasyprint makes heavy use of that, for example to define the page size.</p>
@@ -1910,10 +1959,34 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <div class="paragraph">
 <p>This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.</p>
 </div>
+<div class="paragraph">
+<p>A more fine granular way of placing the logo can be achieved by placing an <code>img</code> tag into the template like this:</p>
 </div>
-<div class="sect5">
-<h6 id="_show_in_absolutely_placed_divs">Show in absolutely placed divs</h6>
-
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;img id="logo" src="file:///path/to/your/logo.png" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The CSS code to place the logo accordingly is like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">/*
+ * Absolut positioned logo
+ */
+img#logo {
+  position: absolute;
+  right: 0px;
+  top: -100px;
+  width: 178px;
+  z-index: -1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With that, the logo is independent from the @page positioning from the first example.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -1925,13 +1998,7 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <p>In Germany it is also known as <em>Giro Code</em>, in Belgium as <em>Bancontact QR</em>, in the Netherlands as <em>iDEAL QR-code</em> and in Spain it is also known as <em>Bizum QR-code</em>.</p>
 </div>
 <div class="paragraph">
-<p>In Germany it is accepted by the <em>Giro Code</em> and in Holland it is accepted by the official <a href="https://www.ideal.nl/consumenten/ideal-app/"><em>iDEAL QR-code</em></a> app.</p>
-</div>
-<div class="paragraph">
-<p>In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.</p>
-</div>
-<div class="paragraph">
-<p>To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+<p>To use the EPC QR code on the invoice printout, the bank account information has to be added to the own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
 </div>
 <div class="paragraph">
 <p>To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:</p>
@@ -2155,7 +2222,7 @@ Removes this item from document.</pre>
 </blockquote>
 </div>
 <div class="paragraph">
-<p><strong>Die Datenbank teilen</strong></p>
+<p><strong>Sharing the Database</strong></p>
 </div>
 <div class="paragraph">
 <p>Der Datenbankserver sollte auf der Haupt-Maschine installiert sein, oder es sollte ein spezialisiertes Gerät wie ein NAS verwendet werden. Die Netzwerk Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich.</p>
@@ -2164,7 +2231,7 @@ Removes this item from document.</pre>
 <p>Howtos um MySQL aufzusetzen sind im Internet zu finden.</p>
 </div>
 <div class="paragraph">
-<p><strong>Den Dokument Pool teilen</strong></p>
+<p><strong>Sharing the Document Pool Directory</strong></p>
 </div>
 <div class="paragraph">
 <p>Kraft schreibt generierte PDFs in ein lokales Verzeichnis. Welches Verzeichnis das ist kann im Kraft Konfigfile eingerichtet werden. Das Konfigfile muss auf allen Instanzen angepasst werden.</p>
@@ -2185,7 +2252,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 <p>Ein empfohlenes Setup benutzt ein NFS Share über autofs, das auf der Hauptmaschine aufgesetzt werden muss. Um Dateizugriff zu verwalten, sollte eine Gruppe aufgesetzt werden.</p>
 </div>
 <div class="paragraph">
-<p><strong>Kraft im Nur-Lesen Modus</strong></p>
+<p><strong>Starting Kraft in read-only mode</strong></p>
 </div>
 <div class="paragraph">
 <p>Um Kraft im Nur-Lese Modus zu starten, muss das Programm mit dem Kommandozeilenschalter <code>-r</code> gestartet werden.</p>
@@ -2216,10 +2283,13 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 <p>Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.</p>
 </div>
 <div class="paragraph">
-<p>After that step, the <b class="button">Export XRechung</b> menu item will open a dialog to pick a filename where to save the XRechnung invoice to.</p>
+<p>Next is to specify for which document types the XRechnung export should be made available. For that, open the Kraft Settings dialog, and proceed to the Document Type tab on the left. For each document type listed there, you can mark the checkbox <b class="button">Enable XRechnung Support</b>.</p>
 </div>
 <div class="paragraph">
-<p>This file can now be transfered to the receiver of the invoice.</p>
+<p>After that steps, the <b class="button">Export XRechung</b> menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.</p>
+</div>
+<div class="paragraph">
+<p>This file can now be transferred to the receiver of the invoice via email, a private file share or the like.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2274,17 +2344,17 @@ There are validators for invoices in XRechnung format out there in the internet.
 <h2 id="Credits">Credits und Lizenz</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program and documentation copyright 2004–2024 Klaas Freitag</p>
+<p>Program and documentation copyright 2004–2025 Klaas Freitag</p>
 </div>
 <div class="paragraph">
-<p>Documentation copyright 2020-2024 Ronald Stroethoff</p>
+<p>Documentation copyright 2020-2025 Ronald Stroethoff</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Zuletzt aktualisiert 2024-02-07 20:55:54 +0100
+Zuletzt aktualisiert 2025-09-28 13:08:18 +0200
 </div>
 </div>
 </body>

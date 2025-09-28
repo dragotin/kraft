@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.20">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>Het handboek van Kraft</title>
 <style>
@@ -674,6 +674,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#Acceptance_of_order">Een Acceptance of order (opdrachtbevestiging) aanmaken</a></li>
 </ul>
 </li>
+<li><a href="#Address_Books">Address Books</a></li>
 <li><a href="#Customization">Kraft naar wens aanpassen</a>
 <ul class="sectlevel2">
 <li><a href="#_documentuitvoer_aanpassen">Documentuitvoer aanpassen</a></li>
@@ -701,10 +702,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_inleiding">Inleiding</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft is een Qt- en KDE-Programma voor het organiseren van kantoor documenten zoals offertes en rekeningen in een klein bedrijf. Het vergemakkelijkt de creatie van documenten en helpt bij vaak voorkomende taken.</p>
+<p>Kraft is a desktop application to create and organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating office tasks.</p>
 </div>
 <div class="paragraph">
-<p>Met gebruik van Kraft is geen tekstverwerker meer nodig. Rekeningen en offertes stelt u met slechts een paar muisklikken samen en worden automatisch gearchiveerd. Kraft genereert kwalitatief goede PDF-documenten geschikt om uit te printen, voor email en voor archivering.</p>
+<p>Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output documents for printing, mailing and archiving.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -713,25 +714,34 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="ulist">
 <ul>
 <li>
+<p>Simple but efficient and beautiful UI.</p>
+</li>
+<li>
 <p>De eenvoudige creatie van offertes, rekeningen en vergelijkbare documenten.</p>
 </li>
 <li>
-<p>Beheer van klanten, door het gebruik van KAddressbook in de KDE-infrastructuur geïntegreerd.</p>
+<p>Customer management, deeply integrated with the mature KDE KAddressbook or an address collection based on a local directory.</p>
 </li>
 <li>
-<p>Beheer van relaties tussen documenten, bv. Partial invoices (Gedeeltelijke factuur) ten opzichte van invoices (rekening).</p>
+<p>Maintenance of document relations, featuring partial invoices and final invoices or invoices generated out of offers semi automatically.</p>
 </li>
 <li>
-<p>Sjablonen voor kop- en voetteksten maar ook voor document-items.</p>
+<p>Text templates for document header- and footertexts and for document items.</p>
+</li>
+<li>
+<p>Catalogues of template items that can be reused.</p>
 </li>
 <li>
 <p>De voorcalculatie van prijzen.</p>
 </li>
 <li>
-<p>Materiaalgebruik</p>
+<p>Simple material management.</p>
 </li>
 <li>
-<p>Instelbare aanmaak van documenten in PDF Formaat voor uitprinten en verzenden per Email.</p>
+<p>Configurable document creation in PDF format for print and email incl. EPC QR code.</p>
+</li>
+<li>
+<p>Support for EPC QR Code and XRechnung</p>
 </li>
 </ul>
 </div>
@@ -765,16 +775,19 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>Als Kraft voor de eerste keer wordt opgestart, dan komt het automatisch in een initiële proces voor het maken van instellingen terecht.</p>
 </div>
 <div class="paragraph">
-<p>Tijdens de basisconfiguratie wordt u gevraagd om een database-type te selecteren en wordt naar de naam en adres van uw firma gevraagd.</p>
+<p>During the initial setup you are asked to select a database type to use and give the name and address of your company.</p>
 </div>
 <div class="paragraph">
-<p>Het adres van uw eigen bedrijf, die automatisch op het uitgeprinte document verschijnt, kan op twee manieren opgegeven worden: Bij het eerste gebruik: gebruik in de basisconfiguratie de eerste tab 'Uit adresboek' om in KAdressbook uw eigen adres te selecteren (als u in KAdressbook uw eigen adres heeft ingevuld) of u gebruikt de tweede tab 'Handmatige adres' om handmatig de informatie van uw bedrijf in te vullen. Deze stap is noodzakelijk voor de correcte aanmaak van uw documenten, omdat het automatisch wordt gebruikt in het proces voor de generatie van het document.</p>
+<p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your own address in KAddressBook. For that there must be an entry of your own address in the address book. Alternatively the second tab <strong>Manual entry</strong> can be used to fill in the information of the address of your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+</div>
+<div class="paragraph">
+<p>To generate the EPC QR Code that can be printed on the output document, the bank account details need to be added as well.</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/nl/company_adress1.png" alt="Company adress"></span></p>
 </div>
 <div class="paragraph">
-<p>Na de basisconfiguratie, selecteert u <span class="menuseq"><b class="menu">Voorkeuren</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Instellingen</b></span>. Hier kunt u Kraft correct voorbereiden zodat het op de juiste manier gebruikt kan worden.</p>
+<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly for individual needs.</p>
 </div>
 <div class="paragraph">
 <p>In het dialoogvenster voor de instellingen hebben we de tabs:</p>
@@ -831,13 +844,13 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>Alle documenten van een bepaald type hebben een identificatie die uit een één volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken om hun identificatie uit te generen. Op die manier kunnen bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice (eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen creëren en deze bewerken door op de knop <b class="button">Volgnummersysteem bewerken&#8230;&#8203;</b> te klikken</p>
 </div>
 <div class="paragraph">
-<p>De opbouw van de documentnummers worden gedefinieerd in een sjabloon waarin normale, vaste karakters maar ook enkele variabelen aanwezig kunnen zijn die worden vervangen door hun respectievelijke waarden bij de creatie van het document.</p>
+<p>The format of the document numbers can be customized by a template. A template can contain normal characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Elk documentnummer moet uniek zijn, en moet dus een teller hebben. Kraft kan twee soorten tellers gebruiken: Een type (variabele <code>%i</code>) wordt bij elk nieuw document verhoogt. De andere (variabele <code>%n</code>) wordt elke dag teruggezet en begint dus weer bij 1 op elke nieuwe dag. Behalve de teller kan extra informatie toegevoegd worden om een bruikbaar documentnummer te krijgen, zoals een constante tekst of gedeeltes van de datum.</p>
+<p>Each document number needs to be unique, and thus has to contain a counter. Kraft supports two types of counters: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
-<p>Het standaard volgnummersysteem dat met Kraft wordt geleverd bevat het jaar, de maand en een serienummer. Op deze manier kunt u offertes of opdrachten van het vorige jaar vergelijken met die van dit jaar of van de maand April van het vorige jaar met de maand April van dit jaar en op die manier een indruk krijgen van de resultaten van uw bedrijf.</p>
+<p>The default numbercycle delivered with Kraft contains the year, the month and a serial number. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
 </div>
 <div class="paragraph">
 <p>Zie de volgende tabel voor de beschikbare variabelen die gebruikt kunnen worden:</p>
@@ -903,7 +916,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 </tbody>
 </table>
 <div class="paragraph">
-<p>In een volgnummersysteem-sjabloon moet naar keuze <code>%i</code> of <code>%n</code> aanwezig zijn, als dat niet het geval is dan wordt automatisch <code>%i</code> eraan toegevoegd.</p>
+<p>A number cycle format template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
 </div>
 <div class="paragraph">
 <p>Zowel <code>%i</code> als <code>%n</code> hebben numerieke waarden. Ze kunnen ook worden voorafgegaan door extra nullen. De length is afhankelijk van het aantal i&#8217;s of n&#8217;s die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u <code>%nnn</code> in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters.</p>
@@ -922,7 +935,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>In invoerveld "Sjabloon bestand:" kan de gebruiker een eigen sjabloon opgeven voor dit specifieke documenttype.</p>
 </div>
 <div class="paragraph">
-<p>Als de bestand-extensie van het sjabloon-bestand is <code>.trml</code>, dan wordt de op ReportLab gebaseerde document converter gebruikt. Als de bestand-extensie is <code>.gtmpl</code>, dan gebruikt Kraft automatisch de op Weasyprint gebaseerde converter.</p>
+<p>If the file extension of the template file is <code>.trml</code>, the ReportLab based document converter is used. If the file extension is <code>.gtmpl</code>, Kraft automatically uses the Weasyprint based converter which is default from Kraft 2.0.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -938,7 +951,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>Nadat Kraft het PDF-document heeft gecreëerd is het mogelijk om de gecreëerde PDF samen te voegen met statische PDFs die die zijn gecreëerd en aangepast door de gebruiker. Hiermee is het makkelijk om eigen briefhoofd met een logo of een watermerk aan de resulterende PDF toe te voegen.</p>
 </div>
 <div class="paragraph">
-<p>De statisch PDFs moeten dezelfde papiergrootte hebben als de gegenereerde documenten. Vergeet niet om voor logos en dergelijke geoptimaliseerde afbeeldingen te gebruiken zodat de grootte van het resulterende document niet wordt opgeblazen.</p>
+<p>The static PDFs should have the same page size as the generated documents. Keep in mind to use optimized images for logos etc. when preparing the watermark PDF to not blow up the size of the result document.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/nl/pdfpostproc.png" alt="PDF Postprocessing" width="float?"right""></span></p>
@@ -949,19 +962,19 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Geen watermerk</strong>: Geen watermerk wordt gecreëerd</p>
+<p><strong>No Watermark</strong>: No watermark is created</p>
 </li>
 <li>
-<p><strong>Op eerste pagina</strong>: De eerste pagina van de watermark-pdf wordt samengevoegd met de eerste pagina van het resulterende document</p>
+<p><strong>On first page</strong>: The first page of the watermark.pdf is merged with the first page of the result document</p>
 </li>
 <li>
-<p><strong>Watermerk op alle pagina&#8217;s</strong>: voegt de eerste pagina van de watermerk-PDF samen met alle pagina&#8217;s van het resulterende document</p>
+<p><strong>Watermark on all pages</strong>: Merges the first page of the watermark PDF to all pages of the result document</p>
 </li>
 <li>
-<p><strong>Afwisselend</strong>: Hiervoor moet de watermerk-PDF drie pagina&#8217;s hebben. De eerste pagina wordt met de eerste pagina van het gecreëerde document samengevoegd, de tweede en derde pagina worden afwisselend met de volgende pagina&#8217;s samengevoegd.</p>
+<p><strong>alternating</strong>: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternated merge to subsequent pages.</p>
 </li>
 <li>
-<p><strong>Afwijkende eerste en laatste pagina</strong>: het watermerk-PDF moet drie pagina&#8217;s hebben. De eerste pagina wordt met de eerste pagina van het gecreëerde document samengevoegd, de derde pagina wordt samengevoegd met de laatste pagina, en de tweede pagina met alle pagina&#8217;s tussen de eerste en de laatste pagina.</p>
+<p><strong>different first and last page</strong>: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all page between first and last page.</p>
 </li>
 </ol>
 </div>
@@ -985,7 +998,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect2">
 <h3 id="_salarissen">Salarissen</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/wages.png" alt="Wages"></span> In Kraft is een lijst met salariskosten aanwezig. De items daarin worden in de sjablonen en in de berekeningen gebruikt.</p>
+<p>A list of wage costs is maintained in Kraft. The items are used in item templates during calculation. <span class="image right"><img src="images/nl/wages.png" alt="Wages"></span></p>
 </div>
 <div class="paragraph">
 <p>Alle data kan bewerkt en aangepast worden in een configuratiedialoog dat u kunt bereiken via het menu-item 'voorkeuren', waar u ook nieuwe items kunt toevoegen .</p>
@@ -1016,7 +1029,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 </blockquote>
 </div>
 <div class="paragraph">
-<p>Nadat we indien nodig de gewenste correcties in de configuratie hebben aangebracht, gaan we terug naar het hoofdvenster. Hier zien we drie tabs:</p>
+<p>After the configuration is finalized, we go back to the main window which consists of the three main tabs:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1729,6 +1742,42 @@ END_HAS_TAG</pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="Address_Books">Address Books</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For efficient usage of Kraft, the address management is very important. Contact information of customers and suppliers needs to be managed and used daily.</p>
+</div>
+<div class="paragraph">
+<p>Kraft does not come with its own address book implementation, but uses an established and mature solution called <a href="https://apps.kde.org/de/kaddressbook/">KAddressbook</a> which is provided as part of the PIM (Personal Information Management) software collection of <a href="https://www.kde.org">KDE</a>. Integration with KAddressBook is the recommendation and default of Kraft.</p>
+</div>
+<div class="paragraph">
+<p>However, in some situations the KAddressBook Integration can not be set up. In that cases, Kraft can also read a address collection of a local directory. The directory can be set in the Kraft config file in group <code>[KraftV2]</code>, key <code>KraftV2AddressDir</code>. If not explicitely set, it defaults to <code>$HOME/.local/share/contacts</code>.</p>
+</div>
+<div class="paragraph">
+<p>This directory needs to contain single files in the vCard format, with file extension <code>.vcf</code>. All these files are read and presented as addresses in Kraft.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Noot</div>
+</td>
+<td class="content">
+Kraft does not alter the entries in the addressbook directory. It is accessed read only.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>To edit addresses and add new ones, users can still use KAddressBook, which has support for local address books. It is also possible to synchronize addresses into a local directory from other remote address collections such as Google Addresses utilizing a tool like <a href="https://vdirsyncer.pimutils.org/en/stable/index.html">vdirsyncer</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="Customization">Kraft naar wens aanpassen</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -1795,8 +1844,8 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <div class="paragraph">
 <p>This chapter describes a few methods to achieve that with the weasyprint based template.</p>
 </div>
-<div class="sect5">
-<h6 id="_pdf_watermark_funktionality">PDF Watermark Funktionality</h6>
+<div class="sect4">
+<h5 id="_pdf_watermark_funktionality">PDF Watermark Funktionality</h5>
 <div class="paragraph">
 <p>The first, and easiest way to add a logo and other details on the print out is to use the so called PDF Watermark option.</p>
 </div>
@@ -1810,10 +1859,10 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <p>Once set up, Kraft automatically merges the generated document with the watermark PDF. The result document contains the content of both documents merged together. This is not only useful for logos, but also other details in the document footer.</p>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_css_directives_for_pages">CSS Directives for Pages</h6>
+<div class="sect4">
+<h5 id="_css_directives_for_pages">CSS Directives for Pages</h5>
 <div class="paragraph">
-<p>The second option is to use the CSS directive for page content on printed HTML pages. This only works with the new weasyprint based doc generation.</p>
+<p>The second option is to use the CSS directive for page content on printed HTML pages. This only works with weasyprint based doc generation.</p>
 </div>
 <div class="paragraph">
 <p>It uses Cascading Style Sheet (CSS) directives for paged media. CSS uses the <code>@page</code> keyword to define attributes of the page on which the content is printed. Weasyprint makes heavy use of that, for example to define the page size.</p>
@@ -1856,10 +1905,34 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <div class="paragraph">
 <p>This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.</p>
 </div>
+<div class="paragraph">
+<p>A more fine granular way of placing the logo can be achieved by placing an <code>img</code> tag into the template like this:</p>
 </div>
-<div class="sect5">
-<h6 id="_show_in_absolutely_placed_divs">Show in absolutely placed divs</h6>
-
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;img id="logo" src="file:///path/to/your/logo.png" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The CSS code to place the logo accordingly is like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">/*
+ * Absolut positioned logo
+ */
+img#logo {
+  position: absolute;
+  right: 0px;
+  top: -100px;
+  width: 178px;
+  z-index: -1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With that, the logo is independent from the @page positioning from the first example.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -1871,13 +1944,7 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <p>In Duitsland is het ook bekend als <em>Giro Code</em>, in België als <em>Bancontact QR</em>, in Nederland als <em>iDEAL QR-code</em> en in Spanje is het ook bekend als <em>Bizum QR-code</em>.</p>
 </div>
 <div class="paragraph">
-<p>In Duitsland wordt het gebruikt door de <em>Giro Code</em> en in Nederland wordt het geaccepteerd door de officiële <a href="https://www.ideal.nl/consumenten/ideal-app/"><em>iDEAL QR-code</em></a> app.</p>
-</div>
-<div class="paragraph">
-<p>In België en Nederland wordt het geaccepteerd door de apps van vele banken, en in Oostenrijk en Finland wordt het geaccepteerd door de apps van alle banken.</p>
-</div>
-<div class="paragraph">
-<p>Om de EPC QR code op de afgedrukte rekening te gebruiken,moet de informatie over de bankrekening toegevoegd worden aan het dialoogvenster in Kraft over de eigen identiteit. De iDEAL QR-code wordt op dit moment alleen gegenereerd voor documenten van het document type <code>Rechnung</code>.</p>
+<p>To use the EPC QR code on the invoice printout, the bank account information has to be added to the own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
 </div>
 <div class="paragraph">
 <p>Om de gegenereerde EPC QR Code op het PDF document te krijgen, moet aan het Weasyprint sjabloon een code zoals hieronder toegevoegd worden:</p>
@@ -2101,7 +2168,7 @@ Verwijdert dit item uit het document.</pre>
 </blockquote>
 </div>
 <div class="paragraph">
-<p><strong>De database gezamenlijk gebruiken</strong></p>
+<p><strong>Sharing the Database</strong></p>
 </div>
 <div class="paragraph">
 <p>De database-server moet op de hoofdmachine geïnstalleerd zijn, of het moet op een gespecialiseerd apparaat zoals een NAS geïnstalleerd zijn. De snelheid van het netwerk beïnvloed de bruikbaarheid natuurlijk enorm.</p>
@@ -2110,7 +2177,7 @@ Verwijdert dit item uit het document.</pre>
 <p>Howtos voor het gebruik van MySQL zijn op het internet te vinden.</p>
 </div>
 <div class="paragraph">
-<p><strong>De map met de document Pool delen (sharen)</strong></p>
+<p><strong>Sharing the Document Pool Directory</strong></p>
 </div>
 <div class="paragraph">
 <p>Kraft schrijft de gegenereerde PDF&#8217;s in een lokale map. Welke dat is, kunt u instellen in het config-bestand van Kraft. Het config-bestand moet voor alle exemplaren van Kraft correct ingesteld zijn.</p>
@@ -2131,7 +2198,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 <p>Een aanbevolen opstelling is een NFS Share met autofs, die op de hoofdmachine is ingesteld. Om de toegang tot de bestanden te beheren, raden wij aan om een gebruikersgroep te creëren waarin u de toegangsrechten kan beheren.</p>
 </div>
 <div class="paragraph">
-<p><strong>Kraft in read-only modus</strong></p>
+<p><strong>Starting Kraft in read-only mode</strong></p>
 </div>
 <div class="paragraph">
 <p>Om Kraft in de read-only modus te starten, moet het programma met de volgende parameter <code>-r</code> gestart worden.</p>
@@ -2162,10 +2229,13 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 <p>Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster voor de instellingen van Kraft en voer de bestandsnaam in het invoerveld voor het XRechnung Sjabloonbestand in de pagina voor document-standaarden.</p>
 </div>
 <div class="paragraph">
-<p>Na deze stap zal het menu item <b class="button">Export XRechung</b> een dialoogvenster openen voor het ingeven van het bestandsnaam waarmee de XRechnung rekening wordt opgeslagen.</p>
+<p>Next is to specify for which document types the XRechnung export should be made available. For that, open the Kraft Settings dialog, and proceed to the Document Type tab on the left. For each document type listed there, you can mark the checkbox <b class="button">Enable XRechnung Support</b>.</p>
 </div>
 <div class="paragraph">
-<p>Dit bestand kan nu verzonden worden naar de ontvanger van de rekening.</p>
+<p>After that steps, the <b class="button">Export XRechung</b> menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.</p>
+</div>
+<div class="paragraph">
+<p>This file can now be transferred to the receiver of the invoice via email, a private file share or the like.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2220,17 +2290,17 @@ Er zijn validators voor rekeningen in het XRechnung formaat op het internet te v
 <h2 id="Credits">Dankbetuigingen en licentie</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program and documentation copyright 2004–2024 Klaas Freitag</p>
+<p>Program and documentation copyright 2004–2025 Klaas Freitag</p>
 </div>
 <div class="paragraph">
-<p>Documentation copyright 2020-2024 Ronald Stroethoff</p>
+<p>Documentation copyright 2020-2025 Ronald Stroethoff</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Laatste aanpassing 2024-02-07 20:55:54 +0100
+Laatste aanpassing 2025-09-28 13:08:18 +0200
 </div>
 </div>
 </body>

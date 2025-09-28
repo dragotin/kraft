@@ -23,7 +23,7 @@ Feature Overview::
 
 * Simple but efficient and beautiful UI.
 * Simple creation of offers, invoices and similar documents.
-* Customer management, deeply integrated with the mature KDE KAddressbook.
+* Customer management, deeply integrated with the mature KDE KAddressbook or an address collection based on a local directory.
 * Maintenance of document relations, featuring partial invoices and final invoices or invoices generated out of offers semi automatically.
 * Text templates for document header- and footertexts and for document items.
 * Catalogues of template items that can be reused.
@@ -168,9 +168,9 @@ If the tax-level is changing, then you add here the start date with the new tax-
 
 === Wages
 
-image:wages.png[Wages,float="right"]
 A list of wage costs is maintained in Kraft. The items are used in
 item templates during calculation.
+image:wages.png[Wages,float="right"]
 
 All data can be edited, customized and new items can be added in the
 Kraft Configuration Dialog reachable through the Settings menu.
@@ -690,6 +690,33 @@ You can do this also for the creation of the invoice as a followup for Acceptanc
 Each document type has a specific list of follow up documents.
 It is a good practice to describe on the invoice precisely what was delivered.
 
+[[Address_Books]]
+== Address Books
+
+For efficient usage of Kraft, the address management is very important. Contact information of customers
+and suppliers needs to be managed and used daily.
+
+Kraft does not come with its own address book implementation, but uses an established and mature solution called
+https://apps.kde.org/de/kaddressbook/[KAddressbook] which is provided as part of the PIM (Personal
+Information Management) software collection of https://www.kde.org[KDE]. Integration with KAddressBook is the
+recommendation and default of Kraft.
+
+However, in some situations the KAddressBook Integration can not be set up. In that cases, Kraft can also read
+a address collection of a local directory. The directory can be set in the Kraft config file in group `[KraftV2]`, key `KraftV2AddressDir`. If not explicitely set, it defaults
+to `$HOME/.local/share/contacts`.
+
+This directory needs to contain single files in the vCard format, with file extension `.vcf`. All these files are
+read and presented as addresses in Kraft.
+
+____
+NOTE:
+Kraft does not alter the entries in the addressbook directory. It is accessed read only.
+____
+
+To edit addresses and add new ones, users can still use KAddressBook, which has support for local address books.
+It is also possible to synchronize addresses into a local directory from other remote address collections such
+as Google Addresses utilizing a tool like https://vdirsyncer.pimutils.org/en/stable/index.html[vdirsyncer].
+
 [[Customization]]
 == Customization
 
@@ -1028,6 +1055,6 @@ would change that to run in the German locale for example, independent from the 
 [[Credits]]
 == Credits and License
 
-Program and documentation copyright 2004–2024 Klaas Freitag
+Program and documentation copyright 2004–2025 Klaas Freitag
 
-Documentation copyright 2020-2024 Ronald Stroethoff
+Documentation copyright 2020-2025 Ronald Stroethoff
