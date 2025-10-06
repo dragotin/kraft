@@ -309,12 +309,6 @@ QString DocType::templateFile()
         }
     }    
 
-    // check for reportlab template
-    if (tmplFile.isEmpty())  {
-        searchStr = QString("reports/%1.trml").arg(reportFileName);
-        tmplFile = dfp->locateFile(searchStr);
-    }
-
     // check for weasyprint template
     if (tmplFile.isEmpty())  {
         searchStr = QString("reports/%1.gtmpl").arg(reportFileName);
