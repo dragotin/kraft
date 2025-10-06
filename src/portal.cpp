@@ -747,6 +747,12 @@ void Portal::slotDoubleClicked()
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
 
+    if (! doc) {
+        m_portalView->allDocsView()->setErrorMsg(i18n("Could not open document"),
+                                                 i18n("Please check your filesystem layout!"));
+
+        return;
+    }
     if (doc->state().forcesReadOnly()) {
         XmlDocIndex indx;
         if (indx.pdfOutdated(uuid)) { // either not existing or outdated -> not valid
