@@ -237,39 +237,49 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
+    connect(mProcess, &QProcess::errorOccurred, this, [this](QProcess::ProcessError error) {
+        qDebug() << "Watermark process error" << error;
+        _uuid.clear();
+    });
+
     const QString target = targetFileName();
     const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
 
-    QStringList args;
-    if (mMergeIdent > 0) {
-        // check if the watermark file is present. If not, just do not try to merge
-        if (prg.isEmpty()) {
-            qDebug() << "Can not find the tool watermarkpdf.py";
-            mMergeIdent = 0;
-        }
-        if (mWatermarkFile.isEmpty()) {
-            qDebug() << "A watermark file is not set.";
-            mMergeIdent = 0;
-        } else {
-            QFileInfo fi{mWatermarkFile};
-            if (!(fi.exists() && fi.isReadable())) {
-                qDebug() << "The watermark file" << mWatermarkFile << "does not exist or can not be read.";
+    if (mMergeIdent > 0 || !mPdfAppendFile.isEmpty()) {
+        QStringList args;
+        if (mMergeIdent > 0) {
+            // check if the watermark file is present. If not, just do not try to merge
+            if (prg.isEmpty()) {
+                qDebug() << "Can not find the tool watermarkpdf.py";
                 mMergeIdent = 0;
             }
+            if (mWatermarkFile.isEmpty()) {
+                qDebug() << "A watermark file is not set.";
+                mMergeIdent = 0;
+            } else {
+                QFileInfo fi{mWatermarkFile};
+                if (!(fi.exists() && fi.isReadable())) {
+                    qDebug() << "The watermark file" << mWatermarkFile << "does not exist or can not be read.";
+                    mMergeIdent = 0;
+                }
+            }
         }
-    }
 
-    if (mMergeIdent > 0) {
-        // If merging, the result file is directly written to the target file name
-        // no copying over is needed from the tmp file.
         mProcess->setProgram(prg.at(0));
         args << prg.at(1);
-        args << QStringLiteral("-m") << QString::number(mMergeIdent);
-        args << QStringLiteral("-o") << target;
+
+        if (mMergeIdent > 0) {
+            // If merging, the result file is directly written to the target file name
+            // no copying over is needed from the tmp file.
+            args << QStringLiteral("-m") << QString::number(mMergeIdent);
+            args << QStringLiteral("-w") << mWatermarkFile;
+        }
+
         if (!mPdfAppendFile.isEmpty()) {
             args << QStringLiteral("-a") << mPdfAppendFile;
         }
-        args << mWatermarkFile;
+
+        args << QStringLiteral("-o") << target;
         args << file;
 
         qDebug() << "Merge PDF Watermark args:" << args;
