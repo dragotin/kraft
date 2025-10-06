@@ -11,7 +11,7 @@ import io
 import os
 import sys
 import copy
-from pypdf import PdfMerger, PdfWriter, PdfReader
+from pypdf import PdfWriter, PdfReader
 
 class Mark:
     """Watermark application modes."""
@@ -61,7 +61,7 @@ class PdfWatermark:
         return result
 
     def append(self, pdf_bytes, append_file):
-        merger = PdfMerger()
+        merger = PdfWriter()
         merger.append(pdf_bytes)
         merger.append(append_file)
         result = io.BytesIO()
@@ -69,7 +69,7 @@ class PdfWatermark:
         return result
 
 
-def apply_watermark(input_pdf, watermark_pdf, mode=Mark.FIRST_PAGE, append_file=None):
+def apply_watermark(input_pdf, watermark_pdf=None, mode=Mark.FIRST_PAGE, append_file=None):
     """
     Apply a watermark to a PDF file.
 
@@ -79,9 +79,12 @@ def apply_watermark(input_pdf, watermark_pdf, mode=Mark.FIRST_PAGE, append_file=
     :param append_file: Optional PDF file to append
     :return: BytesIO object with resulting PDF
     """
+    if not watermark_pdf:
+        mode = Mark.NOTHING
+
     if not os.path.isfile(input_pdf):
         raise FileNotFoundError(f"Input file not found: {input_pdf}")
-    if not os.path.isfile(watermark_pdf):
+    if watermark_pdf and not os.path.isfile(watermark_pdf):
         raise FileNotFoundError(f"Watermark file not found: {watermark_pdf}")
     if append_file and not os.path.isfile(append_file):
         raise FileNotFoundError(f"Append file not found: {append_file}")
@@ -104,11 +107,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="Apply a PDF watermark to another PDF file."
     )
-    parser.add_argument("watermark", help="Watermark PDF file")
-    parser.add_argument("input_pdf", help="Input PDF to watermark")
-    parser.add_argument(
-        "-o", "--output",
-        help="Output file (default: stdout)",
+    parser.add_argument("-w", "--watermark", help="Watermark PDF file")
+    parser.add_argument("input_file", help="Input PDF to watermark")
+    parser.add_argument("-o", "--output", help="Output file (default: stdout)",
     )
     parser.add_argument(
         "-m", "--mode",
@@ -127,7 +128,7 @@ def main():
 
     try:
         pdf_data = apply_watermark(
-            args.input_pdf,
+            args.input_file,
             args.watermark,
             mode=args.mode,
             append_file=args.append_file
