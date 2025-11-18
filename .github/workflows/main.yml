@@ -39,10 +39,10 @@ jobs:
              libcairo-gobject2 \
              libpango-1_0-0 \
              file \
-            && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-13 1 \
-            && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-13 50 \
-            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-13 50 \
-            && update-alternatives --install /usr/bin/cpp cpp /usr/bin/g++-13 50
+            && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-14 1 \
+            && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-14 50 \
+            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-14 50 \
+            && update-alternatives --install /usr/bin/cpp cpp /usr/bin/g++-14 50
 
 
       - uses: actions/checkout@v4
