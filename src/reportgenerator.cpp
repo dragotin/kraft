@@ -383,7 +383,8 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     }
     Q_EMIT failure(_uuid, errMsg, errors);
     _uuid.clear();
-    converter->deleteLater();
+    if (converter)
+        converter->deleteLater();
 }
 
 QString ReportGenerator::targetFileName() const
