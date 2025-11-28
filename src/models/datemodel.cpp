@@ -471,10 +471,6 @@ void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
     // ====
     monthItem = findMonthItem( year, month );
 
-    if (month == 7 && year == 2023) {
-        qDebug() << "here we go";
-    }
-
     if( !monthItem ) {
         AbstractIndx *newIndx = new MonthIndx(year, month);
         monthItem = new TreeItem( newIndx, yearItem);
