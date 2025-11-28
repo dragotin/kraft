@@ -22,7 +22,7 @@ Using Kraft, there is no need for fiddling with a text processor any more. Docum
 Feature Overview::
 
 * Simple but efficient and beautiful UI.
-* Simple creation of offers, invoices and similar documents.
+* Efficient creation of offers, invoices and similar documents.
 * Customer management, deeply integrated with the mature KDE KAddressbook or an address collection based on a local directory.
 * Maintenance of document relations, featuring partial invoices and final invoices or invoices generated out of offers semi automatically.
 * Text templates for document header- and footertexts and for document items.
