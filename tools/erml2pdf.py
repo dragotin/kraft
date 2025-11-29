@@ -59,10 +59,10 @@ class utils(object):
         @staticmethod
         def unit_get(size):
                 units = [
-                (re.compile('^(-?[0-9\.]+)\s*in$'), reportlab.lib.units.inch),
-                (re.compile('^(-?[0-9\.]+)\s*cm$'), reportlab.lib.units.cm),
-                (re.compile('^(-?[0-9\.]+)\s*mm$'), reportlab.lib.units.mm),
-                (re.compile('^(-?[0-9\.]+)\s*$'), 1)
+                (re.compile(r'^(-?[0-9\.]+)\s*in$'), reportlab.lib.units.inch),
+                (re.compile(r'^(-?[0-9\.]+)\s*cm$'), reportlab.lib.units.cm),
+                (re.compile(r'^(-?[0-9\.]+)\s*mm$'), reportlab.lib.units.mm),
+                (re.compile(r'^(-?[0-9\.]+)\s*$'), 1)
                 ]
                 for unit in units:
                         res = unit[0].search(size, 0)
@@ -107,8 +107,8 @@ class color(object):
     def get(col_str):
         allcols = colors.getAllNamedColors()
 
-        regex_t = re.compile('\(([0-9\.]*),([0-9\.]*),([0-9\.]*)\)')
-        regex_h = re.compile('#([0-9a-zA-Z][0-9a-zA-Z])([0-9a-zA-Z][0-9a-zA-Z])([0-9a-zA-Z][0-9a-zA-Z])')
+        regex_t = re.compile(r'\(([0-9\.]*),([0-9\.]*),([0-9\.]*)\)')
+        regex_h = re.compile(r'#([0-9a-zA-Z][0-9a-zA-Z])([0-9a-zA-Z][0-9a-zA-Z])([0-9a-zA-Z][0-9a-zA-Z])')
 
         if col_str in allcols.keys():
                 return allcols[col_str]
