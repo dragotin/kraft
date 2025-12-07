@@ -19,7 +19,8 @@ Changes since version 1.2.2: #######################################
 - Generate PDF output directly after the doc was changed, not when
   the doc should be displayed
 - Add dialog to finalize documents. That moves them out of the draft
-  state, and afterwards changes are not longer possible
+  state. In final state, docs are immutable and changes are not longer
+  possible
 - Show a welcome text on the main page after start of Kraft
 - Visual freshup of the display of the document details
 - Switch default document generator to weasyprint, deprecate Reportlab
