@@ -120,7 +120,7 @@
         <th class="col-Unit col-left">{{ label.UNIT }}</th>
       </thead>
       <tbody>
-        {% for item in doc.reportItems %}
+        {% for item in doc.items %}
         <tr>
           <td class="col-No col-left">{{ item.itemNumber }}.</td>
           <td class="col-Text col-left">

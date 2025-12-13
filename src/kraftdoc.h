@@ -138,7 +138,7 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
     Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
 
-    Q_PROPERTY(QList<ReportItem*> reportItems READ reportItemList)
+    Q_PROPERTY(QList<ReportItem*> items READ reportItemList)
     Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
     Q_PROPERTY(bool isInvoice READ isInvoice)
 
