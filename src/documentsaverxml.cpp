@@ -321,6 +321,23 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
         doc->addTag(t);
         tagElem = tagElem.nextSiblingElement("tag");
     }
+
+    QDomElement tosElem = metaElem.firstChildElement("timeOfSupply");
+    if (!tosElem.isNull()) {
+        QDomElement dSElem = tosElem.firstChildElement("start");
+        QDomElement dEElem = tosElem.firstChildElement("end");
+        if (!dSElem.isNull()) {
+            t = dSElem.text();
+            QDateTime dS = QDateTime::fromString(t, Qt::ISODate);
+            QDateTime dE;
+            if (!dEElem.isNull()) {
+                t = dEElem.text();
+                dE= QDateTime::fromString(t, Qt::ISODate);
+            }
+            doc->setTimeOfSupply(dS, dE);
+        }
+    }
+
     return res;
 }
 
