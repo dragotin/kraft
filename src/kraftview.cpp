@@ -263,6 +263,21 @@ void KraftView::setupDocHeaderView()
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
+
+
+    connect( m_headerEdit->cbBenefitPeriod, &QCheckBox::toggled, this, [=](bool checked) {
+        slotModifiedHeader();
+        if (checked) {
+            m_headerEdit->bpStart->setEnabled(true);
+            m_headerEdit->bpEnd->setEnabled(true);
+        } else {
+            m_headerEdit->bpStart->setEnabled(false);
+            m_headerEdit->bpEnd->setEnabled(false);
+        }
+    });
+    connect( m_headerEdit->bpStart, &QDateEdit::userDateChanged, this, &KraftView::slotModifiedHeader);
+    connect( m_headerEdit->bpEnd,   &QDateEdit::userDateChanged, this, &KraftView::slotModifiedHeader);
+
     connect( m_headerEdit->m_cbType, &QComboBox::textActivated, this, &KraftView::slotDocTypeChanged);
 
     connect( m_headerEdit->mButtLang, &QPushButton::clicked, this, &KraftView::slotLanguageSettings);
@@ -332,6 +347,21 @@ void KraftView::redrawDocument( )
       m_headerEdit->m_letterHead->insertItem(-1, doc->salut() );
       m_headerEdit->m_letterHead->setCurrentIndex(m_headerEdit->m_letterHead->findText( doc->salut() ));
     }
+
+    if (doc->timeOfSupplyStart().isValid()) {
+        m_headerEdit->bpStart->setDate(doc->timeOfSupplyStart().date());
+        m_headerEdit->bpEnd->setDate(doc->timeOfSupplyEnd().date());
+        m_headerEdit->cbBenefitPeriod->setChecked(true);
+        m_headerEdit->bpStart->setEnabled(true);
+        m_headerEdit->bpEnd->setEnabled(true);
+    } else {
+        m_headerEdit->bpStart->setDate(QDate::currentDate());
+        m_headerEdit->bpEnd->setDate(QDate::currentDate());
+        m_headerEdit->cbBenefitPeriod->setChecked(false);
+        m_headerEdit->bpStart->setEnabled(false);
+        m_headerEdit->bpEnd->setEnabled(false);
+    }
+
     /* pre- and post text */
     m_headerEdit->m_teEntry->setPlainText( doc->preTextRaw() );
     m_headerEdit->m_whiteboardEdit->setPlainText( doc->whiteboard() );
@@ -1368,6 +1398,14 @@ void KraftView::saveChanges()
     m_doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
     m_doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
     m_doc->setGoodbye(  m_footerEdit->greeting() );
+
+    QDateTime startD, endD;
+    if (m_headerEdit->cbBenefitPeriod->isChecked()){
+        startD = m_headerEdit->bpStart->dateTime();
+        endD = m_headerEdit->bpEnd->dateTime();
+    }
+    m_doc->setTimeOfSupply(startD, endD);
+
     if (mModified) m_doc->setModified();
 
     DocPositionList list = currentPositionList();
