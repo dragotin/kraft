@@ -21,14 +21,27 @@ set(AKO_PREFIX "KPim6")
 
 message("Akonadi Prefix is ${AKO_PREFIX}")
 
-include(GetGitRevisionDescription)
+find_package(Git QUIET)
+if (Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    include(GetGitRevisionDescription)
 
-# set git revision info
-get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-# if we cannot get it from git, directly try .tag (packages)
-# this will work if the tar balls have been properly created
-# via git-archive.
-if ("${GIT_SHA1}" STREQUAL "GITDIR-NOTFOUND")
+    # set git revision info
+    get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+
+    execute_process(
+      COMMAND git rev-parse --abbrev-ref HEAD
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE GIT_BRANCH
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    message(STATUS "Git dynamic information")
+    message("GIT_SHA1: ${GIT_SHA1}")
+    message("GIT_BRANCH: ${GIT_BRANCH}")
+else()
+    # if we cannot get it from git, directly try .tag (packages)
+    # this will work if the tar balls have been properly created
+    # via git-archive.
     if (EXISTS "${CMAKE_SOURCE_DIR}/.tag")
         file(READ ${CMAKE_SOURCE_DIR}/.tag sha1_candidate)
         string(REPLACE "\n" "" sha1_candidate ${sha1_candidate})
@@ -39,18 +52,8 @@ if ("${GIT_SHA1}" STREQUAL "GITDIR-NOTFOUND")
     else()
         set (GIT_SHA1 "unknown")
     endif()
+    set(GIT_BRANCH "${GIT_SHA1}")
 endif()
-
-message(STATUS "Git dynamic information")
-message("GIT_SHA1: ${GIT_SHA1}")
-
-execute_process(
-  COMMAND git rev-parse --abbrev-ref HEAD
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  OUTPUT_VARIABLE GIT_BRANCH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-message("GIT_BRANCH: ${GIT_BRANCH}")
 
 if($ENV{SOURCE_DATE_EPOCH})
     set(BUILD_HOST_NAME "reproduciblebuild")
