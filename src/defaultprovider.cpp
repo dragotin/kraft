@@ -17,6 +17,7 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 #include <QSqlRecord>
+#include <QSettings>
 
 #include <QFile>
 #include <QTextStream>
@@ -40,29 +41,69 @@ QString DefaultProvider::_v2BaseDir{};
 
 namespace {
 
+// constants for the syncable Kraft settings for 2.0
+const QString SyncedSettingsFileName{ "Kraft2.ini"};
+const QString SyncedSettingsCurrDirEntry{"Global/currentDir"};
+const QString SyncedSettingsPrevDirEntry{"Global/previousDir"};
+
+bool writeSyncedSettingsCurrDir(const QString basePath, const QString& currKraftDir)
+{
+    bool re;
+    const QFileInfo fi(basePath, SyncedSettingsFileName);
+
+    QSettings settings(fi.absoluteFilePath(), QSettings::NativeFormat);
+    re = settings.isWritable();
+    if (re) {
+        // remember the previous entry
+        const QString prevDir = settings.value(SyncedSettingsCurrDirEntry, "").toString();
+        if (!prevDir.isEmpty()) {
+            settings.setValue(SyncedSettingsPrevDirEntry, prevDir);
+        }
+        settings.setValue(SyncedSettingsCurrDirEntry, currKraftDir);
+        settings.sync();
+    }
+    return re;
+}
+
+
 // get the v2BaseDir from the settings file and check if the current
 // link is pointing to a valid directory
 QString polishedBaseDir()
 {
+
     QString re;
     const QString base = KraftSettings::self()->kraftV2BaseDir();
     if (base.isEmpty()) {
         qDebug() << "No v2 base dir in config file";
         return QString();
     }
-    QDir dir(base);
-    if (dir.cd("current")) {
-        qDebug() << "Found Base Path in config file (with current)" << dir.path();
 
-        QFileInfo fi(dir.path());
+    QFileInfo fiLink(base, "current");
 
-        if (fi.isSymLink()) {
-            re = fi.symLinkTarget();
-        } else {
-            qDebug() << "ERROR: No proper current link in v2 base dir";
+    if (fiLink.isSymLink()) {  // Migrate oder pre-Kraft 2.0 installations
+        QFileInfo fiTarget(fiLink.symLinkTarget()); // full path
+
+        // write the settings file
+        const QString currKraftDir = fiTarget.fileName();
+
+        // remove the file "current"
+        const QString currFileName = fiLink.absoluteFilePath();
+        QFile::remove(currFileName); // remove the link
+
+        writeSyncedSettingsCurrDir(base, currKraftDir);
+    }
+
+    QFileInfo fi(base, SyncedSettingsFileName);
+
+    if (fi.exists() ) {
+        QSettings settings(fi.absoluteFilePath(), QSettings::NativeFormat);
+
+        QString relCurr = settings.value(SyncedSettingsCurrDirEntry, QString()).toString();
+        if (!relCurr.isEmpty()) {
+            fi.setFile(QDir(base), relCurr);
+            re = fi.absoluteFilePath();
+            qDebug() << "Current Kraft 2.0 base dir:" << re;
         }
-    } else {
-        qDebug() << "No current link in v2 base dir";
     }
     return re;
 }
@@ -410,23 +451,23 @@ bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
 {
     bool ok{false};
 
-    // snip off the md5 fragment
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QString fragment = dirStr.split("/", QString::SkipEmptyParts).last();
-#else
-    const QString fragment = dirStr.split("/", Qt::SkipEmptyParts).last();
-#endif
     QDir dir(dirStr);
-    if (dir.cdUp()) {
-        const QString linkFile = dir.absoluteFilePath("current");
-        QFile f(linkFile);
-        if (f.exists()) {
-            f.remove();
+    const QString frag{dir.dirName()};
+
+    if (dir.exists() && !frag.isEmpty()) { // the new directory exists
+        // remove the old link if existing
+        if (dir.cdUp()) {
+            const QString linkFile = dir.absoluteFilePath("current");
+            QFile f(linkFile);
+            if (f.exists()) {
+                f.remove();
+            }
+            ok = writeSyncedSettingsCurrDir(dir.absolutePath(), frag);
         }
-        ok = QFile::link(fragment, linkFile);
+
     } else {
         // the fragment dir could not be created, try again, but only to a limit amount
-        qDebug() << fragment << "could not be created in" << dir.absolutePath();
+        qDebug() << frag << "could not be created in" << dir.absolutePath();
         ok = false;
     }
 

@@ -4,6 +4,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QStandardPaths>
+#include <QSettings>
 
 #include "defaultprovider.h"
 
@@ -183,14 +184,16 @@ private Q_SLOTS:
 
         const QString newDir = DefaultProvider::self()->createV2BaseDir(p);
         QVERIFY(newDir.startsWith(p));
-
+        qDebug() << "New directory:" << newDir;
         bool ok = DefaultProvider::self()->switchToV2BaseDir(newDir);
         QVERIFY(ok);
 
-        QFileInfo fi{p + "/current"};
+        QSettings settings(p + "/Kraft2.ini", QSettings::NativeFormat);
+        const QString frag = settings.value("Global/currentDir", "NOT_FOUND").toString();
+        QVERIFY(frag != "NOT_FOUND");
+        QFileInfo fi{p, frag};
         QVERIFY(fi.exists());
         QVERIFY(fi.isDir());
-
     }
 };
 
