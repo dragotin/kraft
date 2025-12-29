@@ -52,7 +52,7 @@ bool AddressProviderAkonadi::init()
         // See https://invent.kde.org/pim/akonadi/-/merge_requests/189
         qDebug() << "Akonadi broken: " << Akonadi::ServerManager::brokenReason();
     } else if (Akonadi::ServerManager::state() == Akonadi::ServerManager::Running) {
-        qDebug() << "** Akonadi is already running";
+        // qDebug() << "** Akonadi is already running";
         mSession = Session::defaultSession();
         _akonadiUp = true;
     } else if (Akonadi::Control::start()) {

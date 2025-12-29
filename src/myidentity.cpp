@@ -112,7 +112,6 @@ void MyIdentity::load()
     } else {
         // check if the vcard can be read
 
-        _source = Source::Manual;
         const QString file = identityFile();
         qDebug() << "looking up my identity in vcard file"<< file;
         QFile f(file);
@@ -126,9 +125,11 @@ void MyIdentity::load()
                     contact = list.at(0);
                     contact.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
                 }
+                _source = Source::Manual;
             }
         } else {
             qDebug() << "VCard file does not exist!";
+            _source = Source::Unknown;
         }
         slotAddresseeFound(myUid, contact);
     }

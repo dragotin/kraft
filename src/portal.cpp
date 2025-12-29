@@ -136,7 +136,6 @@ void Portal::show()
     slotStartupChecks();
 
     if ( mCmdLineArgs ) {
-        slotStatusMsg( i18n( "Check commandline actions" ) );
         const QString uuid = mCmdLineArgs->value("d");
         if ( ! uuid.isEmpty() ) {
             slotPrintPDF(uuid);
@@ -500,14 +499,13 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
             const QString err = _myIdentity.errorMsg(uid);
             qDebug () << "My-Contact could not be found:" << err;
         }
-        return;
     }
 
     QString name = contact.formattedName();
     if( !name.isEmpty() ) {
         name = i18n("Welcome to Kraft, %1", name);
-        statusBar()->showMessage(name, 30*1000);
     }
+    slotStatusMsg(name);
 }
 
 bool Portal::queryClose()

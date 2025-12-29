@@ -70,17 +70,37 @@ bool writeSyncedSettingsCurrDir(const QString basePath, const QString& currKraft
 // link is pointing to a valid directory
 QString polishedBaseDir()
 {
-
     QString re;
-    const QString base = KraftSettings::self()->kraftV2BaseDir();
+    QString base; // the base directory
+
+    auto checkBase = [](const QString& b) {
+        QFileInfo fi(b);
+        return (fi.exists() && fi.isDir() && fi.isWritable());
+    };
+
+    // the environment variable KRAFT_DATA_DIR has precedence.
+    const QString envBase = qgetenv("KRAFT_DATA_DIR");
+    if (!envBase.isEmpty()) {
+        if (checkBase(envBase)) {
+            base = envBase;
+            qDebug() << "Kraft data dir from Environment:" << base;
+        }
+    }
+
     if (base.isEmpty()) {
-        qDebug() << "No v2 base dir in config file";
+        const auto settingsBase = KraftSettings::self()->kraftV2BaseDir();
+        if (checkBase(settingsBase)) {
+            base = settingsBase;
+        }
+    }
+
+    if (base.isEmpty()) {
+        qDebug() << "No v2 base dir in config file or via KRAFT_DATA_DIR env var";
         return QString();
     }
 
     QFileInfo fiLink(base, "current");
-
-    if (fiLink.isSymLink()) {  // Migrate oder pre-Kraft 2.0 installations
+    if (fiLink.isSymLink()) {  // Migrate pre-Kraft 2.0 installations which used a current-link
         QFileInfo fiTarget(fiLink.symLinkTarget()); // full path
 
         // write the settings file
