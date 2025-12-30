@@ -44,7 +44,7 @@ class Portal : public QMainWindow
   friend class KraftView;
 
   public:
-    /** construtor of Portal, calls all init functions to create the application.
+    /** constructor of Portal, calls all init functions to create the application.
      */
     Portal( QWidget* parent = 0, QCommandLineParser *commandLineParser = 0, const char* name = 0);
 
@@ -61,7 +61,7 @@ class Portal : public QMainWindow
      */
     void initView();
     /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
-     * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
+     * default implementation (only returns true), this calls saveModified() on the document object to ask if the document shall
      * be saved if Modified; on cancel the closeEvent is rejected.
      * @see KTMainWindow#queryClose
      * @see KTMainWindow#closeEvent

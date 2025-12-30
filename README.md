@@ -22,7 +22,7 @@ template items. It focuses on high quality printouts because paper is
 still the main communication media in the small business world. However,
 it also sends documents via email and supports electronic invoicing with XRechnung.
 
-Kraft utilizes very useful tools of the free softare world:
+Kraft utilizes very useful tools of the free software world:
 - KDE addressbook for customer management
 - MySQL or alternatively SQLite for database support
 - [WeasyPrint](https://weasyprint.org) for PDF generation.

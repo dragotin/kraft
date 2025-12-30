@@ -237,7 +237,7 @@
 
   .totals {
     width: 165mm;
-/*  table-layout: fixed; /* this somehow adds 2mm horizontal spacing and messes everyting up */
+/*  table-layout: fixed; /* this somehow adds 2mm horizontal spacing and messes everything up */
     vertical-align: top;
     line-height: 1.25;
     box-sizing: border-box;
@@ -415,7 +415,7 @@
 
 /* A perverse invention by Google: There is a browser built-in CSS style
  * sheet defining certain settings "to make the web look like it should".
- * The worst part are implicit margin settigs that affect any element
+ * The worst part are implicit margin settings that affect any element
  * without "position: absolute;". While this might be a good idea for a web
  * browser it makes print layout an educated guess.
  */

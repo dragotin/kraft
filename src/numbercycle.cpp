@@ -263,7 +263,7 @@ int NumberCycles::increaseLocalCounter(const QString& ncName)
             return newCnt;
         }
         attempt++;
-        QThread::msleep(2*attempt); // Sleep a short time before trying agian. Lock should be gone after that.
+        QThread::msleep(2*attempt); // Sleep a short time before trying again. Lock should be gone after that.
     }
     if (attempt == MaxAttempt) {
         qDebug() << "Could not lock the numbercycle file";

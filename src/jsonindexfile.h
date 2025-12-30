@@ -28,7 +28,7 @@ class DocDigest;
 class QFileInfo;
 
 /**
- * @brief JsonIndexFile - simple persistance of the document index
+ * @brief JsonIndexFile - simple persistence of the document index
  *
  */
 

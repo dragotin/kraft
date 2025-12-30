@@ -35,7 +35,7 @@ bool MetaXMLParser::parse( QIODevice *device )
     _docTypeAddList.clear();
 
     if (!_domDocument.setContent(device, true, &_errorString, &_errorLine, &_errorColumn)) {
-        qDebug() << "Not able to parse XML: " << _errorString << "Line"<< _errorLine << ", Colum" << _errorColumn;
+        qDebug() << "Not able to parse XML: " << _errorString << "Line"<< _errorLine << ", Column" << _errorColumn;
         return false;
     }
 

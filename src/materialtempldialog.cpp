@@ -214,7 +214,7 @@ void MaterialTemplDialog::accept()
     // qDebug () << "Setting unit id "  << u;
     mSaveMaterial->setUnitId( u );
 
-    // chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
+    // chapId = 0; // FIXME: get a chapter catalog Id of hierarchical
     mSaveMaterial->setChapter( mChapId );
 
     double db = mInPurchasePrice->value();

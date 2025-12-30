@@ -18,7 +18,7 @@ CREATE TABLE archPosAttribs (
   PRIMARY KEY( archPosAttribId )
 );
 
-# message Adding position type and overall price ot archdocpositions
+# message Adding position type and overall price to archdocpositions
 ALTER TABLE archdocpos ADD COLUMN kind VARCHAR(64) AFTER ordNumber;
 ALTER TABLE archdocpos ADD COLUMN overallPrice DECIMAL(10,2) AFTER price;
 

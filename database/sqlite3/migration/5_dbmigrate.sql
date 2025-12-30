@@ -20,7 +20,7 @@ CREATE TABLE archPosAttribs (
 );
 
 -- Columns already added in create_schema.sql   *sqlite workaround*
--- message Adding position type and overall price ot archdocpositions
+-- message Adding position type and overall price to archdocpositions
 --ALTER TABLE archdocpos ADD COLUMN kind VARCHAR(64); -- AFTER ordNumber;
 --ALTER TABLE archdocpos ADD COLUMN overallPrice DECIMAL(10,2); -- AFTER price;
 

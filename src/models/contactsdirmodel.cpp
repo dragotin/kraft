@@ -109,7 +109,7 @@ ContactsDirModel::ContactsDirModel(const QString& baseDir, QObject *parent)
     rootAdr.setFormattedName(baseDir);
     _rootItem = std::make_unique<CTMItem>(rootAdr);
 
-    // FIXME: SHould this rather happpen in the addressproviderlocal class?
+    // FIXME: SHould this rather happen in the addressproviderlocal class?
     for (const auto &dirEntry : QDirListing(baseDir, QDirListing::IteratorFlag::Recursive)) {
         if (dirEntry.fileName().endsWith(u".vcf")) {
             const QString file = dirEntry.fileInfo().canonicalFilePath();

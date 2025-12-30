@@ -413,7 +413,7 @@ DocDigest DateModel::digest(const QModelIndex& indx) const
 
 void DateModel::removeAllData()
 {
-    // the destructor of the TreeItem removes the entire tree recursivly
+    // the destructor of the TreeItem removes the entire tree recursively
     delete rootItem;
     rootItem = new TreeItem(0);
 }

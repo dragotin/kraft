@@ -90,7 +90,7 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
     overallResults["numberCyclesOk"] = nc_cnt;
     Q_EMIT conversionOut(i18n("<br/>Transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
     for( const auto& k : overallResults.keys()) {
-        qDebug() << "Tranformation result" << k << ":" << overallResults[k];
+        qDebug() << "Transformation result" << k << ":" << overallResults[k];
     }
 
     if (convertOwnIdentity(dBase)) {

@@ -1,5 +1,5 @@
 /***************************************************************************
-             catalogchapter.h  - a simle catalog chapter object
+             catalogchapter.h  - a simple catalog chapter object
                              -------------------
     begin                : Thu Nov 4 2010
     copyright            : (C) 2010 by Klaas Freitag

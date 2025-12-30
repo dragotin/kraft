@@ -380,7 +380,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
     }
     obj.setProperty( "WEASYPRINT_TOOL", wp);
 
-    // aknowledgement
+    // acknowledgement
     obj.setProperty( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
     obj.setProperty( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
 

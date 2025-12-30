@@ -42,7 +42,7 @@ class TemplKatalogView: public KatalogView
   Q_OBJECT
 
 public:
-  /** construtor of KraftApp, calls all init functions to create the application.
+  /** constructor of KraftApp, calls all init functions to create the application.
    */
   TemplKatalogView(QWidget* parent=0, const char* name=0);
   TemplKatalogView(const QString& katToShow, QWidget* parent=0, const char* name=0);

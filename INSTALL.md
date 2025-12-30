@@ -95,7 +95,7 @@ on first start. Its use is recommended for all users who
 want to evaluate Kraft.
 
 To run Kraft with MySQL, create or pick a user on the MySQL
-server with appropiate permissions to write to a specific
+server with appropriate permissions to write to a specific
 database and create tables on it. Create an empty database
 to use with Kraft. Remember both the database name and the
 credentials.

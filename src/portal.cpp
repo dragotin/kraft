@@ -76,7 +76,7 @@
 #include "xmldocindex.h"
 #include "myidentity.h"
 
-// Litte class diagram to describe the main view of Kraft:
+// Little class diagram to describe the main view of Kraft:
 //
 //            +-----------------+
 //            | Portal          |       Provides the main window
@@ -460,7 +460,7 @@ void Portal::slotStartupChecks()
 
     }
 
-    // Database is up and runing!
+    // Database is up and running!
     // Check the document storage and see if the docs are converted already.
     QString basePath = DefaultProvider::self()->kraftV2Dir();
     if (basePath.isEmpty()) {
@@ -562,7 +562,7 @@ void Portal::slotFollowUpDocument()
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
-        // only if there are currently followers defined, if not the default wiht
+        // only if there are currently followers defined, if not the default with
         // all doc types works.
         wiz.setAvailDocTypes( dt.follower() );
     }
@@ -860,7 +860,7 @@ void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& c
                this, &Portal::openInMailer);
 
     if( !contact.isEmpty() ) {
-        mailReceiver = contact.fullEmail(); // the prefered email
+        mailReceiver = contact.fullEmail(); // the preferred email
     }
 
     QStringList args;
@@ -1177,7 +1177,7 @@ void Portal::createROView( DocGuardedPtr doc )
 // Note: The modified flag has to come extra here from the the signal emitter
 // even though the Doc object contains a modified flag. However, that is always
 // false, because the doc was saved before in the emitting function.
-// Still, it needs to be known here if the document was modfied before.
+// Still, it needs to be known here if the document was modified before.
 void Portal::slotViewClosed( bool success, DocGuardedPtr doc, bool modified )
 {
     // doc is only valid on success!

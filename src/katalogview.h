@@ -48,8 +48,8 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
   Q_OBJECT
 
   public:
-    /** construtor of a catalog view.
-     * Note: init must be called immediately after instanciating a inherited
+    /** constructor of a catalog view.
+     * Note: init must be called immediately after instantiating a inherited
      * class of KatalogView
      */
     KatalogView(QWidget* parent=0, const char* name=0);
@@ -121,7 +121,7 @@ protected Q_SLOTS:
 
     /** initializes the QActions of the application */
     void initActions();
-    /** sets up the statusbar for the main window by initialzing a statuslabel.
+    /** sets up the statusbar for the main window by initializing a statuslabel.
      */
 
     /** initializes the document object of the main window that is connected to the view in initView().

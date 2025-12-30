@@ -232,7 +232,7 @@ void AttributeMap::save( dbID id )
         }
       }
     } else {
-      // only a single entry for the attribte, update if needed.
+      // only a single entry for the attribute, update if needed.
       QString newValue = att.mValue.toString();  // access the attribute object directly to get the numeric
       // qDebug () << "NEW value String: " << newValue;
       // value in case the attribute is bound to a relation table
