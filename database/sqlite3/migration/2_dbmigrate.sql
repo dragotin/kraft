@@ -1,4 +1,4 @@
--- message: Creating document position calulation tables ;
+-- message: Creating document position calculation tables ;
 
 CREATE TABLE DocCalcTime (
 	TCalcID       INTEGER PRIMARY KEY ASC autoincrement,

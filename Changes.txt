@@ -59,8 +59,8 @@ Changes since version 1.1: #########################################
 - Manual: Updated screenshots for all languages
 - Fix #211: Be more robust if no .git file is there
 - Fix cmake warnings
-- Substancial code cleanups
-- Fix reproducable builds
+- Substantial code cleanups
+- Fix reproducible builds
 - Fix saving of XRechnung files
 - Added a template for XRechnung version 3.0.1
 - Fix #218: Add a image mask for reportlab
@@ -133,7 +133,7 @@ Changes since version 0.97: #########################################
 - Fix: Use correct icons everywhere.
 - Fix: Format of date and time corrected.
 - Fix: Store useful value for the locale in db. For later.
-- Fix: Textselection behaviour consitent
+- Fix: Textselection behaviour consistent
 - Fix: Write useful locale settings into the database.
 - Fix: Sorting in material catalogue now working.
 - Fix: Better error messages if python modules are missing.
@@ -199,7 +199,7 @@ Changes since version 0.82: #########################################
 - Reworked follow up and copy document
   * set the correct header- and footer-texts according to the doc type
   * Added a checkbox if items should be copied or not
-- New feature: partial invoices that are substracted in the final invoice
+- New feature: partial invoices that are subtracted in the final invoice
 - Use an XML based migration system for document types
 - Added the first unit tests to Kraft
 - Made the document templates not containing any language specific
@@ -288,7 +288,7 @@ Changes since version 0.55: #########################################
    depending on the new document id
  - Fix behaviour of the greeting combobox: Do not loose custom entries
    any more
- - Add receipient email address if document is emailed
+ - Add recipient email address if document is emailed
  - Fix document emailing for thunderbird
  - Fix removing of alternative- and on-demand state of items
  - Wording fixes
@@ -305,7 +305,7 @@ Changes since version 0.54: #########################################
     => release v. 0.55 (may 29, 2014)
 
 Changes since version 0.53: #########################################
-- Use new address fetch job implementation that works independant
+- Use new address fetch job implementation that works independent
   from Nepomuk- or Baloo indexing of contacts. (KDE >= 4.12)
 - Support note-of-delivery documents (Lieferscheine) without prices.
 - Added findcontact utility
@@ -472,7 +472,7 @@ Changes since version 0.24: #########################################
 - Improved the document overview widget for more intuitive use.
 - Copying of complete documents added.
 - Followup documents (eg. Invoice follows Offer) added
-- Litte marker for new documents added to doc overview list.
+- Little marker for new documents added to doc overview list.
 - Help text added to positions canvas
 - Client address bits added to the available template variables
 
@@ -517,7 +517,7 @@ Changes since version 0.14: #########################################
   in the qt3 mysql driver the char needs to be en- and decoded.
 - reduced the amount of toolbar buttons to only show the important
   ones.
-- more beautifull and working navigation block in the document dialog
+- more beautiful and working navigation block in the document dialog
 - mailing documents added
 - Completely changed header- and footer text template system:
   * now there is more than one text available per text- and doc type

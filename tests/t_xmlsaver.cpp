@@ -60,7 +60,7 @@ private Q_SLOTS:
         QVERIFY(!kraftHome.isEmpty());
         const QString src{kraftHome+"/../xml/kraftdoc.xml"};
         QVERIFY(QFile::copy(src, filePath));
-        qDebug() << "Copyied from" << src << "to filepath" << filePath;
+        qDebug() << "Copied from" << src << "to filepath" << filePath;
 
         // generate the index
         XmlDocIndex indx;

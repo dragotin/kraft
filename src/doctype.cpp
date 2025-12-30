@@ -485,7 +485,7 @@ bool DocType::isXRechnungEnabled() const
 }
 
 /*
- * Saves the name and the attriutes (numbercycle, demand, etc.)
+ * Saves the name and the attributes (numbercycle, demand, etc.)
  */
 void DocType::save()
 {

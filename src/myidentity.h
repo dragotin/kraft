@@ -33,7 +33,7 @@ class AddressProvider;
  * 1. There is just a UUID in the settings file stored under userUid(),
  *    which contains the id under which the own identify can be found in
  *    the addressbook through the backend.
- * 2. If the id is non existant or empty, the identity is read from a file
+ * 2. If the id is non existent or empty, the identity is read from a file
  *    stored in a specific path. It is written by the prefsdialog.
  */
 
@@ -58,7 +58,7 @@ public:
 
     QString identityFile();
 
-    // returns the addressee that was found on the last attemt to look up the own identity.
+    // returns the addressee that was found on the last attempt to look up the own identity.
     // If there was no call to load before, the returned addressee is obviously empty.
     KContacts::Addressee contact() const;
 

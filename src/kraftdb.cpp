@@ -585,7 +585,7 @@ bool KraftDB::checkTableExistsSqlite(const QString& name, const QStringList& loo
 
     while( q.next() ) {
         const QString colName = q.value(1).toString();
-        qDebug() << "checking colum" << colName;
+        qDebug() << "checking column" << colName;
         cols.removeAll(colName);
     }
     return cols.isEmpty();

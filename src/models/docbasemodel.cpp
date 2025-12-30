@@ -162,7 +162,7 @@ void DocBaseModel::resetData()
 void DocBaseModel::slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact)
 {
     // FIXME: Update the data in the model and update the view accordingly.
-    // Given that the view is updated so often, it does not seem to be neccessary
+    // Given that the view is updated so often, it does not seem to be necessary
     // to do at all. Maybe later...
     Q_UNUSED(uid);
     Q_UNUSED(contact);

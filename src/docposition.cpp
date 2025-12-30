@@ -94,7 +94,7 @@ int DocPosition::taxTypeNumeric()
     else if ( mTaxType == Tax::Full )
         return 3;
 
-    // qDebug () << "ERR: Vat-type ambigous!";
+    // qDebug () << "ERR: Vat-type ambiguous!";
     return 0; // Invalid
 }
 

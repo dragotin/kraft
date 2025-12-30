@@ -207,7 +207,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
 
     headerElem.appendChild( textElement( xmldoc, "salut", doc->salut()));
     headerElem.appendChild( textElement( xmldoc, "preText", doc->preText()));
-    // FIXME: add Header attributs
+    // FIXME: add Header attributes
 
     // **** Next toplevel: itemGroup, for now only one
     QDomElement itemGroupElem = xmldoc.createElement( "itemGroup" );
@@ -606,7 +606,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
     if (newState) {
-        // retore the new state in the doc for subsequent funcs - no idea which ones...
+        // restore the new state in the doc for subsequent funcs - no idea which ones...
         doc->state().setState(KraftDocState::State::New);
     }
 

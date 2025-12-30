@@ -196,7 +196,7 @@
          <item>
           <widget class="QLabel" name="textLabel2">
            <property name="text">
-            <string>Time measureable effort for this template:</string>
+            <string>Time measurable effort for this template:</string>
            </property>
            <property name="wordWrap">
             <bool>false</bool>

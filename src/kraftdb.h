@@ -75,7 +75,7 @@ public:
   bool databaseExists();
 
   /*
-   * required and current schema versions. Must be equal for a healty
+   * required and current schema versions. Must be equal for a healthy
    * Kraft database. If currentSchemaVersion is smaller than requiredSchemaVersion,
    * the db needs an update.
    */

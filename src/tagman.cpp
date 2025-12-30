@@ -165,7 +165,7 @@ void TagTemplateMan::load()
 
   /* read tag templates from db */
   /* FIXME: The sortKey sort is not working because the sortKey is not correctly set on write */
-  /* With the initial db setup come useful sortKeys, thats why we still sort for it. */
+  /* With the initial db setup come useful sortKeys, that's why we still sort for it. */
   QSqlQuery q1( "SELECT tagTmplID, name, description, color FROM tagTemplates ORDER BY sortKey, name" );
   while( q1.next()) {
     dbID id( q1.value(0).toInt() );

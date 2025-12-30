@@ -65,7 +65,7 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
     // qDebug () << "No catalog in listview available!";
     return;
   }
-  // qDebug () << "setting up meterial chapters --------*********************************+++!";
+  // qDebug () << "setting up material chapters --------*********************************+++!";
   setupChapters();
 
   // lambda expression to be DRY

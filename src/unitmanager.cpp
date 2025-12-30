@@ -172,7 +172,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 
     if( tmp.einheitSingular() == einheitStr ||
         tmp.einheitPlural()   == einheitStr ) {
-      // qDebug() << "Thats it, returning " << tmp.id();
+      // qDebug() << "That's it, returning " << tmp.id();
       return tmp.id();
     }
   }
@@ -186,7 +186,7 @@ QString UnitManager::getECE20(const QString& einheitStr)
     for( Einheit tmp: mUnits ) {
       if( tmp.einheitSingular() == einheitStr ||
           tmp.einheitPlural()   == einheitStr ) {
-        // qDebug() << "Thats it, returning " << tmp.id();
+        // qDebug() << "That's it, returning " << tmp.id();
         return tmp.ec20();
       }
     }

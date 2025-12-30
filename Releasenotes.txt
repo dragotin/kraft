@@ -29,7 +29,7 @@ das Update geschieht automatisch durch Kraft.
 ----------------------------------------------------------------------
 
 The Kraft release 0.22 changes the text template system that is 
-used by Kraft to support user configureable pdf output. It was
+used by Kraft to support user configurable pdf output. It was
 changed from a very basic homegrown system to the google ctemplate
 system, details under http://code.google.com/p/google-ctemplate/
 It is very flexible and mature and thus future proof which was
@@ -44,7 +44,7 @@ a position where it is not yet clear if and how much of it is needed.
 Both position kinds do not add to overall sum and are marked through
 italic characters in the printout by default.
 
-Furthermore a lot of bugfixes and genral code improvements where 
+Furthermore a lot of bugfixes and general code improvements where 
 committed. The database scheme was extended, update is automatically
 performed.
 

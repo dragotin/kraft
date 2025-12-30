@@ -74,7 +74,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
 
             // check for relations between old and new doc
             DocType sourceDocType( sourceDoc->docType() );
-            // for new docs check if it should substract the sum of the predecessor doc
+            // for new docs check if it should subtract the sum of the predecessor doc
             DocType newDocType(docType);
             if( newDocType.substractPartialInvoice() ) {
                 if( sourceDocType.partialInvoice()  ) {
@@ -87,10 +87,10 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
                         Geld ng(-1 * g.toLong());
 
                         pos->setUnitPrice(ng);
-                        pos->setText(i18nc("Text to be inserted into a doc, if the sum of another doc needs to be substracted "
+                        pos->setText(i18nc("Text to be inserted into a doc, if the sum of another doc needs to be subtracted "
 					   "ie. in a final invoice if there was a partial invoice before"
 					   "%1 is substited by the doc type, %2 by the id of the predecessor doc.",
-					   "Substract sum from %1 %2",
+					   "Subtract sum from %1 %2",
                                           sourceDocType.name(), sourceDoc->docIdentifier()));
                     }
                 }

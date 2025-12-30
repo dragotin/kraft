@@ -45,7 +45,7 @@ During the initial setup you are asked to select a database to use and give the 
 
 You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab *Select from Addressbook* for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab *Manual entry* for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.
 
-image:company_adress1_EN.png[Company adress,float="right"]
+image:company_adress1_EN.png[Company address,float="right"]
 
 After the initial setup, select menu:Preferences[Settings].
 That allows to prepare Kraft correctly so it can be used in a proper way.
@@ -73,7 +73,7 @@ At the first use you find a list of different document types, such as:
 image:documentype_EN.png[Document type,float="right"]
 
 Translate this types to your own language.
-You can also add new ones and remove document types you wont use.
+You can also add new ones and remove document types you won't use.
 
 ==== Numbercycles
 
@@ -144,7 +144,7 @@ All data can be edited, customized and new items can be added in the
 Kraft Configuration Dialog reachable through the Settings menu.
 
 Remember that these units are later used in the documents, it is
-therefor important that you translate them to your own language and to
+therefore important that you translate them to your own language and to
 fill in the correct prices.
 
 === Units of measurement
@@ -154,7 +154,7 @@ A list of units of measurement is maintained in Kraft. In Kraft Configuration Di
 list, and also can you add new items to the list.
 
 Remember that these units are later used in the documents, it is
-therefor important that you translate them to your own language.
+therefore important that you translate them to your own language.
 
 === Own identity
 
@@ -177,7 +177,7 @@ the main window.Here we see three tabs:
 
 == Catalogs
 
-Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.
+Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accelerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.
 
 Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.
 
@@ -518,7 +518,7 @@ the window [create new item] opens.
 
 We want that the client can make a choice from an apple, a pear tree and the liguster.
 
-Therefor we are going to add also a pear tree manually.
+Therefore we are going to add also a pear tree manually.
 
 We click on the button btn:[Add item…] and the window [create new item] opens.
 
@@ -526,7 +526,7 @@ We fill here in the name of the tree `Pear tree`, at the field insert we
 fill in the number of the special trees that we have delivered and the
 price of them.
 
-We want add this to the material catalog for future use, therefor we
+We want add this to the material catalog for future use, therefore we
 select also [select this item as template for future documents] and we select in [save in chapter]`trees`.
 
 Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
@@ -568,7 +568,7 @@ image:context2_EN.png[Context menu,float="right"]
 Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
 
-We want to see the result and therefor we click on the button [show
+We want to see the result and therefore we click on the button [show
 document].
 
 We see now that the prize of the pear tree, the liguster and the removal
@@ -587,7 +587,7 @@ The document type "Acceptance of Order" is sent subsequently to an offer.
 
 image:acceptance_o_o_context.png[Numbercycles,float="right"]
 
-When a client has made a request, we will send an offer in wich we describe which items we will deliver.
+When a client has made a request, we will send an offer in which we describe which items we will deliver.
 Hopefully the client will give an order for the work.
 
 It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver.
@@ -716,7 +716,7 @@ The syntax is based on the Django syntax for templates described in the https://
  are shown.
 [[configure]]
  [Settings]>[Configure Kraft]
- [Ctrl]+[Shft]+[,]
+ [Ctrl]+[Shift]+[,]
  Here you can configure Kraft.
 
 === Document Edit Window
@@ -821,7 +821,7 @@ Once the file is adopted to the needs, open the Settings dialog of Kraft and ins
 
 After that step, the btn:[Export XRechung] menu item will open a dialog to pick a filename where to save the XRechnung invoice to.
 
-This file can now be transfered to the receiver of the invoice.
+This file can now be transferred to the receiver of the invoice.
 
 NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the  format of the Kraft exported XRechnung.
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-             catalogchapter.h  - a simle catalog chapter object
+             catalogchapter.h  - a simple catalog chapter object
                              -------------------
     begin                : Thu Nov 4 2010
     copyright            : (C) 2010 by Klaas Freitag
@@ -145,5 +145,5 @@ void CatalogChapter::reparent( const dbID& pId )
   q.bindValue(":id", mId.toInt() );
   q.bindValue(":p", parentId.toInt() );
   q.exec();
-  // qDebug () << "Reparenting chapter " << mId.toInt() << ", reuslt: " << q.lastError().text();
+  // qDebug () << "Reparenting chapter " << mId.toInt() << ", result: " << q.lastError().text();
 }

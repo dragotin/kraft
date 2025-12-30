@@ -23,7 +23,7 @@ The standard way however to let Kraft create and maintain
 the database schema for you. All that needs to be done 
 is to 
  - start MySQL on the system
- - have a user and password combination that has acces to
+ - have a user and password combination that has access to
    the database
  - create an empty database with a suitable name like for 
    example "kraft".
