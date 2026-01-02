@@ -263,7 +263,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   _state.setState(KraftDocState::State::New);
   KraftObj::operator=(origDoc);
-  _uuid = QUuid(); // clear the Uuid
+  setUuid(QString()); // clear the Uuid
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -285,7 +285,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   mDate = origDoc.mDate;
 
-  _lastModified = origDoc._lastModified;
+  setLastModified(origDoc.lastModified());
 
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
@@ -309,7 +309,7 @@ bool KraftDoc::openDocument(DocumentSaverBase &loader, const QString& uuid)
 {
     if (loader.loadByUuid(uuid, this)) {
         mDocTypeChanged = false;
-        _modified=false;
+        setModified(false);
         return true;
     } else {
         qDebug() << "Failed to load doc by Uuid";
@@ -348,7 +348,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
                 mPositions.removeAll( dp );
             }
         }
-        _modified = false;
+        setModified(false);
     }
 
     Q_EMIT saved(result);

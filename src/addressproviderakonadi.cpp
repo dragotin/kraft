@@ -22,8 +22,6 @@
 
 #ifdef HAVE_AKONADI
 #include <Akonadi/ContactSearchJob>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>

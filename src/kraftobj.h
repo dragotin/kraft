@@ -33,7 +33,7 @@
  */
 class KraftObj
 {
-protected:
+private:
     QUuid     _uuid;
     QDateTime _lastModified;
     bool      _modified;
@@ -66,7 +66,7 @@ public:
     bool hasTag(const QString& tag) const;
     QStringList allTags() const;
 
-    void setModified() {_modified = true;}
+    void setModified(bool m = true) {_modified = m;}
 
 };
 
