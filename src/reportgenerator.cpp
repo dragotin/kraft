@@ -113,7 +113,13 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 
     // the next call also sets the watermark options
     const QString dt = doc->docType();
-    _tmplFile = findTemplateFile( dt );
+    _tmplFile = findTemplateFile(dt);
+
+    if (_tmplFile.endsWith(QStringLiteral(".trml"))) {
+        Q_EMIT failure(_uuid, i18n("ReportLab Templates are not longer supported with Kraft 2.0"),
+                       i18n("Please convert to a Weasyprint Template."));
+        _tmplFile.clear();
+    }
 
     if ( _tmplFile.isEmpty() ) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
