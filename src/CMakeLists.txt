@@ -220,6 +220,3 @@ qt_finalize_executable(kraft)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-########### install files ###############
-
-install(FILES  kraftui.rc katalogview.rc DESTINATION ${KDE_INSTALL_KXMLGUIDIR}/kraft)
