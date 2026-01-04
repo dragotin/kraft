@@ -266,7 +266,6 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
 
     int cnt{0};
     while( q.next()) {
-        cnt++;
         NumberCycle nc;
         nc.setName(q.value(1).toString());
         nc.setCounter(q.value(2).toInt());

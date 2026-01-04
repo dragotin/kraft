@@ -20,7 +20,6 @@
 
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
-#include "defaultprovider.h"
 #ifdef HAVE_AKONADI
 #include "addressproviderakonadi.h"
 #else
