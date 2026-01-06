@@ -70,7 +70,7 @@
     </xs:simpleContent>
 </xs:complexType>
 
-<xs:complexType name="time_of_suply_type">
+<xs:complexType name="time_of_supply_type">
   <xs:sequence>
     <xs:element name="start" type="xs:string" minOccurs="0" maxOccurs="1"/>
     <xs:element name="end"   type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -80,7 +80,7 @@
 <xs:complexType name="header_type">
   <xs:sequence>
     <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
-    <xs:element name="timeOfSupply" type="time_of_suply_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="timeOfSupply" type="time_of_supply_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="salut" type="xs:string"/>
     <xs:element name="preText" type="xs:string"/>
     <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
@@ -105,7 +105,7 @@
 <xs:simpleType name="itemtype_type" final="restriction" >
     <xs:restriction base="xs:string">
         <xs:enumeration value="Normal"/>
-        <xs:enumeration value="Discount"/>
+        <xs:enumeration value="ExtraDiscount"/>
         <xs:enumeration value="Alternative"/>
         <xs:enumeration value="Demand"/>
         <xs:enumeration value="Text"/>
