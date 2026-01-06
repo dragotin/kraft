@@ -4,7 +4,7 @@ namespace Kraft {
 namespace Version {
 
 	// Static content. Maintain values here.
-	inline QString number() { return QStringLiteral("2.0-rc2"); }
+	inline QString number() { return QStringLiteral("2.0.0"); }
 
         inline QString codeName() { return QStringLiteral("Cumulus"); }
         inline int dbSchemaVersion() { return 24; }

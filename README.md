@@ -5,13 +5,13 @@
 
 ![Kraft screenshot](/screenshot1.png?raw=true "Kraft Main Window")
 
-Kraft is a Qt/KF6 based linux desktop software with a strong focus on ease of use
+Kraft is a Qt6/KF6 based linux desktop software with a strong focus on ease of use
 and the just enough feature set for the use case. With Kraft, creating documents
 will run smooth and free time for more enjoyable things than office work.
 
 Check out the website http://volle-kraft-voraus.de for more information.
 
-Kraft runs on your Linux desktop. No cloud involved, your data stays with you!
+Kraft runs on your Linux desktop. No big tech cloud involved, your data stays with you!
 
 With Kraft, writing documents like quotes and invoices is very easy and fast.
 Repeating tasks are supported, documents can be generated semi automatically,
@@ -24,16 +24,16 @@ it also sends documents via email and supports electronic invoicing with XRechnu
 
 Kraft utilizes very useful tools of the free software world:
 - KDE addressbook for customer management
-- MySQL or alternatively SQLite for database support
+- MySQL or alternatively SQLite as database
 - [WeasyPrint](https://weasyprint.org) for PDF generation.
 
 ## Interested?
 
-[Install Kraft](http://volle-kraft-voraus.de/Main/Download) on your Linux desktop.
+[Install Kraft](http://volle-kraft-voraus.de/en/download) on your Linux desktop.
 
-For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/Main/Contribution)
+For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/en/contact)
 for contact details.
 
-Jun 2005-2025, Klaas Freitag <kraft@freisturz.de>
+Jun 2005-2026, Klaas Freitag <kraft@freisturz.de>
 
 
