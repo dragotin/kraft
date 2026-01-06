@@ -23,7 +23,8 @@ Changes since version 1.2.2: #######################################
   possible
 - Show a welcome text on the main page after start of Kraft
 - Visual freshup of the display of the document details
-- Switch default document generator to weasyprint, deprecate Reportlab
+- Switch default document generator to weasyprint, drop support of
+  Reportlab based templates
 - Display doc conversion error messages in the main UI
 - Code cleanups, eg. unite DocPositionBase with DocPosition
 - Upgrade the AppImage build to use Qt6/KF6 puh...
@@ -32,9 +33,9 @@ Changes since version 1.2.2: #######################################
 - Reworked the read only document view
 - Added some unit tests
 - PDF watermark happens through Qt code now
-- Countless bug fixes, code cleanups and refinements
+- Countless bug fixes, C++ modernizations, code cleanups and refinements
 
-=> release v. 2.0.0 ( , 2025)
+=> release v. 2.0.0 (Jan 6th, 2026)
 
 ####################################################################
 
