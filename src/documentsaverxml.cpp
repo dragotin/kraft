@@ -198,7 +198,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     if (tosStart.isValid()) {
         QDate tosEnd   = doc->timeOfSupplyEnd().date();
         QDomElement tos = xmldoc.createElement("timeOfSupply");
-        meta.appendChild(tos);
+        headerElem.appendChild(tos);
         tos.appendChild(textElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
         if (!tosEnd.isValid())
             tosEnd = tosStart;
