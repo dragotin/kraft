@@ -84,22 +84,22 @@ QByteArray EPCQRCode::asText(const Geld& g,
     }
 
     re.append("BCD\n"
-            "001\n"
+            "002\n"
             "1\n"
             "SCT\n");
-    re.append(bacBIC.toLocal8Bit());
+    re.append(bacBIC.toUtf8());
     re.append("\n");
 
-    re.append(bacName.toLocal8Bit());
+    re.append(bacName.toUtf8());
     re.append("\n");
 
-    re.append(bacIBAN.toLocal8Bit());
+    re.append(bacIBAN.toUtf8());
     re.append("\n");
 
     const QString money = QString("EUR%1").arg(QString::number(sum, 'f', 2));
-    re.append(money.toLocal8Bit());
-    re.append("\n\n\n");
-    re.append(reason.toLocal8Bit());
+    re.append(money.toUtf8());
+    re.append("\n\n");
+    re.append(reason.toUtf8());
 
     return re;
 }
