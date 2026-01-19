@@ -162,7 +162,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
             // qDebug () << "Try to open MySQL database " << name;
             re = checkConnect( dbHost, dbName , dbUser, dbPasswd, port);
         } else if(mDatabaseDriver == "QSQLITE") {
-            // SqlLite only requires a valid file name which comes in as Database Name
+            // SQLite only requires a valid file name which comes in as Database Name
             // qDebug () << "Try to open SqLite database " << name;
             re = checkConnect( QString(), dbName, QString(), QString(), -1);
         }

@@ -718,7 +718,7 @@ bool SetupAssistant::handleSqLiteDetails()
 
     QString file = field("SqliteStorageFile").toString();
 
-    qDebug () << "The SqlLite database file is " << file;
+    qDebug () << "The SQLite database file is " << file;
 
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;

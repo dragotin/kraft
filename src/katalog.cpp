@@ -66,7 +66,7 @@ Katalog::~Katalog()
 }
 
 /**
- * virtuell load method for catalogs.
+ * virtual load method for catalogs.
  */
 int Katalog::load()
 {
