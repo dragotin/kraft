@@ -819,7 +819,7 @@ The CSS code to place the logo accordingly is like
 ----
 
 /*
- * Absolut positioned logo
+ * Absolute positioned logo
  */
 img#logo {
   position: absolute;
