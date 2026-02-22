@@ -21,8 +21,12 @@
 #include <QString>
 #include <QList>
 #include <QDate>
+#include <QDomDocument>
+#include <QSaveFile>
 
+#include "defaultprovider.h"
 #include "kraftcat_export.h"
+#include "lister.h"
 
 class KraftDoc;
 class QDateTime;
@@ -48,11 +52,15 @@ public:
 
     static QString defaultName();
 
+    void parseXml(QDomDocument &domDoc);
+    const QString toXml() const;
+
     bool isEmpty() { return _name.isEmpty(); }
 
     QString exampleIdent(const QString& docType,
                          const QDate& date,
                          const QString& addressUid);
+
 
 protected:
     QString dbId() const {return QString::number(_dbId);}
@@ -69,37 +77,20 @@ private:
 // FIXME: This could be a namespace rather than a "static object"
 
 class KRAFTCAT_EXPORT NumberCycles
+        : public Lister<NumberCycle>
 {    
 public:
     friend class DbToXMLConverter;
 
-    enum class SaveResult {
-        SaveOk,
-        OpenFail,
-        NameFail,
-        Locked,
-        PartialFail,
-        RemoveFail
-    };
-
     NumberCycles();
 
-    static NumberCycle get(const QString& name);
-
-    static QString generateIdent(const QString& name, const QString &docType, const QDate &date, const QString &addressUid);
-
-    static QMap<QString, NumberCycle> load();
-
-    static SaveResult save(const NumberCycle& ncs, const QString& baseDir = QString());
-    static SaveResult saveAll(const QMap<QString, NumberCycle>& ncs, const QString& baseDir = QString());
-    static SaveResult remove(const QString& name, const QString& baseDir = QString());
+    QString generateIdent(const QString& name, const QString &docType, const QDate &date, const QString &addressUid);
 
 private:
-    static bool saveNCXml(const QString& name, const QString& xml, const QString& baseDir = QString());
 
-    static int increaseLocalCounter(const QString& nc);
-    static bool tryLock();
-    static void unlock();
+    int increaseLocalCounter(const QString& nc);
+    bool tryLock();
+    void unlock();
 };
 
 

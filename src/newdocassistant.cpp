@@ -110,7 +110,8 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   vbox->addLayout( grid );
 
   mTypeCombo = new QComboBox;
-  mTypeCombo->insertItems( 0, DocType::allLocalised() );
+  DocTypes dts;
+  mTypeCombo->insertItems( 0, dts.allLocalised() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &type:"), mTypeCombo );
 

@@ -160,9 +160,10 @@ QString DefaultProvider::docType()
 {
     QString type = KraftSettings::self()->doctype();
     if ( type.isEmpty() ) {
-        QStringList allTypes = DocType::allLocalised();
+        DocTypes dts;
+        QStringList allTypes = dts.allLocalised();
         if( ! allTypes.isEmpty() ) {
-            type = DocType::allLocalised()[0];
+            type = allTypes.at(0);
         } else {
             type = i18n( "Unknown" );
         }
@@ -235,7 +236,8 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
             record.setValue( "description", t.description() );
             record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
             record.setValue( "docType", t.docType() );
-            record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+            // FIXME
+            // record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
             record.setValue( "textType",  t.textTypeString() );
             model.setRecord(0, record);
             model.submitAll();
@@ -247,7 +249,8 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
         record.setValue( "description", t.description() );
         record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
         record.setValue( "docType", t.docType() );
-        record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+        // FIXME
+        // record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
         record.setValue( "textType",  t.textTypeString() );
 
         model.insertRecord(-1, record);
@@ -452,8 +455,9 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
         ok = currV2Dir.mkdir(fragment);
         if (ok) {
             currV2Dir.cd(fragment);
-            currV2Dir.mkdir("numbercycles");
-            currV2Dir.mkdir("xmldoc");
+            currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::NumberCycles)); // "numbercycles"
+            currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::XmlDocs));      // "xmldoc"
+            currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::DocTypes));     // "doctypes"
         }
         cnt++;
     } while(!(ok && cnt < 5));
@@ -514,6 +518,8 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
     case KraftV2Dir::PdfDocs:
         subdir = "xmldoc";
         break;
+    case KraftV2Dir::DocTypes:
+        subdir = "doctypes";
     }
     return subdir;
 }

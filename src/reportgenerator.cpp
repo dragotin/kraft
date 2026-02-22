@@ -421,7 +421,7 @@ QString ReportGenerator::findTemplateFile( const QString& type )
         }
     }
 
-    mMergeIdent = dType.mergeIdent().toInt();
+    mMergeIdent = dType.mergeIdent();
     mWatermarkFile = dType.watermarkFile();
     mPdfAppendFile = dType.appendPDF();
 

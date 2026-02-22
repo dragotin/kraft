@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "kraftobj.h"
+#include "stringutil.h"
+
+#include <QDomElement>
 
 KraftObj::KraftObj()
      :_modified{false}
@@ -39,7 +42,7 @@ QString KraftObj::createUuid()
     return uuid();
 }
 
-bool KraftObj::hasAttribute(const QString& name)
+bool KraftObj::hasAttribute(const QString& name) const
 {
     return _attribs.contains(name);
 }
@@ -57,7 +60,7 @@ void KraftObj::removeAttribute(const QString& name)
     }
 }
 
-KraftAttrib KraftObj::attribute(const QString& name)
+KraftAttrib KraftObj::attribute(const QString& name) const
 {
     if (_attribs.contains(name))
         return _attribs[name];
@@ -99,4 +102,62 @@ QStringList KraftObj::allTags() const
         ++i;
     }
     return re;
+}
+
+void KraftObj::parseKobjXml(QDomElement &elem)
+{
+    Q_ASSERT(! elem.isNull());
+    _uuid = QUuid::fromString(KraftXml::childElemText(elem, "uuid"));
+
+    QDate d = KraftXml::childElemDate(elem, "lastModified");
+    QDateTime dt;
+    dt.setDate(d);
+    setLastModified(dt);
+
+    QDomElement attribsElem = elem.firstChildElement("attribs");
+    QDomElement attribElem = attribsElem.firstChildElement("attrib");
+    while(!attribElem.isNull()) {
+        KraftAttrib attr(attribElem);
+        setAttribute(attr);
+        attribElem = attribElem.nextSiblingElement("attrib");
+    }
+    QDomElement tagElem = elem.firstChildElement("tag");
+    while (!tagElem.isNull()) {
+        const QString t = tagElem.text();
+        addTag(t);
+        tagElem = tagElem.nextSiblingElement("tag");
+    }
+
+}
+
+QDomElement KraftObj::kobjXml(QDomDocument &xmldoc, const QString& elemName) const
+{
+    QDomElement objAttr = xmldoc.createElement(elemName);
+    {
+        QDomElement uuidElem = xmldoc.createElement("uuid");
+        uuidElem.setNodeValue(uuid());
+        objAttr.appendChild(uuidElem);
+    }
+    {
+        const auto dt = lastModified();
+        if (dt.isValid()) {
+            objAttr.appendChild(KraftXml::textElement(xmldoc, "lastModified", dt.toString(Qt::ISODate)));
+        }
+    }
+    {
+        QDomElement attribsXml = xmldoc.createElement("attribs");
+        const auto attribs = attributes();
+        for (const auto &a : attribs) {
+            attribsXml.appendChild(a.toXml(xmldoc));
+        }
+        objAttr.appendChild(attribsXml);
+    }
+    {
+        QDomElement tagsXml = xmldoc.createElement("tags");
+        for (const QString& tag : allTags()) {
+            tagsXml.appendChild(KraftXml::textElement(xmldoc, "tag", tag));
+        }
+        objAttr.appendChild(tagsXml);
+    }
+    return objAttr;
 }

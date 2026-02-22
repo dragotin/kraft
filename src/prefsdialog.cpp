@@ -314,7 +314,9 @@ QWidget* PrefsDialog::docTab()
   label->setBuddy( mCbDocTypes );
   mCbDocTypes->setToolTip( i18n( "New documents default to the selected type." ) );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
-  mCbDocTypes->insertItems(-1, DocType::allLocalised() );
+
+  DocTypes dts;
+  mCbDocTypes->insertItems(-1, dts.allLocalised() );
 
   QLabel *f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
@@ -565,7 +567,6 @@ void PrefsDialog::writeConfig()
     const auto newTmpl = _lineEditXRechnung->text();
     if (newTmpl != dt.xRechnungTemplate()) {
         dt.setXRechnungTemplate(newTmpl);
-        dt.save();
     }
 
     const QString demandText = _lineEditDemandText->text();

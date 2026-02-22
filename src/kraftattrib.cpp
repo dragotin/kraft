@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "kraftattrib.h"
+#include "stringutil.h"
 
 #include <QDomElement>
 #include <QDate>
@@ -137,19 +138,17 @@ QDomElement KraftAttrib::toXml(QDomDocument& xmldoc) const
 {
     QDomElement attr = xmldoc.createElement("attrib");
     {
-        QDomElement name = xmldoc.createElement("name");
-        name.setNodeValue(_name);
-        attr.appendChild(name);
+        QDomElement e = KraftXml::textElement(xmldoc, "name", _name);
+        attr.appendChild(e);
     }
     {
-        QDomElement value = xmldoc.createElement("value");
-        value.setNodeValue(_value.toString());
-        attr.appendChild(value);
+        QDomElement e = KraftXml::textElement(xmldoc, "value",_value.toString());
+        attr.appendChild(e);
     }
     {
-        QDomElement type = xmldoc.createElement("type");
-        type.setNodeValue(typeString());
-        attr.appendChild(type);
+        QDomElement e = KraftXml::textElement(xmldoc, "type", typeString());
+        attr.appendChild(e);
     }
     return attr;
 }
+

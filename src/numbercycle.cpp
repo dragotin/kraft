@@ -187,21 +187,44 @@ QString NumberCycle::defaultName()
     return QStringLiteral( "default" );
 }
 
-// ====================================================================================
-
-NumberCycles::NumberCycles()
+const QString NumberCycle::toXml() const
 {
+    if (name().isEmpty()) {
+        qDebug() << "Can not save numbercylce without name";
+        return QString();
+    }
+    const QString kncStr{"kraftNumberCycle"};
 
+    QDomDocument xmldoc(kncStr);
+    QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+    xmldoc.appendChild(instr);
+
+    QDomElement root = xmldoc.createElement(kncStr);
+    root.setAttribute("schemaVersion", "1");
+    xmldoc.appendChild( root );
+
+    root.appendChild(KraftXml::textElement(xmldoc, "name", name()));
+    root.appendChild(KraftXml::textElement(xmldoc, "lastNumber", QString::number(counter())));
+    root.appendChild(KraftXml::textElement(xmldoc, "template", getTemplate()));
+    root.appendChild(KraftXml::textElement(xmldoc, "dbId", dbId()));
+
+    const QString xml = xmldoc.toString();
+
+    return xml;
 }
 
-NumberCycle NumberCycles::get(const QString& name)
+void NumberCycle::parseXml(QDomDocument &domDoc)
 {
-    NumberCycle re;
-    QMap<QString, NumberCycle> map = load();
-    if (map.contains(name)) {
-        re = map[name];
-    }
-    return re;
+    QDomElement ncs = domDoc.firstChildElement("kraftNumberCycle");
+    QString t = KraftXml::childElemText(ncs, "name");
+    setName(t);
+    t = KraftXml::childElemText(ncs, "lastNumber");
+    setCounter(t.toInt());
+    t = KraftXml::childElemText(ncs, "template");
+    setTemplate(t);
+    t = KraftXml::childElemText(ncs, "dbId");
+    setDbId(t.toInt());
+
 }
 
 QString NumberCycle::exampleIdent( const QString& docType,
@@ -214,6 +237,16 @@ QString NumberCycle::exampleIdent( const QString& docType,
     return generateDocumentIdent(getTemplate(), docType,
                                  date, addressUid,
                                  cnt+1, dayCnt);
+}
+
+// ====================================================================================
+
+
+// ====================================================================================
+NumberCycles::NumberCycles()
+    : Lister<NumberCycle>(DefaultProvider::KraftV2Dir::NumberCycles)
+{
+
 }
 
 QString NumberCycles::generateIdent(const QString& name, const QString& docType,
@@ -236,24 +269,21 @@ QString NumberCycles::generateIdent(const QString& name, const QString& docType,
 int NumberCycles::increaseLocalCounter(const QString& ncName)
 {
     NumberCycle nc;
+    NumberCycles ncs;
+    ncs.loadAll();
+
     const int MaxAttempt{10};
     int attempt{0};
     int newCnt{-1};
 
     while( attempt < MaxAttempt) {
         if (tryLock()) {
-            QMap<QString, NumberCycle> map = load();
-
-            if (map.contains(ncName)) {
-                nc = map[ncName];
-            } else {
-                nc.setName(ncName);
-            }
+            nc = ncs.get(ncName);
 
             int cnt = nc.counter();
             nc.setCounter(cnt+1);
 
-            SaveResult res = save(nc);
+            SaveResult res = ncs.save(nc);
             if (res == SaveResult::SaveOk) {
                 newCnt = cnt+1;
             } else {
@@ -269,169 +299,6 @@ int NumberCycles::increaseLocalCounter(const QString& ncName)
         qDebug() << "Could not lock the numbercycle file";
     }
     return -1;
-}
-
-QMap<QString, NumberCycle> NumberCycles::load()
-{
-    QMap<QString, NumberCycle> map;
-
-    const QString bDir = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
-    Q_ASSERT(!bDir.isEmpty());
-    const QDir dir(bDir);
-
-    const QStringList names {"*.xml"};
-    const QStringList entries = dir.entryList(names);
-
-    for (const QString& xmlFileName : entries) {
-        QString const fullPathName = bDir + QDir::separator() + xmlFileName;
-        QFile file(fullPathName);
-        if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Unable to open xml document file:" << xmlFileName ;
-            continue;
-        }
-
-        QDomDocument domDoc;
-        const QByteArray arr = file.readAll();
-        QDomDocument::ParseResult pr = domDoc.setContent(arr);
-
-        if (!pr) {
-            qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
-            file.close();
-            continue;
-        }
-        file.close();
-
-        // ---- Parsing starts here
-
-        QDomElement ncs = domDoc.firstChildElement("kraftNumberCycle");
-        NumberCycle nc;
-        QString t = KraftXml::childElemText(ncs, "name");
-        nc.setName(t);
-        t = KraftXml::childElemText(ncs, "lastNumber");
-        nc.setCounter(t.toInt());
-        t = KraftXml::childElemText(ncs, "template");
-        nc.setTemplate(t);
-        t = KraftXml::childElemText(ncs, "dbId");
-        nc.setDbId(t.toInt());
-
-        map.insert(nc.name(), nc);
-    }
-    return map;
-}
-
-bool NumberCycles::saveNCXml(const QString& name, const QString& xml, const QString& baseDir)
-{
-    Q_ASSERT(!name.isEmpty());
-
-    QString saveName{name};
-    QString v2Dir{baseDir};
-    if (baseDir.isEmpty()) {
-        v2Dir = DefaultProvider::self()->kraftV2Dir();
-    }
-
-    QDir dir(v2Dir);
-    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
-
-    bool re{false};
-    if (!saveName.endsWith(".xml")) saveName.append(".xml");
-    QSaveFile file(dir.absoluteFilePath(saveName));
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
-        re = file.write(xml.toUtf8());
-
-        if (re) {
-            re = file.commit();
-        }
-    }
-    return re;
-}
-
-NumberCycles::SaveResult NumberCycles::save(const NumberCycle& nc, const QString& baseDir)
-{
-    if (nc.name().isEmpty()) {
-        qDebug() << "Can not save numbercylce without name";
-        return SaveResult::OpenFail;
-    }
-    const QString kncStr{"kraftNumberCycle"};
-
-    QDomDocument xmldoc(kncStr);
-    QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
-    xmldoc.appendChild(instr);
-
-    QDomElement root = xmldoc.createElement(kncStr);
-    root.setAttribute("schemaVersion", "1");
-    xmldoc.appendChild( root );
-
-    root.appendChild(KraftXml::textElement(xmldoc, "name", nc.name()));
-    root.appendChild(KraftXml::textElement(xmldoc, "lastNumber", QString::number(nc.counter())));
-    root.appendChild(KraftXml::textElement(xmldoc, "template", nc.getTemplate()));
-    root.appendChild(KraftXml::textElement(xmldoc, "dbId", nc.dbId()));
-
-    const QString xml = xmldoc.toString();
-
-    // Save to file
-    SaveResult re{SaveResult::OpenFail};
-    if (saveNCXml(nc.name(), xml, baseDir)) {
-        re = SaveResult::SaveOk;
-    }
-
-    return re;
-}
-
-NumberCycles::SaveResult NumberCycles::remove(const QString& name, const QString& baseDir)
-{
-    QString saveName{name};
-    QString v2Dir{baseDir};
-    if (baseDir.isEmpty()) {
-        v2Dir = DefaultProvider::self()->kraftV2Dir();
-    }
-
-    QDir dir(v2Dir);
-    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
-
-    SaveResult re{SaveResult::RemoveFail};
-    if (!saveName.endsWith(".xml")) saveName.append(".xml");
-
-    const QString file(dir.absoluteFilePath(saveName));
-    if (QFile::remove(file)) {
-        re = SaveResult::SaveOk;
-    }
-    return re;
-}
-
-NumberCycles::SaveResult NumberCycles::saveAll(const QMap<QString, NumberCycle>& ncs, const QString& baseDir)
-{
-    bool error{false};
-    QMap<QString, NumberCycle> existNCs = load();
-    int cnt{0};
-    const auto values = ncs.values();
-    for (const NumberCycle& nc : values){
-        if (existNCs.contains(nc.name())) {
-            const NumberCycle ncOld = existNCs[nc.name()];
-            if (ncOld == nc) {
-                existNCs.remove(nc.name());
-                continue;
-            }
-        }
-        SaveResult re = save(nc, baseDir);
-        existNCs.remove(nc.name());
-        if (re == SaveResult::SaveOk){
-            cnt++;
-        } else {
-            error = true;
-        }
-    }
-
-    // if existNCs still contains names, these need to be deleted because
-    // they have not been in ncs
-    int rems{0};
-    const QStringList keys = existNCs.keys();
-    for (const auto &k : keys) {
-        remove(k, baseDir);
-        rems++;
-    }
-
-    qDebug() << "Saved" << cnt << "numbercycles and removed"<< rems <<"successfully";
-    return error ? SaveResult::PartialFail : SaveResult::SaveOk;
 }
 
 // this lock code does not do anything at all because the local file

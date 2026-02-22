@@ -54,7 +54,8 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect(mTypeListBox, &QListWidget::currentTextChanged,
            this,  &DocTypeEdit::slotDocTypeSelected);
 
-  QStringList types = DocType::allLocalised();
+  DocTypes dts;
+  QStringList types = dts.allLocalised();
   mTypeListBox->clear();
   mTypeListBox->addItems( types );
 
@@ -136,7 +137,7 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   DocType dt( dtype );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
 
-  int newMode = dt.mergeIdent().toInt();
+  int newMode = dt.mergeIdent();
   mWatermarkCombo->setCurrentIndex( newMode );
   bool state = true;
   if ( newMode == 0 )
@@ -149,9 +150,10 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
 void DocTypeEdit::fillNumberCycleCombo()
 {
-  QMap<QString, NumberCycle> ncs = NumberCycles::load();
+  NumberCycles ncs;
+  ncs.loadAll();
 
-  const QStringList cycles = ncs.keys();
+  const QStringList cycles = ncs.map().keys();
   mNumberCycleCombo->clear();
   mNumberCycleCombo->addItems(cycles);
 }
@@ -274,6 +276,9 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 {
   // qDebug () << "docTypeSelected: " << newValue << " and previous: " << mPreviousType;
 
+  NumberCycles ncs;
+  ncs.loadAll();
+
   DocType dt( newValue );
   if ( mChangedDocTypes.contains( newValue ) ) {
     dt = mChangedDocTypes[newValue];
@@ -287,19 +292,19 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     // qDebug () << "previous docType taken from ChangedDocTypes: ";
   }
   const QString oldNcName = prevType.numberCycleName();
-  const NumberCycle oldNc = NumberCycles::get(oldNcName);
+  const NumberCycle oldNc = ncs.get(oldNcName);
 
   prevType.setNumberCycleName(oldNcName);
   prevType.setTemplateFile( mTemplateUrl->text() );
   prevType.setWatermarkFile( mWatermarkUrl->text() );
   prevType.setAppendPDFFile(mAppendUrl->text());
-  prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
+  prevType.setMergeIdent( mWatermarkCombo->currentIndex());
   prevType.setXRechnungEnabled(mCbXRechnung->checkState() == Qt::Checked);
   mChangedDocTypes[mPreviousType] = prevType;
 
   qDebug () << "Selected doc type " << newValue;
   const QString& ncn = dt.numberCycleName();
-  NumberCycle nc = NumberCycles::get(ncn);
+  NumberCycle nc = ncs.get(ncn);
 
   mIdent->setText(nc.getTemplate());
   const QString nextNum = nc.exampleIdent(dt.name(), QDate::currentDate(), QStringLiteral("<addressId>"));
@@ -314,7 +319,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mTemplateUrl->setText( dt.templateFile() );
 
   mWatermarkUrl->setText( dt.watermarkFile() );
-  int mergeIdent = dt.mergeIdent().toInt();
+  int mergeIdent = dt.mergeIdent();
   mWatermarkCombo->setCurrentIndex( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );
   mAppendUrl->setText(dt.appendPDF());
@@ -328,13 +333,16 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 void DocTypeEdit::slotEditNumberCycles()
 {
   saveDocTypes();
+  NumberCycles ncs;
+  ncs.loadAll();
+
   QString currNumbercycle = mNumberCycleCombo->currentText();
   NumberCycleDialog dia( this, currNumbercycle );
 
   if ( dia.exec() == QDialog::Accepted ) {
     fillNumberCycleCombo();
     mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( currNumbercycle ));
-    NumberCycle nc = NumberCycles::get(currNumbercycle);
+    NumberCycle nc = ncs.get(currNumbercycle);
 
     // only the numbercycle has changed - refresh the display
     mIdent->setText(nc.getTemplate());
@@ -361,9 +369,8 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
 {
   DocType dt = currentDocType();
 
-  QString newMergeIdent = QString::number( newMode );
-  if ( newMergeIdent != dt.mergeIdent() ) {
-    dt.setMergeIdent( newMergeIdent );
+  if ( newMode != dt.mergeIdent() ) {
+    dt.setMergeIdent( newMode );
     if ( !mTypeListBox->currentItem()->text().isEmpty() ) {
       mChangedDocTypes[ mTypeListBox->currentItem()->text() ] = dt;
     }
@@ -432,7 +439,9 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   dt.setNumberCycleName( newCycle );
   mChangedDocTypes[newCycle] = dt;
 
-  NumberCycle nc = NumberCycles::get(newCycle);
+  NumberCycles ncs;
+  ncs.loadAll();
+  NumberCycle nc = ncs.get(newCycle);
   // qDebug () << "Changing the cycle name of " << docTypeName << " to " << newCycle;
 
   mIdent->setText( nc.getTemplate() );
@@ -458,11 +467,12 @@ void DocTypeEdit::saveDocTypes()
   }
 
   // added doctypes
+  DocTypes dts;
   for ( QStringList::Iterator it = mAddedTypes.begin(); it != mAddedTypes.end(); ++it ) {
     QString name = *it;
     if ( mOrigDocTypes.contains( name ) ) { // just to check
       DocType dt = mChangedDocTypes[name];
-      dt.save();
+      dts.save(dt);
     }
   }
 
@@ -480,7 +490,7 @@ void DocTypeEdit::saveDocTypes()
       }
       mOrigDocTypes.remove( oldName );
       mOrigDocTypes[newName] = dt;
-      dt.save();
+      dts.save(dt);
     } else {
       qCritical() << "Can not find doctype to change named " << oldName;
     }
@@ -490,7 +500,7 @@ void DocTypeEdit::saveDocTypes()
   QMap<QString, DocType>::Iterator mapit;
   for ( mapit = mChangedDocTypes.begin(); mapit != mChangedDocTypes.end(); ++mapit ) {
     DocType dt = mapit.value();
-    dt.save();
+    dts.save(dt);
   }
 
   // now the list of document types should be up to date and reflected into
@@ -500,50 +510,24 @@ void DocTypeEdit::saveDocTypes()
 
 void DocTypeEdit::removeTypeFromDb( const QString& name )
 {
-  QSqlQuery delQuery;
+    DocTypes dts;
+    dts.loadAll();
+    const DocType dt = dts.get(name);
 
-  dbID id = DocType::docTypeId( name );
-  if ( !id.isOk() ) {
-    // qDebug () << "Can not find doctype " << name << " to remove!";
-    return;
-  }
-
-  // delete in DocTypeRelations
-  delQuery.prepare( "DELETE FROM DocTypeRelations WHERE followerId=:id or typeId=:id" );
-  delQuery.bindValue( ":id", id.toString() );
-  delQuery.exec();
-
-  // delete in DocTexts
-  delQuery.prepare( "DELETE FROM DocTexts WHERE DocTypeId=:id" );
-  delQuery.bindValue( ":id", id.toString() );
-  delQuery.exec();
-
-  // delete in the DocTypes table
-  delQuery.prepare( "DELETE FROM DocTypes WHERE docTypeId=:id" );
-  delQuery.bindValue( ":id", id.toString() );
-  delQuery.exec();
-
-  AttributeMap attMap( "DocType" );
-  attMap.dbDeleteAll( id );
+    dts.remove(dt);
 }
 
 void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newName )
 {
-  QSqlQuery q;
-  q.prepare( "UPDATE DocTypes SET name=:newName WHERE docTypeID=:oldId" );
-  dbID id = DocType::docTypeId( oldName );
-  if ( id.isOk() ) {
-    q.bindValue( ":newName", newName );
-    q.bindValue( ":oldId", id.toInt() );
-    q.exec();
-    if ( q.numRowsAffected() == 0 ) {
-      qCritical() << "Database update failed for renaming " << oldName << " to " << newName;
-    } else {
-      // qDebug () << "Renamed doctype " << oldName << " to " << newName;
-    }
-  } else {
-    qCritical() << "Could not find the id for doctype named " << oldName;
-  }
+    DocTypes dts;
+    dts.loadAll();
+    const DocType dtOld = dts.get(oldName);
+
+    DocType dt = dtOld;
+    dt.setName(newName);
+    dts.save(dt);
+
+    dts.remove(dtOld);
 }
 
 

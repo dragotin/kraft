@@ -51,13 +51,14 @@ public:
     QDateTime lastModified() const { return _lastModified; }
     void setLastModified( QDateTime d ) { _lastModified = d; }
 
-    bool modified() {return _modified;}
+    bool modified() const {return _modified;}
+    void setModified(bool m = true) {_modified = m;}
 
-    bool hasAttribute(const QString& name);
+    bool hasAttribute(const QString& name) const;
     void setAttribute(const KraftAttrib& attrib);
     void removeAttribute(const QString& name);
 
-    KraftAttrib attribute(const QString& name);
+    KraftAttrib attribute(const QString& name) const;
     QMap<QString,KraftAttrib> attributes() const { return _attribs; }
 
     void setTags(const QStringList& list);
@@ -66,8 +67,8 @@ public:
     bool hasTag(const QString& tag) const;
     QStringList allTags() const;
 
-    void setModified(bool m = true) {_modified = m;}
-
+    QDomElement kobjXml(QDomDocument &xmldoc, const QString& elemName={"kobj"}) const;
+    void parseKobjXml(QDomElement &elem);
 };
 
 Q_DECLARE_METATYPE(KraftObj)

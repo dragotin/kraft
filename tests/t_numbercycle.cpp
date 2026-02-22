@@ -93,13 +93,13 @@ private Q_SLOTS:
 
     void loadTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.load();
+        QMap<QString, NumberCycle> map = _ncs.map();
         QCOMPARE(map.count(), 2);
     }
 
     void saveAllTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.load();
+        QMap<QString, NumberCycle> map = _ncs.map();
         QCOMPARE(map.count(), 2);
 
         NumberCycle nc;
@@ -108,20 +108,20 @@ private Q_SLOTS:
         nc.setTemplate("TEST2-%y-%w-%d-%i");
         map[nc.name()] = nc;
 
-        NumberCycles::SaveResult res = NumberCycles::saveAll(map);
+        NumberCycles::SaveResult res = _ncs.saveAll(map);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
     }
 
     void SaveAllRemoveTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.load();
+        QMap<QString, NumberCycle> map = _ncs.map();
         QCOMPARE(map.count(), 3);
         map.remove("TestCycle3");
 
-        NumberCycles::SaveResult res = NumberCycles::saveAll(map);
+        NumberCycles::SaveResult res = _ncs.saveAll(map);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
 
-        QMap<QString, NumberCycle> mapNeu = _ncs.load();
+        QMap<QString, NumberCycle> mapNeu = _ncs.map();
         QCOMPARE(mapNeu.count(), 2);
         QVERIFY(mapNeu.contains("TestCycle2"));
         QVERIFY(mapNeu.contains("TestCycle1"));

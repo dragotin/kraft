@@ -62,6 +62,7 @@ public:
     QString typeString() const;
 
     QDomElement toXml(QDomDocument &xmldoc) const;
+    KraftAttrib parseXml(QDomElement &elem) const;
 private:
     QString  _name;
     QVariant _value;

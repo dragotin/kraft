@@ -38,6 +38,7 @@ public:
         XmlDocs,
         PdfDocs,
         NumberCycles,
+        DocTypes,
         OwnIdentity
     };
 
