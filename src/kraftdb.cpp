@@ -438,31 +438,6 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
 {
     int cnt = 0;
 
-    // first do the doctype definitions
-    QList<MetaDocTypeAdd> newDocTypes = commands.metaAddDocTypeList();
-
-    // loop over all doctypes first, later loop again to create the followers.
-    // The followers might reference each other and thus must exist.
-    for( auto newDocType : newDocTypes ) {
-       const QString name = newDocType.name();
-       DocType type(name, true);
-
-       for( QString attr : newDocType._attribs.keys() ) {
-           type.setAttribute(attr, newDocType._attribs[attr]);
-       }
-       type.save();
-    }
-
-    // now loop again to process the followers
-    for( auto newDocType : newDocTypes ) {
-        const QString name = newDocType.name();
-        if( newDocType._follower.count() > 0 ) {
-            DocType type(name, true);
-            type.setAllFollowers(newDocType._follower);
-            type.save();
-        }
-    }
-
     for( SqlCommand cmd: commands ) {
         if( !cmd.message().isEmpty() ) {
             Q_EMIT statusMessage( cmd.message() );

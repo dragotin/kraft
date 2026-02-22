@@ -38,6 +38,8 @@ private:
 
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
+    int convertDocTypes(const QString& baseDir);
+
     bool convertOwnIdentity(const QString& baseDir);
 
 Q_SIGNALS:

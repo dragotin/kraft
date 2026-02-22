@@ -18,14 +18,17 @@
 #define DOCTYPE_H
 
 // include files for Qt
-#include <qstring.h>
-#include <qmap.h>
+#include <QString>
+#include <QMap>
+#include <QDomDocument>
 
 #include "kraftcat_export.h"
 
 #include "dbids.h"
 #include "attribute.h"
-
+#include "kraftobj.h"
+#include "lister.h"
+#include "defaultprovider.h"
 
 /**
 @author Klaas Freitag
@@ -34,6 +37,7 @@
 typedef QMap<QString, dbID> idMap;
 
 class KRAFTCAT_EXPORT DocType
+        :public KraftObj
 {
 public:
     DocType();
@@ -42,66 +46,81 @@ public:
    */
     DocType( const QString&, bool dirty = false );
 
-    static QStringList all();
-    static QStringList allLocalised();
-    static dbID docTypeId( const QString& );
-
     QString name() const;
     void setName( const QString& );
 
-    bool allowDemand();
-    bool allowAlternative();
-    bool pricesVisible();
-    bool partialInvoice();
-    bool substractPartialInvoice();
+    bool allowDemand() const;
+    void setAllowDemand(bool);
 
-    QStringList follower();
-    int setAllFollowers( const QStringList& followers);
+    bool allowAlternative() const;
+    void setAllowAlternative(bool);
 
+    bool pricesHidden() const;
+    void setPricesHidden(bool);
 
-    QString     numberCycleName();
+    bool partialInvoice() const;
+    void setPartialInvoice(bool);
+
+    bool substractPartialInvoice() const;
+    void setSubstractPartialInvoice(bool);
+
+    QStringList follower() const;
+    void setFollowers(const QStringList& followers);
+
+    QString     numberCycleName() const;
     void        setNumberCycleName( const QString& );
 
-    QString     templateFile();
+    QString     templateFile() const;
     void        setTemplateFile( const QString& );
 
-    QString     watermarkFile();
+    QString     watermarkFile() const;
     void        setWatermarkFile( const QString& );
 
-    QString     mergeIdent();
-    void        setMergeIdent( const QString& );
+    int         mergeIdent() const;
+    void        setMergeIdent(int);
 
-    QString     xRechnungTemplate();
+    QString     xRechnungTemplate() const;
     void        setXRechnungTemplate(const QString&);
 
     QString     appendPDF() const;
     void        setAppendPDFFile(const QString& file);
 
-    void        setAttribute( const QString& attribute, const QString& val);
-    QString     attributeValueString(const QString& attribName) const;
-
     static void  clearMap();
 
-    void        save();
+    const QString toXml() const;
+    void        parseXml(QDomDocument &domDoc);
 
     void        readIdentTemplate();
 
     bool        isXRechnungEnabled() const;
     void        setXRechnungEnabled(bool);
 
-protected:
-    void        readFollowerList();
-
 private:
-    static void init();
-
-private:
-    AttributeMap mAttributes;
     QStringList  mFollowerList;
     QString      mName;
     bool         mDirty;
-    QString      mMergeIdent;
+
+    bool dtFlag(const QString& str) const;
+    void setDtFlag(const QString& name, bool f);
+    QString attributeValueString(const QString& attribName) const;
+    void setStringAttribute( const QString& attribName, const QString& val, const QString& defaultValue = QString());
+
     static idMap mNameMap;
 };
 
+class KRAFTCAT_EXPORT DocTypes
+        : public Lister<DocType>
+{
+public:
+    DocTypes();
+
+    QStringList all();
+    QStringList allLocalised();
+
+private:
+    bool saveDTXml(const QString& name, const QString& xml, const QString& baseDir = QString());
+
+    bool tryLock();
+    void unlock();
+};
 #endif

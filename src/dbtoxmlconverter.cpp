@@ -5,6 +5,7 @@
 #include "defaultprovider.h"
 #include "documentsaverdb.h"
 #include "numbercycle.h"
+#include "doctype.h"
 
 #include <klocalizedstring.h>
 #include <utime.h>
@@ -261,8 +262,9 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
     const QString sql {"SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles order by id"};
     QSqlQuery q;
     q.prepare(sql);
-
     q.exec();
+
+    NumberCycles ncs;
 
     int cnt{0};
     while( q.next()) {
@@ -271,13 +273,42 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
         nc.setCounter(q.value(2).toInt());
         nc.setTemplate(q.value(3).toString());
         nc.setDbId(q.value(0).toInt());
-        if (NumberCycles::save(nc, baseDir) == NumberCycles::SaveResult::SaveOk) {
+        if (ncs.save(nc, baseDir) == NumberCycles::SaveResult::SaveOk) {
             qDebug() << "Saved numbercycle successfully:" << nc.name();
             cnt++;
         } else {
             qDebug() << "Failed to save Numbercycle" << nc.name();
         }
     }
+    return cnt;
+}
+
+int DbToXMLConverter::convertDocTypes(const QString& baseDir)
+{
+    int cnt{0};
+
+    QSqlQuery q;
+    q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
+    q.exec();
+
+    QMap<QString, DocType> dtMap;
+    while ( q.next() ) {
+        dbID id( q.value(0).toInt() );
+        QString name = q.value(1).toString();
+        DocType dt(name);
+        dtMap.insert(name, dt);
+        // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
+    }
+
+#if 0
+    if (dts.save(td, baseDir) == NumberCycles::SaveResult::SaveOk) {
+        qDebug() << "Saved numbercycle successfully:" << dt.name();
+        cnt++;
+    } else {
+        qDebug() << "Failed to save Numbercycle" << dt.name();
+    }
+#endif
+
     return cnt;
 }
 

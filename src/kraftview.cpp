@@ -244,7 +244,8 @@ void KraftView::setupDocHeaderView()
     m_headerEdit = edit->docHeaderEdit();
 
     m_headerEdit->m_cbType->clear();
-    m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
+    DocTypes dts;
+    m_headerEdit->m_cbType->insertItems(-1, dts.allLocalised() );
     m_headerEdit->mButtLang->hide();
 
     const QString predecessorUuid = m_doc->predecessor();
@@ -894,15 +895,15 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   while( it.hasNext() ) {
     PositionViewWidget *w = it.next();
     w->slotEnableKindMenu(allow);
-    w->slotShowPrice(docType.pricesVisible());
+    w->slotShowPrice(!docType.pricesHidden());
   }
 
-  mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
-  m_footerEdit->ui()->_taxGroup->setVisible( docType.pricesVisible() );
+  mAssistant->postCard()->slotShowPrices( !docType.pricesHidden() );
+  m_footerEdit->ui()->_taxGroup->setVisible( !docType.pricesHidden() );
   if( mDocPosEditorIndx > -1 ) {
       KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
       if(w) {
-          w->setDiscountButtonVisible(docType.pricesVisible());
+          w->setDiscountButtonVisible(!docType.pricesHidden());
       }
   }
 }
@@ -988,7 +989,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
     KraftDoc *doc = getDocument();
     if(doc) {
         DocType docType = doc->docType();
-        dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
+        dia->setDocPosition( dp, newTemplate, !docType.pricesHidden() );
     }
     DocPositionList list = currentPositionList();
     dia->setPositionList( list, newpos );
@@ -1069,7 +1070,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
         const QString dt = getDocument()->docType();
         if( !dt.isEmpty() ) {
             DocType docType(dt);
-            widget->slotShowPrice(docType.pricesVisible());
+            widget->slotShowPrice(!docType.pricesHidden());
         }
         slotFocusItem( widget, newpos );
         refreshPostCard();

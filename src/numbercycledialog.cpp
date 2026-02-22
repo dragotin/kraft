@@ -115,11 +115,12 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
 void NumberCycleDialog::loadCycles()
 {
-    QMap<QString, NumberCycle> ncs = NumberCycles::load();
+    NumberCycles ncs;
+    ncs.loadAll();
 
     mBaseWidget->mCycleListBox->clear();
 
-    for(const auto& nc : ncs) {
+    for(const auto& nc : ncs.map()) {
         mNumberCycles[nc.name()] = nc;
         mBaseWidget->mCycleListBox->addItem( nc.name() );
     }
@@ -265,7 +266,8 @@ void NumberCycleDialog::accept()
     // get the changed stuff from the gui elements
     updateCycleDataFromGUI();
 
-    auto res = NumberCycles::saveAll(mNumberCycles);
+    NumberCycles ncs;
+    auto res = ncs.saveAll(mNumberCycles);
 
     if (res != NumberCycles::SaveResult::SaveOk) {
         qDebug() << "Saving numbercycles failed!";
