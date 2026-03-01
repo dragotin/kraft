@@ -78,7 +78,7 @@ private Q_SLOTS:
         const QStringList li{"Tag1", "Tag2", "Tag3"};
         dt.setTags(li);
 
-        const QStringList flist{"Angebotsbestätigung", "Rechnung", "Teilrechnung"};
+        const QStringList flist{"Auftragsbestätigung", "Rechnung", "Teilrechnung"};
         dt.setFollowers(flist);
 
         DocTypes dts;
@@ -112,10 +112,8 @@ private Q_SLOTS:
             dt.setPricesHidden(true);
             dt.setAllowAlternative(true);
             dt.setAllowDemand(true);
-            const QStringList li{"Tag1", "Tag2", "Tag3"};
-            dt.setTags(li);
 
-            const QStringList flist{"Angebotsbestätigung", "Rechnung", "Teilrechnung"};
+            const QStringList flist{"Auftragsbestätigung", "Rechnung", "Teilrechnung"};
             dt.setFollowers(flist);
 
             return dt;
@@ -132,14 +130,18 @@ private Q_SLOTS:
 
     }
 
-    void checkAll() {
+    void checkAllNames() {
         DocTypes dts;
-        const QStringList allDts = dts.allLocalised();
+        const QStringList allDts = dts.allNames();
 
         for( const QString& s : allDts ) {
             qDebug() << "** " << s;
         }
         QVERIFY(allDts.count() == 10);
+
+        for (int i = 1; i < 10; i++) {
+            QCOMPARE(allDts.at(i), "TestDocType " % QString::number(i) );
+        }
 
         _docTypeName = allDts.at(1);
         QCOMPARE(_docTypeName, "TestDocType 1");
@@ -148,11 +150,8 @@ private Q_SLOTS:
     void loadADt() {
         qDebug() << "Loading doctype" << _docTypeName;
         DocTypes dts;
-        DocType dt1;
         DocType dt = dts.get(_docTypeName);
-        QCOMPARE(dt.name(), "");
-        dts.loadAll(_baseDir);
-        dt = dts.get(_docTypeName);
+        QCOMPARE(dt.name(), "TestDocType 1");
 
         QVERIFY( dt.name() == _docTypeName);
         QVERIFY( dt.allowAlternative());
@@ -162,51 +161,36 @@ private Q_SLOTS:
     }
 
     void checkFollowers() {
-
-        DocType dt(_docTypeName);
+        DocTypes dts;
+        DocType dt = dts.get(_docTypeName);
+        QCOMPARE(dt.name(), "TestDocType 1");
 
         QStringList f = dt.follower();
         QVERIFY(f.contains("Rechnung"));
         QVERIFY(f.contains("Auftragsbestätigung"));
+        QVERIFY(f.contains("Teilrechnung"));
+        QVERIFY(!f.contains("Quadratrechnung"));
     }
 
     void createNewDoctype() {
-        QStringList f;
-        f.append("Angebot");
-        f.append("Rechnung");
+        const QStringList f{"Angebot", "Rechnung"};
 
         DocTypes dts;
         DocType dt( "Test" );
         dt.setMergeIdent(2);
-        // int num = dt.setAllFollowers(f);
-        // QVERIFY(2 == num );
+        dt.setFollowers(f);
+        int num = dt.follower().count();
+        QVERIFY(2 == num );
         dts.save(dt);
     }
 
-    void readNewDoctype() {
+    void docTypeDefaults() {
         DocType dt("Test");
-        QVERIFY(dt.mergeIdent() == 2);
+        QVERIFY(dt.mergeIdent() == 0);
+        QVERIFY(!dt.isXRechnungEnabled());
         QVERIFY(dt.name() == "Test");
         QVERIFY(! dt.allowAlternative());
-
-        QStringList li = dt.follower();
-        QVERIFY( li.size() == 2 );
-        QVERIFY( li.contains("Angebot"));
-        QVERIFY( li.indexOf("Angebot") == 0 );
-        QVERIFY( li.indexOf("Rechnung") == 1 );
-    }
-
-    void addAFollower() {
-        DocType dt("Test");
-        QStringList li = dt.follower();
-        QVERIFY(li.size() == 2);
-        li.append("Offer");
-        // int num = dt.setAllFollowers(li);
-        // qDebug() << "oo " << num;
-        // QVERIFY(1 == num);
-        QVERIFY( li.contains("Angebot"));
-        QVERIFY( li.contains("Rechnung"));
-        QVERIFY( li.contains("Offer"));
+        QVERIFY(! dt.allowDemand());
     }
 
 private:

@@ -121,7 +121,9 @@ void KraftObj::parseKobjXml(QDomElement &elem)
         setAttribute(attr);
         attribElem = attribElem.nextSiblingElement("attrib");
     }
-    QDomElement tagElem = elem.firstChildElement("tag");
+
+    QDomElement tagsElem = elem.firstChildElement("tags");
+    QDomElement tagElem = tagsElem.firstChildElement("tag");
     while (!tagElem.isNull()) {
         const QString t = tagElem.text();
         addTag(t);

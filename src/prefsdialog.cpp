@@ -316,7 +316,7 @@ QWidget* PrefsDialog::docTab()
   topLayout->addWidget( mCbDocTypes, 0, 1 );
 
   DocTypes dts;
-  mCbDocTypes->insertItems(-1, dts.allLocalised() );
+  mCbDocTypes->insertItems(-1, dts.allNames() );
 
   QLabel *f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );

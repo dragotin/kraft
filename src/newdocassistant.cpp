@@ -111,7 +111,7 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
 
   mTypeCombo = new QComboBox;
   DocTypes dts;
-  mTypeCombo->insertItems( 0, dts.allLocalised() );
+  mTypeCombo->insertItems( 0, dts.allNames() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &type:"), mTypeCombo );
 

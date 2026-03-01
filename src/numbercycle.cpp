@@ -244,7 +244,7 @@ QString NumberCycle::exampleIdent( const QString& docType,
 
 // ====================================================================================
 NumberCycles::NumberCycles()
-    : Lister<NumberCycle>(DefaultProvider::KraftV2Dir::NumberCycles)
+    : XmlDirLister<NumberCycle>(DefaultProvider::KraftV2Dir::NumberCycles)
 {
 
 }

@@ -26,7 +26,7 @@
 
 #include "defaultprovider.h"
 #include "kraftcat_export.h"
-#include "lister.h"
+#include "xmldirlister.h"
 
 class KraftDoc;
 class QDateTime;
@@ -77,7 +77,7 @@ private:
 // FIXME: This could be a namespace rather than a "static object"
 
 class KRAFTCAT_EXPORT NumberCycles
-        : public Lister<NumberCycle>
+        : public XmlDirLister<NumberCycle>
 {    
 public:
     friend class DbToXMLConverter;
