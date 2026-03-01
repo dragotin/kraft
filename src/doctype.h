@@ -24,17 +24,13 @@
 
 #include "kraftcat_export.h"
 
-#include "dbids.h"
 #include "attribute.h"
 #include "kraftobj.h"
-#include "lister.h"
-#include "defaultprovider.h"
+#include "xmldirlister.h"
 
 /**
 @author Klaas Freitag
 */
-
-typedef QMap<QString, dbID> idMap;
 
 class KRAFTCAT_EXPORT DocType
         :public KraftObj
@@ -44,7 +40,7 @@ public:
     /**
    * create a doctype from its localised or tech name
    */
-    DocType( const QString&, bool dirty = false );
+    DocType(const QString&, bool dirty = false);
 
     QString name() const;
     void setName( const QString& );
@@ -85,8 +81,6 @@ public:
     QString     appendPDF() const;
     void        setAppendPDFFile(const QString& file);
 
-    static void  clearMap();
-
     const QString toXml() const;
     void        parseXml(QDomDocument &domDoc);
 
@@ -98,25 +92,20 @@ public:
 private:
     QStringList  mFollowerList;
     QString      mName;
-    bool         mDirty;
 
     bool dtFlag(const QString& str) const;
     void setDtFlag(const QString& name, bool f);
     QString attributeValueString(const QString& attribName) const;
     void setStringAttribute( const QString& attribName, const QString& val, const QString& defaultValue = QString());
-
-    static idMap mNameMap;
 };
 
 class KRAFTCAT_EXPORT DocTypes
-        : public Lister<DocType>
+        : public XmlDirLister<DocType>
 {
 public:
     DocTypes();
 
-    QStringList all();
-    QStringList allLocalised();
-
+    QStringList allNames();
 private:
     bool saveDTXml(const QString& name, const QString& xml, const QString& baseDir = QString());
 

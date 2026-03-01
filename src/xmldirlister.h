@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LISTER_H
-#define LISTER_H
+#ifndef XMLDIRLISTER_H
+#define XMLDIRLISTER_H
 
 #include "defaultprovider.h"
 
@@ -24,7 +24,7 @@
 
 // =============================================================================
 template <class T>
-class Lister {
+class XmlDirLister {
 public:
     enum class SaveResult {
         SaveOk,
@@ -35,7 +35,7 @@ public:
         RemoveFail
     };
 
-    Lister(DefaultProvider::KraftV2Dir dir)
+    XmlDirLister(DefaultProvider::KraftV2Dir dir)
         :_v2dir{dir}
     {
 
@@ -162,7 +162,7 @@ private:
 };
 
 template<typename T>
-QMap<QString, T> Lister<T>::_map = {};
+QMap<QString, T> XmlDirLister<T>::_map = {};
 
 
 #endif // LISTER_H

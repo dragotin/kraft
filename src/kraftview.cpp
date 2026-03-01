@@ -245,7 +245,7 @@ void KraftView::setupDocHeaderView()
 
     m_headerEdit->m_cbType->clear();
     DocTypes dts;
-    m_headerEdit->m_cbType->insertItems(-1, dts.allLocalised() );
+    m_headerEdit->m_cbType->insertItems(-1, dts.allNames() );
     m_headerEdit->mButtLang->hide();
 
     const QString predecessorUuid = m_doc->predecessor();

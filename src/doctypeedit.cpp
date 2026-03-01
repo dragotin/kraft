@@ -34,9 +34,6 @@
 #include <QFileDialog>
 
 #include "prefsdialog.h"
-#include "kraftsettings.h"
-#include "kraftdb.h"
-#include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "doctype.h"
 #include "doctypeedit.h"
@@ -55,14 +52,11 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
            this,  &DocTypeEdit::slotDocTypeSelected);
 
   DocTypes dts;
-  QStringList types = dts.allLocalised();
+  QStringList types = dts.allNames();
   mTypeListBox->clear();
   mTypeListBox->addItems( types );
 
-  for ( QStringList::Iterator it = types.begin(); it != types.end(); ++it ) {
-    DocType dt( *it );
-    mOrigDocTypes[*it] = dt;
-  }
+  mOrigDocTypes = dts.map();
 
   mTypeListBox->setCurrentRow( 0, QItemSelectionModel::Select );
 
@@ -134,7 +128,7 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mAppendUrl, &QLineEdit::textChanged, this, &DocTypeEdit::slotAppendPDFUrlChanged );
 
   fillNumberCycleCombo();
-  DocType dt( dtype );
+  const DocType dt( dtype );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
 
   int newMode = dt.mergeIdent();
@@ -502,10 +496,6 @@ void DocTypeEdit::saveDocTypes()
     DocType dt = mapit.value();
     dts.save(dt);
   }
-
-  // now the list of document types should be up to date and reflected into
-  // the database.
-  DocType::clearMap();
 }
 
 void DocTypeEdit::removeTypeFromDb( const QString& name )

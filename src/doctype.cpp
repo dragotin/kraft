@@ -20,7 +20,6 @@
 
 // application specific includes
 #include "doctype.h"
-#include "kraftdb.h"
 #include "numbercycle.h"
 #include "defaultprovider.h"
 #include "stringutil.h"
@@ -47,46 +46,17 @@ const QString DefaultTmplFileName {"invoice.gtmpl"};
 const QString XRechnungEnabled {"XRechnungEnabled"};
 }
 
-
-idMap DocType::mNameMap = idMap();
-
 DocType::DocType()
-    : KraftObj(),
-      mDirty( false )
+    : KraftObj()
 {
 
 }
 
 DocType::DocType( const QString& name, bool dirty )
     : KraftObj(),
-      mName( name ),
-      mDirty( dirty )
+      mName( name )
 {
-}
-
-#if 0
-void DocType::init()
-{
-    // === Start to fill static content
-    if ( ! mNameMap.empty() ) return;
-
-    QSqlQuery q;
-    q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
-    q.exec();
-
-    while ( q.next() ) {
-        dbID id( q.value(0).toInt() );
-        QString name = q.value(1).toString();
-
-        mNameMap[ name ] = id;
-        // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
-    }
-}
-#endif
-
-void DocType::clearMap()
-{
-    mNameMap.clear();
+    setModified(dirty);
 }
 
 void DocType::parseXml(QDomDocument &domDoc)
@@ -383,19 +353,14 @@ QString DocType::name() const
 
 void DocType::setName( const QString& name )
 {
-    QString oldName = mName;
-    dbID id = mNameMap[ oldName ]; // The old id.
-    mNameMap[ name ] = id;
-    mNameMap.remove( oldName );
     mName = name;
-    mDirty = true;
+    setModified();
 }
 
 void DocType::setXRechnungEnabled(bool state)
 {
     if (state != isXRechnungEnabled()) {
         setAttribute({XRechnungEnabled, state, KraftAttrib::Type::Bool});
-        mDirty = true;
     }
 }
 
@@ -410,18 +375,15 @@ bool DocType::isXRechnungEnabled() const
 
 // ===============================================================
 DocTypes::DocTypes()
-    :Lister<DocType>(DefaultProvider::KraftV2Dir::DocTypes)
+    :XmlDirLister<DocType>(DefaultProvider::KraftV2Dir::DocTypes)
 {
 
 }
 
-QStringList DocTypes::all()
+QStringList DocTypes::allNames()
 {
     loadAll();
-    return map().keys();
-}
-
-QStringList DocTypes::allLocalised()
-{
-    return all();
+    QStringList li = map().keys();
+    li.sort();
+    return li;
 }

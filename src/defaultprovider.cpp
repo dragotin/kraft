@@ -161,7 +161,7 @@ QString DefaultProvider::docType()
     QString type = KraftSettings::self()->doctype();
     if ( type.isEmpty() ) {
         DocTypes dts;
-        QStringList allTypes = dts.allLocalised();
+        QStringList allTypes = dts.allNames();
         if( ! allTypes.isEmpty() ) {
             type = allTypes.at(0);
         } else {

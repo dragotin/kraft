@@ -200,8 +200,7 @@ target_include_directories(kraftlib PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_
 
 qt_add_executable(kraft
     MANUAL_FINALIZATION
-    main.cpp
-    lister.h)
+    main.cpp)
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
 target_include_directories(kraft PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_SOURCE_DIR}/src)
