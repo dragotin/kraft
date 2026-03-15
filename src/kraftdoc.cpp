@@ -852,6 +852,26 @@ void KraftDoc::slotNewIdent(const QString& ident)
      return myStr;
  }
 
+ QString KraftDoc::tosStart() const
+ {
+    return Format::toDateString(_toSStart.date(), KraftSettings::self()->dateFormat());
+ }
+
+ QString KraftDoc::tosEnd() const
+ {
+     return Format::toDateString(_toSEnd.date(), KraftSettings::self()->dateFormat());
+ }
+
+ bool KraftDoc::tosValid() const
+ {
+    return _toSStart.isValid();
+ }
+
+ bool KraftDoc::tosMultiDay() const
+ {
+    return _toSStart.date() != _toSEnd.date();
+ }
+
  QString KraftDoc::dateStr() const
  {
      return Format::toDateString(mDate, KraftSettings::self()->dateFormat());

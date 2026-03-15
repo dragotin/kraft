@@ -263,8 +263,7 @@ void KraftView::setupDocHeaderView()
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
-
-
+    /* Time of supply widgets */
     connect( m_headerEdit->cbBenefitPeriod, &QCheckBox::toggled, this, [=](bool checked) {
         slotModifiedHeader();
         if (checked) {
@@ -275,6 +274,20 @@ void KraftView::setupDocHeaderView()
             m_headerEdit->bpEnd->setEnabled(false);
         }
     });
+
+    connect( m_headerEdit->bpStart, &QDateEdit::dateChanged, this, [=](QDate newStartDate) {
+        slotModifiedHeader();
+        if (newStartDate > m_headerEdit->bpEnd->date()) {
+            m_headerEdit->bpEnd->setDate(newStartDate);
+        }
+    });
+    connect( m_headerEdit->bpEnd, &QDateEdit::dateChanged, this, [=](QDate newEndDate) {
+        slotModifiedHeader();
+        if (newEndDate < m_headerEdit->bpStart->date()) {
+            m_headerEdit->bpStart->setDate(newEndDate);
+        }
+    });
+
     connect( m_headerEdit->bpStart, &QDateEdit::userDateChanged, this, &KraftView::slotModifiedHeader);
     connect( m_headerEdit->bpEnd,   &QDateEdit::userDateChanged, this, &KraftView::slotModifiedHeader);
 

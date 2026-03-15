@@ -110,6 +110,7 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "PROJECT"), i18nc("Project label", "Project"));
     hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer ID"));
     hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
+    hash.insert( TAG( "TIMEOFSUPPLY"), i18nc("Printed on Document", "Time of supply"));
 
     return hash;
 }
