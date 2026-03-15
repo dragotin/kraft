@@ -36,7 +36,8 @@ namespace {
 
 QString xRechnungTemplate()
 {
-    DocType dt("Rechnung"); // FIXME hardcoded
+    DocTypes dts;
+    DocType dt = dts.get(QStringLiteral("Rechnung")); // FIXME hardcoded
 
     const QString re = dt.xRechnungTemplate();
 

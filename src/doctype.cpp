@@ -52,13 +52,6 @@ DocType::DocType()
 
 }
 
-DocType::DocType( const QString& name, bool dirty )
-    : KraftObj(),
-      mName( name )
-{
-    setModified(dirty);
-}
-
 void DocType::parseXml(QDomDocument &domDoc)
 {
     QDomElement dte = domDoc.firstChildElement("kraftDocType");
@@ -211,10 +204,8 @@ void DocType::setFollowers(const QStringList& followers)
 
 QString DocType::numberCycleName() const
 {
-    return attributeValueString(IdentNumberCycleStr);
-
     QString re = NumberCycle::defaultName();
-    if ( hasAttribute(IdentNumberCycleStr) ) {
+    if (hasAttribute(IdentNumberCycleStr)) {
         re = attribute(IdentNumberCycleStr).value().toString();
     }
     return re;

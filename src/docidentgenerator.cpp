@@ -36,7 +36,9 @@ bool DocIdentGenerator::generate(KraftDoc *doc)
         return false;
     }
 
-    DocType dt = doc->docType();
+    const QString dtName = doc->docType();
+    DocTypes dts;
+    const DocType dt = dts.get(dtName);
     const QString ncName = dt.numberCycleName();
 
     NumberCycles ncs;

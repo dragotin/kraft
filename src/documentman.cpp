@@ -73,9 +73,10 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             doc->setPositionList(listToCopy, true);
 
             // check for relations between old and new doc
-            DocType sourceDocType( sourceDoc->docType() );
+            DocTypes dts;
+            DocType sourceDocType = dts.get(sourceDoc->docType());
             // for new docs check if it should subtract the sum of the predecessor doc
-            DocType newDocType(docType);
+            DocType newDocType = dts.get(docType);
             if( newDocType.substractPartialInvoice() ) {
                 if( sourceDocType.partialInvoice()  ) {
                     Geld g = sourceDoc->nettoSum();

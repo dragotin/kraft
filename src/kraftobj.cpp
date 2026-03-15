@@ -136,9 +136,8 @@ QDomElement KraftObj::kobjXml(QDomDocument &xmldoc, const QString& elemName) con
 {
     QDomElement objAttr = xmldoc.createElement(elemName);
     {
-        QDomElement uuidElem = xmldoc.createElement("uuid");
-        uuidElem.setNodeValue(uuid());
-        objAttr.appendChild(uuidElem);
+        const auto uid = uuid();
+        objAttr.appendChild(KraftXml::textElement(xmldoc, "uuid", uid));
     }
     {
         const auto dt = lastModified();
