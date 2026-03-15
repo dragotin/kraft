@@ -403,7 +403,8 @@ QString ReportGenerator::targetFileName() const
 
 QString ReportGenerator::findTemplateFile( const QString& type )
 {
-    DocType dType( type );
+    DocTypes dts;
+    DocType dType = dts.get(type);
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {

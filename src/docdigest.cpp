@@ -58,7 +58,8 @@ void DocDigest::setAddressee( const KContacts::Addressee& contact )
 
 bool DocDigest::isXRechnungEnabled() const
 {
-    const DocType dt(mType);
+    DocTypes dts;
+    const DocType dt = dts.get(mType);
     return dt.isXRechnungEnabled();
 }
 

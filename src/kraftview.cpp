@@ -888,7 +888,8 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   // qDebug () << "Doc Type changed to " << newType;
   mAssistant->slotSetDocType( newType );
 
-  DocType docType( newType );
+  DocTypes dts;
+  DocType docType = dts.get(newType);
 
   PositionViewWidgetListIterator it( mPositionWidgetList );
   bool allow = docType.allowAlternative() || docType.allowDemand();
@@ -988,7 +989,9 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
     KraftDoc *doc = getDocument();
     if(doc) {
-        DocType docType = doc->docType();
+        const QString docTypeName = doc->docType();
+        DocTypes dts;
+        DocType docType = dts.get(docTypeName);
         dia->setDocPosition( dp, newTemplate, !docType.pricesHidden() );
     }
     DocPositionList list = currentPositionList();
@@ -1069,7 +1072,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
         // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
         const QString dt = getDocument()->docType();
         if( !dt.isEmpty() ) {
-            DocType docType(dt);
+            DocTypes dts;
+            DocType docType = dts.get(dt);
             widget->slotShowPrice(!docType.pricesHidden());
         }
         slotFocusItem( widget, newpos );

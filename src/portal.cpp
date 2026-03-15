@@ -464,7 +464,7 @@ void Portal::slotStartupChecks()
     // Check the document storage and see if the docs are converted already.
     QString basePath = DefaultProvider::self()->kraftV2Dir();
     if (basePath.isEmpty()) {
-        // conversion has not yet happened
+        // conversion has not yet happened, convert Documents and Numbercycles
         basePath = slotConvertToXML();
     }
 
@@ -474,6 +474,14 @@ void Portal::slotStartupChecks()
     } else {
         XmlDocIndex indx;
         indx.setBasePath(basePath);
+
+        // Check the conversion of DocTypes
+        // The doctype dir directory has to exist
+        const QString dtPath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::DocTypes);
+        if ( !QFileInfo::exists(dtPath)) {
+            DbToXMLConverter converter;
+            converter.convertDocTypes(basePath);
+        }
     }
 
     m_portalView->slotBuildView();
@@ -554,7 +562,8 @@ void Portal::slotFollowUpDocument()
 
     DocGuardedPtr sourceDoc = DocumentMan::self()->openDocumentByUuid(uuid);
 
-    DocType dt( sourceDoc->docType() );
+    DocTypes dts;
+    DocType dt = dts.get( sourceDoc->docType() );
 
     KraftWizard wiz;
     wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
@@ -585,7 +594,9 @@ void Portal::slotFollowUpDocument()
         // Check if the new document type allows demand- or alternative items. If not, remove the
         // attributes of the items, otherwise it can not be edited any more
         // see https://github.com/dragotin/kraft/issues/242
-        DocType newDocType = wiz.docType();
+        const QString newDocTypeName = wiz.docType();
+        DocTypes dts;
+        DocType newDocType = dts.get(newDocTypeName);
         bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
         if (!allowKind) {
             for(DocPosition *dp:posToCopy) {
@@ -615,7 +626,6 @@ void Portal::slotCopyDocument(const QString& uuid)
     QString oldDocUuid;
     DocGuardedPtr oldDoc = DocumentMan::self()->openDocumentByUuid(uuid);
     if(oldDoc) {
-        const DocType dt = oldDoc->docType();
         oldDocUuid = i18nc("Title of the new doc dialog, %1 is the source doc id",
                            "Create new Document as Copy of %1", oldDoc->docIdentifier());
         delete oldDoc;

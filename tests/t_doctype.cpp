@@ -67,7 +67,9 @@ private Q_SLOTS:
     }
 
     void save1() {
-        DocType dt("TestDocType");
+        DocTypes dts;
+        DocType dt;
+        dt.setName("TestDocType");
         dt.setAppendPDFFile("appender.pdf");
         dt.setTemplateFile("mytemplate.gtmpl");
         dt.setWatermarkFile("mywatermark.pdf");
@@ -81,7 +83,6 @@ private Q_SLOTS:
         const QStringList flist{"Auftragsbestätigung", "Rechnung", "Teilrechnung"};
         dt.setFollowers(flist);
 
-        DocTypes dts;
         auto res = dts.save(dt, _baseDir);
         QCOMPARE(res, DocTypes::SaveResult::SaveOk);
 
@@ -101,7 +102,8 @@ private Q_SLOTS:
         DocTypes dts;
 
         auto create = [](int i) -> DocType {
-            DocType dt("TestDocType " % QString::number(i));
+            DocType dt;
+            dt.setName("TestDocType " % QString::number(i));
             dt.setAppendPDFFile("appender.pdf");
             dt.setTemplateFile("mytemplate.gtmpl");
             dt.setWatermarkFile("mywatermark.pdf");
@@ -176,7 +178,7 @@ private Q_SLOTS:
         const QStringList f{"Angebot", "Rechnung"};
 
         DocTypes dts;
-        DocType dt( "Test" );
+        DocType dt = dts.get( "Test" );
         dt.setMergeIdent(2);
         dt.setFollowers(f);
         int num = dt.follower().count();
@@ -185,10 +187,11 @@ private Q_SLOTS:
     }
 
     void docTypeDefaults() {
-        DocType dt("Test");
+        DocTypes dts;
+        const DocType dt = dts.get("Test");
         QVERIFY(dt.mergeIdent() == 0);
         QVERIFY(!dt.isXRechnungEnabled());
-        QVERIFY(dt.name() == "Test");
+        QVERIFY(dt.name().isEmpty());
         QVERIFY(! dt.allowAlternative());
         QVERIFY(! dt.allowDemand());
     }

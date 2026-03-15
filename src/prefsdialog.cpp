@@ -478,7 +478,8 @@ void PrefsDialog::readConfig()
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
 
-    DocType dt(QStringLiteral("Rechnung")); // FIXME
+    DocTypes dts;
+    DocType dt = dts.get(QStringLiteral("Rechnung"));
     const auto tmpl = dt.xRechnungTemplate();
     _lineEditXRechnung->setText(tmpl);
 
@@ -563,7 +564,8 @@ void PrefsDialog::writeConfig()
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
-    DocType dt(QStringLiteral("Rechnung")); // FIXME
+    DocTypes dts;
+    DocType dt = dts.get(QStringLiteral("Rechnung")); // FIXME
     const auto newTmpl = _lineEditXRechnung->text();
     if (newTmpl != dt.xRechnungTemplate()) {
         dt.setXRechnungTemplate(newTmpl);

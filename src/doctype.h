@@ -37,10 +37,6 @@ class KRAFTCAT_EXPORT DocType
 {
 public:
     DocType();
-    /**
-   * create a doctype from its localised or tech name
-   */
-    DocType(const QString&, bool dirty = false);
 
     QString name() const;
     void setName( const QString& );

@@ -6,6 +6,7 @@
 #include "documentsaverdb.h"
 #include "numbercycle.h"
 #include "doctype.h"
+#include "xmldirlister.h"
 
 #include <klocalizedstring.h>
 #include <utime.h>
@@ -15,19 +16,13 @@
 #include <QStandardPaths>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 namespace {
 
 const char *okStr{"ok"};
 const char *pdfFailsStr{"pdfFails"};
 const char *failsStr{"fails"};
-
-QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
-{
-  QDomElement elem = doc.createElement( name );
-  QDomText t = doc.createTextNode( value.toHtmlEscaped() );
-  elem.appendChild( t );
-  return elem;
-}
 
 bool setFileMTime(const QString& fileName, const QDateTime& dt)
 {
@@ -285,29 +280,92 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
 
 int DbToXMLConverter::convertDocTypes(const QString& baseDir)
 {
+    const QString XRechnungTmplStr   {"XRechnungTmpl"};
+    const QString WatermarkFileStr   {"watermarkFile"};
+    const QString DocTemplateFileStr {"docTemplateFile"};
+    const QString IdentNumberCycleStr{"identNumberCycle"};
+    const QString DocMergeIdentStr   {"docMergeIdent"};
+    const QString DayCounterDateStr  {"dayCounterDate"};
+    const QString DayCounterStr  {"dayCounter"};
+    const QString AppendPDFStr   {"AppendPDFFile"};
+    const QString XRechnungEnabled {"XRechnungEnabled"};
+    const QString AllowDemandStr   {"AllowDemand"};
+    const QString AllowAlternativeStr   {"AllowAlternative"};
+    const QString HidePricesStr         {"HidePrices"};
+    const QString PartialInvoiceStr     {"PartialInvoice"};
+    const QString SubstractPartialInvoiceStr {"SubstractPartialInvoice"};
+
     int cnt{0};
+    DocTypes dts;
+
+    // create the directory
+    const auto dtDir = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::DocTypes);
+    QDir dtd(dtDir);
+    if (!dtd.exists()) {
+        dtd.mkpath(dtDir);
+    }
 
     QSqlQuery q;
     q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
     q.exec();
 
     QMap<QString, DocType> dtMap;
+
     while ( q.next() ) {
         dbID id( q.value(0).toInt() );
-        QString name = q.value(1).toString();
-        DocType dt(name);
-        dtMap.insert(name, dt);
-        // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
-    }
+        const QString name = q.value(1).toString();
+        DocType dt;
+        dt.setName(name);
+        dt.createUuid();
 
-#if 0
-    if (dts.save(td, baseDir) == NumberCycles::SaveResult::SaveOk) {
-        qDebug() << "Saved numbercycle successfully:" << dt.name();
-        cnt++;
-    } else {
-        qDebug() << "Failed to save Numbercycle" << dt.name();
+        AttributeMap attribs(QStringLiteral("DocType"));
+        attribs.load(id);
+
+        if (attribs.contains(XRechnungTmplStr)) {
+            dt.setXRechnungTemplate(attribs[XRechnungTmplStr].value().toString());
+        }
+        if (attribs.contains(WatermarkFileStr)) {
+            dt.setWatermarkFile(attribs[WatermarkFileStr].value().toString());
+        }
+        if (attribs.contains(DocTemplateFileStr)) {
+            dt.setTemplateFile(attribs[DocTemplateFileStr].value().toString());
+        }
+        if (attribs.contains(IdentNumberCycleStr)) {
+            dt.setNumberCycleName(attribs[IdentNumberCycleStr].value().toString());
+        }
+        if (attribs.contains(IdentNumberCycleStr)) {
+            dt.setMergeIdent(attribs[IdentNumberCycleStr].value().toInt());
+        }
+        if (attribs.contains(AppendPDFStr)) {
+            dt.setAppendPDFFile(attribs[AppendPDFStr].value().toString());
+        }
+        if (attribs.contains(XRechnungEnabled)) {
+            dt.setXRechnungEnabled(attribs[XRechnungEnabled].value().toString() == u"Yes"_s);
+        }
+        if (attribs.contains( AllowDemandStr ) ) {
+            dt.setAllowDemand(true);
+        }
+        if (attribs.contains( AllowAlternativeStr ) ) {
+            dt.setAllowAlternative(true);
+        }
+        if( attribs.contains(HidePricesStr)) {
+            dt.setPricesHidden(true);
+        }
+        if( attribs.contains(PartialInvoiceStr)) {
+            dt.setPartialInvoice(true);
+        }
+        if( attribs.contains(SubstractPartialInvoiceStr)) {
+            dt.setSubstractPartialInvoice(true);
+        }
+
+        auto sr = dts.save(dt, baseDir);
+
+        if (sr != XmlDirLister<DocType>::SaveResult::SaveOk) {
+            qDebug() << "failed to convert doctype" << name << "from DB to XMl";
+        } else {
+            cnt++;
+        }
     }
-#endif
 
     return cnt;
 }

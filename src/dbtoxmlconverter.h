@@ -30,6 +30,7 @@ public:
     QMap<QByteArray, int> convert(const QString &dBase);
     QMap <int, int> yearMap();
 
+    int convertDocTypes(const QString& baseDir);
 private:
 
     void convertDocsOfYear(int year, const QString& basePath, QMap<QByteArray, int> &);
@@ -38,7 +39,6 @@ private:
 
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
-    int convertDocTypes(const QString& baseDir);
 
     bool convertOwnIdentity(const QString& baseDir);
 
