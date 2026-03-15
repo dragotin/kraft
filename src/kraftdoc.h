@@ -125,6 +125,11 @@ class KraftDoc : public QObject, public KraftObj
 
     Q_PROPERTY(QString owner READ owner)
 
+    Q_PROPERTY(QString timeOfSupplyStart READ tosStart)
+    Q_PROPERTY(QString timeOfSupplyEnd   READ tosEnd)
+    Q_PROPERTY(bool timeOfSupplyValid READ tosValid)
+    Q_PROPERTY(bool timeOfSupplyMultiDay READ tosMultiDay)
+
     Q_PROPERTY(QString dueDateStrISO READ dueDate)
     Q_PROPERTY(QString buyerReference READ buyerRef)
 
@@ -253,6 +258,11 @@ public:
 
     QString country() const;
     QString language() const;
+
+    QString tosStart() const;
+    QString tosEnd() const;
+    bool tosValid() const;
+    bool tosMultiDay() const;
 
     QString dueDate() const { return _dueDate.toString("yyyy-MM-dd"); }
     QString buyerRef() const { return _buyerRef; }
