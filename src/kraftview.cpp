@@ -944,6 +944,8 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 
   mAssistant->postCard()->slotShowPrices( !docType.pricesHidden() );
   m_footerEdit->ui()->_taxGroup->setVisible( !docType.pricesHidden() );
+  m_headerEdit->tosFrame->setVisible(docType.isInvoice());
+
   if( mDocPosEditorIndx > -1 ) {
       KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
       if(w) {

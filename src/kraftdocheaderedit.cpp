@@ -55,7 +55,7 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   connect( mDocHeaderEdit->pb_pickAddressee, SIGNAL(clicked()), SIGNAL(pickAddressee()));
 
   setTitle( i18n( "Document Header" ) );
-  setColor( "#9af0ff" );
+  setColor( 0x9af0ff );
 
   // if the Akonadi-Backend is down, just show a text
   QScopedPointer<AddressProvider> addressProvider;
