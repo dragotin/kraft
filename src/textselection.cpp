@@ -139,7 +139,7 @@ void TextSelection::slotSelectDocType( const QString& doctype )
   mGroupBox->setTitle( t );
   mDocType = doctype;
 
-  DocTextList dtList = DefaultProvider::self()->documentTexts( doctype, mPart );
+  const DocTextList dtList = DefaultProvider::self()->documentTexts( doctype, mPart );
 
   QStringList templNames;
   if( dtList.count() == 0 ) {
@@ -154,7 +154,6 @@ void TextSelection::slotSelectDocType( const QString& doctype )
   mTemplNamesModel->setStringList( templNames );
 
   mTextDisplay->clear();
-
 }
 
 void TextSelection::addNewDocText( const DocText& dt )
