@@ -257,7 +257,6 @@ void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
         if( oldDptr != sourceDoc ) {
             delete oldDptr;
         }
-        delete dPtr;
     }
 
     if( mDetailsPage->mSourceDocIdentsCombo->count() > 0  ) {
