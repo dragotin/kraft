@@ -278,6 +278,22 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
     return cnt;
 }
 
+QStringList DbToXMLConverter::getFollowers(int id, const QMap<int, QString> &nameMap)
+{
+    QSqlQuery q;
+    q.prepare( "SELECT followerId FROM DocTypeRelations WHERE typeId=:type ORDER BY sequence");
+    q.bindValue( ":type", id);
+    q.exec();
+
+    QStringList fList;
+    while ( q.next() ) {
+        int followerId = q.value(0).toInt();
+        const QString& fName = nameMap[followerId];
+        fList.append(fName);
+    }
+    return fList;
+}
+
 int DbToXMLConverter::convertDocTypes(const QString& baseDir)
 {
     const QString XRechnungTmplStr   {"XRechnungTmpl"};
@@ -305,15 +321,21 @@ int DbToXMLConverter::convertDocTypes(const QString& baseDir)
         dtd.mkpath(dtDir);
     }
 
+    QMap<int, QString> nameMap;
     QSqlQuery q;
+    // get the list of doctypes in the database as source
     q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
     q.exec();
-
-    QMap<QString, DocType> dtMap;
-
-    while ( q.next() ) {
-        dbID id( q.value(0).toInt() );
+    while (q.next()) {
+        int id = q.value(0).toInt();
         const QString name = q.value(1).toString();
+        nameMap.insert(id, name);
+    }
+
+    const QList<int> ids = nameMap.keys();
+    for( int id : ids ) {
+        const QString name = nameMap[id];
+
         DocType dt;
         dt.setName(name);
         dt.createUuid();
@@ -357,6 +379,9 @@ int DbToXMLConverter::convertDocTypes(const QString& baseDir)
         if( attribs.contains(SubstractPartialInvoiceStr)) {
             dt.setSubstractPartialInvoice(true);
         }
+
+        const QStringList followers = getFollowers(id, nameMap);
+        dt.setFollowers(followers);
 
         auto sr = dts.save(dt, baseDir);
 
