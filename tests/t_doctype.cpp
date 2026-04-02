@@ -8,6 +8,8 @@
 #include "doctype.h"
 #include "kraftdb.h"
 
+using namespace Qt::StringLiterals;
+
 void init_test_db()
 {
     const QString dbName("__test.db");
@@ -168,9 +170,9 @@ private Q_SLOTS:
         QCOMPARE(dt.name(), "TestDocType 1");
 
         QStringList f = dt.follower();
-        QVERIFY(f.contains("Rechnung"));
-        QVERIFY(f.contains("Auftragsbestätigung"));
-        QVERIFY(f.contains("Teilrechnung"));
+        QVERIFY(f.at(1) == u"Rechnung"_s);
+        QVERIFY(f.at(0) == u"Auftragsbestätigung"_s);
+        QVERIFY(f.at(2) == u"Teilrechnung"_s);
         QVERIFY(!f.contains("Quadratrechnung"));
     }
 

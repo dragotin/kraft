@@ -39,6 +39,7 @@ private:
 
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
+    QStringList getFollowers(int id, const QMap<int, QString> &nameMap);
 
     bool convertOwnIdentity(const QString& baseDir);
 
