@@ -197,6 +197,8 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
+    {# add a signature from an image like the following #}
+    {# <p><img src="file:///home/klaas/opensource/kraft/reports/bowie.png" width="200px" alt="Unterschrift D. Bowie" /></p> #}
     {%if doc.isInvoice and epcqrcode.valid and epcqrcode.show %}
     <p class="epcqrcode">
       <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
