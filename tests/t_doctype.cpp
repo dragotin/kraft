@@ -96,7 +96,7 @@ private Q_SLOTS:
         const auto map = dts.map();
 
         const DocType dt = map["TestDocType"];
-
+        QVERIFY(!dt.modified());
         QCOMPARE(map.size(), 1);
     }
 
@@ -126,6 +126,7 @@ private Q_SLOTS:
         QMap<QString, DocType> m;
         for (int i = 1; i < 10; i++) {
             const DocType dt = create(i);
+            QVERIFY(dt.modified());
             m.insert(dt.name(), dt);
         }
 
