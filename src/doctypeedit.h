@@ -73,21 +73,12 @@ Q_SIGNALS:
 private:
   DocType currentDocType();
 
-  DocType mOrigDocType;
+  // void removeTypeXml( const QString& );
+  // void renameTypeXml( const QString&, const QString& );
 
-  QStringList removedTypes() { return mRemovedTypes; }
+  QMap<QString, DocType> _dts;
 
-  void removeTypeFromDb( const QString& );
-  void renameTypeInDb( const QString&, const QString& );
-
-  QMap<QString, QString> mTypeNameChanges;
-  
-  QMap<QString, DocType> mChangedDocTypes;
-  QMap<QString, DocType> mOrigDocTypes;
-  QStringList mAddedTypes;
   QStringList mRemovedTypes;
-
-  QString mPreviousType;
   QString mExampleDocType;
   QString mExampleAddressUid;
 };

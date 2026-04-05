@@ -38,6 +38,7 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 #include "numbercycledialog.h"
+#include "xmldirlister.h"
 
 // --------------------------------------------------------------------------------
 
@@ -51,14 +52,15 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
     connect(mTypeListBox, &QListWidget::currentTextChanged,
             this,  &DocTypeEdit::slotDocTypeSelected);
 
+
     DocTypes dts;
-    QStringList types = dts.allNames();
+    dts.loadAll();
+    _dts = dts.map();
+    QStringList types = _dts.keys();
     mTypeListBox->clear();
     mTypeListBox->addItems( types );
 
     fillNumberCycleCombo();
-
-    mOrigDocTypes = dts.map();
 
     mPbAdd->setIcon( DefaultProvider::self()->icon( "plus" ) );
     mPbEdit->setIcon( DefaultProvider::self()->icon( "pencil" ) );
@@ -145,16 +147,13 @@ void DocTypeEdit::slotAddDocType()
     if ( newName.isEmpty() ) return;
     // qDebug () << "New Name to add: " << newName;
 
-    if ( mTypeListBox->findItems(newName, Qt::MatchExactly).count() > 0 ) {
+    if ( _dts.keys().contains(newName)) {
         // qDebug () << "New Name already exists";
     } else {
         mTypeListBox->addItem( newName );
         DocType newDt;
         newDt.setName(newName);
-
-        mOrigDocTypes[newName] = newDt;
-        mChangedDocTypes[newName] = newDt; // Check again!
-        mAddedTypes.append( newName );
+        _dts.insert(newName, newDt);
     }
 }
 
@@ -166,7 +165,7 @@ void DocTypeEdit::slotXRechnungToggled(bool newState)
 
     if ( newState != dt.isXRechnungEnabled() ) {
         dt.setXRechnungEnabled(newState);
-        mChangedDocTypes[dt.name()] = dt;
+        _dts.insert(dt.name(), dt);
     }
 }
 
@@ -175,47 +174,30 @@ void DocTypeEdit::slotEditDocType()
     // qDebug () << "Editing a doctype!";
 
     QString currName = mTypeListBox->currentItem()->text();
+    DocType oldDt = currentDocType();
 
     if ( currName.isEmpty() ) return;
 
     QString newName = QInputDialog::getText( this,
-                                             i18n( "Add Document Type" ),
+                                             i18n( "Edit Document Type" ),
                                              i18n( "Edit the name of a document type" ),
                                              QLineEdit::Normal,
                                              currName );
-    if ( newName.isEmpty() ) return;
-    // qDebug () << "edit: " << currName << " became " << newName;
-    if ( newName != currName ) {
-        mTypeListBox->currentItem()->setText(newName);
-
-        /* check if the word that was changed now was already changed before. */
-        bool prechanged = false;
-        bool skipEntry = false;
-        QMap<QString, QString>::Iterator it;
-        for ( it = mTypeNameChanges.begin(); !prechanged && it != mTypeNameChanges.end(); ++it ) {
-
-            if (it.key() == currName ) { // it was changed back to an original name.
-                mTypeNameChanges.erase( it );
-                skipEntry = true;
-            }
-
-            if ( !skipEntry && it.value() == currName ) {
-                // qDebug () << "Was changed before, key is " << it.key();
-                currName = it.key();
-                prechanged = true;
-            }
-        }
-        if ( ! skipEntry ) {
-            mTypeNameChanges[currName] = newName;
-            DocTypes dts;
-            DocType dt = dts.get(currName);
-            if ( mChangedDocTypes.contains( currName ) ) {
-                dt = mChangedDocTypes[currName];
-            }
-            dt.setName( newName );
-            mChangedDocTypes[newName] = dt;
-        }
+    if ( newName.isEmpty() || newName == currName) {
+        return;
     }
+    // qDebug () << "edit: " << currName << " became " << newName;
+
+    mTypeListBox->currentItem()->setText(newName);
+
+    Q_ASSERT(_dts.keys().contains(currName));
+
+    DocType dt = _dts[currName];
+    dt.setName(newName);
+    _dts.insert(newName, dt);
+    _dts.remove(currName);
+    mRemovedTypes.append(currName);
+
 }
 
 void DocTypeEdit::slotRemoveDocType()
@@ -230,26 +212,12 @@ void DocTypeEdit::slotRemoveDocType()
     }
     QString currName = currItem->text();
 
-    if ( mAddedTypes.indexOf( currName ) != -1 ) {
-        // remove item from recently added list.
-        mChangedDocTypes.remove( currName );
-        mAddedTypes.removeAll( currName );
-        mOrigDocTypes.remove( currName );
-    } else {
-        QString toRemove = currName;
-        QMap<QString, QString>::Iterator it;
-        for ( it = mTypeNameChanges.begin(); it != mTypeNameChanges.end(); ++it ) {
-            if ( currName == it.value() ) {
-                // remove the original name
-                toRemove = it.key(); // the original name
-            }
-        }
-        mRemovedTypes.append( toRemove );
-    }
-
+    Q_ASSERT(_dts.keys().contains(currName));
+    const DocType dt = _dts[currName];
+    _dts.remove(currName);
+    mRemovedTypes.append(currName);
     delete currItem;
-    // qDebug () << "removed type: " << mRemovedTypes;
-    Q_EMIT removedType( currName );
+
 }
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
@@ -259,29 +227,8 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     NumberCycles ncs;
     ncs.loadAll();
 
-    DocTypes dts;
-    DocType dt = dts.get(newValue);
-    if ( mChangedDocTypes.contains( newValue ) ) {
-        dt = mChangedDocTypes[newValue];
-        // qDebug () << "new docType taken from ChangedDocTypes: ";
-    }
-
-    // store the previous type
-    DocType prevType = mOrigDocTypes[mPreviousType];
-    if ( mChangedDocTypes.contains( mPreviousType ) ) {
-        prevType = mChangedDocTypes[mPreviousType];
-        // qDebug () << "previous docType taken from ChangedDocTypes: ";
-    }
-    const QString oldNcName = prevType.numberCycleName();
-    const NumberCycle oldNc = ncs.get(oldNcName);
-
-    prevType.setNumberCycleName(oldNcName);
-    prevType.setTemplateFile( mTemplateUrl->text() );
-    prevType.setWatermarkFile( mWatermarkUrl->text() );
-    prevType.setAppendPDFFile(mAppendUrl->text());
-    prevType.setMergeIdent( mWatermarkCombo->currentIndex());
-    prevType.setXRechnungEnabled(mCbXRechnung->checkState() == Qt::Checked);
-    mChangedDocTypes[mPreviousType] = prevType;
+    Q_ASSERT(_dts.keys().contains(newValue));
+    const DocType dt = _dts[newValue];
 
     qDebug () << "Selected doc type " << newValue;
     const QString& ncn = dt.numberCycleName();
@@ -306,9 +253,6 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     mAppendUrl->setText(dt.appendPDF());
     bool xrechnungEnabled = dt.isXRechnungEnabled();
     mCbXRechnung->setCheckState(xrechnungEnabled ? Qt::Checked : Qt::Unchecked);
-
-    mPreviousType = newValue;
-
 }
 
 void DocTypeEdit::slotEditNumberCycles()
@@ -339,10 +283,9 @@ void DocTypeEdit::slotEditNumberCycles()
 DocType DocTypeEdit::currentDocType()
 {
     QString docType = mTypeListBox->currentItem()->text();
-    DocType dt = mOrigDocTypes[docType];
-    if ( mChangedDocTypes.contains( docType ) ) {
-        dt = mChangedDocTypes[docType];
-    }
+    Q_ASSERT(!docType.isEmpty() && _dts.keys().contains(docType));
+    const DocType dt = _dts[docType];
+
     return dt;
 }
 
@@ -352,73 +295,50 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
 
     if ( newMode != dt.mergeIdent() ) {
         dt.setMergeIdent( newMode );
-        if ( !mTypeListBox->currentItem()->text().isEmpty() ) {
-            mChangedDocTypes[ mTypeListBox->currentItem()->text() ] = dt;
-        }
+        _dts.insert(dt.name(), dt);
     }
 
-    bool state = true;
-    if ( newMode == 0 )
-        state = false;
+    bool state = newMode != 0;
     mWatermarkUrl->setEnabled( state );
 }
 
 void DocTypeEdit::slotAppendPDFUrlChanged(const QString& newUrl)
 {
-    QString docType;
-    if(mTypeListBox->currentRow() != -1)
-        docType = mTypeListBox->currentItem()->text();
+    DocType dt = currentDocType();
 
-    if( docType.isEmpty() || ! mOrigDocTypes.contains(docType) ) return;
-    DocType dt = mOrigDocTypes[docType];
-    if ( mChangedDocTypes.contains( docType ) ) {
-        dt = mChangedDocTypes[docType];
-    }
-
-    if ( newUrl != dt.appendPDF() ) {
+    if (newUrl != dt.appendPDF()) {
         dt.setAppendPDFFile(newUrl);
-        mChangedDocTypes[docType] = dt;
+        _dts.insert(dt.name(), dt);
     }
 }
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
 {
-    QString docType;
-    if(mTypeListBox->currentRow() != -1)
-        docType = mTypeListBox->currentItem()->text();
+    DocType dt = currentDocType();
 
-    if( docType.isEmpty() || ! mOrigDocTypes.contains(docType) ) return;
-    DocType dt = mOrigDocTypes[docType];
-    if ( mChangedDocTypes.contains( docType ) ) {
-        dt = mChangedDocTypes[docType];
-    }
-
-    if ( newUrl != dt.templateFile() ) {
-        dt.setTemplateFile( newUrl );
-        mChangedDocTypes[docType] = dt;
+    if (newUrl != dt.templateFile()) {
+        dt.setTemplateFile(newUrl);
+        _dts.insert(dt.name(), dt);
     }
 }
 
 void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 {
-    QString docType = mTypeListBox->currentItem()->text();
-    DocType dt = mOrigDocTypes[docType];
-    if ( mChangedDocTypes.contains( docType ) ) {
-        dt = mChangedDocTypes[docType];
-    }
+    DocType dt = currentDocType();
 
-    if ( newUrl != dt.watermarkFile() ) {
-        dt.setWatermarkFile( newUrl );
-        mChangedDocTypes[docType] = dt;
+    if (newUrl != dt.watermarkFile()) {
+        dt.setWatermarkFile(newUrl);
+        _dts.insert(dt.name(), dt);
     }
-
 }
 
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
     DocType dt = currentDocType();
+    if (dt.numberCycleName() == newCycle) {
+        return;
+    }
     dt.setNumberCycleName( newCycle );
-    mChangedDocTypes[newCycle] = dt;
 
     NumberCycles ncs;
     ncs.loadAll();
@@ -435,57 +355,16 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 
 void DocTypeEdit::saveDocTypes()
 {
-    // removed doctypes
-    // FIXME: Remove unreferenced number cycles
-    for ( QStringList::Iterator it = mRemovedTypes.begin(); it != mRemovedTypes.end(); ++it ) {
-        if ( mOrigDocTypes.contains( *it ) ) {
-            DocType dt = mOrigDocTypes[*it];
-            removeTypeFromDb( *it );
-            mOrigDocTypes.remove( *it );
-            mChangedDocTypes.remove( *it );
-            Q_EMIT removedType( *it );
-        }
-    }
-
-    // added doctypes
     DocTypes dts;
-    for ( QStringList::Iterator it = mAddedTypes.begin(); it != mAddedTypes.end(); ++it ) {
-        QString name = *it;
-        if ( mOrigDocTypes.contains( name ) ) { // just to check
-            DocType dt = mChangedDocTypes[name];
-            dts.save(dt);
-        }
+    auto res = dts.saveAll(_dts);
+    for (const auto &rf : mRemovedTypes) {
+        dts.remove(rf);
     }
-
-    // edited doctypes
-    QMap<QString, QString>::Iterator it;
-    for ( it = mTypeNameChanges.begin(); it != mTypeNameChanges.end(); ++it ) {
-        QString oldName( it.key() );
-        if ( mOrigDocTypes.contains( oldName ) ) {
-            QString newName = it.value();
-            DocType dt = mOrigDocTypes[oldName];
-            if ( mChangedDocTypes.contains( newName ) ) {
-                dt = mChangedDocTypes[newName];
-            } else {
-                dt.setName( newName );
-            }
-            mOrigDocTypes.remove( oldName );
-            mOrigDocTypes[newName] = dt;
-            dts.save(dt);
-        } else {
-            qCritical() << "Can not find doctype to change named " << oldName;
-        }
-    }
-
-    // check if numberCycles have changed.
-    QMap<QString, DocType>::Iterator mapit;
-    for ( mapit = mChangedDocTypes.begin(); mapit != mChangedDocTypes.end(); ++mapit ) {
-        DocType dt = mapit.value();
-        dts.save(dt);
-    }
+    Q_UNUSED(res) // FIXME
 }
 
-void DocTypeEdit::removeTypeFromDb( const QString& name )
+#if 0
+void DocTypeEdit::removeTypeXml( const QString& name )
 {
     DocTypes dts;
     dts.loadAll();
@@ -494,7 +373,7 @@ void DocTypeEdit::removeTypeFromDb( const QString& name )
     dts.remove(dt);
 }
 
-void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newName )
+void DocTypeEdit::renameTypeXml( const QString& oldName,  const QString& newName )
 {
     DocTypes dts;
     dts.loadAll();
@@ -506,5 +385,5 @@ void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newNam
 
     dts.remove(dtOld);
 }
-
+#endif
 

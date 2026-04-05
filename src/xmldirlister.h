@@ -47,6 +47,10 @@ public:
         return _map.contains(name)?_map.value(name):T();
     }
 
+    void insert(const QString& name, T& t) {
+        _map.insert(name, t);
+    }
+
     int loadAll(const QString& baseDir = QString()) {
         QString v2Dir{baseDir};
         if (baseDir.isEmpty()) {
@@ -58,6 +62,7 @@ public:
 
         const QStringList names {"*.xml"};
         const QStringList entries = wdir.entryList(names);
+        _map.clear();
 
         for (const QString& xmlFileName : entries) {
             QString const fullPathName = wdir.absoluteFilePath(xmlFileName);
@@ -134,8 +139,7 @@ public:
         return res;
     }
 
-    SaveResult remove(const T &t, const QString& baseDir = QString()) {
-        const QString &name{t.name()};
+    SaveResult remove(const QString &name, const QString& baseDir = QString()) {
         QString saveName{name};
         QString v2Dir{baseDir};
         if (baseDir.isEmpty()) {

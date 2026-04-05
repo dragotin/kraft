@@ -38,6 +38,7 @@ QString KraftObj::createUuid()
 {
     if (_uuid.isNull()) {
         _uuid = QUuid::createUuid();
+        setModified();
     }
     return uuid();
 }
@@ -49,14 +50,17 @@ bool KraftObj::hasAttribute(const QString& name) const
 
 void KraftObj::setAttribute(const KraftAttrib& attrib)
 {
-    if (!attrib.name().isEmpty())
+    if (!attrib.name().isEmpty()) {
         _attribs.insert(attrib.name(), attrib);
+        setModified();
+    }
 }
 
 void KraftObj::removeAttribute(const QString& name)
 {
     if (!name.isEmpty() && _attribs.contains(name)) {
         _attribs.remove(name);
+        setModified();
     }
 }
 
@@ -71,12 +75,17 @@ KraftAttrib KraftObj::attribute(const QString& name) const
 
 void KraftObj::addTag(const QString& tag)
 {
-    if (!tag.isEmpty())
+    if (!tag.isEmpty() && !_tags.contains(tag)) {
         _tags.insert(tag);
+        setModified();
+    }
 }
 void KraftObj::removeTag(const QString& tag)
 {
-    _tags.remove(tag);
+    if (_tags.contains(tag)) {
+        _tags.remove(tag);
+        setModified();
+    }
 }
 
 bool KraftObj::hasTag(const QString& tag) const
@@ -90,6 +99,7 @@ void KraftObj::setTags(const QStringList& list)
     for( const auto &l : list) {
         addTag(l);
     }
+    setModified();
 }
 
 QStringList KraftObj::allTags() const

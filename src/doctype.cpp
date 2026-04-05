@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QtCore>
 
 // application specific includes
 #include "doctype.h"
@@ -49,13 +48,13 @@ const QString XRechnungEnabled {"XRechnungEnabled"};
 DocType::DocType()
     : KraftObj()
 {
-
+    createUuid(); // Create a uuid
 }
 
 void DocType::parseXml(QDomDocument &domDoc)
 {
     QDomElement dte = domDoc.firstChildElement("kraftDocType");
-    setName(KraftXml::childElemText(dte, "name"));
+    mName = KraftXml::childElemText(dte, "name");
 
     QDomElement followersElem = dte.firstChildElement("followers");
     QDomElement fElem = followersElem.firstChildElement("follower");
@@ -67,6 +66,7 @@ void DocType::parseXml(QDomDocument &domDoc)
     // generic KraftObj XML parsing
     QDomElement kobjElem = dte.firstChildElement("kobj");
     parseKobjXml(kobjElem);
+    setModified(false);
 }
 
 const QString DocType::toXml() const
