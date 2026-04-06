@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <QLocale>
 
 // application specific includes
 #include "doctype.h"
@@ -49,12 +50,16 @@ DocType::DocType()
     : KraftObj()
 {
     createUuid(); // Create a uuid
+
+    QLocale loc;
+    mLocale = loc.bcp47Name();
 }
 
 void DocType::parseXml(QDomDocument &domDoc)
 {
     QDomElement dte = domDoc.firstChildElement("kraftDocType");
     mName = KraftXml::childElemText(dte, "name");
+    mLocale = KraftXml::childElemText(dte, "locale");
 
     QDomElement followersElem = dte.firstChildElement("followers");
     QDomElement fElem = followersElem.firstChildElement("follower");
@@ -82,6 +87,7 @@ const QString DocType::toXml() const
     xmldoc.appendChild( root );
 
     root.appendChild(KraftXml::textElement(xmldoc, "name", name()));
+    root.appendChild(KraftXml::textElement(xmldoc, "locale", mLocale));
     if (mFollowerList.size() > 0) {
         QDomElement followerElem = xmldoc.createElement("followers");
         for( const QString& f: mFollowerList) {

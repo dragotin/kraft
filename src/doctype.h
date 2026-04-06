@@ -88,6 +88,7 @@ public:
 private:
     QStringList  mFollowerList;
     QString      mName;
+    QString      mLocale;
 
     bool dtFlag(const QString& str) const;
     void setDtFlag(const QString& name, bool f);
