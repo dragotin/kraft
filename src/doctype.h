@@ -38,6 +38,23 @@ class KRAFTCAT_EXPORT DocType
 public:
     DocType();
 
+    static const QString AllowDemandStr;
+    static const QString AllowAlternativeStr;
+    static const QString HidePricesStr;
+    static const QString SubstPartialInoiceStr;
+    static const QString PartialInvoiceStr;
+    static const QString XRechnungTmplStr;
+    static const QString WatermarkFileStr;
+    static const QString DocTemplateFileStr;
+    static const QString IdentNumberCycleStr;
+    static const QString DocMergeIdentStr;
+    static const QString DayCounterDateStr;
+    static const QString DayCounterStr;
+    static const QString AppendPDFStr;
+    static const QString DefaultTmplFileName;
+    static const QString XRechnungEnabled;
+    static const QString NeedsArchivingStr;
+
     QString name() const;
     void setName( const QString& );
 
@@ -55,6 +72,9 @@ public:
 
     bool substractPartialInvoice() const;
     void setSubstractPartialInvoice(bool);
+
+    bool needsArchiving() const;
+    void setNeedsArchiving(bool);
 
     QStringList follower() const;
     void setFollowers(const QStringList& followers);
