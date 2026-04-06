@@ -24,27 +24,28 @@
 #include "defaultprovider.h"
 #include "stringutil.h"
 
+using namespace Qt::StringLiterals;
+
 /**
 @author Klaas Freitag
 */
 
-namespace {
-const QString AllowDemandStr     {"AllowDemand"};
-const QString AllowAlternativeStr{"AllowAlternative"};
-const QString HidePricesStr      {"HidePrices"};
-const QString SubstPartialInoiceStr      {"SubstractPartialInvoice"};
-const QString PartialInvoiceStr  {"PartialInvoice"};
-const QString XRechnungTmplStr   {"XRechnungTmpl"};
-const QString WatermarkFileStr   {"watermarkFile"};
-const QString DocTemplateFileStr {"docTemplateFile"};
-const QString IdentNumberCycleStr{"identNumberCycle"};
-const QString DocMergeIdentStr   {"docMergeIdent"};
-const QString DayCounterDateStr  {"dayCounterDate"};
-const QString DayCounterStr  {"dayCounter"};
-const QString AppendPDFStr   {"AppendPDFFile"};
-const QString DefaultTmplFileName {"invoice.gtmpl"};
-const QString XRechnungEnabled {"XRechnungEnabled"};
-}
+const QString DocType::AllowDemandStr      {u"AllowDemand"};
+const QString DocType::AllowAlternativeStr {u"AllowAlternative"};
+const QString DocType::HidePricesStr       {u"HidePrices"};
+const QString DocType::SubstPartialInoiceStr {u"SubstractPartialInvoice"};
+const QString DocType::PartialInvoiceStr   {u"PartialInvoice"};
+const QString DocType::XRechnungTmplStr    {u"XRechnungTmpl"};
+const QString DocType::WatermarkFileStr    {u"watermarkFile"};
+const QString DocType::DocTemplateFileStr  {u"docTemplateFile"};
+const QString DocType::IdentNumberCycleStr {u"identNumberCycle"};
+const QString DocType::DocMergeIdentStr    {u"docMergeIdent"};
+const QString DocType::DayCounterDateStr   {u"dayCounterDate"};
+const QString DocType::DayCounterStr       {u"dayCounter"};
+const QString DocType::AppendPDFStr        {u"AppendPDFFile"};
+const QString DocType::DefaultTmplFileName {u"invoice.gtmpl"};
+const QString DocType::XRechnungEnabled    {u"XRechnungEnabled"};
+const QString DocType::NeedsArchivingStr   {u"NeedsArchiving"};
 
 DocType::DocType()
     : KraftObj()
@@ -196,6 +197,16 @@ bool DocType::partialInvoice() const
 void DocType::setPartialInvoice(bool b)
 {
     setDtFlag(PartialInvoiceStr, b);
+}
+
+bool DocType::needsArchiving() const
+{
+    return dtFlag(NeedsArchivingStr);
+}
+
+void DocType::setNeedsArchiving(bool b)
+{
+    setDtFlag(NeedsArchivingStr, b);
 }
 
 QStringList DocType::follower() const
