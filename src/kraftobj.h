@@ -52,7 +52,7 @@ public:
     void setLastModified( QDateTime d ) { _lastModified = d; }
 
     bool modified() const {return _modified;}
-    void setModified(bool m = true) {_modified = m;}
+    void setModified(bool m = true);
 
     bool hasAttribute(const QString& name) const;
     void setAttribute(const KraftAttrib& attrib);

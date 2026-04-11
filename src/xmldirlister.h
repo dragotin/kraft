@@ -130,9 +130,11 @@ public:
         const QList<T> list = map.values();
         SaveResult res{SaveResult::SaveOk};
         for( T t : list) {
-            auto lres = save(t, baseDir);
-            if (res == SaveResult::SaveOk) {
-                res = lres; // do not overwrite an error
+            if (t.modified()) {
+                auto lres = save(t, baseDir);
+                if (res == SaveResult::SaveOk) {
+                    res = lres; // do not overwrite an error
+                }
             }
         }
         _map = map;
