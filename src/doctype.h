@@ -51,9 +51,11 @@ public:
     static const QString DayCounterDateStr;
     static const QString DayCounterStr;
     static const QString AppendPDFStr;
-    static const QString DefaultTmplFileName;
-    static const QString XRechnungEnabled;
+    static const QString IsInvoiceStr;
+    static const QString XRechnungEnabledStr;
     static const QString NeedsArchivingStr;
+
+    static const QString DefaultTmplFileName;
 
     QString name() const;
     void setName( const QString& );
@@ -66,6 +68,12 @@ public:
 
     bool pricesHidden() const;
     void setPricesHidden(bool);
+
+    bool isInvoice() const;
+    void setIsInvoice(bool);
+
+    bool isXRechnungEnabled() const;
+    void setXRechnungEnabled(bool);
 
     bool partialInvoice() const;
     void setPartialInvoice(bool);
@@ -101,9 +109,6 @@ public:
     void        parseXml(QDomDocument &domDoc);
 
     void        readIdentTemplate();
-
-    bool        isXRechnungEnabled() const;
-    void        setXRechnungEnabled(bool);
 
 private:
     QStringList  mFollowerList;
