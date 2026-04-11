@@ -56,6 +56,7 @@ public:
     const QString toXml() const;
 
     bool isEmpty() { return _name.isEmpty(); }
+    bool modified() { return _isModified; }
 
     QString exampleIdent(const QString& docType,
                          const QDate& date,
@@ -70,6 +71,7 @@ private:
     QString _name;
     QString _template;
     int     _counter;
+    bool    _isModified;
     int     _dbId;
 };
 

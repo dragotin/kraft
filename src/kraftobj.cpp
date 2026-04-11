@@ -26,6 +26,12 @@ KraftObj::KraftObj()
 
 }
 
+void KraftObj::setModified(bool m)
+{
+    _modified = m;
+    _lastModified = QDateTime::currentDateTime();
+}
+
 QString KraftObj::uuid() const
 {
     if (_uuid.isNull()) {

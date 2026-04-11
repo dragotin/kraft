@@ -139,6 +139,7 @@ QString generateDocumentIdent(const QString& templ,
 NumberCycle::NumberCycle()
     :_template{"%y%w-%i"}, // default
       _counter{0},
+      _isModified{false},
       _dbId{0}
 {
 
@@ -154,7 +155,10 @@ bool NumberCycle::operator==(const NumberCycle& other) const
 
 void NumberCycle::setName( const QString& n )
 {
-    _name = n;
+    if (n != _name) {
+        _name = n;
+        _isModified = true;
+    }
 }
 
 QString NumberCycle::name() const
@@ -164,7 +168,10 @@ QString NumberCycle::name() const
 
 void NumberCycle::setTemplate( const QString& t )
 {
-    _template = t;
+    if (t != _template) {
+        _template = t;
+        _isModified = true;
+    }
 }
 
 QString NumberCycle::getTemplate() const
@@ -174,7 +181,10 @@ QString NumberCycle::getTemplate() const
 
 void NumberCycle::setCounter( int c )
 {
-    _counter = c;
+    if (c != _counter) {
+        _counter = c;
+        _isModified = true;
+    }
 }
 
 int  NumberCycle::counter() const
@@ -224,6 +234,7 @@ void NumberCycle::parseXml(QDomDocument &domDoc)
     setTemplate(t);
     t = KraftXml::childElemText(ncs, "dbId");
     setDbId(t.toInt());
+    _isModified = false;
 
 }
 
