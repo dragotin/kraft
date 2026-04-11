@@ -43,9 +43,11 @@ const QString DocType::DocMergeIdentStr    {u"docMergeIdent"};
 const QString DocType::DayCounterDateStr   {u"dayCounterDate"};
 const QString DocType::DayCounterStr       {u"dayCounter"};
 const QString DocType::AppendPDFStr        {u"AppendPDFFile"};
-const QString DocType::DefaultTmplFileName {u"invoice.gtmpl"};
-const QString DocType::XRechnungEnabled    {u"XRechnungEnabled"};
+const QString DocType::IsInvoiceStr        {u"IsInvoice"};
+const QString DocType::XRechnungEnabledStr {u"XRechnungEnabled"};
 const QString DocType::NeedsArchivingStr   {u"NeedsArchiving"};
+
+const QString DocType::DefaultTmplFileName {u"invoice.gtmpl"};
 
 DocType::DocType()
     : KraftObj()
@@ -120,12 +122,12 @@ QString DocType::attributeValueString(const QString& attribName) const
 
 void DocType::setStringAttribute( const QString& attribName, const QString& val, const QString& defaultValue)
 {
-    const QString oldAttribVal = attributeValueString(attribName);
-    if (oldAttribVal == val) {
-        return;
-    }
     if (val == defaultValue) {
         removeAttribute(attribName);
+        return;
+    }
+    const QString oldAttribVal = attributeValueString(attribName);
+    if (oldAttribVal == val) {
         return;
     }
 
@@ -136,6 +138,9 @@ void DocType::setStringAttribute( const QString& attribName, const QString& val,
 void DocType::setDtFlag(const QString& name, bool f)
 {
     // All default to false!
+    bool state = hasTag(name);
+    if (f == state) return;
+
     if(!f) {
         removeTag(name);
     } else {
@@ -209,6 +214,26 @@ void DocType::setNeedsArchiving(bool b)
     setDtFlag(NeedsArchivingStr, b);
 }
 
+bool DocType::isInvoice() const
+{
+    return dtFlag(IsInvoiceStr);
+}
+
+void DocType::setIsInvoice(bool b)
+{
+    setDtFlag(IsInvoiceStr, b);
+}
+
+bool DocType::isXRechnungEnabled() const
+{
+    return dtFlag(XRechnungEnabledStr);
+}
+
+void DocType::setXRechnungEnabled(bool state)
+{
+    setDtFlag(XRechnungEnabledStr, state);
+}
+
 QStringList DocType::follower() const
 {
     return mFollowerList;
@@ -230,6 +255,7 @@ QString DocType::numberCycleName() const
 
 void DocType::setNumberCycleName( const QString& name )
 {
+    // get the uuid of the number cycle
     setStringAttribute(IdentNumberCycleStr, name, NumberCycle::defaultName());
 }
 
@@ -363,22 +389,6 @@ void DocType::setName( const QString& name )
 {
     mName = name;
     setModified();
-}
-
-void DocType::setXRechnungEnabled(bool state)
-{
-    if (state != isXRechnungEnabled()) {
-        setAttribute({XRechnungEnabled, state, KraftAttrib::Type::Bool});
-    }
-}
-
-bool DocType::isXRechnungEnabled() const
-{
-    bool re{false};
-    if (hasAttribute(XRechnungEnabled)) {
-        re = attribute(XRechnungEnabled).value().toBool();
-    }
-    return re;
 }
 
 // ===============================================================

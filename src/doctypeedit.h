@@ -62,7 +62,10 @@ protected Q_SLOTS:
   void slotWatermarkUrlChanged( const QString& );
   void slotTemplateUrlChanged( const QString& );
   void slotAppendPDFUrlChanged( const QString& );
-    void slotXRechnungToggled(bool);
+
+  void slotXRechnungToggled(bool);
+  void slotInvoiceToggled(bool);
+  void slotArchiveToggled(bool);
 
 Q_SIGNALS:
   /**
@@ -72,9 +75,6 @@ Q_SIGNALS:
 
 private:
   DocType currentDocType();
-
-  // void removeTypeXml( const QString& );
-  // void renameTypeXml( const QString&, const QString& );
 
   QMap<QString, DocType> _dts;
 

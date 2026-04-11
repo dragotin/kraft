@@ -38,7 +38,6 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 #include "numbercycledialog.h"
-#include "xmldirlister.h"
 
 // --------------------------------------------------------------------------------
 
@@ -108,7 +107,9 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
         }
     });
 
+    connect( mCbIsInvoice, &QCheckBox::toggled, this, &DocTypeEdit::slotInvoiceToggled);
     connect( mCbXRechnung, &QCheckBox::toggled, this, &DocTypeEdit::slotXRechnungToggled);
+    connect( mCbArchiving, &QCheckBox::toggled, this, &DocTypeEdit::slotArchiveToggled);
 
     connect( mPbAdd, &QPushButton::clicked, this, &DocTypeEdit::slotAddDocType);
     connect( mPbEdit, &QPushButton::clicked, this, &DocTypeEdit::slotEditDocType);
@@ -165,6 +166,32 @@ void DocTypeEdit::slotXRechnungToggled(bool newState)
 
     if ( newState != dt.isXRechnungEnabled() ) {
         dt.setXRechnungEnabled(newState);
+        _dts.insert(dt.name(), dt);
+    }
+}
+
+void DocTypeEdit::slotInvoiceToggled(bool newState)
+{
+    qDebug() << "set Invoice state:" << newState;
+
+    mCbXRechnung->setEnabled(newState);
+
+    DocType dt = currentDocType();
+
+    if ( newState != dt.isInvoice() ) {
+        dt.setIsInvoice(newState);
+        _dts.insert(dt.name(), dt);
+    }
+}
+
+void DocTypeEdit::slotArchiveToggled(bool newState)
+{
+    qDebug() << "set Archive state:" << newState;
+
+    DocType dt = currentDocType();
+
+    if ( newState != dt.needsArchiving() ) {
+        dt.setNeedsArchiving(newState);
         _dts.insert(dt.name(), dt);
     }
 }
@@ -251,8 +278,16 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     mWatermarkCombo->setCurrentIndex( mergeIdent );
     mWatermarkUrl->setEnabled( mergeIdent > 0 );
     mAppendUrl->setText(dt.appendPDF());
-    bool xrechnungEnabled = dt.isXRechnungEnabled();
-    mCbXRechnung->setCheckState(xrechnungEnabled ? Qt::Checked : Qt::Unchecked);
+
+    bool invoice = dt.isInvoice();
+    mCbIsInvoice->setCheckState(invoice ? Qt::Checked : Qt::Unchecked);
+
+    bool archive = dt.needsArchiving();
+    mCbArchiving->setCheckState(archive ? Qt::Checked : Qt::Unchecked);
+
+    bool xre = dt.isXRechnungEnabled();
+    mCbXRechnung->setCheckState(xre ? Qt::Checked : Qt::Unchecked);
+    mCbXRechnung->setEnabled(invoice);
 }
 
 void DocTypeEdit::slotEditNumberCycles()
@@ -283,7 +318,7 @@ void DocTypeEdit::slotEditNumberCycles()
 DocType DocTypeEdit::currentDocType()
 {
     QString docType = mTypeListBox->currentItem()->text();
-    Q_ASSERT(!docType.isEmpty() && _dts.keys().contains(docType));
+    Q_ASSERT(!docType.isEmpty() && _dts.contains(docType));
     const DocType dt = _dts[docType];
 
     return dt;
@@ -339,6 +374,7 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
         return;
     }
     dt.setNumberCycleName( newCycle );
+    _dts.insert(dt.name(), dt);
 
     NumberCycles ncs;
     ncs.loadAll();
@@ -356,34 +392,11 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 void DocTypeEdit::saveDocTypes()
 {
     DocTypes dts;
-    auto res = dts.saveAll(_dts);
+    const auto res = dts.saveAll(_dts);
     for (const auto &rf : mRemovedTypes) {
         dts.remove(rf);
     }
     Q_UNUSED(res) // FIXME
 }
 
-#if 0
-void DocTypeEdit::removeTypeXml( const QString& name )
-{
-    DocTypes dts;
-    dts.loadAll();
-    const DocType dt = dts.get(name);
-
-    dts.remove(dt);
-}
-
-void DocTypeEdit::renameTypeXml( const QString& oldName,  const QString& newName )
-{
-    DocTypes dts;
-    dts.loadAll();
-    const DocType dtOld = dts.get(oldName);
-
-    DocType dt = dtOld;
-    dt.setName(newName);
-    dts.save(dt);
-
-    dts.remove(dtOld);
-}
-#endif
 
