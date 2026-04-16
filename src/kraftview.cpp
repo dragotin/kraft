@@ -311,7 +311,7 @@ void KraftView::redrawDocument( )
     /* header: date and document type */
     QDate date = doc->date();
     m_headerEdit->m_dateEdit->setDate( date );
-    m_headerEdit->m_cbType->setCurrentIndex(m_headerEdit->m_cbType->findText( doc->docType() ));
+    m_headerEdit->m_cbType->setCurrentIndex(m_headerEdit->m_cbType->findText( doc->docTypeStr() ));
 
     /* header: address */
     mContactUid  = doc->addressUid();
@@ -340,10 +340,10 @@ void KraftView::redrawDocument( )
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
 
-    mAssistant->slotSetDocType( doc->docType() );
+    mAssistant->slotSetDocType( doc->docTypeStr() );
 
     redrawDocPositions( );
-    slotDocTypeChanged( doc->docType() );
+    slotDocTypeChanged( doc->docTypeStr() );
     refreshPostCard();
     mModifiedMapper->blockSignals(false);
 
@@ -989,7 +989,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
     KraftDoc *doc = getDocument();
     if(doc) {
-        const QString docTypeName = doc->docType();
+        const QString docTypeName = doc->docTypeStr();
         DocTypes dts;
         DocType docType = dts.get(docTypeName);
         dia->setDocPosition( dp, newTemplate, !docType.pricesHidden() );
@@ -1070,7 +1070,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
         // Check if the new widget is supposed to display prices, based on the doc type
         // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
-        const QString dt = getDocument()->docType();
+        const QString dt = getDocument()->docTypeStr();
         if( !dt.isEmpty() ) {
             DocTypes dts;
             DocType docType = dts.get(dt);

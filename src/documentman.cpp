@@ -74,7 +74,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
 
             // check for relations between old and new doc
             DocTypes dts;
-            DocType sourceDocType = dts.get(sourceDoc->docType());
+            DocType sourceDocType = dts.get(sourceDoc->docTypeStr());
             // for new docs check if it should subtract the sum of the predecessor doc
             DocType newDocType = dts.get(docType);
             if( newDocType.substractPartialInvoice() ) {

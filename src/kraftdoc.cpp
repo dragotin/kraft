@@ -36,6 +36,7 @@
 #include "kraftsettings.h"
 #include "docdigest.h"
 #include "docidentgenerator.h"
+#include "doctype.h"
 
 namespace {
 
@@ -364,7 +365,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
 
 DocDigest KraftDoc::toDigest()
 {
-    DocDigest digest(docType(), addressUid());
+    DocDigest digest(docTypeStr(), addressUid());
     digest.setUuid(uuid());
     digest.setDate(date());
     digest.setLastModified(lastModified());
@@ -394,7 +395,7 @@ void KraftDoc::toJsonObj(QJsonObject& obj) const
     obj["prjtLabel"] = projectLabel();
     obj["state"] = _state.stateString();
     obj["whiteboard"] = whiteboard();
-    obj["docType"] = docType();
+    obj["docType"] = docTypeStr();
 }
 
 void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
@@ -407,10 +408,10 @@ QString KraftDoc::docIdentifier() const
 {
     QString re;
     if (isDraftState()) {
-        re = i18nc("First document type, second date", "%1 from %2 (Draft)", docType(), dateStr());
+        re = i18nc("First document type, second date", "%1 from %2 (Draft)", docTypeStr(), dateStr());
     } else {
         // both components are already translated.
-        re = QString("%1 %2").arg(docType()).arg(ident());
+        re = QString("%1 %2").arg(docTypeStr()).arg(ident());
         // re = i18nc("First argument is the doctype, like Invoice, followed by the ID", "%1 %2", docType(), ident());
     }
     return re;

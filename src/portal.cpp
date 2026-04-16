@@ -563,7 +563,7 @@ void Portal::slotFollowUpDocument()
     DocGuardedPtr sourceDoc = DocumentMan::self()->openDocumentByUuid(uuid);
 
     DocTypes dts;
-    DocType dt = dts.get( sourceDoc->docType() );
+    DocType dt = dts.get( sourceDoc->docTypeStr() );
 
     KraftWizard wiz;
     wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
@@ -799,7 +799,7 @@ void Portal::slotFinalizeDoc()
     QIcon icon = DefaultProvider::self()->icon("checklist");
     QPixmap icp = icon.pixmap(QSize(120, 120));
     ui.iconLabel->setPixmap(icp);
-    QString info = QStringLiteral("<b>") + i18n("%1, date %2").arg(doc->docType(), doc->dateStr())+QStringLiteral("</b>");
+    QString info = QStringLiteral("<b>") + i18n("%1, date %2").arg(doc->docTypeStr(), doc->dateStr())+QStringLiteral("</b>");
     ui._docTypeLabel->setText(info);
     info = QStringLiteral("<pre>") + doc->address() + QStringLiteral("</pre>");
     ui._docLabelIntro->setText(info);
