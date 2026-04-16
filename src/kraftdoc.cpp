@@ -655,7 +655,11 @@ bool KraftDoc::isInvoice() const
     // This is just a work around and should be fixed with an attribute for the doctype
     // at some point.
     // FIXME - this is not cool.
-    return (docType() == QStringLiteral("Rechnung"));
+    DocTypes dts;
+
+    Q_ASSERT(dts.allNames().contains(mDocType));
+    const DocType dt = dts.get(mDocType);
+    return dt.isInvoice();
 }
 
 bool KraftDoc::isDraftState() const
