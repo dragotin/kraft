@@ -95,7 +95,7 @@ private Q_SLOTS:
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
         QCOMPARE(doc.ident(), "20110127");
-        QCOMPARE(doc.docType(), "Rechnung");
+        QCOMPARE(doc.docTypeStr(), "Rechnung");
         QCOMPARE(doc.whiteboard(), "whiteboard content");
         QCOMPARE(doc.uuid(), "f4deb784-6131-4e49-bd6d-92bd1355ea4d");
         QCOMPARE(doc.state().state(), KraftDocState::State::Final);

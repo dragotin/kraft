@@ -112,7 +112,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
 
     // the next call also sets the watermark options
-    const QString dt = doc->docType();
+    const QString dt = doc->docTypeStr();
     _tmplFile = findTemplateFile(dt);
 
     if (_tmplFile.endsWith(QStringLiteral(".trml"))) {

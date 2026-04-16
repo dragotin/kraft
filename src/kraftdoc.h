@@ -166,7 +166,7 @@ public:
     QString dateStr() const;
     QString dateStrISO() const;
 
-    QString docType() const { return mDocType; }
+    QString docTypeStr() const { return mDocType; }
     void setDocType( const QString& s );
     bool docTypeChanged() { return mDocTypeChanged; }
 

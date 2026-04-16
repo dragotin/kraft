@@ -119,7 +119,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
 
     QDomElement meta = xmldoc.createElement( "meta" );
     root.appendChild(meta);
-    meta.appendChild(textElement(xmldoc, "docType", doc->docType()));
+    meta.appendChild(textElement(xmldoc, "docType", doc->docTypeStr()));
     meta.appendChild(textElement(xmldoc, "docDesc", doc->whiteboard()));
     meta.appendChild(textElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode)));
     meta.appendChild(textElement(xmldoc, "country", DefaultProvider::self()->locale()->territoryToString(DefaultProvider::self()->locale()->territory())));
