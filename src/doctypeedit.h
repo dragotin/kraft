@@ -63,9 +63,7 @@ protected Q_SLOTS:
   void slotTemplateUrlChanged( const QString& );
   void slotAppendPDFUrlChanged( const QString& );
 
-  void slotXRechnungToggled(bool);
   void slotInvoiceToggled(bool);
-  void slotArchiveToggled(bool);
 
 Q_SIGNALS:
   /**

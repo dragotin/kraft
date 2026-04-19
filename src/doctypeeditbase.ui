@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>611</height>
+    <width>571</width>
+    <height>687</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" rowspan="3">
+   <item row="0" column="0" rowspan="4">
     <layout class="QVBoxLayout">
      <property name="leftMargin">
       <number>0</number>
@@ -210,18 +210,60 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QGroupBox" name="groupBox2_3">
+    <widget class="QGroupBox" name="mGBInvoice">
      <property name="title">
-      <string>Document Type Options</string>
+      <string>Invoice Document Type</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="_2">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="mCbIsInvoice">
+       <widget class="QCheckBox" name="mCbXRechnung">
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;An invoice document type has special properties, for example e-invoice support.&lt;/p&gt;&lt;p&gt;It can not have on-demand or alternative items, but it has support for partial invoices.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Electronic invoices can be generated from this document type.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Is an Invoice Type</string>
+         <string>Enable E-Invoice Support </string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mCbPartialInvoice">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A document type marked as partial invoice is substracted from the final sum of an invoice that is following on it.&lt;/p&gt;&lt;p&gt;It is used for partial invoices that are substracted in the final invoice created as followup document of this.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Partial Invoice</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QGroupBox" name="groupBox2_4">
+     <property name="title">
+      <string>Document Type Options</string>
+     </property>
+     <layout class="QGridLayout" name="_3">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="mCbAlternative">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This document type may contain alternative items, which do not have a price in the document. That is typical for quotes.&lt;/p&gt;&lt;p&gt;Invoices can not have alternative items at all, thus the flag is disabled for invoice types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Allow Alternative items</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mCbDemand">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This document type may contain &amp;quot;on-demand&amp;quot; items, which do not have a price in the document. That is typical for quotes.&lt;/p&gt;&lt;p&gt;Invoices can not have on-demand items at all, thus the flag is disabled for invoice types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Allow Demand items</string>
         </property>
        </widget>
       </item>
@@ -235,20 +277,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="mCbXRechnung">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Electronic invoices can be generated from this document type.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Enable XRechung Support </string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <spacer name="spacer3">
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
@@ -264,7 +296,7 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox2_2">
      <property name="title">
       <string>PDF Creation and Postprocessing</string>

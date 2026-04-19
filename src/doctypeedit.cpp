@@ -107,9 +107,37 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
         }
     });
 
-    connect( mCbIsInvoice, &QCheckBox::toggled, this, &DocTypeEdit::slotInvoiceToggled);
-    connect( mCbXRechnung, &QCheckBox::toggled, this, &DocTypeEdit::slotXRechnungToggled);
-    connect( mCbArchiving, &QCheckBox::toggled, this, &DocTypeEdit::slotArchiveToggled);
+    connect( mGBInvoice, &QGroupBox::toggled, this, &DocTypeEdit::slotInvoiceToggled);
+
+    connect( mCbXRechnung, &QCheckBox::toggled, this, [this](bool newState) {
+        DocType dt = currentDocType();
+        dt.setXRechnungEnabled(newState);
+        _dts.insert(dt.name(), dt);
+    });
+
+    connect( mCbArchiving, &QCheckBox::toggled, this, [this](bool newState){
+        DocType dt = currentDocType();
+        dt.setNeedsArchiving(newState);
+        _dts.insert(dt.name(), dt);
+    });
+
+    connect( mCbAlternative, &QCheckBox::toggled, this, [this](bool newState){
+        DocType dt = currentDocType();
+        dt.setAllowAlternative(newState);
+        _dts.insert(dt.name(), dt);
+    });
+
+    connect( mCbDemand, &QCheckBox::toggled, this, [this](bool newState){
+        DocType dt = currentDocType();
+        dt.setAllowDemand(newState);
+        _dts.insert(dt.name(), dt);
+    });
+
+    connect( mCbPartialInvoice, &QCheckBox::toggled, this, [this](bool newState){
+        DocType dt = currentDocType();
+        dt.setPartialInvoice(newState);
+        _dts.insert(dt.name(), dt);
+    });
 
     connect( mPbAdd, &QPushButton::clicked, this, &DocTypeEdit::slotAddDocType);
     connect( mPbEdit, &QPushButton::clicked, this, &DocTypeEdit::slotEditDocType);
@@ -158,40 +186,24 @@ void DocTypeEdit::slotAddDocType()
     }
 }
 
-void DocTypeEdit::slotXRechnungToggled(bool newState)
-{
-    qDebug() << "set XREchnung state:" << newState;
-
-    DocType dt = currentDocType();
-
-    if ( newState != dt.isXRechnungEnabled() ) {
-        dt.setXRechnungEnabled(newState);
-        _dts.insert(dt.name(), dt);
-    }
-}
-
 void DocTypeEdit::slotInvoiceToggled(bool newState)
 {
     qDebug() << "set Invoice state:" << newState;
 
     mCbXRechnung->setEnabled(newState);
+    if (newState) {
+        // if it is an invoice, set alternative and demand to false
+        mCbAlternative->setCheckState(Qt::CheckState::Unchecked);
+        mCbDemand->setCheckState(Qt::CheckState::Unchecked);
+    }
+    // if it is an invoice, alternative and demand is not possible
+    mCbAlternative->setEnabled(!newState);
+    mCbDemand->setEnabled(!newState);
 
     DocType dt = currentDocType();
 
     if ( newState != dt.isInvoice() ) {
         dt.setIsInvoice(newState);
-        _dts.insert(dt.name(), dt);
-    }
-}
-
-void DocTypeEdit::slotArchiveToggled(bool newState)
-{
-    qDebug() << "set Archive state:" << newState;
-
-    DocType dt = currentDocType();
-
-    if ( newState != dt.needsArchiving() ) {
-        dt.setNeedsArchiving(newState);
         _dts.insert(dt.name(), dt);
     }
 }
@@ -280,14 +292,27 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     mAppendUrl->setText(dt.appendPDF());
 
     bool invoice = dt.isInvoice();
-    mCbIsInvoice->setCheckState(invoice ? Qt::Checked : Qt::Unchecked);
+    mGBInvoice->setChecked(invoice);
+    slotInvoiceToggled(invoice);
+
+    auto scs = [](QCheckBox *cb, bool s) {
+        cb->setCheckState(s ? Qt::Checked : Qt::Unchecked);
+    };
 
     bool archive = dt.needsArchiving();
-    mCbArchiving->setCheckState(archive ? Qt::Checked : Qt::Unchecked);
+    scs(mCbArchiving, archive);
 
     bool xre = dt.isXRechnungEnabled();
-    mCbXRechnung->setCheckState(xre ? Qt::Checked : Qt::Unchecked);
-    mCbXRechnung->setEnabled(invoice);
+    scs(mCbXRechnung, xre);
+
+    bool demand = dt.allowDemand();
+    scs(mCbDemand, demand);
+
+    bool alter = dt.allowDemand();
+    scs(mCbAlternative, alter);
+
+    bool partial = dt.partialInvoice();
+    scs(mCbPartialInvoice, partial);
 }
 
 void DocTypeEdit::slotEditNumberCycles()

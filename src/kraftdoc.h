@@ -87,7 +87,7 @@ class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString docType READ docTypeStr)
     Q_PROPERTY(QString state READ (_state.stateString))
     Q_PROPERTY(bool isDraftState READ isDraftState)
     Q_PROPERTY(QString address READ address)
