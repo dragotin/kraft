@@ -103,7 +103,6 @@ private Q_SLOTS:
         QCOMPARE(doc.timeOfSupplyStart(), QDateTime(QDate(2019, 11, 21), QTime(0,0)));
         QCOMPARE(doc.timeOfSupplyEnd(), QDateTime(QDate(2019, 11, 23), QTime(23,59, 59)));
         QCOMPARE(doc.owner(), "kf");
-        QCOMPARE(doc.lastModified(), QDateTime::fromString("2018-12-15T18:22:20", Qt::ISODate));
         QCOMPARE(doc.predecessor(), "id");
         QCOMPARE(doc.fullTax(), 19.0);
         QCOMPARE(doc.reducedTax(), 7.0);

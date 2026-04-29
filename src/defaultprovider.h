@@ -39,7 +39,8 @@ public:
         PdfDocs,
         NumberCycles,
         DocTypes,
-        OwnIdentity
+        OwnIdentity,
+        Tests
     };
 
     ~DefaultProvider();

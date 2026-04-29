@@ -65,7 +65,7 @@ private:
 
   Ui::NumberCycleEditBase *mBaseWidget;
   QStringList mRemovedCycles;
-  QMap<QString,NumberCycle> mNumberCycles;
+  XmlDirLister<NumberCycle>::Map mNumberCycles;
   QString mSelectedCycle;
 
   QPushButton *_okButton;

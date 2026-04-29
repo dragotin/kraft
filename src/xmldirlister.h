@@ -19,11 +19,13 @@
 #define XMLDIRLISTER_H
 
 #include "defaultprovider.h"
-
+#include <QDir>
+#include <QDomDocument>
+#include <QFile>
 #include <QSaveFile>
 
-// =============================================================================
-template <class T>
+
+template<typename T>
 class XmlDirLister {
 public:
     enum class SaveResult {
@@ -35,140 +37,146 @@ public:
         RemoveFail
     };
 
-    XmlDirLister(DefaultProvider::KraftV2Dir dir)
-        :_v2dir{dir}
-    {
+    using Map = QMap<QString, T>;
 
-    }
+    XmlDirLister() = default;
 
-    const QMap<QString, T> map() { return _map; }
-
-    const T get(const QString& name) const {
-        return _map.contains(name)?_map.value(name):T();
-    }
-
-    void insert(const QString& name, T& t) {
-        _map.insert(name, t);
-    }
-
-    int loadAll(const QString& baseDir = QString()) {
-        QString v2Dir{baseDir};
-        if (baseDir.isEmpty()) {
-            v2Dir = DefaultProvider::self()->kraftV2Dir();
+    T get(const QString& key) const {
+        ensureLoaded();
+        auto it = _map.find(key);
+        if (it != _map.end()) {
+            return it.value();
         }
+        return {};
+    }
 
-        QDir wdir(v2Dir);
-        wdir.cd(DefaultProvider::self()->kraftV2Subdir(_v2dir));
+    void insert(QString key, T value) {
+        ensureLoaded();
+        _map[std::move(key)] = std::move(value);
+    }
 
-        const QStringList names {"*.xml"};
-        const QStringList entries = wdir.entryList(names);
-        _map.clear();
+    void remove(const QString& key) {
+        ensureLoaded();
+        _map.remove(key);
+    }
 
-        for (const QString& xmlFileName : entries) {
-            QString const fullPathName = wdir.absoluteFilePath(xmlFileName);
-            QFile file(fullPathName);
-            if (!file.open(QIODevice::ReadOnly)) {
-                qDebug() << "Unable to open xml document file:" << xmlFileName ;
-                continue;
-            }
-
-            QDomDocument domDoc;
-            const QByteArray arr = file.readAll();
-            QDomDocument::ParseResult pr = domDoc.setContent(arr);
-            file.close();
-
-            if (!pr) {
-                qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
-                continue;
-            }
-
-            // ---- Parsing starts here
-            T obj;
-            obj.parseXml(domDoc);
-            _map.insert(obj.name(), obj);
-        }
-        return _map.count();
+    Map map() const {
+        ensureLoaded();
+        return _map;
     }
 
     SaveResult save(const T& t, const QString& baseDir = QString()) {
         if (t.name().isEmpty()) {
             qDebug() << "Can not save without name";
-            return SaveResult::OpenFail;
+            return SaveResult::NameFail;
         }
 
         const QString xml = t.toXml();
-
         QString saveName{t.name()};
-        QString v2Dir{baseDir};
-        if (baseDir.isEmpty()) {
-            v2Dir = DefaultProvider::self()->kraftV2Dir();
+        if (!saveName.endsWith(".xml")) {
+            saveName.append(".xml");
         }
+        const QDir wdir = v2Path(baseDir);
 
-        QDir wdir(v2Dir);
-        wdir.cd(DefaultProvider::self()->kraftV2Subdir(_v2dir));
-
-        bool re{false};
-        if (!saveName.endsWith(".xml")) saveName.append(".xml");
+        bool re = false;
         QSaveFile file(wdir.absoluteFilePath(saveName));
-        if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             re = file.write(xml.toUtf8());
-
             if (re) {
                 re = file.commit();
             }
         }
 
         if (re) {
+            ensureLoaded();
             _map.insert(t.name(), t);
             return SaveResult::SaveOk;
         }
-
         return SaveResult::OpenFail;
     }
 
-    SaveResult saveAll(QMap<QString, T> map, const QString& baseDir = QString()) {
-        const QList<T> list = map.values();
+    SaveResult saveAll(Map newMap, const QString& baseDir = QString()) {
+        ensureLoaded();
         SaveResult res{SaveResult::SaveOk};
-        for( T t : list) {
-            if (t.modified()) {
-                auto lres = save(t, baseDir);
-                if (res == SaveResult::SaveOk) {
-                    res = lres; // do not overwrite an error
+
+        // Delete files for items no longer present in the new map
+        for (auto it = _map.cbegin(); it != _map.cend(); ++it) {
+            if (!newMap.contains(it.key())) {
+                QString fname = it.key();
+                if (!fname.endsWith(".xml")) {
+                    fname.append(".xml");
+                }
+                if (!QFile::remove(v2Path(baseDir).absoluteFilePath(fname))) {
+                    if (res == SaveResult::SaveOk) {
+                        res = SaveResult::RemoveFail;
+                    }
                 }
             }
         }
-        _map = map;
+
+        // Write modified items to disk
+        for (const T& t : std::as_const(newMap)) {
+            if (t.modified()) {
+                const SaveResult lres = save(t, baseDir);
+                if (res == SaveResult::SaveOk) {
+                    res = lres;
+                }
+            }
+        }
+
+        _map = std::move(newMap);
         return res;
     }
 
-    SaveResult remove(const QString &name, const QString& baseDir = QString()) {
-        QString saveName{name};
+protected:
+    static DefaultProvider::KraftV2Dir v2SubDir(); // must be specialized per T
+
+private:
+    static QDir v2Path(const QString& baseDir = QString()) {
         QString v2Dir{baseDir};
         if (baseDir.isEmpty()) {
             v2Dir = DefaultProvider::self()->kraftV2Dir();
         }
-
-        QDir dir(v2Dir);
-        dir.cd(DefaultProvider::self()->kraftV2Subdir(_v2dir));
-
-        SaveResult re{SaveResult::RemoveFail};
-        if (!saveName.endsWith(".xml")) saveName.append(".xml");
-
-        const QString file(dir.absoluteFilePath(saveName));
-        if (QFile::remove(file)) {
-            re = SaveResult::SaveOk;
-            _map.remove(name);
-        }
-        return re;
+        QDir wdir(v2Dir);
+        wdir.cd(DefaultProvider::self()->kraftV2Subdir(v2SubDir()));
+        return wdir;
     }
 
-private:
-    static QMap<QString, T> _map;
-    DefaultProvider::KraftV2Dir _v2dir;
-};
+    static Map load() {
+        const QDir wdir = v2Path();
+        const QStringList entries = wdir.entryList({"*.xml"});
+        Map map;
+        for (const QString& xmlFileName : entries) {
+            QFile file(wdir.absoluteFilePath(xmlFileName));
+            if (!file.open(QIODevice::ReadOnly)) {
+                qDebug() << "Unable to open xml document file:" << xmlFileName;
+                continue;
+            }
+            QDomDocument domDoc;
+            const QByteArray arr = file.readAll();
+            const QDomDocument::ParseResult pr = domDoc.setContent(arr);
+            file.close();
+            if (!pr) {
+                qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" << pr.errorLine;
+                continue;
+            }
+            T obj;
+            obj.parseXml(domDoc);
+            map.insert(obj.name(), obj);
+        }
+        return map;
+    }
 
-template<typename T>
-QMap<QString, T> XmlDirLister<T>::_map = {};
+    void ensureLoaded() const {
+        if (!_loaded) {
+            _map = load();
+            _loaded = true;
+        }
+    }
+
+    mutable Map  _map;
+    mutable bool _loaded{false};
+};
 
 
 #endif // LISTER_H

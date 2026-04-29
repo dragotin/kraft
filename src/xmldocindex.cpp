@@ -143,7 +143,9 @@ DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
     if (obj.isEmpty()) {
         qDebug() << "Digest is empty";
     } else {
-        dd.setType(obj["docType"].toString());
+        const QString t{obj["docType"].toString()};
+        Q_ASSERT(!t.isEmpty());
+        dd.setType(t);
         // dd.setAddressee()
         dd.setClientAddress(obj["clientAddress"].toString());
         // dd.setClientId()

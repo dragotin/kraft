@@ -520,6 +520,10 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
         break;
     case KraftV2Dir::DocTypes:
         subdir = "doctypes";
+        break;
+    case KraftV2Dir::Tests:
+        subdir = "tests";
+        break;
     }
     return subdir;
 }

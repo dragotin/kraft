@@ -392,15 +392,22 @@ void DocType::setName( const QString& name )
 }
 
 // ===============================================================
+
+template<>
+DefaultProvider::KraftV2Dir XmlDirLister<DocType>::v2SubDir()
+{
+    return DefaultProvider::KraftV2Dir::DocTypes;
+}
+
+// ===============================================================
 DocTypes::DocTypes()
-    :XmlDirLister<DocType>(DefaultProvider::KraftV2Dir::DocTypes)
+    :XmlDirLister<DocType>()
 {
 
 }
 
 QStringList DocTypes::allNames()
 {
-    loadAll();
     QStringList li = map().keys();
     li.sort();
     return li;

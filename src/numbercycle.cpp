@@ -252,10 +252,15 @@ QString NumberCycle::exampleIdent( const QString& docType,
 
 // ====================================================================================
 
+template<>
+DefaultProvider::KraftV2Dir XmlDirLister<NumberCycle>::v2SubDir()
+{
+    return DefaultProvider::KraftV2Dir::NumberCycles;
+}
 
 // ====================================================================================
 NumberCycles::NumberCycles()
-    : XmlDirLister<NumberCycle>(DefaultProvider::KraftV2Dir::NumberCycles)
+    : XmlDirLister<NumberCycle>()
 {
 
 }
@@ -281,7 +286,6 @@ int NumberCycles::increaseLocalCounter(const QString& ncName)
 {
     NumberCycle nc;
     NumberCycles ncs;
-    ncs.loadAll();
 
     const int MaxAttempt{10};
     int attempt{0};

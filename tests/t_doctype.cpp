@@ -92,7 +92,6 @@ private Q_SLOTS:
 
     void load1() {
         DocTypes dts;
-        dts.loadAll(_baseDir);
         const auto map = dts.map();
 
         const DocType dt = map["TestDocType"];
@@ -123,7 +122,7 @@ private Q_SLOTS:
             return dt;
         };
 
-        QMap<QString, DocType> m;
+        XmlDirLister<DocType>::Map m;
         for (int i = 1; i < 10; i++) {
             const DocType dt = create(i);
             QVERIFY(dt.modified());
@@ -142,13 +141,13 @@ private Q_SLOTS:
         for( const QString& s : allDts ) {
             qDebug() << "** " << s;
         }
-        QVERIFY(allDts.count() == 10);
+        QVERIFY(allDts.count() == 9);
 
-        for (int i = 1; i < 10; i++) {
-            QCOMPARE(allDts.at(i), "TestDocType " % QString::number(i) );
+        for (int i = 0; i < 9; i++) {
+            QCOMPARE(allDts.at(i), "TestDocType " % QString::number(i + 1));
         }
 
-        _docTypeName = allDts.at(1);
+        _docTypeName = allDts.at(0);
         QCOMPARE(_docTypeName, "TestDocType 1");
     }
 

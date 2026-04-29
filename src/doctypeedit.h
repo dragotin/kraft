@@ -74,7 +74,7 @@ Q_SIGNALS:
 private:
   DocType currentDocType();
 
-  QMap<QString, DocType> _dts;
+  XmlDirLister<DocType>::Map _dts;
 
   QStringList mRemovedTypes;
   QString mExampleDocType;
