@@ -340,6 +340,12 @@ int DbToXMLConverter::convertDocTypes(const QString& baseDir)
         dt.setName(name);
         dt.createUuid();
 
+        // Hack, because there is no invoice-marker in the database
+        if (name.contains(u"Rechnung"_s, Qt::CaseInsensitive) || name.contains(u"Invoice"_s, Qt::CaseInsensitive)) {
+            dt.setIsInvoice(true);
+        }
+
+        // read the attributes table of the database
         AttributeMap attribs(QStringLiteral("DocType"));
         attribs.load(id);
 
