@@ -418,10 +418,12 @@ void DocDigestDetailView::slotShowDocDetails(const DocDigest& digest, const QStr
 
     obj.setProperty("headline", digest.type());
     obj.setProperty("date", digest.date());
-    obj.setProperty("isInvoice", true /* FIXME */);
+    obj.setProperty("isInvoice", digest.isInvoice());
+    obj.setProperty("uuid", digest.uuid());
     obj.setProperty("whiteboard", digest.whiteboard());
     if (!digest.projectLabel().isEmpty())
         obj.setProperty("project", digest.projectLabel());
+    obj.setProperty("isDraft", digest.state().is(KraftDocState::State::Draft));
     obj.setProperty("state", digest.stateStr());
     obj.setProperty("ident", digest.ident());
     const QString lmd = Format::toDateTimeString(digest.lastModified(), KraftSettings::self()-> dateFormat());
