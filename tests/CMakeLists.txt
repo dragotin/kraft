@@ -111,6 +111,13 @@ add_test(NAME t_jsonindexfile COMMAND t_jsonindexfile)
 
 target_link_libraries(t_jsonindexfile ${test_libs})
 
+# ============================================================
+
+add_executable(t_xmldirlister t_xmldirlister.cpp)
+add_test(NAME t_xmldirlister COMMAND t_xmldirlister)
+
+target_link_libraries(t_xmldirlister ${test_libs})
+
 
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")

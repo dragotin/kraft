@@ -121,6 +121,7 @@ private:
     void setStringAttribute( const QString& attribName, const QString& val, const QString& defaultValue = QString());
 };
 
+
 class KRAFTCAT_EXPORT DocTypes
         : public XmlDirLister<DocType>
 {

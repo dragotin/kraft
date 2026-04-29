@@ -93,13 +93,13 @@ private Q_SLOTS:
 
     void loadTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.map();
+        XmlDirLister<NumberCycle>::Map map = _ncs.map();
         QCOMPARE(map.count(), 2);
     }
 
     void saveAllTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.map();
+        XmlDirLister<NumberCycle>::Map map = _ncs.map();
         QCOMPARE(map.count(), 2);
 
         NumberCycle nc;
@@ -114,14 +114,14 @@ private Q_SLOTS:
 
     void SaveAllRemoveTest()
     {
-        QMap<QString, NumberCycle> map = _ncs.map();
+        XmlDirLister<NumberCycle>::Map map = _ncs.map();
         QCOMPARE(map.count(), 3);
         map.remove("TestCycle3");
 
         NumberCycles::SaveResult res = _ncs.saveAll(map);
         QCOMPARE(res, NumberCycles::SaveResult::SaveOk);
 
-        QMap<QString, NumberCycle> mapNeu = _ncs.map();
+        XmlDirLister<NumberCycle>::Map mapNeu = _ncs.map();
         QCOMPARE(mapNeu.count(), 2);
         QVERIFY(mapNeu.contains("TestCycle2"));
         QVERIFY(mapNeu.contains("TestCycle1"));

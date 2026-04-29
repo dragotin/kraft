@@ -53,7 +53,6 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
 
     DocTypes dts;
-    dts.loadAll();
     _dts = dts.map();
     QStringList types = _dts.keys();
     mTypeListBox->clear();
@@ -160,7 +159,6 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 void DocTypeEdit::fillNumberCycleCombo()
 {
     NumberCycles ncs;
-    ncs.loadAll();
 
     const QStringList cycles = ncs.map().keys();
     mNumberCycleCombo->clear();
@@ -264,7 +262,6 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     // qDebug () << "docTypeSelected: " << newValue << " and previous: " << mPreviousType;
 
     NumberCycles ncs;
-    ncs.loadAll();
 
     Q_ASSERT(_dts.keys().contains(newValue));
     const DocType dt = _dts[newValue];
@@ -319,7 +316,6 @@ void DocTypeEdit::slotEditNumberCycles()
 {
     saveDocTypes();
     NumberCycles ncs;
-    ncs.loadAll();
 
     QString currNumbercycle = mNumberCycleCombo->currentText();
     NumberCycleDialog dia( this, currNumbercycle );
@@ -402,7 +398,6 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
     _dts.insert(dt.name(), dt);
 
     NumberCycles ncs;
-    ncs.loadAll();
     NumberCycle nc = ncs.get(newCycle);
     // qDebug () << "Changing the cycle name of " << docTypeName << " to " << newCycle;
 

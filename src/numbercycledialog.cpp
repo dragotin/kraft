@@ -116,8 +116,6 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 void NumberCycleDialog::loadCycles()
 {
     NumberCycles ncs;
-    ncs.loadAll();
-
     mBaseWidget->mCycleListBox->clear();
 
     for(const auto& nc : ncs.map()) {

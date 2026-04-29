@@ -42,8 +42,6 @@ bool DocIdentGenerator::generate(KraftDoc *doc)
     const QString ncName = dt.numberCycleName();
 
     NumberCycles ncs;
-    ncs.loadAll();
-
     const QString ident = ncs.generateIdent(ncName, dt.name(), doc->date(), doc->addressUid());
 
     Q_EMIT newIdent(ident);

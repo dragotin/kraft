@@ -55,8 +55,8 @@ public:
     void parseXml(QDomDocument &domDoc);
     const QString toXml() const;
 
-    bool isEmpty() { return _name.isEmpty(); }
-    bool modified() { return _isModified; }
+    bool isEmpty() const { return _name.isEmpty(); }
+    bool modified() const { return _isModified; }
 
     QString exampleIdent(const QString& docType,
                          const QDate& date,
@@ -75,8 +75,7 @@ private:
     int     _dbId;
 };
 
-
-// FIXME: This could be a namespace rather than a "static object"
+// ################################################################################
 
 class KRAFTCAT_EXPORT NumberCycles
         : public XmlDirLister<NumberCycle>
