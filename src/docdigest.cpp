@@ -29,12 +29,29 @@
 DocDigest::DocDigest(const QString& type, const QString& clientID)
   :KraftObj(), mType( type ), mClientId( clientID ), mLocale( "kraft" )
 {
-
+    DocTypes dts;
+    _docType = dts.get(mType);
 }
 
 DocDigest::DocDigest()
   :KraftObj(), mLocale( "kraft" )
 {
+}
+
+void DocDigest::setType( const QString& t )
+{
+    Q_ASSERT(!t.isEmpty());
+    if (t.isEmpty() || t == _docType.name()) {
+        return;
+    }
+    DocTypes dts;
+    _docType = dts.get(t);
+}
+
+QString DocDigest::type() const
+{
+    Q_ASSERT(!_docType.name().isEmpty());
+    return _docType.name();
 }
 
 QString DocDigest::date() const
@@ -56,11 +73,14 @@ void DocDigest::setAddressee( const KContacts::Addressee& contact )
   mContact = contact;
 }
 
+bool DocDigest::isInvoice() const
+{
+    return _docType.isInvoice();
+}
+
 bool DocDigest::isXRechnungEnabled() const
 {
-    DocTypes dts;
-    const DocType dt = dts.get(mType);
-    return dt.isXRechnungEnabled();
+    return _docType.isXRechnungEnabled();
 }
 
 /* *************************************************************************** */

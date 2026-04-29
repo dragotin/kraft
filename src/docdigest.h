@@ -23,6 +23,7 @@
 
 #include "kraftobj.h"
 #include "kraftdoc.h"
+#include "doctype.h"
 
 class QString;
 class QDate;
@@ -43,9 +44,11 @@ public:
   KContacts::Addressee addressee() const;
   void setAddressee( const KContacts::Addressee& );
 
-  QString type() const { return mType; }
+  QString type() const;
+  void setType( const QString& t );
+
+  bool isInvoice() const;
   bool isXRechnungEnabled() const;
-  void setType( const QString& t ) { mType = t; }
 
   QString date() const;
   void setDate( const QDate& date ) { mDate = date; }
@@ -73,6 +76,7 @@ protected:
   QString mProjectLabel;
   QString mClientAddress ;
   KraftDocState _state;
+  DocType _docType;
 
   QDate       mDate;
   QLocale     mLocale;
