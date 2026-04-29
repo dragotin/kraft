@@ -477,8 +477,11 @@ void Portal::slotStartupChecks()
 
         // Check the conversion of DocTypes
         // The doctype dir directory has to exist
-        const QString dtPath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::DocTypes);
-        if ( !QFileInfo::exists(dtPath)) {
+        const QDir dtPath{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::DocTypes)};
+        const QStringList entries = dtPath.entryList(QDir::Files | QDir::NoDotAndDotDot);
+        // Start the converter if either the path is not existing or it is empty
+        // An empty path is created by the setup of the kraft v2 dirs
+        if ( !dtPath.exists() || dtPath.isEmpty()) {
             DbToXMLConverter converter;
             converter.convertDocTypes(basePath);
         }
