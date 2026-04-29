@@ -56,5 +56,6 @@
     <file>custom-icons/tool.svg</file>
     <file>custom-icons/checklist.svg</file>
     <file>custom-icons/users.svg</file>
+    <file>custom-icons/moneybag-plus.svg</file>
   </qresource>
 </RCC>
