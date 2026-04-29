@@ -1,5 +1,12 @@
 <div id="inhalt">
-  <h2>{{ doc.headline }} {{ doc.ident }} ({{ doc.state }})</h2>
+  <div title="Uuid: {{ doc.uuid}}">
+    <h2>{{ doc.headline }}
+    {{ doc.ident }} ({{ doc.state }})
+    {% if doc.isInvoice %}
+      💶
+    {% endif %}
+    </h2>
+  </div>
   <p>{{ label.date }}: {{ doc.date }}</p>
   {% if doc.project %}
       <p>{{ label.project }}: {{ doc.project }}</p>
