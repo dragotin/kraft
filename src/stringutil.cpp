@@ -55,6 +55,13 @@ double childElemDouble(const QDomElement& elem, const QString& childName)
     return t.toDouble();
 }
 
+int childElemInt(const QDomElement& elem, const QString& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return t.toInt();
+}
+
 };
 
 namespace KraftString {
