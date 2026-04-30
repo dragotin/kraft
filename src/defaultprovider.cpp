@@ -175,28 +175,26 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
 {
     DocTextList re;
 
-    QString typeStr = DocText::textTypeToString( tt );
+    const QString typeStr = DocText::textTypeToString( tt );
 
-    QString sql = QString( "SELECT texts.docTextID, texts.name, texts.text, texts.description, "
-                           "texts.textType, types.name as docTypeName FROM DocTexts texts, "
-                           "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
-                           "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
+    QSqlQuery query;
+    const QString sql{ "SELECT docTextID, name, text, description, textType FROM DocTexts WHERE docType=:docType AND textType=:textType"};
+    query.prepare(sql);
+    query.bindValue(":docType", docType);
+    query.bindValue(":textType", typeStr);
 
-    // qDebug() << "Reading texts from DB with: " << sql;
+    query.exec();
 
-    QSqlQuery query( sql );
-    if ( query.isActive() ) {
-        while ( query.next() ) {
-            DocText dt;
-            dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
-            dt.setName( query.value( 1 ) /* name */ .toString() );
-            dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
-            dt.setDescription( query.value( 3 ) /* description */ .toString() );
-            dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
-            dt.setDocType( query.value( 5 ) /* docType */ .toString() );
+    while ( query.next() ) {
+        DocText dt;
+        dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
+        dt.setName( query.value( 1 ) /* name */ .toString() );
+        dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
+        dt.setDescription( query.value( 3 ) /* description */ .toString() );
+        dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
+        dt.setDocType(docType);
 
-            re.append( dt );
-        }
+        re.append( dt );
     }
     return re;
 }
@@ -236,8 +234,6 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
             record.setValue( "description", t.description() );
             record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
             record.setValue( "docType", t.docType() );
-            // FIXME
-            // record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
             record.setValue( "textType",  t.textTypeString() );
             model.setRecord(0, record);
             model.submitAll();
@@ -249,8 +245,6 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
         record.setValue( "description", t.description() );
         record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
         record.setValue( "docType", t.docType() );
-        // FIXME
-        // record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
         record.setValue( "textType",  t.textTypeString() );
 
         model.insertRecord(-1, record);
