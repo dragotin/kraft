@@ -36,32 +36,19 @@
         color: #2f590a;
 
         @bottom-left {
-            font-family: Oxygen;
             content: '{{ me.ORGANISATION }} | {{ label.PHONE }}: {{ me.PHONE }} | {{ label.EMAIL }}: {{ me.EMAIL }}';
             font-size: 9pt;
         }
         @bottom-right {
             content: "{{ label.PAGE }} " counter(page) " {{ label.PAGE_OF }} " counter(pages);
-            font-family: Oxygen;
             font-size: 9pt;
         }
     }
     {#  Do not display the page number on first page, but the website. #}
     @page :first {
         margin-top: 46mm;
-    {% if doc.isDraftState %}
-	    @top-center {
-	        font-family: Oxygen;
-	        font-size:40pt;
-	        content: 'DRAFT';
-            font-variant: small-caps;
-            font-weight: bold;
-
-        }
-	{% endif %}        
 	{% if me.URL %}
         @bottom-right {
-            font-family: Oxygen;
             font-size: 9pt;
             content: '{{ label.WEBSITE }}: {{ me.URL }}';
         }
@@ -79,6 +66,9 @@
   </head>
   {% autoescape off %}
   <body>
+    {% if doc.isDraftState %}
+        <div class="draft-watermark-stamp">DRAFT</div>
+	{% endif %}
 
    <!-- Example how to add a logo to the document, see kraft.css for positioning: -->
    <!-- <img id="logo" src="file:///home/klaas/opensource/kraft/reports/logo.png" /> -->

@@ -1,43 +1,67 @@
 
+:root {
+  --color-accent: #2f590a;
+  --color-label:  #a9a;
+}
+
 html {
   color: #14213d;
-  font-family: Oxygen;
+  font-family: "Open Sans", sans-serif;
   font-size: 10pt;
   line-height: 1.6;
 }
 
-html body {
-    margin: 0;
-    padding-top: 2mm;
-
+body {
+  margin: 0;
+  padding-top: 2mm;
 }
 
-html h1 {
-    color: #2f590a;
-    font-family: Roboto;
-    font-size: 14pt;
-    margin: 0;
+h1 {
+  color: var(--color-accent);
+  font-size: 14pt;
+  margin: 0;
 }
 
-html address {
-    font-style: normal;
-    white-space: pre-line;
-    margin-bottom: 9mm;
-    height: 40mm;
-    border: solid 0px;
+address {
+  font-style: normal;
+  white-space: pre-line;
+  margin-bottom: 9mm;
+  height: 40mm;
 }
 
-html aside {
-    display: flex;
-    margin: 2em 0 4em; }
-    html aside address {
-      font-style: normal;
-      white-space: pre-line; }
-      html aside address#to {
-        color: #a9a;
-        flex: 1; }
-      html aside address#from {
-        text-align: right;
+aside {
+  display: flex;
+  margin: 2em 0 4em;
+}
+
+aside address {
+  font-style: normal;
+  white-space: pre-line;
+}
+
+aside address#to {
+  color: var(--color-label);
+  flex: 1;
+}
+
+aside address#from {
+  text-align: right;
+}
+
+.draft-watermark-stamp {
+  margin-left: 240px;
+  font-size: 24pt;
+  font-weight: bold;
+  color: #F00000;
+  transform: rotate(-8deg);
+  border: 0.15rem #002733 solid;
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  letter-spacing: 0.2em !important;
+  mix-blend-mode: multiply;
+
 }
 
 /*
@@ -45,169 +69,134 @@ html aside {
  */
 img#logo {
   position: absolute;
-  right: 0px;
+  right: 0;
   top: -100px;
   width: 178px;
   z-index: -1;
 }
 
 /*
- * A absolute positioned block to display document extra info
+ * Absolute positioned block to display document extra info
  * on the right top of the document.
  */
-html dl {
-    text-align: right;
-    // border: 1px solid;
-    width: 30em;
-    position: absolute;
-    right: 0;
-    top: 8mm; }
-    html dl dt, html dl dd {
-      display: inline;
-      margin: 0; }
-    html dl dt {
-      color: #a9a; }
-      html dl dt::before {
-        content: '';
-        display: block; }
-      html dl dt::after {
-        content: ':';
+dl {
+  text-align: right;
+  width: 30em;
+  position: absolute;
+  right: 0;
+  top: 8mm;
+}
+
+dl dt,
+dl dd {
+  display: inline;
+  margin: 0;
+}
+
+dl dt {
+  color: var(--color-label);
+}
+
+dl dt::before {
+  content: '';
+  display: block;
+}
+
+dl dt::after {
+  content: ':';
 }
 
 sup {
-   position: relative;
-   vertical-align: baseline;
-   top: -0.4em;
-}
-/*
- */
-html p#letterheader {
-     font-size: 8pt;
-     text-decoration: underline;
+  position: relative;
+  vertical-align: baseline;
+  top: -0.4em;
 }
 
-html p.entrytext {
+p#letterheader {
+  font-size: 8pt;
+  text-decoration: underline;
 }
 
-html p.bottomtext {
+p.epcqrcode {
+  margin-top: 2cm;
+  border-top: 0.5px solid #888;
+  padding-top: 1em;
+  vertical-align: top;
+  font-size: 8pt;
 }
 
-html p.goodbye {
-}
-
-html p.epcqrcode {
-    margin-top: 2cm;
-    border-top: 0.5px solid #888;
-    padding-top: 1em;
-    vertical-align: top;
-    font-size: 8pt;
-}
-
-html img.epc {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    width: 120px;
-    float: right;
+img.epc {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 120px;
+  float: right;
 }
 
 /*
- * Item-Table
- * formats the item list. Each item is a line.
+ * Item table — one row per line item.
  */
-html table#items {
-    border-collapse: collapse;
-    width: 100%;
-    table-layout: fixed;
+table#items {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  margin-right: 0;
+  margin-left: auto;
+}
 
-      /* The following margins pull the whole box to the right */
-    margin-right: 0px;
-    margin-left: auto;
-  }
-  /*
-   * Table header. It is repeated on every page.
-   */
-  html table th {
-      border-bottom: .2mm solid #555;
-      // border-left: .2mm solid #555;
-      color: #555;
-      font-size: 10pt;
-      font-weight: 400;
-      padding-bottom: .25cm;
-      // text-transform: uppercase;
-  }
+/*
+ * Table header, repeated on every page.
+ */
+table th {
+  border-bottom: .2mm solid #555;
+  color: #555;
+  font-size: 10pt;
+  font-weight: 400;
+  padding-bottom: .25cm;
+}
 
-  html table td {
-      vertical-align: top;
-      padding-top: 6mm;
-  }
+table td {
+  vertical-align: top;
+  padding-top: 6mm;
+}
 
-  .col-center {
-    text-align: center;
-  }
-  .col-right {
-    text-align: right;
-  }
-  .col-left {
-    text-align: left;
-  }
+.col-center { text-align: center; }
+.col-right  { text-align: right; }
+.col-left   { text-align: left; }
 
-  .col-No {
-    width: 5%;
-  }
-  .col-Text {
-    width: 45%;
-  }
-  .col-Amount {
-    width: 8%;
-    padding-right:0.8em;
-  }
-  .col-Unit {
-    width: 10%;
-  }
-  .col-SPrice {
-    width: 11%;
-  }
-  .col-Sum {
-    width: 14%;
-    color: #2f590a;
-    font-weight: bold;
-  }
-  .col-Taxmarker {
-    width: 1%;
-  }
+.col-No      { width: 5%; }
+.col-Text    { width: 45%; }
+.col-Amount  { width: 8%;  padding-right: 0.8em; }
+.col-Unit    { width: 10%; }
+.col-SPrice  { width: 11%; }
+.col-Sum     { width: 14%; color: var(--color-accent); font-weight: bold; }
+.col-Taxmarker { width: 1%; }
 
-  /*
-   * The table to display the document sum
-   */
-  html table#total {
-    border-collapse: collapse;
-    width: 40%;
-    table-layout: fixed;
-    text-align: right;
-    bottom: 0;
-    font-size: 10pt;
+/*
+ * Summary table at the bottom of the document.
+ */
+table#total {
+  border-collapse: collapse;
+  width: 40%;
+  table-layout: fixed;
+  text-align: right;
+  bottom: 0;
+  font-size: 10pt;
+  margin-right: 7mm;
+  margin-left: auto;
+  margin-bottom: 12mm;
+}
 
-    /* The following margins pull the whole box to the right */
-    margin-right: 26px;
-    margin-left: auto;
-    margin-bottom: 12mm;
+table#total td {
+  padding-top: 1mm;
+  text-align: right;
+}
 
-  }
-  html table#total td {
-      padding-top: 1mm;
-      text-align: right;
-  }
+.col-TotalSum {
+  color: var(--color-accent);
+  font-weight: bold;
+}
 
-  .col-TotalSum {
-    color: #2f590a;
-    font-weight: bold;
-  }
-
-  /* the lines above the sums */
-  html table#total tr:nth-of-type(1) {
-      border-top: solid 1px;
-  }
-  html table#total tr:last-of-type {
-      border-top: solid 2px;
-  }
+/* Lines above the sums */
+table#total tr:nth-of-type(1) { border-top: solid 1px; }
+table#total tr:last-of-type   { border-top: solid 2px; }
