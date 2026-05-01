@@ -574,8 +574,7 @@ void Portal::slotFollowUpDocument()
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
-        // only if there are currently followers defined, if not the default with
-        // all doc types works.
+        qDebug() << sourceDoc->docTypeStr() << "does not have follower doc types";
         wiz.setAvailDocTypes( dt.follower() );
     }
 
