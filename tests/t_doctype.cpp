@@ -1,71 +1,24 @@
 #include <QTest>
-#include <QSql>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QStringBuilder>
 
 #include "testconfig.h"
+#include "defaultprovider.h"
 #include "doctype.h"
-#include "kraftdb.h"
 
 using namespace Qt::StringLiterals;
-
-void init_test_db()
-{
-    const QString dbName("__test.db");
-
-    QDir sourceDir(TESTS_PATH);
-    sourceDir.cdUp();
-    const QByteArray ba {sourceDir.absolutePath().toLatin1()};
-    qputenv("KRAFT_HOME", ba);
-
-    qDebug() << "KRAFT_HOME is set to" << ba;
-    QFile::remove(dbName);
-
-    KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
-
-    SqlCommandList sqls = KraftDB::self()->parseCommandFile("5_dbmigrate.sql");
-    QVERIFY(sqls.size() > 0);
-    KraftDB::self()->processSqlCommands(sqls);
-
-    // modify the initial attributes tables
-    sqls = KraftDB::self()->parseCommandFile("10_dbmigrate.sql");
-    KraftDB::self()->processSqlCommands(sqls);
-
-    // get the followers into the database
-    sqls = KraftDB::self()->parseCommandFile("8_dbmigrate.sql");
-    KraftDB::self()->processSqlCommands(sqls);
-
-}
 
 class T_DocType : public QObject {
     Q_OBJECT
 private Q_SLOTS:
     void initTestCase()
     {
-        init_test_db();
+        QDir sourceDir(TESTS_PATH);
+        sourceDir.cdUp();
+        const QByteArray ba{sourceDir.absolutePath().toLatin1()};
+        qputenv("KRAFT_HOME", ba);
 
-        // =============== Xml Based
         _baseDir = DefaultProvider::self()->createV2BaseDir(_dir.path());
-
-        // FIXME: Get rid of the basedir stuff here, and hold the base dir in the
-        // DefaultProvider
-        // Use this method to create a temp base dir: DefaultProvider::self()->switchToV2BaseDir(d);
         qDebug() << "Test Basedir:" << _baseDir;
-        // in the base path there needs to be a directory called 'current'
-
-    }
-
-    void checkTablesExist() {
-        const QStringList attribCols{"id", "hostObject", "hostId", "name", "valueIsList",
-                                "relationTable", "relationIDColumn", "relationStringColumn"};
-        QVERIFY(KraftDB::self()->checkTableExistsSqlite("attributes", attribCols));
-
-        const QStringList attribColsDt{"docTypeID", "name"};
-        QVERIFY(KraftDB::self()->checkTableExistsSqlite("DocTypes", attribColsDt));
-
-        const QStringList colsAttribValues{"id", "attributeId", "value"};
-        QVERIFY(KraftDB::self()->checkTableExistsSqlite("attributeValues", colsAttribValues));
     }
 
     void save1() {
@@ -85,9 +38,7 @@ private Q_SLOTS:
         const QStringList flist{"Auftragsbestätigung", "Rechnung", "Teilrechnung"};
         dt.setFollowers(flist);
 
-        auto res = dts.save(dt, _baseDir);
-        QCOMPARE(res, DocTypes::SaveResult::SaveOk);
-
+        QCOMPARE(dts.save(dt, _baseDir), DocTypes::SaveResult::SaveOk);
     }
 
     void load1() {
@@ -129,73 +80,67 @@ private Q_SLOTS:
             m.insert(dt.name(), dt);
         }
 
-        const auto res = dts.saveAll(m, _baseDir);
-        QCOMPARE(res, DocTypes::SaveResult::SaveOk);
-
+        QCOMPARE(dts.saveAll(m, _baseDir), DocTypes::SaveResult::SaveOk);
     }
 
     void checkAllNames() {
         DocTypes dts;
         const QStringList allDts = dts.allNames();
 
-        for( const QString& s : allDts ) {
-            qDebug() << "** " << s;
-        }
-        QVERIFY(allDts.count() == 9);
+        QCOMPARE(allDts.count(), 9);
 
         for (int i = 0; i < 9; i++) {
             QCOMPARE(allDts.at(i), "TestDocType " % QString::number(i + 1));
         }
 
         _docTypeName = allDts.at(0);
-        QCOMPARE(_docTypeName, "TestDocType 1");
+        QCOMPARE(_docTypeName, u"TestDocType 1"_s);
     }
 
     void loadADt() {
-        qDebug() << "Loading doctype" << _docTypeName;
         DocTypes dts;
-        DocType dt = dts.get(_docTypeName);
-        QCOMPARE(dt.name(), "TestDocType 1");
-
-        QVERIFY( dt.name() == _docTypeName);
-        QVERIFY( dt.allowAlternative());
-        QVERIFY( dt.allowDemand());
+        const DocType dt = dts.get(_docTypeName);
+        QCOMPARE(dt.name(), u"TestDocType 1"_s);
+        QVERIFY(dt.allowAlternative());
+        QVERIFY(dt.allowDemand());
         QVERIFY(dt.pricesHidden());
         QVERIFY(!dt.partialInvoice());
     }
 
     void checkFollowers() {
         DocTypes dts;
-        DocType dt = dts.get(_docTypeName);
-        QCOMPARE(dt.name(), "TestDocType 1");
+        const DocType dt = dts.get(_docTypeName);
+        QCOMPARE(dt.name(), u"TestDocType 1"_s);
 
-        QStringList f = dt.follower();
-        QVERIFY(f.at(1) == u"Rechnung"_s);
-        QVERIFY(f.at(0) == u"Auftragsbestätigung"_s);
-        QVERIFY(f.at(2) == u"Teilrechnung"_s);
+        const QStringList f = dt.follower();
+        QCOMPARE(f.at(0), u"Auftragsbestätigung"_s);
+        QCOMPARE(f.at(1), u"Rechnung"_s);
+        QCOMPARE(f.at(2), u"Teilrechnung"_s);
         QVERIFY(!f.contains("Quadratrechnung"));
     }
 
     void createNewDoctype() {
         const QStringList f{"Angebot", "Rechnung"};
 
-        DocTypes dts;
-        DocType dt = dts.get( "Test" );
+        DocType dt;
+        dt.setName("NewTestDoctype");
         dt.setMergeIdent(2);
         dt.setFollowers(f);
-        int num = dt.follower().count();
-        QVERIFY(2 == num );
-        dts.save(dt);
+        QCOMPARE(dt.follower().count(), 2);
+
+        DocTypes dts;
+        QCOMPARE(dts.save(dt), DocTypes::SaveResult::SaveOk);
     }
 
+    // get() on an unknown name returns a default-constructed DocType
     void docTypeDefaults() {
         DocTypes dts;
-        const DocType dt = dts.get("Test");
+        const DocType dt = dts.get("NonExistent");
         QVERIFY(dt.mergeIdent() == 0);
         QVERIFY(!dt.isXRechnungEnabled());
         QVERIFY(dt.name().isEmpty());
-        QVERIFY(! dt.allowAlternative());
-        QVERIFY(! dt.allowDemand());
+        QVERIFY(!dt.allowAlternative());
+        QVERIFY(!dt.allowDemand());
     }
 
 private:
@@ -206,4 +151,3 @@ private:
 
 QTEST_MAIN(T_DocType)
 #include "t_doctype.moc"
-
