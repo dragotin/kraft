@@ -316,7 +316,7 @@
            <string>Select an addressee from the address books.</string>
           </property>
           <property name="text">
-           <string>Select…</string>
+           <string>Select from Addressbook...</string>
           </property>
          </widget>
         </item>
