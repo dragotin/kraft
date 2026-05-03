@@ -1,3 +1,14 @@
+Changes since versino 2.0.0: #######################################
+- Feature: Add UID as hoover text above the header in the detail
+  view of the document list
+- Feature: Store document types as XML files, incl. migration
+- Fix: Correct switch isInvoice plus other flags
+- Show flags as checkboxes in the doc type edit dialog
+- Feature: Add time of supply to invoices
+
+=> Release v. 2.1.0 (May, xx 2026)
+
+####################################################################
 
 Changes since version 1.2.2: #######################################
 - Build against Qt6 and KDE Frameworks 6 components
