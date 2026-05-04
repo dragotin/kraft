@@ -10,6 +10,8 @@
 #include "documentsaverxml.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
+#include "docposition.h"
+#include "unitmanager.h"
 
 void init_test_db()
 {
@@ -167,6 +169,112 @@ private Q_SLOTS:
 
         QVERIFY(dp->hasTag("Work"));
         QVERIFY(dp->hasTag("Plants"));
+    }
+
+    void completeRoundTrip()
+    {
+        DocumentSaverXML xmlSaver;
+
+        // --- Build the source document ---
+        KraftDoc doc;
+        doc.setDate(QDate(2024, 6, 15));
+        doc.setDocType("Rechnung");
+        doc.setIdent("RT-2024-001");
+        doc.setWhiteboard("roundtrip whiteboard");
+        doc.setPredecessor("prev-id");
+        doc.setTaxValues(19.0, 7.0);
+
+        // client block
+        doc.setAddress("Max Mustermann\nMusterstraße 1\n12345 Musterstadt");
+        doc.setAddressUid("uid-mustermann");
+
+        // header block
+        doc.setProjectLabel("Musterprojekt");
+        doc.setTimeOfSupply(QDateTime(QDate(2024, 6, 10), QTime(0, 0)),
+                            QDateTime(QDate(2024, 6, 12), QTime(23, 59, 59)));
+        doc.setSalut("Sehr geehrter Herr Mustermann,");
+        doc.setPreTextRaw("Wir erlauben uns, folgende Positionen in Rechnung zu stellen.");
+
+        // footer block
+        doc.setPostTextRaw("Bitte überweisen Sie den Betrag innerhalb von 14 Tagen.");
+        doc.setGoodbye("Mit freundlichen Grüßen");
+
+        // two line items
+        DocPosition *pos1 = doc.createPosition();
+        pos1->setText("Arbeitsleistung");
+        pos1->setAmount(8.0);
+        pos1->setUnit(UnitManager::self()->getUnit("Hour"));
+        pos1->setUnitPrice(Geld(85.00));
+        pos1->setTaxType(DocPosition::Tax::Full);
+        pos1->setTags(QStringList{"Work"});
+
+        DocPosition *pos2 = doc.createPosition();
+        pos2->setText("Material");
+        pos2->setAmount(3.0);
+        pos2->setUnit(UnitManager::self()->getUnit("sm"));
+        pos2->setUnitPrice(Geld(12.50));
+        pos2->setTaxType(DocPosition::Tax::Reduced);
+        pos2->setTags(QStringList{"Material"});
+
+        // --- Save ---
+        QVERIFY(xmlSaver.saveDocument(&doc));
+        const QString savedFile = xmlSaver.lastSavedFileName();
+        QVERIFY(!savedFile.isEmpty());
+        QVERIFY(QFileInfo::exists(savedFile));
+
+        // --- Reload ---
+        KraftDoc doc2;
+        doc2.setTaxValues(19.0, 7.0);
+        QVERIFY(xmlSaver.loadFromFile(QFileInfo(savedFile), &doc2));
+
+        // meta block
+        QCOMPARE(doc2.docTypeStr(),   QString("Rechnung"));
+        QCOMPARE(doc2.ident(),        QString("RT-2024-001"));
+        QCOMPARE(doc2.whiteboard(),   QString("roundtrip whiteboard"));
+        QCOMPARE(doc2.date(),         QDate(2024, 6, 15));
+        QCOMPARE(doc2.predecessor(),  QString("prev-id"));
+        QCOMPARE(doc2.fullTax(),      19.0);
+        QCOMPARE(doc2.reducedTax(),   7.0);
+        QVERIFY(!doc2.uuid().isEmpty());
+
+        // client block
+        QCOMPARE(doc2.address(),    doc.address());
+        QCOMPARE(doc2.addressUid(), QString("uid-mustermann"));
+
+        // header block
+        QCOMPARE(doc2.projectLabel(),                QString("Musterprojekt"));
+        QCOMPARE(doc2.timeOfSupplyStart().date(),    QDate(2024, 6, 10));
+        QCOMPARE(doc2.timeOfSupplyEnd().date(),      QDate(2024, 6, 12));
+        QCOMPARE(doc2.salut(),                       QString("Sehr geehrter Herr Mustermann,"));
+        QCOMPARE(doc2.preTextRaw(),                  doc.preTextRaw());
+
+        // footer block
+        QCOMPARE(doc2.postTextRaw(), doc.postTextRaw());
+        QCOMPARE(doc2.goodbye(),     QString("Mit freundlichen Grüßen"));
+
+        // items
+        DocPositionList items = doc2.positions();
+        QCOMPARE(items.count(), 2);
+
+        DocPosition *r1 = items[0];
+        QCOMPARE(r1->text(),                  QString("Arbeitsleistung"));
+        QCOMPARE(r1->amount(),                8.0);
+        QCOMPARE(r1->unit().einheitSingular(), QString("Hour"));
+        QCOMPARE(r1->unitPrice().toDouble(),  85.0);
+        QCOMPARE(r1->taxType(),               DocPosition::Tax::Full);
+        QVERIFY(r1->hasTag("Work"));
+
+        DocPosition *r2 = items[1];
+        QCOMPARE(r2->text(),                  QString("Material"));
+        QCOMPARE(r2->amount(),                3.0);
+        QCOMPARE(r2->unit().einheitSingular(), QString("sm"));
+        QCOMPARE(r2->unitPrice().toDouble(),  12.5);
+        QCOMPARE(r2->taxType(),               DocPosition::Tax::Reduced);
+        QVERIFY(r2->hasTag("Material"));
+
+        // totals survive the round-trip
+        QCOMPARE(doc2.nettoSum().toDouble(),   doc.nettoSum().toDouble());
+        QCOMPARE(doc2.bruttoSum().toDouble(),  doc.bruttoSum().toDouble());
     }
 
     void checkTotals()
