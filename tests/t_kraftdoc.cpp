@@ -232,6 +232,35 @@ private Q_SLOTS:
         QCOMPARE(expanded, shouldBe);
     }
 
+    void tosAccessors() {
+        KraftDoc doc;
+
+        // no time of supply set: tosValid must be false
+        QVERIFY(!doc.tosValid());
+
+        // single-day: start == end → not multiDay
+        doc.setTimeOfSupply(QDateTime(QDate(2024, 3, 5), QTime(0, 0)),
+                            QDateTime(QDate(2024, 3, 5), QTime(23, 59, 59)));
+        QVERIFY(doc.tosValid());
+        QVERIFY(!doc.tosMultiDay());
+        QCOMPARE(doc.tosStart(), QString("05.03.2024"));
+        QCOMPARE(doc.tosEnd(),   QString("05.03.2024"));
+
+        // multi-day: start != end
+        doc.setTimeOfSupply(QDateTime(QDate(2024, 3, 5), QTime(0, 0)),
+                            QDateTime(QDate(2024, 3, 8), QTime(23, 59, 59)));
+        QVERIFY(doc.tosValid());
+        QVERIFY(doc.tosMultiDay());
+        QCOMPARE(doc.tosStart(), QString("05.03.2024"));
+        QCOMPARE(doc.tosEnd(),   QString("08.03.2024"));
+
+        // only start, no end: end is an invalid QDateTime
+        doc.setTimeOfSupply(QDateTime(QDate(2024, 6, 1), QTime(0, 0)));
+        QVERIFY(doc.tosValid());
+        QCOMPARE(doc.tosStart(), QString("01.06.2024"));
+        QCOMPARE(doc.tosEnd(),   QString(""));  // invalid QDate → empty string
+    }
+
     void dateAddDay() {
         KraftDoc *kraftdoc = &kDoc;
 
