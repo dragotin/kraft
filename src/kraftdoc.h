@@ -47,7 +47,8 @@ public:
         Final,      // Final. Saved and with an official doc number
         Retracted,  // Sent to customer, but retracted
         Converted,  // Converted from a previous Kraft version that did not have proper states
-        Invalid     // Invalidated. Never sent out
+        Invalid,    // Invalidated. Never sent out
+        Deleted     // Deleted document
     };
 
     static const QString StateUndefinedStr;
@@ -57,6 +58,7 @@ public:
     static const QString StateRetractedStr;
     static const QString StateInvalidStr;
     static const QString StateConvertedStr;
+    static const QString StateDeletedStr;
 
     static const KLazyLocalizedString StateUndefinedI18n;
     static const KLazyLocalizedString StateNewI18n;
@@ -65,6 +67,7 @@ public:
     static const KLazyLocalizedString StateRetractedI18n;
     static const KLazyLocalizedString StateInvalidI18n;
     static const KLazyLocalizedString StateConvertedI18n;
+    static const KLazyLocalizedString StateDeletedI18n;
 
     static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
