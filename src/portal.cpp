@@ -138,13 +138,6 @@ void Portal::show()
     qApp->processEvents();
     qDebug() << "Processed...";
     slotStartupChecks();
-
-    if ( mCmdLineArgs ) {
-        const QString uuid = mCmdLineArgs->value("d");
-        if ( ! uuid.isEmpty() ) {
-            slotPrintPDF(uuid);
-        }
-    }
 }
 
 void Portal::initActions()
@@ -405,21 +398,31 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-    const QString dbName = DatabaseSettings::self()->dbDatabaseName();
-
-    SetupAssistant assi(this);
-    if( assi.init( SetupAssistant::Update) ) {
+    auto *assi = new SetupAssistant(this);
+    if( assi->init( SetupAssistant::Update) ) {
         if (_readOnlyMode) {
             // Update not under our control here.
             QMessageBox::warning(this, i18n("Database not running"),
                                  i18n("Kraft was started in readonly mode, but the configured "
                                       "database can not be connected.\n\nKraft will abort."));
             QTimer::singleShot(500, this, [this] { close(); });
+            assi->deleteLater();
             return;
-        } else {
-            assi.exec();
         }
+        connect(assi, &QDialog::finished, this, [this, assi]() {
+            assi->deleteLater();
+            startupChecksPostAssistant();
+        });
+        assi->open();
+        return;
     }
+    assi->deleteLater();
+    startupChecksPostAssistant();
+}
+
+void Portal::startupChecksPostAssistant()
+{
+    const QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
     if( ! KraftDB::self()->isOk() ) {
         QSqlError err = KraftDB::self()->lastError();
@@ -491,6 +494,14 @@ void Portal::slotStartupChecks()
         }
     }
 
+    /* --- now the base setup is clean --- */
+    if ( mCmdLineArgs ) {
+        const QString uuid = mCmdLineArgs->value("d");
+        if ( ! uuid.isEmpty() ) {
+            slotPrintPDF(uuid);
+        }
+    }
+
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();
@@ -549,18 +560,21 @@ void Portal::slotNewDocument()
 {
     slotStatusMsg(i18n("Creating new document…"));
 
-    KraftWizard wiz;
-    wiz.init(true);
-    if ( wiz.exec() ) {
-        DocumentMan *docman = DocumentMan::self();
-        DocGuardedPtr doc = docman->createDocument( wiz.docType() );
-
-        doc->setDate( wiz.date() );
-        doc->setAddressUid( wiz.addressUid() );
-        doc->setWhiteboard( wiz.whiteboard() );
-        createView( doc );
-    }
-    slotStatusMsg();
+    auto *wiz = new KraftWizard(this);
+    wiz->init(true);
+    connect(wiz, &QDialog::finished, this, [wiz, this](int result) {
+        if (result == QDialog::Accepted) {
+            DocumentMan *docman = DocumentMan::self();
+            DocGuardedPtr doc = docman->createDocument( wiz->docType() );
+            doc->setDate( wiz->date() );
+            doc->setAddressUid( wiz->addressUid() );
+            doc->setWhiteboard( wiz->whiteboard() );
+            createView( doc );
+        }
+        wiz->deleteLater();
+        slotStatusMsg();
+    });
+    wiz->open();
 }
 
 void Portal::slotFollowUpDocument()
@@ -572,50 +586,53 @@ void Portal::slotFollowUpDocument()
     DocTypes dts;
     DocType dt = dts.get( sourceDoc->docTypeStr() );
 
-    KraftWizard wiz;
-    wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
-                           "Create follow up document for %1", sourceDoc->docIdentifier()));
+    auto *wiz = new KraftWizard(this);
+    wiz->init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
+                            "Create follow up document for %1", sourceDoc->docIdentifier()));
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
         qDebug() << sourceDoc->docTypeStr() << "does not have follower doc types";
-        wiz.setAvailDocTypes( dt.follower() );
+        wiz->setAvailDocTypes( dt.follower() );
     }
 
-    // qDebug () << "doc identifier: "<< doc->docIdentifier();
-    wiz.setDocToFollow( sourceDoc );
-    DocPositionList posToCopy;
+    wiz->setDocToFollow( sourceDoc );
     delete sourceDoc;
 
-    if ( wiz.exec() ) {
-        // it is ok to open by ident because the user selects from ident, and there are only
-        // follow up documents from released docs that have an ident already.
-        const QString selectedUuid = wiz.copyItemsFromPredecessor();
-        if(!selectedUuid.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByUuid(selectedUuid);
-            posToCopy = copyDoc->positions();
-            delete copyDoc;
-        }
-
-        // Check if the new document type allows demand- or alternative items. If not, remove the
-        // attributes of the items, otherwise it can not be edited any more
-        // see https://github.com/dragotin/kraft/issues/242
-        const QString newDocTypeName = wiz.docType();
-        DocTypes dts;
-        DocType newDocType = dts.get(newDocTypeName);
-        bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
-        if (!allowKind) {
-            for(DocPosition *dp:posToCopy) {
-                // if there is a kind attribute, that is going to be removed.
-                dp->removeAttribute("kind");
+    connect(wiz, &QDialog::finished, this, [wiz, this, uuid](int result) {
+        if (result == QDialog::Accepted) {
+            // it is ok to open by ident because the user selects from ident, and there are only
+            // follow up documents from released docs that have an ident already.
+            const QString selectedUuid = wiz->copyItemsFromPredecessor();
+            DocPositionList posToCopy;
+            if(!selectedUuid.isEmpty()) {
+                DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByUuid(selectedUuid);
+                posToCopy = copyDoc->positions();
+                delete copyDoc;
             }
-        }
 
-        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), uuid, posToCopy);
-        doc->setDate( wiz.date() );
-        doc->setWhiteboard( wiz.whiteboard() );
-        createView( doc );
-    }
+            // Check if the new document type allows demand- or alternative items. If not, remove the
+            // attributes of the items, otherwise it can not be edited any more
+            // see https://github.com/dragotin/kraft/issues/242
+            const QString newDocTypeName = wiz->docType();
+            DocTypes dts;
+            DocType newDocType = dts.get(newDocTypeName);
+            bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
+            if (!allowKind) {
+                for(DocPosition *dp:posToCopy) {
+                    // if there is a kind attribute, that is going to be removed.
+                    dp->removeAttribute("kind");
+                }
+            }
+
+            DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz->docType(), uuid, posToCopy);
+            doc->setDate( wiz->date() );
+            doc->setWhiteboard( wiz->whiteboard() );
+            createView( doc );
+        }
+        wiz->deleteLater();
+    });
+    wiz->open();
 }
 
 void Portal::slotCopyCurrentDocument()
@@ -637,26 +654,29 @@ void Portal::slotCopyDocument(const QString& uuid)
         delete oldDoc;
     }
 
-    KraftWizard wiz;
-    wiz.init(true, oldDocUuid);
-    if ( wiz.exec() ) {
-        DocGuardedPtr doc = DocumentMan::self()->copyDocument(uuid);
-        doc->setDate( wiz.date() );
-        doc->setDocType( wiz.docType() );
-        doc->setWhiteboard( wiz.whiteboard() );
-        if(doc->addressUid() != wiz.addressUid() ) {
-            doc->setAddress(QString());
-        }
-        doc->setAddressUid( wiz.addressUid() );
+    auto *wiz = new KraftWizard(this);
+    wiz->init(true, oldDocUuid);
+    connect(wiz, &QDialog::finished, this, [wiz, this, uuid](int result) {
+        if (result == QDialog::Accepted) {
+            DocGuardedPtr doc = DocumentMan::self()->copyDocument(uuid);
+            doc->setDate( wiz->date() );
+            doc->setDocType( wiz->docType() );
+            doc->setWhiteboard( wiz->whiteboard() );
+            if(doc->addressUid() != wiz->addressUid() ) {
+                doc->setAddress(QString());
+            }
+            doc->setAddressUid( wiz->addressUid() );
 
-        bool ok = DocumentMan::self()->saveDocument(doc);
-        if (!ok) {
-            qDebug() << "FAILED to save document" << doc->docIdentifier();
-        }
+            bool ok = DocumentMan::self()->saveDocument(doc);
+            if (!ok) {
+                qDebug() << "FAILED to save document" << doc->docIdentifier();
+            }
 
-        m_portalView->allDocsView()->slotUpdateView(doc);
-        // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
-    }
+            m_portalView->allDocsView()->slotUpdateView(doc);
+        }
+        wiz->deleteLater();
+    });
+    wiz->open();
 }
 
 void Portal::slotOpenCurrentDocument()
@@ -690,6 +710,7 @@ void Portal::slotXRechnungCurrentDocument()
     auto dia = new QDialog(this);
     Ui::XRechnungDialog ui;
     ui.setupUi(dia);
+    dia->setWindowTitle(i18n("XRechnung"));
 
     QDate today = QDate::currentDate();
     ui._dueDateEdit->setDate(today.addDays(21));
@@ -1066,21 +1087,19 @@ void Portal::slotDocumentSelected( const QString& uuid)
 
 void Portal::slotEditTagTemplates()
 {
-    TagTemplatesDialog dia( this );
-
-    if ( dia.exec() ) {
-        // qDebug () << "Editing of tag templates succeeded!";
-
-    }
+    auto *dia = new TagTemplatesDialog(this);
+    connect(dia, &QDialog::finished, dia, &QObject::deleteLater);
+    dia->open();
 }
 
 void Portal::slotReconfigureDatabase()
 {
-    // qDebug () << "Reconfiguring the Database";
-
-    SetupAssistant assi(this);
-    if( assi.init( SetupAssistant::Reinit ) ) {
-        assi.exec();
+    auto *assi = new SetupAssistant(this);
+    if( assi->init( SetupAssistant::Reinit ) ) {
+        connect(assi, &QDialog::finished, assi, &QObject::deleteLater);
+        assi->open();
+    } else {
+        assi->deleteLater();
     }
 }
 

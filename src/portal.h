@@ -151,6 +151,7 @@ class Portal : public QMainWindow
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
+    void startupChecksPostAssistant();
 
     QScopedPointer<PortalView> m_portalView;
 
