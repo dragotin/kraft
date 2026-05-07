@@ -31,20 +31,7 @@
 #include "addressprovider.h"
 #include "documenttemplate.h"
 
-
-namespace {
-
-QString xRechnungTemplate()
-{
-    DocTypes dts;
-    DocType dt = dts.get(QStringLiteral("Rechnung")); // FIXME hardcoded
-
-    const QString re = dt.xRechnungTemplate();
-
-    return re;
-}
-
-}
+#include <KLocalizedString>
 
 ExporterXRechnung::ExporterXRechnung(QObject *parent)
     : QObject(parent),
@@ -68,43 +55,42 @@ void ExporterXRechnung::setBuyerRef(const QString& br)
 
 QString ExporterXRechnung::templateFile() const
 {
-    return xRechnungTemplate();
+    Q_ASSERT(!_docTypeStr.isEmpty());
+    DocTypes dts;
+    DocType dt = dts.get(_docTypeStr);
+
+    const QString re = dt.xRechnungTemplate();
+
+    return re;
 }
 
 bool ExporterXRechnung::exportDocument(const QString& uuid)
 {
-    // FIXME: load the doc and set DueDate und BuyerRef
+    _uuid = uuid;
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
-    // _archDoc.setDueDate(_dueDate);
-    // _archDoc.setBuyerRef(_buyerRef);
-
-    if (xRechnungTemplate().isEmpty()) {
-        qDebug () << "tmplFile is empty, exit reportgenerator!";
-        return false;
-    }
+    _docTypeStr = doc->docTypeStr();
+    _error.clear();
 
     const QString clientUid = doc->addressUid();
-    delete doc;
     _customerContact = KContacts::Addressee();
 
-    if( ! clientUid.isEmpty() ) {
-        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
-        switch( state ) {
-        case AddressProvider::LookupFromCache:
-            _customerContact = mAddressProvider->getAddresseeFromCache(clientUid);
-            break;
-        case AddressProvider::LookupNotFound:
-        case AddressProvider::ItemError:
-        case AddressProvider::BackendError:
-            // set an empty contact
-            break;
-        case AddressProvider::LookupOngoing:
-        case AddressProvider::LookupStarted:
-            // Not much to do, just wait and let the addressprovider
-            // hit the slotAddresseFound
-            return true;
-        }
+    AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
+    switch( state ) {
+    case AddressProvider::LookupFromCache:
+        _customerContact = mAddressProvider->getAddresseeFromCache(clientUid);
+        break;
+    case AddressProvider::LookupNotFound:
+    case AddressProvider::ItemError:
+    case AddressProvider::BackendError:
+        // set an empty contact
+        break;
+    case AddressProvider::LookupOngoing:
+    case AddressProvider::LookupStarted:
+        // Not much to do, just wait and let the addressprovider
+        // hit the slotAddresseFound
+        return true;
     }
+
     QTimer::singleShot(0, this, &ExporterXRechnung::slotSkipLookup);
     return true;
 }
@@ -122,37 +108,37 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
 
     QScopedPointer<DocumentTemplate> templateEngine;
 
-    const QString tmplFile = xRechnungTemplate();
+    const QString tmplFile = templateFile();
     if (tmplFile.isEmpty()) {
         qDebug() << "Empty template file -> exit!";
+        _error = i18n("Could not find the XRechnung template file");
     } else {
         qDebug() << "Using this XRechnung Template:" << tmplFile;
     }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
 
-    const QString uuid; // FIXME
-    // expand the template...
-    const QString expanded = templateEngine->expand(uuid, myContact, contact);
+    const QString expanded = templateEngine->expand(_uuid, myContact, contact);
 
     if (expanded.isEmpty()) {
         // Q_EMIT failure(i18n("The template expansion failed."));
-        qDebug() << "Expansion failed, empty result";
-        return;
+        qDebug() << "Expansion failed, empty result" << templateEngine->error();
+        _error = templateEngine->error();
     }
 
     QTemporaryFile tempFile("/tmp/xrech_XXXXXX");
     tempFile.setAutoRemove(false);
 
-
-    if (tempFile.open()) {
-        const QString fName = tempFile.fileName();
+    if (!tempFile.open()) {
+        _error = i18n("A temporar file could not be created");
+    }
+    QString fName;
+    if (_error.isEmpty()) {
+        fName = tempFile.fileName();
         qDebug() << "########## XRechnung written to" << fName;
 
         QTextStream outStream(&tempFile);
         outStream << expanded;
         tempFile.close();
-
-        Q_EMIT xRechnungTmpFile(fName);
 #if 0
         if (_validateWithSchema && _schema.isValid()) {
             QFile file(fName);
@@ -165,6 +151,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
         }
 #endif
     }
+    Q_EMIT xRechnungTmpFile(fName);
 }
 
 ExporterXRechnung::~ExporterXRechnung( )

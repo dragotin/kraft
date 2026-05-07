@@ -18,7 +18,6 @@
 #include <QDebug>
 
 #include "addressprovider.h"
-#include "defaultprovider.h"
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
 #ifdef HAVE_AKONADI

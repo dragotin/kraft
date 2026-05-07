@@ -34,6 +34,7 @@
 class KraftViewBase;
 class AddressProvider;
 class PrefsDialog;
+class ExporterXRechnung;
 
 /**
   */
@@ -145,6 +146,8 @@ class Portal : public QMainWindow
 
     void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
+    void slotExporterFinished(const QString& file);
+
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
@@ -187,6 +190,7 @@ class Portal : public QMainWindow
 
     AddressProvider *mAddressProvider;
     PrefsDialog *_prefsDialog;
+    ExporterXRechnung *_exporter;
 
     ReportGenerator _reportGenerator;
     MyIdentity _myIdentity;

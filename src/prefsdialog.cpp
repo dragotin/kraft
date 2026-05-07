@@ -478,10 +478,7 @@ void PrefsDialog::readConfig()
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
 
-    DocTypes dts;
-    DocType dt = dts.get(QStringLiteral("Rechnung"));
-    const auto tmpl = dt.xRechnungTemplate();
-    _lineEditXRechnung->setText(tmpl);
+    _lineEditXRechnung->setText(KraftSettings::self()->xRechnungTemplate());
 
     // == Date format
     int index {5};
@@ -564,12 +561,9 @@ void PrefsDialog::writeConfig()
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
-    DocTypes dts;
-    DocType dt = dts.get(QStringLiteral("Rechnung")); // FIXME
-    const auto newTmpl = _lineEditXRechnung->text();
-    if (newTmpl != dt.xRechnungTemplate()) {
-        dt.setXRechnungTemplate(newTmpl);
-    }
+    // There is no way to set the XRechnung doc type specifically yet
+    // Have one for all invoices for now
+    KraftSettings::self()->setXRechnungTemplate(_lineEditXRechnung->text());
 
     const QString demandText = _lineEditDemandText->text();
     KraftSettings::self()->setDemandLabel(demandText);

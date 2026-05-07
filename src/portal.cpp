@@ -126,6 +126,10 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
     restoreState(state);
     const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toLatin1() );
     restoreGeometry(geo);
+
+    _exporter = new ExporterXRechnung(this);
+    connect(_exporter, &ExporterXRechnung::xRechnungTmpFile, this, &Portal::slotExporterFinished);
+
 }
 
 void Portal::show()
@@ -682,30 +686,8 @@ void Portal::slotViewDocument( const QString& uuid )
 
 void Portal::slotXRechnungCurrentDocument()
 {
-    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-    qDebug () << "XRechnung document " << uuid;
-
-    ExporterXRechnung *exporter = new ExporterXRechnung;
-    const QString tmplFile = exporter->templateFile();
-    QString err;
-
-    if (tmplFile.isEmpty()) {
-        err = i18n("XRechnung Template file not set. Please check the application settings!");
-    } else {
-        QFileInfo fi(tmplFile);
-        if (!fi.isFile()) {
-            err = i18n("The XRechnung template file cannot be read!");
-        }
-    }
-
-    if (!err.isEmpty()) {
-        QMessageBox::warning(this, i18n("XRechnung Export"), err);
-        delete exporter;
-        return;
-    }
-
+    // FIXME: Error handling - error needs to be returned from exporter
     auto dia = new QDialog(this);
-    dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::XRechnungDialog ui;
     ui.setupUi(dia);
 
@@ -713,29 +695,39 @@ void Portal::slotXRechnungCurrentDocument()
     ui._dueDateEdit->setDate(today.addDays(21));
     ui._buyerRefEdit->setText("unknown");
 
-    if (dia->exec() == QDialog::Accepted) {
-        exporter->setDueDate(ui._dueDateEdit->date());
-        exporter->setBuyerRef(ui._buyerRefEdit->text());
+    dia->open();
+    connect(dia, &QDialog::finished, [dia, this](int result) {
+        if (result == QDialog::Accepted) {
+            //do whatever you need to do, even access the instance via the dlg pointer
+            const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+            _exporter->exportDocument(uuid);
+        }
+        dia->deleteLater();
+    });
 
-        connect(exporter, &ExporterXRechnung::xRechnungTmpFile, this, [=](const QString& fName) {
-            qDebug() << "This is the xrechnung file name." << fName;
-            const QString proposeName = QString("FIXME"); // QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
-            const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
+}
 
-            if( f.isEmpty()) {
-                qDebug() << "XRechnung Save file name is empty!";
-                return;
-            }
-            if (QFile::exists(f))  // copy does not overwrite the target file
-                QFile::remove(f);
-
-            QFile::copy(fName, f);
-            this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
-            exporter->deleteLater();
-        });
-        // FIXME: exporter->exportDocument(d);
+void Portal::slotExporterFinished(const QString& fName)
+{
+    if (fName.isEmpty()) {
+        // errors happened
+        const QString err = _exporter->error();
+        m_portalView->allDocsView()->setErrorMsg(i18n("XRechnung Export Error:"), err);
+        return;
     }
+    qDebug() << "This is the xrechnung file name." << fName;
+    const QString proposeName = QString("%1/xrechnung.xml").arg(QDir::homePath());
+    const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
 
+    if( f.isEmpty()) {
+        qDebug() << "XRechnung Save file name is empty!";
+        return;
+    }
+    if (QFile::exists(f))  // copy does not overwrite the target file
+        QFile::remove(f);
+
+    QFile::copy(fName, f);
+    this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
 }
 
 QDebug operator<<(QDebug debug, const dbID &id)

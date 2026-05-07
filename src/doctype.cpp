@@ -17,6 +17,7 @@
 
 // include files for Qt
 #include <QLocale>
+#include <kraftsettings.h>
 
 // application specific includes
 #include "doctype.h"
@@ -349,7 +350,13 @@ void DocType::setMergeIdent( int ident )
 
 QString DocType::xRechnungTemplate() const
 {
-    return attributeValueString(XRechnungTmplStr);
+    // So far, there is no way to set the xrechnung template per doc type,
+    // thus a generic one from KraftSettingsis returned here.
+    QString attr = attributeValueString(XRechnungTmplStr);
+    if (attr.isEmpty()) {
+        attr = KraftSettings::self()->xRechnungTemplate();
+    }
+    return attr;
 }
 
 void DocType::setXRechnungTemplate(const QString& tmpl)

@@ -23,6 +23,7 @@
 #include <QScopedPointer>
 
 #include "addressprovider.h"
+#include "kraftdoc.h"
 
 class QSqlRecord;
 class dbID;
@@ -44,11 +45,10 @@ public:
     ExporterXRechnung(QObject *parent = nullptr);
     virtual ~ExporterXRechnung();
 
-    virtual bool exportDocument(const QString &uuid);
-    QString templateFile() const;
-
     void setDueDate(const QDate&);
     void setBuyerRef(const QString&);
+    bool exportDocument(const QString&);
+    QString error() { return _error; };
 
 protected:
     void lookupCustomerAddress();
@@ -58,12 +58,16 @@ protected Q_SLOTS:
     void slotSkipLookup();
 
 private:
+    QString templateFile() const;
+
     bool _validateWithSchema;
     AddressProvider *mAddressProvider;
     KContacts::Addressee _customerContact;
-
+    QString _uuid;
+    QString _docTypeStr;
     QString _buyerRef;
     QDate _dueDate;
+    QString _error;
 };
 
 #endif
