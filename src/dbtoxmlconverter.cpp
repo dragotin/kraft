@@ -355,6 +355,9 @@ int DbToXMLConverter::convertDocTypes(const QString& baseDir)
         if (attribs.contains(WatermarkFileStr)) {
             dt.setWatermarkFile(attribs[WatermarkFileStr].value().toString());
         }
+        if (attribs.contains(DocMergeIdentStr)) {
+            dt.setMergeIdent(attribs[DocMergeIdentStr].value().toInt());
+        }
         if (attribs.contains(DocTemplateFileStr)) {
             dt.setTemplateFile(attribs[DocTemplateFileStr].value().toString());
         }

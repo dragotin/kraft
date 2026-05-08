@@ -1009,7 +1009,7 @@ Kraft supports the XRechnung standard. That is a digital format for electronic i
 
 To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.
 
-In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).
+In order to generate correct XRechnung files for the specific company that is using Kraft, the admin has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).
 
 To adapt the file to the needs of the company, it is best to start with the https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl[example XRechnung file]. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as https://kate-editor.org/[Kate].
 
