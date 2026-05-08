@@ -1080,7 +1080,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actGeneratePDF->setEnabled(pdfEnabled);
 
     if (enable) {
-        _actXRechnung->setEnabled(docWriteEnabled && docPtr->isInvoice());
+        _actXRechnung->setEnabled(docPtr->isInvoice());
         if (docWriteEnabled)
             _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
     }
