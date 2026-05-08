@@ -6,10 +6,19 @@
     <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
     <cbc:ID>{{ doc.ident }}</cbc:ID>
     <cbc:IssueDate>{{ doc.dateStrISO }}</cbc:IssueDate>
+    <cbc:DueDate>{{ xrechnung.dueDate }}</cbc:DueDate>
     <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
     <cbc:Note>#ADU#Es gelten unsere Allgem. Geschäftsbedingungen, die Sie unter […] finden.</cbc:Note>
     <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
-    <cbc:BuyerReference>{{ doc.buyerReference }}</cbc:BuyerReference>
+    <cbc:BuyerReference>{{ xrechnung.buyerRef }}</cbc:BuyerReference>
+    {% if doc.timeOfSupplyValid %}
+    <cac:InvoicePeriod>
+        <cbc:StartDate>{{ doc.timeOfSupplyStartISO }}</cbc:StartDate>
+        {% if doc.timeOfSupplyMultiDay %}
+        <cbc:EndDate>{{ doc.timeOfSupplyEndISO }}</cbc:EndDate>
+        {% endif %}
+    </cac:InvoicePeriod>
+    {% endif %}
     <cac:ProjectReference>
       <cbc:ID>{{ doc.projectLabel|default:"not set" }}</cbc:ID>
    </cac:ProjectReference>
@@ -49,9 +58,7 @@
     
    <cac:AccountingCustomerParty>
         <cac:Party>
-            {% if customer.EMAIL %}
             <cbc:EndpointID schemeID="EM">{{ customer.EMAIL }}</cbc:EndpointID>
-            {% endif %}
             <cac:PartyName><cbc:Name>{{ customer.NAME|default:"not set" }}</cbc:Name></cac:PartyName> 
             <cac:PostalAddress>
                 <cbc:StreetName>{{ customer.STREET|default:"not set" }}</cbc:StreetName>

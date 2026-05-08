@@ -130,6 +130,9 @@ class KraftDoc : public QObject, public KraftObj
 
     Q_PROPERTY(QString timeOfSupplyStart READ tosStart)
     Q_PROPERTY(QString timeOfSupplyEnd   READ tosEnd)
+    Q_PROPERTY(QString timeOfSupplyStartISO READ tosStartISO)
+    Q_PROPERTY(QString timeOfSupplyEndISO   READ tosEndISO)
+
     Q_PROPERTY(bool timeOfSupplyValid READ tosValid)
     Q_PROPERTY(bool timeOfSupplyMultiDay READ tosMultiDay)
 
@@ -263,7 +266,11 @@ public:
     QString language() const;
 
     QString tosStart() const;
+    QString tosStartISO() const;
+
     QString tosEnd() const;
+    QString tosEndISO() const;
+
     bool tosValid() const;
     bool tosMultiDay() const;
 

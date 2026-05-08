@@ -42,10 +42,14 @@ public:
     // Example: The EPC QR Code SVG image.
     QStringList tempFilesCreated() { return _tmpFiles; }
 
+    void addExtraHash(const QString& key, const QVariantHash& h);
+
 protected:
     QString _tmplFile;
     QString _errorStr;
     QStringList _tmpFiles;
+    QString _extraHashKey;
+    QVariantHash _extraHash;
 };
 
 // ==================================================================================

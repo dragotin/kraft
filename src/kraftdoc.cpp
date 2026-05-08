@@ -862,6 +862,16 @@ void KraftDoc::slotNewIdent(const QString& ident)
     return Format::toDateString(_toSStart.date(), KraftSettings::self()->dateFormat());
  }
 
+ QString KraftDoc::tosStartISO() const
+ {
+     return _toSStart.toString("yyyy-MM-dd");
+ }
+
+ QString KraftDoc::tosEndISO() const
+ {
+     return _toSEnd.toString("yyyy-MM-dd");
+ }
+
  QString KraftDoc::tosEnd() const
  {
      return Format::toDateString(_toSEnd.date(), KraftSettings::self()->dateFormat());

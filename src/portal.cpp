@@ -717,9 +717,11 @@ void Portal::slotXRechnungCurrentDocument()
     ui._buyerRefEdit->setText("unknown");
 
     dia->open();
-    connect(dia, &QDialog::finished, [dia, this](int result) {
+    connect(dia, &QDialog::finished, [ui, dia, this](int result) {
         if (result == QDialog::Accepted) {
-            //do whatever you need to do, even access the instance via the dlg pointer
+            _exporter->setBuyerRef(ui._buyerRefEdit->text());
+            const QDate d = ui._dueDateEdit->date();
+            _exporter->setDueDate(d);
             const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
             _exporter->exportDocument(uuid);
         }

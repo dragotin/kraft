@@ -37,9 +37,13 @@ class ReportItem: public QObject
     Q_PROPERTY(QString text READ getText)
     Q_PROPERTY(QString htmlText READ htmlText)
     Q_PROPERTY(QString amount READ amount)
+    Q_PROPERTY(QString amountNum READ amountNum)
     Q_PROPERTY(QString unit READ unit)
+    Q_PROPERTY(QString unitCode READ unitEC20)
     Q_PROPERTY(QString unitPrice READ unitPrice)
+    Q_PROPERTY(QString unitPriceNum READ unitPriceNum)
     Q_PROPERTY(QString nettoPrice READ nettoPrice)
+    Q_PROPERTY(QString nettoPriceNum READ nettoPriceNum)
     Q_PROPERTY(QString taxMarker READ taxMarker)
 
 public:
@@ -51,21 +55,28 @@ public:
     QString getKind() { return _kind; }
     QString htmlText();
     QString amount() { return _amount; }
+    QString amountNum() { return _amountNum; }
     QString unit() { return _unit; }
+    QString unitEC20() { return _unitEC20; }
     QString nettoPrice() { return _nettoPrice; }
+    QString nettoPriceNum() { return _nettoPriceNum; }
     QString unitPrice() { return _unitPrice; }
     QString taxMarker() { return _taxMarker; }
-
+    QString unitPriceNum() const { return _unitPriceNum; }
 private:
     int     _itemNo;
     QString _uuid;
     QString _kind;
     QString _text;
     QString _amount;
+    QString _amountNum;
     QString _unit;
     QString _unitPrice;
+    QString _unitPriceNum;
     QString _nettoPrice;
+    QString _nettoPriceNum;
     QString _taxMarker;
+    QString _unitEC20;
 };
 
 #endif

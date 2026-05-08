@@ -117,6 +117,11 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
 
+    QVariantHash xr;
+    xr.insert("dueDate", _dueDate);
+    xr.insert("buyerRef", _buyerRef);
+    templateEngine->addExtraHash("xrechnung", xr);
+
     const QString expanded = templateEngine->expand(_uuid, myContact, contact);
 
     if (expanded.isEmpty()) {

@@ -35,8 +35,11 @@ ReportItem::ReportItem(DocPosition *dp)
     _text = dp->text();
     _itemNo = dp->positionNumber();
     _amount = Format::localeDoubleToString(dp->amount());
+    _amountNum = QString::number(dp->amount(), 'f', 2);
     _unitPrice = dp->unitPrice().toLocaleString();
+    _unitPriceNum = dp->unitPrice().toNumberString();
     _nettoPrice = dp->overallPrice().toLocaleString();
+    _nettoPriceNum = dp->overallPrice().toNumberString();
 
     QString re;
     DocPosition::Tax tt = dp->taxType();
@@ -49,6 +52,7 @@ ReportItem::ReportItem(DocPosition *dp)
     }
 
     _unit = dp->unit().einheit(dp->amount() > 1 ? 2 : 1);
+    _unitEC20 = dp->unit().ec20();
     _taxMarker = re;
     _uuid = dp->uuid();
 }

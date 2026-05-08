@@ -182,6 +182,12 @@ DocumentTemplate::DocumentTemplate( const QString& tmplFile )
 
 }
 
+void DocumentTemplate::addExtraHash(const QString& key, const QVariantHash& h)
+{
+    _extraHashKey = key;
+    _extraHash = h;
+}
+
 // ==================================================================================
 
 GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
@@ -194,7 +200,6 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
                                                 const KContacts::Addressee &myContact,
                                                 const KContacts::Addressee &customerContact)
 {
-
     // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP;
     // Grantlee::registerMetaType<ReportItemList>();
     // Grantlee::registerMetaType<ReportItem>();
@@ -217,6 +222,10 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
     if (_errorStr.isEmpty()) {
 
         GrantleeFileTemplate gtmpl(_tmplFile);
+
+        if (!_extraHashKey.isEmpty()) {
+            gtmpl.addToMappingHash(_extraHashKey, _extraHash);
+        }
 
         gtmpl.addToObjMapping("doc", doc);
 
