@@ -710,13 +710,16 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
 
     for( const QDate& d : std::as_const(dates)) {
         const QList<QString> files = dateMap.values(d);
-        QString yearStr = QString::number(d.year());
+        const QString yearStr = QString::number(d.year());
 
         for( const QString& fragm : files) {
             // we have the year and the uuid to find the entry from the index
             DocDigest dd = indx.findDigest(yearStr, fragm);
-            model->addData(dd);
-            cnt++;
+            // Do not load deleted documents
+            if (dd.state().state() != KraftDocState::State::Deleted) {
+                model->addData(dd);
+                cnt++;
+            }
         }
     }
     qDebug() << "Added"<< cnt << "digests to" << model->objectName();

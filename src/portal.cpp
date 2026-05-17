@@ -203,6 +203,11 @@ void Portal::initActions()
     _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_D ));
     connect(_actFinalizeDocument, &QAction::triggered, this, &Portal::slotFinalizeDoc);
 
+    newIcon = DefaultProvider::self()->icon( "x");
+    _actDeleteDocument = new QAction(newIcon, i18n("Delete Document"), this);
+    _actDeleteDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_D ));
+    connect(_actDeleteDocument, &QAction::triggered, this, &Portal::slotDeleteDoc);
+
     newIcon = DefaultProvider::self()->icon( "edit");
     _actEditDocument = new QAction(newIcon, i18n("Edit Document"), this);
     _actEditDocument->setShortcut( QKeySequence::Open );
@@ -274,6 +279,7 @@ void Portal::initActions()
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
     _actOpenDocumentPDF->setStatusTip( i18n( "Open a viewer on an archived document" ) );
     _actFinalizeDocument->setStatusTip( i18n("Finalize the document to send it to the customer"));
+    _actDeleteDocument->setStatusTip( i18n("Delete a not yet final document"));
     _actGeneratePDF->setStatusTip( i18n("Regenerate the current PDF"));
 
     _actEditDocument->setEnabled( false );
@@ -286,6 +292,7 @@ void Portal::initActions()
     _actXRechnung->setEnabled( false );
     _actChangeDocStatus->setEnabled( false );
     _actFinalizeDocument->setEnabled( false );
+    _actDeleteDocument->setEnabled(false);
     _actGeneratePDF->setEnabled(false);
 
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
@@ -307,6 +314,7 @@ void Portal::initActions()
         docMenu->addAction(_actXRechnung);
         docMenu->addSeparator();
         docMenu->addAction(_actChangeDocStatus);
+        docMenu->addAction(_actDeleteDocument);
         docMenu->addAction(_actFinalizeDocument);
     }
 
@@ -797,9 +805,28 @@ void Portal::slotChangeDocStatus()
     // FIXME
 }
 
+void Portal::slotDeleteDoc()
+{
+    qDebug() << "Change doc status to deleted";
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+
+    if (uuid.isEmpty()) return;
+
+    // some useful describing text to be displayed in the dialog
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
+
+    if (doc) {
+        doc->slotDeleteDoc();
+
+        AllDocsView *dv = m_portalView->allDocsView();
+        dv->slotUpdateView(doc);
+    }
+}
+
 void Portal::slotFinalizeDoc()
 {
-    qDebug() << "Change doc status";
+    qDebug() << "Change doc status to finalize";
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
     if (uuid.isEmpty()) return;
@@ -1063,6 +1090,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actFollowDocument->setEnabled(enable);
     _actFinalizeDocument->setEnabled(enable && docWriteEnabled);
     _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
+    _actDeleteDocument->setEnabled(enable && docWriteEnabled);
 
     XmlDocIndex indx;
 

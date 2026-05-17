@@ -153,26 +153,33 @@ QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::Stat
     QList<State> re;
 
     switch(nowState) {
-    case State::Converted:
     case State::Invalid:
+        re.append(State::Deleted);
+        break;
+    case State::Converted:
+        re.append(State::Deleted);
+        break;
     case State::Retracted:
-        qDebug() << "No follow up state for converted.";
         break;
     case State::Draft:
+        re.append(State::Deleted);
         re.append(State::Final);
         break;
     case State::Final:
         re.append(State::Retracted);
         break;
     case State::New:
+        re.append(State::Deleted);
         re.append(State::Draft);
         break;
     case State::Undefined:
+        re.append(State::Deleted);
         re.append(State::Draft);
         re.append(State::Converted);
         re.append(State::Final);
         break;
     case State::Deleted:
+        re.append(State::Draft);
         break;
     }
     return re;
@@ -722,6 +729,30 @@ void KraftDoc::slotNewIdent(const QString& ident)
         man->saveDocument(this);
     }
     delete generator;
+}
+
+void KraftDoc::slotDeleteDoc()
+{
+    auto nowState = state().state();
+
+    if (nowState == KraftDocState::State::Final) {
+        qDebug() << "Document is in final state, can not be deleted";
+        return;
+    }
+    if (nowState == KraftDocState::State::Deleted) {
+        qDebug() << "Document is already in deleted state";
+        return;
+    }
+
+    QList<KraftDocState::State> allowed = KraftDocState::validFollowStates(nowState);
+    if (!allowed.contains(KraftDocState::State::Deleted)) {
+        qDebug() << "Document state can not be followed by Deleted state" << state().stateString();
+        return;
+    }
+    state().setState(KraftDocState::State::Deleted);
+
+    DocumentMan *man = DocumentMan::self();
+    man->saveDocument(this);
 }
 
  /**
