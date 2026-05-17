@@ -313,9 +313,9 @@ void Portal::initActions()
         docMenu->addAction(_actGeneratePDF);
         docMenu->addAction(_actXRechnung);
         docMenu->addSeparator();
-        docMenu->addAction(_actChangeDocStatus);
-        docMenu->addAction(_actDeleteDocument);
+        // docMenu->addAction(_actChangeDocStatus);
         docMenu->addAction(_actFinalizeDocument);
+        docMenu->addAction(_actDeleteDocument);
     }
 
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
