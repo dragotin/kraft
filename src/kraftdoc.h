@@ -304,6 +304,9 @@ public:
     void finalize();
     void slotNewIdent(const QString&);
 
+    void slotDeleteDoc();
+
+
 Q_SIGNALS:
     void saved(bool);
 
