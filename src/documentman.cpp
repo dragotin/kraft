@@ -18,7 +18,6 @@
 #include <QSqlDriver>
 
 #include <QDebug>
-
 #include <klocalizedstring.h>
 
 #include "documentman.h"
@@ -30,6 +29,8 @@
 #include "documentsaverxml.h"
 
 Q_GLOBAL_STATIC(DocumentMan, mSelf)
+
+using namespace Qt::StringLiterals;
 
 DocumentMan *DocumentMan::self()
 {
@@ -53,6 +54,9 @@ DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromUuid)
             delete sourceDoc;
         }
         doc->setLastModified( QDateTime::currentDateTime());
+
+        // Do not copy the identifier. The state is reset to New anyway in the = operator
+        doc->setIdent(u"draft"_s);
     }
     return doc;
 }
