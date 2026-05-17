@@ -5,6 +5,7 @@ Changes since versino 2.0.0: #######################################
 - Fix: Correct switch isInvoice plus other flags
 - Show flags as checkboxes in the doc type edit dialog
 - Feature: Add time of supply to invoices
+- Feature: Allow to delete non final documents
 
 => Release v. 2.1.0 (May, xx 2026)
 
