@@ -72,6 +72,13 @@ target_link_libraries(t_kraftdoc ${test_libs})
 
 # ============================================================
 
+add_executable(t_kraftdocstate t_kraftdocstate.cpp)
+add_test(NAME t_kraftdocstate COMMAND t_kraftdocstate)
+
+target_link_libraries(t_kraftdocstate ${test_libs})
+
+# ============================================================
+
 add_executable(t_docposition t_docposition.cpp)
 add_test(NAME t_docposition COMMAND t_docposition)
 
