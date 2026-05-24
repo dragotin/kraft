@@ -205,7 +205,7 @@ void Portal::initActions()
 
     newIcon = DefaultProvider::self()->icon( "x");
     _actDeleteDocument = new QAction(newIcon, i18n("Delete Document"), this);
-    _actDeleteDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_D ));
+    _actDeleteDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_Delete ));
     connect(_actDeleteDocument, &QAction::triggered, this, &Portal::slotDeleteDoc);
 
     newIcon = DefaultProvider::self()->icon( "edit");
