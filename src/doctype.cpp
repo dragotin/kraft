@@ -398,6 +398,10 @@ void DocType::setName( const QString& name )
     setModified();
 }
 
+bool DocType::isEmpty()
+{
+    return mName.isEmpty();
+}
 // ===============================================================
 
 template<>

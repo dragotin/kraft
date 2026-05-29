@@ -110,6 +110,8 @@ public:
 
     void        readIdentTemplate();
 
+    bool        isEmpty();
+
 private:
     QStringList  mFollowerList;
     QString      mName;

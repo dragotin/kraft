@@ -162,6 +162,10 @@ private:
             }
             T obj;
             obj.parseXml(domDoc);
+            if (obj.isEmpty()) {
+                qDebug() << "Can not parse XML file for numbercycle" << file.fileName();
+                continue;
+            }
             map.insert(obj.name(), obj);
         }
         return map;

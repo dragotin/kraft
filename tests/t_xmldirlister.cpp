@@ -46,6 +46,10 @@ public:
         return doc.toString();
     }
 
+    bool isEmpty() {
+        return _name.isEmpty();
+    }
+
 private:
     QString _name;
     QString _value;
@@ -128,6 +132,16 @@ private Q_SLOTS:
         Items fresh;
         QVERIFY(fresh.get("Beta").name().isEmpty());
         QCOMPARE(fresh.map().size(), 1);
+    }
+
+    void isEmpty() {
+        Item b;
+        b.setName("Beta");
+        b.setValue("beta-value");
+        QVERIFY(!b.isEmpty());
+
+        Item c;
+        QVERIFY(c.isEmpty());
     }
 
     // remove() hides an item from this instance without deleting the disk file
