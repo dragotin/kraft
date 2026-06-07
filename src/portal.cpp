@@ -377,6 +377,7 @@ void Portal::initView()
         if (!_readOnlyMode) {
             menu->addAction( _actEditDocument );
             menu->addAction( _actFinalizeDocument );
+            menu->addAction( _actDeleteDocument );
             menu->addSection(i18n("Create New Documents"));
             menu->addAction( _actNewDocument );
             menu->addAction( _actCopyDocument );
