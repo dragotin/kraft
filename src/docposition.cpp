@@ -308,12 +308,6 @@ DocPosition::Tax DocPositionList::listTaxation() const
     return ret;
 }
 
-bool DocPositionList::hasIndividualTaxes() const
-{
-    bool re = listTaxation() == DocPosition::Tax::Individual;
-    return re;
-}
-
 DocPosition *DocPositionList::positionFromId( int id )
 {
     DocPosition *dp{nullptr};

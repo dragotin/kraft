@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "reportitemlist.h"
 #include "docposition.h"
-#include "format.h"
 
 ReportItemList::ReportItemList(const DocPositionList& positions)
     :QList<ReportItem*>()

@@ -150,7 +150,14 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
 
     Q_PROPERTY(QList<ReportItem*> items READ reportItemList)
-    Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
+
+    // the following one for legacy reasons, has been superseeded by the other four
+    Q_PROPERTY(bool hasIndividualTaxation READ individualTaxesDocument)
+    Q_PROPERTY(bool fullTaxesDocument READ fullTaxesDocument)
+    Q_PROPERTY(bool reducedTaxesDocument READ reducedTaxesDocument)
+    Q_PROPERTY(bool individualTaxesDocument READ individualTaxesDocument)
+    Q_PROPERTY(bool noTaxesDocument READ noTaxesDocument)
+
     Q_PROPERTY(bool isInvoice READ isInvoice)
 
 public:
@@ -279,11 +286,9 @@ public:
     void setDueDate(const QDate& d) { _dueDate = d; }
     void setBuyerRef(const QString& br) { _buyerRef = br; }
 
-    static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
+    static QString taxMarkerNoTax()   { return QStringLiteral(""); }
     static QString taxMarkerReduced() { return QStringLiteral("2"); }
-    static QString taxMarkerFull()    { return QLatin1String("");  }
-
-    bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
+    static QString taxMarkerFull()    { return QLatin1String("1");  }
 
     bool isInvoice() const;
     bool isDraftState() const;
@@ -293,6 +298,11 @@ public:
     void clear();
 
     KraftDocState& state() { return _state; }
+
+    bool individualTaxesDocument() const;
+    bool fullTaxesDocument() const;
+    bool reducedTaxesDocument() const;
+    bool noTaxesDocument() const;
 
  public Q_SLOTS:
     // The following slots take get the db id as argument

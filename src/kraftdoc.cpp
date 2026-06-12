@@ -755,6 +755,31 @@ void KraftDoc::slotDeleteDoc()
     man->saveDocument(this);
 }
 
+bool KraftDoc::fullTaxesDocument() const
+{
+    bool re = (positions().listTaxation() == DocPosition::Tax::Full);
+    return re;
+}
+
+bool KraftDoc::reducedTaxesDocument() const
+{
+    bool re = (positions().listTaxation() == DocPosition::Tax::Reduced);
+    return re;
+}
+
+bool KraftDoc::individualTaxesDocument() const
+{
+    bool re = (positions().listTaxation() == DocPosition::Tax::Individual);
+    return re;
+}
+
+bool KraftDoc::noTaxesDocument() const
+{
+    bool re = (positions().listTaxation() == DocPosition::Tax::None);
+    return re;
+}
+
+
  /**
   * @brief KraftDoc::resolveMacros
   * @param txtWithMacros - the string that might contain any macros

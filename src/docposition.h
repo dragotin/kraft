@@ -124,7 +124,6 @@ public:
     Geld reducedTaxSum( double reducedTax );
 
     DocPosition::Tax  listTaxation() const;
-    bool hasIndividualTaxes() const;
 
 protected:
     int compareItems ( DocPosition *dp1, DocPosition *dp2 );

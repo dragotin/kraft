@@ -44,11 +44,11 @@ ReportItem::ReportItem(DocPosition *dp)
     QString re;
     DocPosition::Tax tt = dp->taxType();
     if ( tt == DocPosition::Tax::Reduced ) {
-        re = QStringLiteral("1");
+        re = QStringLiteral("2");
     } else if ( tt == DocPosition::Tax::None) {
         re = QStringLiteral("");
     } else if (tt == DocPosition::Tax::Full) {
-        re = QStringLiteral("2");
+        re = QStringLiteral("1");
     }
 
     _unit = dp->unit().einheit(dp->amount() > 1 ? 2 : 1);

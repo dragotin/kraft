@@ -107,7 +107,7 @@
           <td class="col-Unit col-left">{{ item.unit }}</td>
           <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
           <td class="col-Sum col-right">{{ item.nettoPrice }}</td>
-          {% if doc.hasIndividualTaxation %}
+          {% if doc.individualTaxesDocument %}
           <td class="col-Taxmarker col-right"><sup><small>{{ item.taxMarker }}</small></sup></td>
           {% endif %}
         </tr>
@@ -119,11 +119,14 @@
 
     <table id="total">
       <tbody>
+        {% if not doc.noTaxesDocument %}
+        {# No taxes does not have a netto sum #}
         <tr>
           <td>{{ label.NET }}</td>
           <td class="col-TotalSum">{{ doc.nettoSumStr }}</td>
         </tr>
-        {% if doc.hasIndividualTaxation %}
+        {% endif %}
+        {% if doc.individualTaxesDocument %}
          {# This section is shown for documents with individual tax rates #}
         <tr>
           <td><sup><small>{{ doc.taxMarkerReduced }}</small></sup>&nbsp;
@@ -135,6 +138,8 @@
           +{{ doc.fullTaxPercentStr }}% {{ label.VAT }}</td>
           <td class="col-TotalSum">{{ doc.fullTaxSumStr }}</td>
         </tr>
+        {% elif doc.noTaxesDocument %}
+        {# no tax outline - leave completely empty for no taxes #}
         {% else %}
         <tr>
         {# This section is shown for documents with one consistent tax rate #}
