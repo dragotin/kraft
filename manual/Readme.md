@@ -22,12 +22,12 @@ This is based on the great [doc here](https://github.com/KiCad/kicad-doc/blob/ma
 
 The process of internationalization of the Kraft Manual is done in different steps.
 
-It relies on the the same gettext process that is also used for the normal software
+It relies on the same gettext process that is also used for the normal software
 strings. To extract the strings from the manual, the great utility po4a is used.
 
 ### Step 1: String Template Extraction
 
-This is extracting strings ready for the gettext system. This needs only to
+This is extracting strings ready for the gettext system. This only needs to
 be done once. Later, the pot file is only going to be updated.
 
 ```
@@ -42,21 +42,21 @@ The update works with the command msgmerge:
 
 ### Step 2: Translation
 
-Copy the template into the nationalized version:
+Copy the template into the localized version:
 
 `cp po/kraft.pot po/kraft-de.po`
 
 and use the gettext editor you like or upload to Transifex.
 
-Keep in mind that snapshots images should be nationalized. I suggest to
-create a internationalized image dirs such as:
+Keep in mind that snapshot images should be localized. I suggest creating
+internationalized image directories such as:
 ```
   images
   images-de
   images-es
 ```
-This way untranslated images fallback to English images. po4a
-correctly translate image reference to enable the fallback.
+This way untranslated images fall back to English images. po4a
+correctly translates image references to enable the fallback.
 
 ### Step 3: Produce Internationalized Master Documents
 
@@ -64,7 +64,7 @@ correctly translate image reference to enable the fallback.
   po4a-translate -f asciidoc -M utf-8 -m kraft.adoc -p po/kraft-de.po -k 0 -l kraft-de.adoc
 ```
 
-### Step 4: Produce all Kind of Internationalized Output Formats
+### Step 4: Produce all Kinds of Internationalized Output Formats
 
 ```
   asciidoc -a lang=de kraft-de.adoc    #convert into html
