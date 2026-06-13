@@ -7,7 +7,7 @@
 
 Kraft is a Qt6/KF6 based linux desktop software with a strong focus on ease of use
 and the just enough feature set for the use case. With Kraft, creating documents
-will run smooth and free time for more enjoyable things than office work.
+will run smoothly and free up time for more enjoyable things than office work.
 
 Check out the website http://volle-kraft-voraus.de for more information.
 
@@ -15,7 +15,7 @@ Kraft runs on your Linux desktop. No big tech cloud involved, your data stays wi
 
 With Kraft, writing documents like quotes and invoices is very easy and fast.
 Repeating tasks are supported, documents can be generated semi automatically,
-ie. invoices from offers sent out before.
+e.g., invoices from offers sent out before.
 
 For efficient work, Kraft supports catalogs to organize materials and
 template items. It focuses on high quality printouts because paper is
@@ -23,7 +23,7 @@ still the main communication media in the small business world. However,
 it also sends documents via email and supports electronic invoicing with XRechnung.
 
 Kraft utilizes very useful tools of the free software world:
-- KDE addressbook for customer management
+- KDE address book for customer management
 - MySQL or alternatively SQLite as database
 - [WeasyPrint](https://weasyprint.org) for PDF generation.
 
