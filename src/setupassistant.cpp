@@ -317,7 +317,7 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     QTabWidget *tabWidget = new QTabWidget;
 
     QLabel *l = new QLabel;
-    l->setText( i18n("Select your companies address either from the address book or enter it manually. It is set as a consigner on the documents.") );
+    l->setText( i18n("Select your company's address either from the address book or enter it manually. It is set as the consigner on the documents.") );
     vbox->addWidget( l );
 
     vbox->addWidget(tabWidget);
@@ -502,7 +502,7 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
             startDatabaseCreation();
         } else {
             // qDebug () << "CreateDB-Page: Database already existing";
-            setField("CreateDbStatusText", i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
+            setField("CreateDbStatusText", i18n( "<p>The database already exists, no action needs to be taken here.</p>"
                                                  "<p>Please hit <b>next</b> to proceed.</p>" ) );
         }
     }
@@ -556,9 +556,9 @@ void SetupAssistant::finalizePage()
     txt += "<ul>";
     txt += i18n("<li>adjust various settings in the Kraft Preferences dialog.</li>" );
     txt += i18n("<li>Check the Catalog chapter list.</li>" );
-    txt += i18n("<li>Make your business and have fun.</li>" );
+    txt += i18n("<li>Run your business and have fun.</li>" );
     txt += "</ul>";
-    txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Krafts configuration.</p>");
+    txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Kraft's configuration.</p>");
   } else {
     for(const QString& err: mErrors ) {
       txt += "<p>" + err + "</p>";

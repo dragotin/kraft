@@ -1020,7 +1020,7 @@ void Portal::slotPrintPDF(const QString& uuid)
     // Use lp on Linux to print the file
     // FIXME: make that more sophisticated
     if( !fileName.isEmpty() && QProcess::execute("lp", QStringList{fileName}) == 0 ) {
-        slotStatusMsg(i18n("Printing document successful.") );
+        slotStatusMsg(i18n("Document printed successfully.") );
     } else {
         slotStatusMsg(i18n("Printing document %1 failed.").arg(uuid));
     }

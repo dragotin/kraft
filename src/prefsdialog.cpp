@@ -199,7 +199,7 @@ QWidget* PrefsDialog::whoIsMeTab()
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
 
-  QLabel *label = new QLabel(i18n("Select the identity of the sending entity of documents. That's <b>your companies</b> address."));
+  QLabel *label = new QLabel(i18n("Select the identity of the sending entity of documents. That's <b>your company's</b> address."));
   label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   vboxLay->addWidget( label );
 
@@ -692,7 +692,7 @@ void PrefsDialog::displayOwnAddress(const KContacts::Addressee& addressee, bool 
     if( addressee.isEmpty() ) {
         addressBookInfo = i18n("The identity is not listed in an address book.");
         errorObj.setProperty("NO_IDENTITY_WRN", i18n("<p><b>Kraft does not know your identity.</b></p>"
-                                                   "<p>Please pick one from the address books by clicking on the Button below.</p>"
+                                                   "<p>Please pick one from the address books by clicking on the button below.</p>"
                                                    "<p>Not having an identity selected can make your documents look incomplete.</p>"));
     } else {
         const QString origin = addressee.custom( CUSTOM_ADDRESS_MARKER );
