@@ -91,7 +91,7 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 
     if (convertOwnIdentity(dBase)) {
         qDebug() << "manual own Identity converted";
-        Q_EMIT conversionOut(i18n("<br/>Converted manual created identity successfully"));
+        Q_EMIT conversionOut(i18n("<br/>Converted manually created identity successfully"));
     }
 
     if (nc_cnt == 0) {

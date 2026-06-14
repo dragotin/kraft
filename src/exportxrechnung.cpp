@@ -134,7 +134,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     tempFile.setAutoRemove(false);
 
     if (!tempFile.open()) {
-        _error = i18n("A temporar file could not be created");
+        _error = i18n("A temporary file could not be created");
     }
     QString fName;
     if (_error.isEmpty()) {

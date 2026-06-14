@@ -270,7 +270,7 @@
       <item row="2" column="0">
        <widget class="QCheckBox" name="mCbArchiving">
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Documents of this type need to be archived when it is final.&lt;/p&gt;&lt;p&gt;(Not yet implemented)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Documents of this type need to be archived when they are final.&lt;/p&gt;&lt;p&gt;(Not yet implemented)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Needs Archiving</string>

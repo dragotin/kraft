@@ -116,8 +116,8 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
     _tmplFile = findTemplateFile(dt);
 
     if (_tmplFile.endsWith(QStringLiteral(".trml"))) {
-        Q_EMIT failure(_uuid, i18n("ReportLab Templates are not longer supported with Kraft 2.0"),
-                       i18n("Please convert to a Weasyprint Template."));
+        Q_EMIT failure(_uuid, i18n("ReportLab Templates are no longer supported with Kraft 2.0"),
+                       i18n("Please convert to a WeasyPrint Template."));
         _tmplFile.clear();
     }
 
@@ -192,7 +192,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        Q_EMIT failure(_uuid, i18n("Saving to temporar file failed."), "");
+        Q_EMIT failure(_uuid, i18n("Saving to temporary file failed."), "");
         delete converter;
         _uuid.clear();
         return;
@@ -408,7 +408,7 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        Q_EMIT failure(_uuid, i18n("There is not template defined for %1.").arg(dType.name()), "");
+        Q_EMIT failure(_uuid, i18n("There is no template defined for %1.").arg(dType.name()), "");
     } else {
         // a few file checks
         QFileInfo fi(tmplFile);
