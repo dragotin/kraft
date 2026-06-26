@@ -677,10 +677,10 @@ bool KraftDoc::isDraftState() const
     return (_state.state() == KraftDocState::State::Draft);
 }
 
-QList<ReportItem*> KraftDoc::reportItemList() const
+ReportItemList KraftDoc::reportItemList() const
 {
     // ReportItemList reList(positions());
-    QList<ReportItem*> list;
+    ReportItemList list;
 
     for( auto &pos : positions()) {
         ReportItem *ri = new ReportItem(pos);

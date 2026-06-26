@@ -1,0 +1,66 @@
+
+:table-caption: Document Template:
+
+The following tables list the available variables in a document template. The variables are
+grouped under certain namespaces, depending on their meaning, ie. `doc` or `label`.
+
+**Contacts**: For both the own identity with prefix `me` and for the customer contact with prefix `customer` the following variables are defined.
+
+.{{ me.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+{% for var in me.vars %}|me.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+**Document**: Document specific variables.
+
+.{{ doc.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+{% for var in doc.vars %}|doc.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+.{{ items.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+{% for var in items.vars %}|item.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+.{{ epcqrcode.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+{% for var in epcqrcode.vars %}|epcqrcode.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+.{{ label.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Value
+
+{% for var in label.vars %}|label.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+.{{ kraft.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Value
+
+{% for var in kraft.vars %}|kraft.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
+
+

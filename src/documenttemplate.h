@@ -26,6 +26,8 @@ namespace Template {
 
 }
 
+class KraftDoc;
+
 class DocumentTemplate
 {
 public:
@@ -44,7 +46,20 @@ public:
 
     void addExtraHash(const QString& key, const QVariantHash& h);
 
+    inline static const QString DocPrefix{"doc"};
+    inline static const QString ItemsPrefix{"items"};
+    inline static const QString MeContactPrefix{"me"};
+    inline static const QString CustomerContactPrefix{"customer"};
+    inline static const QString LabelsPrefix{"label"};
+    inline static const QString EPCPrefix{"epcqrcode"};
+    inline static const QString KraftPrefix{"kraft"};
+
 protected:
+    QVariantHash labelVariantHash();
+    QVariantHash kraftVariantHash();
+    QVariantHash contactToVariantHash(const KContacts::Addressee& contact );
+    QVariantHash generateQRCodeHash(KraftDoc *doc);
+
     QString _tmplFile;
     QString _errorStr;
     QStringList _tmpFiles;
@@ -62,6 +77,7 @@ public:
     const QString expand(const QString& uuid,
                          const KContacts::Addressee &myContact,
                          const KContacts::Addressee &customerContact) override;
+
 };
 
 #endif // DOCUMENTTEMPLATE_H

@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <utility>
+
 #include "reportitemlist.h"
 #include "docposition.h"
 
@@ -29,4 +31,13 @@ ReportItemList::ReportItemList(const DocPositionList& positions)
 ReportItemList::~ReportItemList()
 {
     qDeleteAll(begin(), end());
+}
+
+ReportItemList& ReportItemList::operator=(ReportItemList&& other) noexcept
+{
+    if (this != &other) {
+        qDeleteAll(begin(), end());
+        QList<ReportItem*>::operator=(std::move(other));
+    }
+    return *this;
 }
