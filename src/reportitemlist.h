@@ -40,6 +40,15 @@ public:
     ReportItemList(const DocPositionList& positions);
 
     ~ReportItemList();
+
+    // The list owns its elements and deletes them in the destructor. As
+    // ReportItem is a QObject it cannot be copied, so make the list move-only:
+    // copying would shallow-copy the owned pointers and double-free them.
+    ReportItemList(const ReportItemList&) = delete;
+    ReportItemList& operator=(const ReportItemList&) = delete;
+
+    ReportItemList(ReportItemList&& other) noexcept = default;
+    ReportItemList& operator=(ReportItemList&& other) noexcept;
 };
 
 // Read-only introspection of ReportItemList object.

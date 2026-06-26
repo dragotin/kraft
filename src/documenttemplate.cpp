@@ -37,112 +37,11 @@
 
 namespace Template {
 
-QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
-{
-    QVariantHash hash;
 
-    QString n = contact.realName();
-    if (n.isEmpty()) n = TAG("Not set!");
-    hash.insert( TAG( "NAME" ),  n.toHtmlEscaped());
-
-    if( contact.isEmpty() ) return hash;
-
-
-    QString co = contact.organization();
-    if( co.isEmpty() ) {
-        co = contact.realName();
-    }
-    hash.insert( TAG( "ORGANISATION" ), co.toHtmlEscaped());
-    const QUrl url = contact.url().url();
-    hash.insert( TAG( "URL" ),   url.url().toHtmlEscaped());
-    hash.insert( TAG( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
-    hash.insert( TAG( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
-    hash.insert( TAG( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
-    hash.insert( TAG( "MOBILE" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
-
-    KContacts::Address address;
-    address = contact.address( KContacts::Address::Pref );
-    if( address.isEmpty() )
-        address = contact.address(KContacts::Address::Work );
-    if( address.isEmpty() )
-        address = contact.address(KContacts::Address::Home );
-    if( address.isEmpty() )
-        address = contact.address(KContacts::Address::Postal );
-
-    hash.insert( TAG( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
-
-    hash.insert( TAG( "EXTENDED" ), address.extended().toHtmlEscaped());
-    hash.insert( TAG( "STREET" ), address.street().toHtmlEscaped());
-    hash.insert( TAG( "LOCALITY" ), address.locality().toHtmlEscaped());
-    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
-    hash.insert( TAG( "POSTCODE" ), address.postalCode().toHtmlEscaped());
-    hash.insert( TAG( "COUNTRY" ), address.country().toHtmlEscaped());
-    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
-    hash.insert( TAG("LABEL" ), address.label().toHtmlEscaped());
-    return hash;
-}
-
-QVariantHash labelVariantHash()
-{
-    QVariantHash hash;
-
-    hash.insert( TAG( "NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
-    hash.insert( TAG( "ITEM"), i18nc("Document item printed on the document", "Item") );
-    hash.insert( TAG( "QUANTITY_SHORT"), i18nc("Abbrev. of Quantity printed on the document", "Qty.") );
-    hash.insert( TAG( "UNIT"), i18nc("Unit printed on the document", "Unit") );
-    hash.insert( TAG( "PRICE"), i18nc("Price of an item printed on the document", "Price") );
-    hash.insert( TAG( "SUM"), i18nc("Printed on the document", "Sum") );
-    hash.insert( TAG( "NET"), i18nc("printed on the document", "Net") );
-    hash.insert( TAG( "VAT"), i18nc("Printed on the document", "VAT") );
-    hash.insert( TAG( "TYPE"), i18nc("Document type, printed on the document", "Type") );
-
-    hash.insert( TAG( "PHONE"), i18nc("Printed on the document", "Phone"));
-    hash.insert( TAG( "FAX"), i18nc("Printed on the document", "Fax"));
-    hash.insert( TAG( "MOBILE"), i18nc("Printed on the document", "Mobile"));
-    hash.insert( TAG( "EMAIL"), i18nc("Printed on the document", "Email"));
-    hash.insert( TAG( "WEBSITE"), i18nc("Printed on the document", "Website"));
-
-    hash.insert( TAG( "PAGE"), i18nc("Printed on the document", "Page"));
-    hash.insert( TAG( "PREDECESSOR"), i18nc("Label of Predecessor document number", "Predecessor-Doc"));
-    hash.insert( TAG( "PAGE_OF"), i18nc("the 'of' in page X of Y", "of"));
-    hash.insert( TAG( "DOC_NO"), i18nc("Document number on document", "Document No."));
-    hash.insert( TAG( "DATE"), i18nc("Date on document", "Date"));
-    hash.insert( TAG( "PROJECT"), i18nc("Project label", "Project"));
-    hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer ID"));
-    hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
-    hash.insert( TAG( "TIMEOFSUPPLY"), i18nc("Printed on Document", "Time of supply"));
-
-    return hash;
-}
 }
 
 namespace {
 
-
-
-QVariantHash kraftVariantHash()
-{
-    QVariantHash hash;
-    QString h = QString("Kraft %1 %2").arg(Kraft::Version::number()).
-            arg(Kraft::Version::codeName());
-    hash.insert(TAG("VERSION"), h);
-
-    h = QString("DB-Scheme %1").arg(Kraft::Version::dbSchemaVersion());
-    hash.insert(TAG("DB_SCHEME"), h);
-
-    h = qgetenv("USER");
-    if (h.isEmpty())
-        h = qgetenv("USERNAME");
-    hash.insert(TAG("SYS_USER"), h);
-
-    h = qgetenv("HOSTNAME");
-    if (h.isEmpty())
-        h = qgetenv("HOST");
-    if (!h.isEmpty())
-        hash.insert(TAG("HOSTNAME"), h);
-
-    return hash;
-}
 
 QString generateEPCQRCodeFile(KraftDoc *doc)
 {
@@ -229,44 +128,20 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
         gtmpl.addToObjMapping("doc", doc);
 
-        const auto mtt = Template::contactToVariantHash(myContact);
-        gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
+        const auto mtt = contactToVariantHash(myContact);
+        gtmpl.addToMappingHash(MeContactPrefix, mtt);
 
-        const auto cct = Template::contactToVariantHash(customerContact);
-        gtmpl.addToMappingHash(QStringLiteral("customer"), cct);
+        const auto cct = contactToVariantHash(customerContact);
+        gtmpl.addToMappingHash(CustomerContactPrefix, cct);
 
-        const QVariantHash labelHash = Template::labelVariantHash();
-        gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
+        const QVariantHash labelHash = labelVariantHash();
+        gtmpl.addToMappingHash(LabelsPrefix, labelHash);
 
-        // -- save the EPC QR Code which is written into a temp file
-        QVariantHash epcHash;
-
-        auto qrcodefile = generateEPCQRCodeFile(doc);
-        epcHash.insert("valid", false);
-        epcHash.insert("show", false);
-        if (qrcodefile.isEmpty()) {
-            qDebug() << "No Giro Code file available.";
-        } else {
-            _tmpFiles.append(qrcodefile); // remember file to delete later.
-            qDebug() << "Generated Giro Code file" << qrcodefile;
-
-            epcHash.insert("svgfilename", QVariant(qrcodefile));
-            epcHash["valid"] = true;
-            epcHash["show"] = true;
-
-            // there is a setting value of the maximum sum the EPC Code should
-            // be printed on the document. The idea is that for very big sums,
-            // the QR code should not be displayed.
-            double maxEPCSum = KraftSettings::self()->displayEPCCodeMaxSum();
-
-            if (maxEPCSum > 0.0 && doc->bruttoSum().toDouble() > maxEPCSum) {
-                epcHash["show"] = false;
-            }
-            gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
-        }
+        const QVariantHash qrCodeHash = generateQRCodeHash(doc);
+        gtmpl.addToMappingHash(EPCPrefix, qrCodeHash);
 
         const QVariantHash kraftHash = kraftVariantHash();
-        gtmpl.addToMappingHash(QStringLiteral("kraft"), kraftHash);
+        gtmpl.addToMappingHash(KraftPrefix, kraftHash);
 
         bool ok;
         rendered = gtmpl.render(ok);
@@ -277,4 +152,135 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
     }
     delete doc;
     return rendered;
+}
+
+QVariantHash DocumentTemplate::labelVariantHash()
+{
+    QVariantHash hash;
+
+    hash.insert( TAG( "NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
+    hash.insert( TAG( "ITEM"), i18nc("Document item printed on the document", "Item") );
+    hash.insert( TAG( "QUANTITY_SHORT"), i18nc("Abbrev. of Quantity printed on the document", "Qty.") );
+    hash.insert( TAG( "UNIT"), i18nc("Unit printed on the document", "Unit") );
+    hash.insert( TAG( "PRICE"), i18nc("Price of an item printed on the document", "Price") );
+    hash.insert( TAG( "SUM"), i18nc("Printed on the document", "Sum") );
+    hash.insert( TAG( "NET"), i18nc("printed on the document", "Net") );
+    hash.insert( TAG( "VAT"), i18nc("Printed on the document", "VAT") );
+    hash.insert( TAG( "TYPE"), i18nc("Document type, printed on the document", "Type") );
+
+    hash.insert( TAG( "PHONE"), i18nc("Printed on the document", "Phone"));
+    hash.insert( TAG( "FAX"), i18nc("Printed on the document", "Fax"));
+    hash.insert( TAG( "MOBILE"), i18nc("Printed on the document", "Mobile"));
+    hash.insert( TAG( "EMAIL"), i18nc("Printed on the document", "Email"));
+    hash.insert( TAG( "WEBSITE"), i18nc("Printed on the document", "Website"));
+
+    hash.insert( TAG( "PAGE"), i18nc("Printed on the document", "Page"));
+    hash.insert( TAG( "PREDECESSOR"), i18nc("Label of Predecessor document number", "Predecessor-Doc"));
+    hash.insert( TAG( "PAGE_OF"), i18nc("the 'of' in page X of Y", "of"));
+    hash.insert( TAG( "DOC_NO"), i18nc("Document number on document", "Document No."));
+    hash.insert( TAG( "DATE"), i18nc("Date on document", "Date"));
+    hash.insert( TAG( "PROJECT"), i18nc("Project label", "Project"));
+    hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer ID"));
+    hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
+    hash.insert( TAG( "TIMEOFSUPPLY"), i18nc("Printed on Document", "Time of supply"));
+
+    return hash;
+}
+
+QVariantHash DocumentTemplate::kraftVariantHash()
+{
+    QVariantHash hash;
+    QString h = QString("Kraft %1 %2").arg(Kraft::Version::number()).
+            arg(Kraft::Version::codeName());
+    hash.insert(TAG("VERSION"), h);
+
+    h = QString("DB-Scheme %1").arg(Kraft::Version::dbSchemaVersion());
+    hash.insert(TAG("DB_SCHEME"), h);
+
+    h = qgetenv("USER");
+    if (h.isEmpty())
+        h = qgetenv("USERNAME");
+    hash.insert(TAG("SYS_USER"), h);
+
+    h = qgetenv("HOSTNAME");
+    if (h.isEmpty())
+        h = qgetenv("HOST");
+    if (!h.isEmpty())
+        hash.insert(TAG("HOSTNAME"), h);
+
+    return hash;
+}
+
+QVariantHash DocumentTemplate::contactToVariantHash(const KContacts::Addressee& contact )
+{
+    QVariantHash hash;
+
+    QString n = contact.realName();
+    if (n.isEmpty()) n = TAG("Not set!");
+    hash.insert( TAG( "NAME" ),  n.toHtmlEscaped());
+
+    if( contact.isEmpty() ) return hash;
+
+
+    QString co = contact.organization();
+    if( co.isEmpty() ) {
+        co = contact.realName();
+    }
+    hash.insert( TAG( "ORGANISATION" ), co.toHtmlEscaped());
+    const QUrl url = contact.url().url();
+    hash.insert( TAG( "URL" ),   url.url().toHtmlEscaped());
+    hash.insert( TAG( "EMAIL" ), contact.preferredEmail().toHtmlEscaped());
+    hash.insert( TAG( "PHONE" ), contact.phoneNumber( KContacts::PhoneNumber::Work ).number().toHtmlEscaped());
+    hash.insert( TAG( "FAX" ),   contact.phoneNumber( KContacts::PhoneNumber::Fax ).number().toHtmlEscaped());
+    hash.insert( TAG( "MOBILE" ),  contact.phoneNumber( KContacts::PhoneNumber::Cell ).number().toHtmlEscaped());
+
+    KContacts::Address address;
+    address = contact.address( KContacts::Address::Pref );
+    if( address.isEmpty() )
+        address = contact.address(KContacts::Address::Work );
+    if( address.isEmpty() )
+        address = contact.address(KContacts::Address::Home );
+    if( address.isEmpty() )
+        address = contact.address(KContacts::Address::Postal );
+
+    hash.insert( TAG( "POSTBOX" ), address.postOfficeBox().toHtmlEscaped());
+
+    hash.insert( TAG( "EXTENDED" ), address.extended().toHtmlEscaped());
+    hash.insert( TAG( "STREET" ), address.street().toHtmlEscaped());
+    hash.insert( TAG( "LOCALITY" ), address.locality().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG( "POSTCODE" ), address.postalCode().toHtmlEscaped());
+    hash.insert( TAG( "COUNTRY" ), address.country().toHtmlEscaped());
+    hash.insert( TAG( "REGION" ), address.region().toHtmlEscaped());
+    hash.insert( TAG("LABEL" ), address.label().toHtmlEscaped());
+    return hash;
+}
+
+QVariantHash DocumentTemplate::generateQRCodeHash(KraftDoc *doc)
+{
+    QVariantHash epcHash;
+
+    auto qrcodefile = generateEPCQRCodeFile(doc);
+    epcHash.insert("valid", false);
+    epcHash.insert("show", false);
+    if (qrcodefile.isEmpty()) {
+        qDebug() << "No Giro Code file available.";
+    } else {
+        _tmpFiles.append(qrcodefile); // remember file to delete later.
+        qDebug() << "Generated Giro Code file" << qrcodefile;
+
+        epcHash.insert("svgfilename", QVariant(qrcodefile));
+        epcHash["valid"] = true;
+        epcHash["show"] = true;
+
+        // there is a setting value of the maximum sum the EPC Code should
+        // be printed on the document. The idea is that for very big sums,
+        // the QR code should not be displayed.
+        double maxEPCSum = KraftSettings::self()->displayEPCCodeMaxSum();
+
+        if (maxEPCSum > 0.0 && doc->bruttoSum().toDouble() > maxEPCSum) {
+            epcHash["show"] = false;
+        }
+    }
+    return epcHash;
 }

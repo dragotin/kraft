@@ -753,6 +753,8 @@ For example, the tag `{{ doc.doctype }}` is replaced with the current document t
 
 The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
 
+include::templatevars.md[]
+
 ==== Adding a Logo
 
 On the PDF output it is nice to have a logo image included, if the documents should not be printed on a prepared stationary that comes with a printed logo already.
