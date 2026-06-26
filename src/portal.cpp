@@ -75,6 +75,7 @@
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
 #include "myidentity.h"
+#include "grantleeallvarstemplate.h"
 
 // Little class diagram to describe the main view of Kraft:
 //
@@ -505,9 +506,15 @@ void Portal::startupChecksPostAssistant()
 
     /* --- now the base setup is clean --- */
     if ( mCmdLineArgs ) {
-        const QString uuid = mCmdLineArgs->value("d");
+        QString uuid = mCmdLineArgs->value("d");
         if ( ! uuid.isEmpty() ) {
             slotPrintPDF(uuid);
+        }
+        uuid = mCmdLineArgs->value("t");
+        if (!uuid.isEmpty()) {
+            // hack: wait 500msec before starting to show all template vars so
+            // that the own identity is savely loaded.
+            QTimer::singleShot(500, this, &Portal::slotShowTemplateVars);
         }
     }
 
@@ -992,6 +999,31 @@ void Portal::slotGeneratePDF(const QString& uuid)
     _reportGenerator.createDocument(ReportFormat::PDF, uuid); // work on document identifier.
 }
 
+void Portal::slotShowTemplateVars()
+{
+    QString uuid = mCmdLineArgs->value("t");
+
+    Q_ASSERT(!uuid.isEmpty());
+
+    const QString tmplFile = DefaultProvider::self()->locateFile("reports/allvars.gtmpl");
+    if (tmplFile.isEmpty()) {
+        qDebug() << "Empty all vars template file -> exit!";
+        return;
+    }
+    QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
+    KContacts::Addressee contact;
+    const QString expanded = templateEngine->expand(uuid, _myIdentity.contact(), contact);
+
+    QString dir = DefaultProvider::self()->kraftV2Dir();
+    QString f{dir + "/templatevars.md"};
+    QFile file(f);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        bool re = (file.write(expanded.toUtf8()) > 0);
+        if (re) {
+            qDebug() << "Saved template variable list to" << f;
+        }
+    }
+}
 /*
  * id    : document ID
  * archID: database ID of archived document
