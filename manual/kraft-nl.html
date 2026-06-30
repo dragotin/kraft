@@ -794,12 +794,12 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>*Standaarddocument
-*Belastingen
-*Dokumenttypes
-*Salarissen
-*Eenheden
-*Uw eigen identiteit</pre>
+<pre>*Document Defaults
+*Taxes
+*Document Types
+*Wages
+*Units
+*Own identity</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -835,22 +835,22 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect3">
 <h4 id="_uniek_documentnummer">Uniek documentnummer</h4>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/numbercycles.png" alt="Numbercycles"></span> Elk document moet een uniek identificatie hebben die het document identificeert. Er mogen in Kraft geen twee documenten aanwezig zijn met dezelfde identificatie.</p>
+<p><span class="image right"><img src="images/nl/numbercycles.png" alt="Numbercycles"></span> Each document has to have a unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.</p>
 </div>
 <div class="paragraph">
-<p>De opbouw van het identificatie is in Kraft instelbaar. Hiervoor heeft Kraft het concept van zogeheten volgnummers. Volgnummers worden gebruikt om de opbouw van het <strong>documentnummer</strong> te definiëren dat op elk document wordt geprint.</p>
+<p>The format of the identifier is configurable in Kraft. For that, Kraft has a concept of so called number cycles. Number cycles are used to define the form of the <strong>document number</strong> which is printed on every document.</p>
 </div>
 <div class="paragraph">
-<p>Alle documenten van een bepaald type hebben een identificatie die uit een één volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken om hun identificatie uit te generen. Op die manier kunnen bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice (eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen creëren en deze bewerken door op de knop <b class="button">Volgnummersysteem bewerken&#8230;&#8203;</b> te klikken</p>
+<p>All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even though they are different document types in Kraft. Number cycles are identified by their name. Users can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
 </div>
 <div class="paragraph">
 <p>The format of the document numbers can be customized by a template. A template can contain normal characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Each document number needs to be unique, and thus has to contain a counter. Kraft supports two types of counters: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
+<p>Each document number needs to be unique, and thus has to contain a counter. Kraft supports two types of counters: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template to form a useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
-<p>The default numbercycle delivered with Kraft contains the year, the month and a serial number. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
+<p>The default numbercycle delivered with Kraft contains the year, the month and a serial number. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and in this way get an impression from the results of your business.</p>
 </div>
 <div class="paragraph">
 <p>Zie de volgende tabel voor de beschikbare variabelen die gebruikt kunnen worden:</p>
@@ -919,12 +919,21 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>A number cycle format template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
 </div>
 <div class="paragraph">
-<p>Zowel <code>%i</code> als <code>%n</code> hebben numerieke waarden. Ze kunnen ook worden voorafgegaan door extra nullen. De length is afhankelijk van het aantal i&#8217;s of n&#8217;s die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u <code>%nnn</code> in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters.</p>
+<p>Both <code>%i</code> and <code>%n</code> are numeric values. They can also be padded with leading zeros. The length is defined by the number of i&#8217;s or n&#8217;s put into the template. For example, if a daily counter with length of three and leading zeros is desired, <code>%nnn</code> has to be put into the template. This works up to a length of six characters.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="paragraph">
-<p>Opmerking: het "ontwerp" van het volgnummersysteem en documentnummers is erg belangrijk. Door het flexibele systeem van sjablonen in Kraft kan niet ongeldige volgnummersystemen voorkomen. Dit is de verantwoordelijkheid van de gebruiker.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Noot</div>
+</td>
+<td class="content">
+The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is the responsibility of the user.
+</td>
+</tr>
+</table>
 </div>
 </blockquote>
 </div>
@@ -971,10 +980,10 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p><strong>Watermark on all pages</strong>: Merges the first page of the watermark PDF to all pages of the result document</p>
 </li>
 <li>
-<p><strong>alternating</strong>: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternated merge to subsequent pages.</p>
+<p><strong>alternating</strong>: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternately merged to subsequent pages.</p>
 </li>
 <li>
-<p><strong>different first and last page</strong>: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all page between first and last page.</p>
+<p><strong>different first and last page</strong>: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all pages between first and last page.</p>
 </li>
 </ol>
 </div>
@@ -986,7 +995,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect2">
 <h3 id="_belastingen">Belastingen</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/taxes.png" alt="Taxes"></span> In veel landen zijn er twee BTW-tarieven voor verkochte producten.</p>
+<p><span class="image right"><img src="images/nl/taxes.png" alt="Taxes"></span> In many countries there are two kinds of VAT for sold products.</p>
 </div>
 <div class="paragraph">
 <p>Een hoog tarief en een laag tarief.</p>
@@ -1010,7 +1019,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect2">
 <h3 id="_eenheden">Eenheden</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/unity.png" alt="Units of measurement"></span> In Kraft is een verzameling eenheden aanwezig. In het configuratiedialoog die u kunt bereiken via het menu-item 'Voorkeuren' kunt u de items die al aanwezig zijn bewerken, maar u kunt ook nieuwe items toevoegen.</p>
+<p><span class="image right"><img src="images/nl/unity.png" alt="Units of measurement"></span> A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu you can edit and customize items already in the list, and you can also add new items to the list.</p>
 </div>
 <div class="paragraph">
 <p>Remember that these units are later used in the documents, it is therefore important that you translate them to your own language.</p>
@@ -1023,8 +1032,17 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="paragraph">
-<p>Pas op: Als u de keuze heeft gemaakt om de informatie in Kaddressbook te gebruiken dan wordt de informatie die u handmatig toevoegt genegeerd.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Waarschuwing</div>
+</td>
+<td class="content">
+If you made the choice to use the information from KaddressBook then the information from a later manual entry is ignored.
+</td>
+</tr>
+</table>
 </div>
 </blockquote>
 </div>
@@ -1051,7 +1069,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <h2 id="_catalogi">Catalogi</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accelerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.</p>
+<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accelerated in the day to day business. When creating new documents, the items templates from the catalogs can be easily selected and moved over to the document.</p>
 </div>
 <div class="paragraph">
 <p>Omdat sjablonen worden georganiseerd in mappen, kunnen hele documenten worden voorbereid en opgeborgen in verschillende mappen om later als documentsjabloon te worden gebruikt.</p>
@@ -1075,7 +1093,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>Een catalogus met standaard recepten voor werkzaamheden zoals het planten van bomen.</p>
 </div>
 <div class="paragraph">
-<p>Beide catalogussen kunnen mappen en submappen hebben om daar uw sjablonen in op te bergen . Eerst gaan we gegevens toevoegen aan de</p>
+<p>Both catalogs can have chapters and sub-chapters to organize your templates. First we are going to fill in the</p>
 </div>
 <div class="sect2">
 <h3 id="_materiaalcatalogus">Materiaalcatalogus</h3>
@@ -1094,13 +1112,13 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect3">
 <h4 id="_nieuwe_submappen">Nieuwe submappen</h4>
 <div class="paragraph">
-<p>We gaan nu submappen toevoegen aan de map <code>Bomen</code>. Selecteer met de muis de naam van de map waaraan u een submap wilt toevoegen, selecteer nu in het contextmenu [Submap toevoegen] en voeg extra submappen zoals <code>Bladbomen</code> en <code>Naaldbomen</code> toe. Nadat we extra mappen en submappen hebben toegevoegd om het materiaal onder te verdelen, gaan we het materiaal zelf toevoegen.</p>
+<p>We are going to add sub chapters in the folder <code>Trees</code>. Select with the mouse the name of the chapter where you like to add a subchapter, select now in the context-menu [Add a sub chapter] and add extra subchapters like <code>Broadleaf trees</code> and <code>needle trees</code>. After adding the extra chapters and subchapters for dividing the material, we are going to add the material themselves.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_nieuw_sjabloon">Nieuw sjabloon</h4>
 <div class="paragraph">
-<p>Selecteer met de muis de naam van de submap of map waarin u materiaal wilt toevoegen. Selecteer de submap bladbomen en selecteer nu in het contextmenu nieuw sjabloon.</p>
+<p>Select with the mouse the name of the sub-chapter or chapter where you like to add a material. Select the sub folder Broadleaf trees and select now in the context-menu</p>
 </div>
 <div class="paragraph">
 <p>Voeg de nieuwe bomen <code>kokosnoot-boom</code>, <code>appelboom</code> en <code>ananasboom</code> toe.</p>
@@ -1115,7 +1133,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <p>En vul in per hoeveel ze verpakt zijn.</p>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/catalog_material.png" alt="Material catalog"></span> Hierna voegen we ook in de map 'Wood' een item toe voor 'boompaal' met zijn prijs voor later gebruik.</p>
+<p><span class="image right"><img src="images/nl/catalog_material.png" alt="Material catalog"></span> After this we add also in the folder 'Wood' an item for a 'support pole' for later use with its price.</p>
 </div>
 <div class="paragraph">
 <p>Nu gaan we naar:</p>
@@ -1199,7 +1217,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect3">
 <h4 id="_post_arbeid">Post arbeid</h4>
 <div class="paragraph">
-<p>We vullen hier een aantal werkzaamheden met hun tijd in:</p>
+<p>We fill here in a number of work steps with their time:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabel 1. Gebruikte tijd</caption>
@@ -1259,7 +1277,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Transportkosten</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transport cost</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">35 euro</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1 pcs.</p></td>
 </tr>
@@ -1275,7 +1293,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect3">
 <h4 id="_materiaal">Materiaal</h4>
 <div class="paragraph">
-<p>Hier kiezen we <b class="button">volgende</b>, waarna het venster [Materiaal toevoegen aan Berekening] opent voor de selectie van materiaal. We gaan dan naar de map 'wood' waar we de 'boompaal' selecteren.</p>
+<p>Here we select <b class="button">next</b>, after which the window [Add Material to Calculation] opens for a selection of material. We navigate to the folder 'wood' where we select the 'support pole'.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabel 3. Gebruikte materialen</caption>
@@ -1319,7 +1337,7 @@ Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.m
 <div class="sect2">
 <h3 id="_kop_en_voettekst_sjablonen">Kop- en voettekst-sjablonen</h3>
 <div class="paragraph">
-<p>Kraft heeft ook sjablonen voor de kop- voetteksten van documenten. Elk type document heeft zijn eigen set tekstsjablonen. To access them, open een document van een bepaald documenttype in de bewerkingsmode en gebruik de knop <b class="button">Sjabloon tonen</b> om de sjablonen zichtbaar te maken. In zowel de kop- als de voet-sectie worden de opgeslagen sjablonen zichtbaar.</p>
+<p>Kraft supports text templates also for the header- and footer-text of documents. Each document type has its own set of text templates. To access them, open a document of a certain document type in edit mode and use the <b class="button">show templates</b> to make the templates visible. In both the header- and footer-section the stored templates become visible.</p>
 </div>
 <div class="paragraph">
 <p>Direct onder het navigatie-paneel rechts van het venster ziet u een lijst met de namen van de beschikbare sjablonen. Als u op een van de namen in de lijst klikt dan krijgt u de tekst in het paneel eronder te zien.</p>
@@ -1369,16 +1387,16 @@ Sjablonen met de naam <em>Standard</em> zijn de standaard sjablonen voor dat doc
 <div class="ulist">
 <ul>
 <li>
-<p><code>DATE_ADD_DAYS(&lt;amount_days&gt;)</code>: Geeft de datum van het document plus het aantal dagen dat als parameter voor de macro is opgegeven.</p>
+<p><code>DATE_ADD_DAYS(&lt;amount_days&gt;)</code>: Returns the date of the document plus the number of days specified as parameter to the macro.</p>
 </li>
 <li>
 <p><code>ITEM_COUNT_WITH_TAG(&lt;tag&gt;)</code>: Geeft het aantal items dat zijn getagged met de tag.</p>
 </li>
 <li>
-<p><code>NETTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Geeft de netto som van alle items die zijn getagged met de opgegeven tag.</p>
+<p><code>NETTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Returns the net sum of all items that are tagged with the named tag.</p>
 </li>
 <li>
-<p><code>BRUTTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Geeft de brutto som van alle items die zijn getagged met de opgegeven tag.</p>
+<p><code>BRUTTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Returns the gross sum of all items that are tagged with the named tag.</p>
 </li>
 <li>
 <p><code>VAT_SUM_PER_TAG(&lt;tag&gt;)</code>: Geeft de pure belasting van alle items die zijn getagged met de opgegeven tag.</p>
@@ -1420,7 +1438,7 @@ END_HAS_TAG</pre>
 <p>Klik op <b class="button">Nieuw document</b></p>
 </div>
 <div class="paragraph">
-<p>Het document-venster [creation wizard] opent.</p>
+<p>The document [creation wizard] opens.</p>
 </div>
 <div class="paragraph">
 <p>Selecteer in document type <code>invoice</code> (rekening).</p>
@@ -1432,16 +1450,16 @@ END_HAS_TAG</pre>
 <p>Klik op <b class="button">Volgende</b></p>
 </div>
 <div class="paragraph">
-<p>Selecteer in het volgende venster de naam en adres van de klant.</p>
+<p>Select on the new window the name and address of the client.</p>
 </div>
 <div class="paragraph">
-<p>(Als de naam en adres niet aanwezig zijn, klik dan op <b class="button">nieuw contactpersoon</b> of op <b class="button">contactpersoon bewerken</b> als u het contact wilt bewerken)</p>
+<p>(if the name and address are not there, click then on <b class="button">new contact</b> or on <b class="button">edit contact</b> if you want to edit the contact)</p>
 </div>
 <div class="paragraph">
 <p>Klik op <b class="button">OK</b>.</p>
 </div>
 <div class="paragraph">
-<p>Nu opent het venster document-items.</p>
+<p>Now the document [items] window opens.</p>
 </div>
 <div class="paragraph">
 <p>Dit venster heeft bovenaan 2 tabs en 3 knoppen:</p>
@@ -1472,7 +1490,7 @@ END_HAS_TAG</pre>
 <p>Klik op de knop <b class="button">Document tonen</b>.</p>
 </div>
 <div class="paragraph">
-<p>De rechter tab verandert en toont nu de eerder gemaakte sjablonen, we selecteren in de map 'Work', de submap 'Boom planten' en klikken op de knop met de naar links wijzende pijl aan de onderkant.</p>
+<p>The right tab changes and now shows the earlier made templates, we select in the group Work, the subgroup Plant tree and click then on the button with the left-pointing arrow at the bottom.</p>
 </div>
 <div class="paragraph">
 <p>Een nieuw venster [Item van sjabloon creëren] opent.</p>
@@ -1484,7 +1502,7 @@ END_HAS_TAG</pre>
 <p>Klik op <b class="button">OK</b> om het resultaat op te slaan of op <b class="button">Annuleren</b> om het resultaat te verwijderen.</p>
 </div>
 <div class="paragraph">
-<p>Het venster sluit en we gaan terug naar het hoofdvenster.</p>
+<p>The window closes and we go back to the main window.</p>
 </div>
 <div class="paragraph">
 <p>We klikken opnieuw op <b class="button">Document tonen</b> en selecteren deze keer <code>gras maaien</code>, we klikken opnieuw op de knop met de pijl, in het geopende venster stellen we in dat het grasveld 24 vierkante meter was.</p>
@@ -1500,8 +1518,17 @@ END_HAS_TAG</pre>
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="paragraph">
-<p>Pas op: verlies niet uit het oog dat we in de catalogus een winst op de prijs van het materiaal kunnen toevoegen, in de rekening en in de offerte kunnen we geen winst aan de prijs van het materiaal toevoegen.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Waarschuwing</div>
+</td>
+<td class="content">
+Remember that in the catalog we can add a profit on the price of the material, in the invoice and in the offer we can not add a profit on the price of the material.
+</td>
+</tr>
+</table>
 </div>
 </blockquote>
 </div>
@@ -1524,10 +1551,10 @@ END_HAS_TAG</pre>
 <p>Bovenaan het venster met alle rekeningen zien we de knop btn: [Print Document], waar we op klikken.</p>
 </div>
 <div class="paragraph">
-<p>Van de rekening zal nu een PDF worden gemaakt die we op papier kunnen uitprinten of per email naar de klant kunnen versturen.</p>
+<p>A PDF will now be made from the invoice which we can print on paper or send by email to the client.</p>
 </div>
 <div class="paragraph">
-<p>Hierna gaan we een offerte maken voor wat werk in een tuin.</p>
+<p>After this we are going to create an offer for some work in a garden.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1536,7 +1563,7 @@ END_HAS_TAG</pre>
 <p>De klant heeft gevraagd of we een boom kunnen planten, we bieden 3 verschillende bomen aan die we kunnen planten.</p>
 </div>
 <div class="paragraph">
-<p>Daarnaast hebben we gezien dat er een dode boom is, waarvoor we een aanbod doen om deze als extra werk te verwijderen. <span class="image right"><img src="images/nl/create_new_doc.png" alt="Numbercycles"></span></p>
+<p>Beside this, we have seen that there is a lifeless tree, which we will offer to remove as extra work. <span class="image right"><img src="images/nl/create_new_doc.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
 <p>De totale prijs willen we exclusief de prijs voor de verwijdering van de dode boom en alleen de prijs van een boom en niet van drie bomen.</p>
@@ -1591,7 +1618,7 @@ END_HAS_TAG</pre>
 <p>Klik op de knop <b class="button">Document tonen</b>.</p>
 </div>
 <div class="paragraph">
-<p>De rechter tab verandert en toont nu de eerder gemaakte sjablonen, we selecteren in de map 'Work', de submap 'Boom planten' en klikken op de knop met de naar links wijzende pijl aan de onderkant.</p>
+<p>The right tab changes and now shows the earlier made templates, we select in the group <code>Work</code>, the subgroup <code>Plant tree</code> and click then on the button with the left-pointing arrow at the bottom.</p>
 </div>
 <div class="paragraph">
 <p>Een nieuw venster [Item van sjabloon creëren] opent.</p>
@@ -1603,19 +1630,19 @@ END_HAS_TAG</pre>
 <p>Klik op <b class="button">OK</b> om het resultaat op te slaan of op <b class="button">Annuleren</b> om het resultaat te verwijderen.</p>
 </div>
 <div class="paragraph">
-<p>Het venster sluit en we gaan terug naar het hoofdvenster.</p>
+<p>The window closes and we go back to the main window.</p>
 </div>
 <div class="paragraph">
 <p>We klikken op de knop <b class="button">Document tonen</b> en selecteren deze keer de catalogus Material.</p>
 </div>
 <div class="paragraph">
-<p>De material-catalogus opent, en we kunnen in de map <code>Bomen</code> de submap <code>Bladbomen</code> selecteren waar we de <code>appelboom</code> selecteren die we eerder hebben gemaakt.</p>
+<p>The material-catalog opens, and we can select in the chapter <code>trees</code> the subchapter <code>Broadleaf trees</code> in which we select the <code>apple tree</code> which we made earlier.</p>
 </div>
 <div class="paragraph">
 <p>Klik op <b class="button">OK</b> om het resultaat op te slaan of op <b class="button">Annuleren</b> om het resultaat te verwijderen.</p>
 </div>
 <div class="paragraph">
-<p>Het venster sluit en we gaan terug naar het hoofdvenster.</p>
+<p>The window closes and we go back to the main window.</p>
 </div>
 <div class="paragraph">
 <p>We add now manually an item by clicking on the button <code>Add item…</code>.</p>
@@ -1624,10 +1651,10 @@ END_HAS_TAG</pre>
 <p>Het venster [Nieuw item aanmaken] opent.</p>
 </div>
 <div class="paragraph">
-<p>We willen dat de klant een keuze kan maken tussen een appelboom, een perenboom en de liguster.</p>
+<p>We want the client to be able to make a choice from an apple, a pear tree and the liguster.</p>
 </div>
 <div class="paragraph">
-<p>Therefore we are going to add also a pear tree manually.</p>
+<p>Therefore we are also going to add a pear tree manually.</p>
 </div>
 <div class="paragraph">
 <p>We click on the button <b class="button">Add item…</b> and the window [create new item] opens.</p>
@@ -1642,7 +1669,7 @@ END_HAS_TAG</pre>
 <p>Klik op <b class="button">OK</b> om het resultaat op te slaan of op <b class="button">Annuleren</b> om het resultaat te verwijderen.</p>
 </div>
 <div class="paragraph">
-<p>We doen dit ook voor de liguster.</p>
+<p>We do this again but then for the liguster.</p>
 </div>
 <div class="paragraph">
 <p>We hebben nu 3 items met bomen in de offerte.</p>
@@ -1657,7 +1684,7 @@ END_HAS_TAG</pre>
 <p>Een knop met een vlag en een knop met wat lijkt op een pagina.</p>
 </div>
 <div class="paragraph">
-<p>We selecteren de bovenste knop met de pagina waarna een contextmenu opent met de items:</p>
+<p>We select the upper button with the page after which a context-menu opens with the items:</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/nl/context1.png" alt="Context menu"></span></p>
@@ -1691,10 +1718,10 @@ END_HAS_TAG</pre>
 <p>We want to see the result and therefore we click on the button [show document].</p>
 </div>
 <div class="paragraph">
-<p>We zien nu dat de prijs voor de perenboom, de liguster en het verwijderen van de boom niet is gebruikt voor de totale prijs. Als we tevreden zijn met het resultaat, dan klikken we op de knop <b class="button">OK</b> waarna we klikken op de knop <b class="button">Document afdrukken</b> voor het maken van een PDF die we kunnen uitprinten of naar de klant kunnen sturen.</p>
+<p>We see now that the price of the pear tree, the liguster and the removal of the tree is not used for the total price. When we are happy with the result, we can click on the button <b class="button">close</b> after which we click on the button <b class="button">Print Document</b> for making a PDF that we can print out or send to the client.</p>
 </div>
 <div class="paragraph">
-<p>Na uw eerste rekening is nu ook uw eerste offerte klaar voor verzending.</p>
+<p>After your first invoice, your first offer is now also ready for sending.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1709,7 +1736,7 @@ END_HAS_TAG</pre>
 <p>When a client has made a request, we will send an offer in which we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
 </div>
 <div class="paragraph">
-<p>Het is een goede gewoonte om op de order te reageren met een "Acceptance of order" (opdrachtbevestiging) waarin we alle items beschrijven die we zullen gaan leveren. We kunnen de "Acceptance of order" op dezelfde manier maken als waarmee we de invoice (rekening) of de offer (offerte)hebben gemaakt door elk item te selecteren en het aantal te leveren aan te passen. Dit kost tijd en we kunnen fouten maken door items te vergeten of een incorrect aantal in te vullen.</p>
+<p>It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver. We can make the "Acceptance of order" in the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery. This takes time and we can make errors by forgetting items or filling an incorrect number.</p>
 </div>
 <div class="paragraph">
 <p>U kunt dit sneller doen door de offer (offerte) in de lijst te selecteren en vervolgens <b class="button">Creëer opvolg document</b> in het context menu of in het hoofdmenu te selecteren.</p>
@@ -1727,13 +1754,13 @@ END_HAS_TAG</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/followup_1.png" alt="Folloup document"></span></p>
+<p><span class="image right"><img src="images/nl/followup_1.png" alt="Followup document"></span></p>
 </div>
 <div class="paragraph">
-<p>We selecteren nu "Acceptance of order". We hebben nu een kopie van de offerte als een Acceptance of order (vergeet niet om de alternatief items en de op verzoek items aan te passen.)</p>
+<p>We select here "Acceptance of order". We have now a copy of the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/followup_2.png" alt="Folloup document"></span></p>
+<p><span class="image right"><img src="images/nl/followup_2.png" alt="Followup document"></span></p>
 </div>
 <div class="paragraph">
 <p>U kunt dit ook doen voor de creatie van de invoice (rekening) als opvolging van de opdrachtbevestiging. Elk documenttype heeft een specifieke lijst met opvolg-documenten. Het is een goede gewoonte om op de rekening precies te omschrijven wat is geleverd.</p>
@@ -1751,7 +1778,7 @@ END_HAS_TAG</pre>
 <p>Kraft does not come with its own address book implementation, but uses an established and mature solution called <a href="https://apps.kde.org/de/kaddressbook/">KAddressbook</a> which is provided as part of the PIM (Personal Information Management) software collection of <a href="https://www.kde.org">KDE</a>. Integration with KAddressBook is the recommendation and default of Kraft.</p>
 </div>
 <div class="paragraph">
-<p>However, in some situations the KAddressBook Integration can not be set up. In that cases, Kraft can also read a address collection of a local directory. The directory can be set in the Kraft config file in group <code>[KraftV2]</code>, key <code>KraftV2AddressDir</code>. If not explicitly set, it defaults to <code>$HOME/.local/share/contacts</code>.</p>
+<p>However, in some situations the KAddressBook Integration can not be set up. In those cases, Kraft can also read an address collection of a local directory. The directory can be set in the Kraft config file in group <code>[KraftV2]</code>, key <code>KraftV2AddressDir</code>. If not explicitly set, it defaults to <code>$HOME/.local/share/contacts</code>.</p>
 </div>
 <div class="paragraph">
 <p>This directory needs to contain single files in the vCard format, with file extension <code>.vcf</code>. All these files are read and presented as addresses in Kraft.</p>
@@ -1786,13 +1813,13 @@ Kraft does not alter the entries in the addressbook directory. It is accessed re
 <div class="sect2">
 <h3 id="_documentuitvoer_aanpassen">Documentuitvoer aanpassen</h3>
 <div class="paragraph">
-<p>Om PDF&#8217;s te creëren, moet een sjabloon worden gevuld met de document data die in Kraft is gecreëerd. De sjabloon definieert hoe de het resulterende document eruit komt te zien, d.w.z de ingestelde lettertypes, de plaats van de elementen en dergelijke.</p>
+<p>To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, i.e. by font settings, placing of elements and such.</p>
 </div>
 <div class="paragraph">
 <p>Het bestand dat is samengesteld uit een combinatie van de data en de sjabloon wordt geconverteerd naar een PDF met een speciaal document creation script. Dit alles wordt automatisch door Kraft gestart als een document uitgeprint moet worden.</p>
 </div>
 <div class="paragraph">
-<p>In Kraft kan elk documenttype zijn eigen sjabloon hebben voor de creatie van een PDF. Welk wordt gebruikt kan u instellen in het instellingsvenster voor documenttypes.</p>
+<p>Each document type in Kraft can have its own template that is used to create a PDF. Which one can be set in the Settings dialog for document types.</p>
 </div>
 <div class="sect3">
 <h4 id="_weasyprint_documenten">WeasyPrint Documenten</h4>
@@ -1803,7 +1830,7 @@ Kraft does not alter the entries in the addressbook directory. It is accessed re
 <div class="title">Noot</div>
 </td>
 <td class="content">
-Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd, maar dit zal in de toekomst veranderen. Het op de WeasyPrint gebaseerde systeem zal in de toekomst uitsluitend gebruikt worden. Het wordt aanbevolen om de bestaande sjablonen aan te passen.
+Kraft still ships with the old ReportLab based converter, but that will be deprecated in the future. The WeasyPrint based system is the future. It is recommended to port existing templates.
 </td>
 </tr>
 </table>
@@ -1833,13 +1860,13 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <p>De tag <code>{{ doc.doctype }}</code> wordt bijvoorbeeld tijdens het genereer proces vervangen door het huidige document type.</p>
 </div>
 <div class="paragraph">
-<p>De syntax is gebaseerd op de Django syntax voor sjablonen zoals het beschreven wordt in <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">de documentatie</a>.</p>
+<p>The syntax is based on the Django syntax for templates described in the <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">docs</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_adding_a_logo">Adding a Logo</h4>
 <div class="paragraph">
-<p>On the PDF output it is nice to have a logo image included, if the documents should not be printed on a prepared stationary that comes with a printed logo already.</p>
+<p>On the PDF output it is nice to have a logo image included, if the documents should not be printed on a prepared stationery that comes with a printed logo already.</p>
 </div>
 <div class="paragraph">
 <p>This chapter describes a few methods to achieve that with the weasyprint based template.</p>
@@ -1919,7 +1946,7 @@ Bij Kraft wordt nog steeds de oude op ReportLab gebaseerde converter meegeleverd
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-css" data-lang="css">/*
- * Absolut positioned logo
+ * Absolute positioned logo
  */
 img#logo {
   position: absolute;
@@ -2023,9 +2050,9 @@ Kopieert de inhoud van een offerte naar een order-acceptatie of een rekening.</p
 </div>
 <div id="Print_document" class="literalblock">
 <div class="content">
-<pre>[Document]&gt;[Document afdrukken]
-Creëert een PDF van het geselecteerde client-document zodat u deze kan emaillen of
-uitprinten.</pre>
+<pre>[Document]&gt;[Print document]
+Makes a PDF to be mailed or
+printed.</pre>
 </div>
 </div>
 <div id="Mail_document" class="literalblock">
@@ -2040,24 +2067,24 @@ Verzend een document per email.</pre>
 <h4 id="settings">Het instellingen-menu</h4>
 <div id="edit_template" class="literalblock">
 <div class="content">
-<pre>[Voorkeuren]&gt;[Tag sjabloon bewerken]
+<pre>[Settings]&gt;[Edit Tag Templates]
 [Ctrl]+[E]
-Opent een venster waarin u tags (zoals work,material, plants of discounts)
-kunt toevoegen, bewerken of vertalen.</pre>
+Opens a window where you can add, edit or translate the tags (like work,
+material, plants or discounts).</pre>
 </div>
 </div>
 <div id="redo" class="literalblock">
 <div class="content">
-<pre>[Voorkeuren]&gt;[De initiële aanmaak opnieuw uitvoeren]
+<pre>[Settings]&gt;[Redo initial setup]
 [Ctrl+R]
-Voert de basisconfiguratie opnieuw uit. Hierna is een herstart van Kraft nodig.</pre>
+Repeats the initial setup. After this, a restart of Kraft is required.</pre>
 </div>
 </div>
 <div id="toolbars" class="literalblock">
 <div class="content">
-<pre>[Voorkeuren]&gt;[Werkbalken]
-Hier kunt u beslissen of de `hoofdwerkbalk` en de werkbalk `Document acties`
-worden getoond.</pre>
+<pre>[Settings]&gt;[Shown toolbars]
+Here you can decide if the `main toolbar` and the toolbar `Document Actions`
+are shown.</pre>
 </div>
 </div>
 <div id="configure" class="literalblock">
@@ -2102,14 +2129,14 @@ Verplaatst dit item een plaats omlaag in het document.</pre>
 </div>
 <div id="Lock_item" class="literalblock">
 <div class="content">
-<pre>[Context]&gt;[Item vastzetten]
-Het is niet duidelijk wat het doet.</pre>
+<pre>[Context]&gt;[Lock item]
+It is not clear what it does.</pre>
 </div>
 </div>
 <div id="Unlock_item" class="literalblock">
 <div class="content">
-<pre>[Context]&gt;[Item ontgrendelen]
-Het is niet duidelijk wat het doet.</pre>
+<pre>[Context]&gt;[Unlock item]
+It is not clear what it does.</pre>
 </div>
 </div>
 <div id="Delete_item" class="literalblock">
@@ -2131,7 +2158,7 @@ Verwijdert dit item uit het document.</pre>
 <div class="sect2">
 <h3 id="_kraft_gemeenschappelijk_gebruiken">Kraft gemeenschappelijk gebruiken.</h3>
 <div class="paragraph">
-<p>Kraft kan gemeenschappelijk in een gedistribueerde omgeving gebruikt worden. Dat houd in dat meerdere gebruikers op hun eigen desktop met hun eigen Kraft instance met dezelfde data kunnen werken.</p>
+<p>Kraft can be used collaboratively in a distributed environment. That means that multiple users work on their desktops with their own Kraft instance on the same data.</p>
 </div>
 <div class="paragraph">
 <p>De hele situatie is aan verandering onderhevig, omdat Kraft in de nabije toekomst ownCloud als privé Cloud voor de opslag van de data zal gebruiken.</p>
@@ -2192,7 +2219,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Er zijn verschillende manieren om de map te delen (sharen), bijvoorbeeld een NFS of een SMB Server. Het is belangrijk dat gebruikers van beide machines toegang hebben tot deze bestanden. De hoofdgebruiker heeft lees- en schrijfrechten nodig, de read-only gebruiker heeft voor de bestanden alleen lees-rechten nodig.</p>
+<p>There are different ways how to share that directory, i.e. NFS or SMB storages. It is important that both users from both machines can list and access the files. The main user needs read and write access, read only users only need read access to the files.</p>
 </div>
 <div class="paragraph">
 <p>Een aanbevolen opstelling is een NFS Share met autofs, die op de hoofdmachine is ingesteld. Om de toegang tot de bestanden te beheren, raden wij aan om een gebruikersgroep te creëren waarin u de toegangsrechten kan beheren.</p>
@@ -2211,28 +2238,28 @@ PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 <p>Kraft ondersteund het gebruik van de XRechnung standaard. Dat is een digitaal formaat voor electronische rekeningen, en als wet ingevoerd in Duitsland wat een EU richtlijn volgt. De XRechnung is een XML-bestandsformaat ontworpen voor dat doel.</p>
 </div>
 <div class="paragraph">
-<p>Om de XRechnung Export productief te gebruiken, is nog een beetje handwerk in Kraft nodig. Kraft creëert het XML-bestand aan de hand van een sjabloon, vergelijkbaar met de normale PDF documenten. Dit houdt in dat het een sjabloon laadt wat statische elementen bevat (b.v. het adres van het bedrijf) die niet veranderen tussen de verschillende rekeningen. De dynamische elementen (data over de klant, items enz.) worden in het sjabloon geplaatst tijdens de stap van het generen.</p>
+<p>To use the XRechnung Export productively, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (i.e. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.</p>
 </div>
 <div class="paragraph">
-<p>Om correcte XRechnung-bestanden te generen voor het desbetreffende bedrijf, moet de gebruiker het sjabloonbestand handmatig aanpassen aan de eisen van het bedrijf. Merk op dat u dat maar eenmalig hoeft te doen en dat het niet moeilijk is voor iemand met een beetje computerervaring (Basiskennis van XML is gewenst).</p>
+<p>In order to generate correct XRechnung files for the specific company that is using Kraft, the admin has to adapt the template file manually to the company&#8217;s needs. Note that this has only to be done once and should be easy for a person with a bit of computer experience (Basic knowledge about XML appreciated!).</p>
 </div>
 <div class="paragraph">
 <p>Om het bestand aan te passen aan de eisen van het bedrijf, kunt u het beste beginnen met het <a href="https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl">voorbeeld XRechnung-bestand</a>. U moet het downloaden en vervolgens opslaan op een plek waar u het kan bewerken. Open het in een normale tekstverwerker, zoals <a href="https://kate-editor.org/">Kate</a>.</p>
 </div>
 <div class="paragraph">
-<p>Bestudeer nauwkeurig het bestand zonder dat u afgeschrikt wordt door het XML-opmaak. Alle user strings (d.w.z. bedrijfsnaam, adres en dergelijke) zijn specifiek voor de gebruiker en moeten daarom overeenkomstig vervangen worden. Zoek <a href="https://www.xoev.de/xrechnung-16828">de details over de opmaak</a> hier op voor een beter begrip van de betekenis van de velden.</p>
+<p>Read carefully through the file without being scared off by the XML format. All user strings (i.e. company name, address and such) are user specific and should be replaced accordingly. Find <a href="https://www.xoev.de/xrechnung-16828">details about the format</a> here to better understand the meaning of the fields.</p>
 </div>
 <div class="paragraph">
 <p>Zorg ervoor dat u de correcte XML-opmaak niet verstoort en wijzig niet de locatie van waar <code>{{ template_name }}</code> is gebruikt.</p>
 </div>
 <div class="paragraph">
-<p>Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster voor de instellingen van Kraft en voer de bestandsnaam in het invoerveld voor het XRechnung Sjabloonbestand in de pagina voor document-standaarden.</p>
+<p>Once the file is adapted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.</p>
 </div>
 <div class="paragraph">
 <p>Next is to specify for which document types the XRechnung export should be made available. For that, open the Kraft Settings dialog, and proceed to the Document Type tab on the left. For each document type listed there, you can mark the checkbox <b class="button">Enable XRechnung Support</b>.</p>
 </div>
 <div class="paragraph">
-<p>After that steps, the <b class="button">Export XRechung</b> menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.</p>
+<p>After those steps, the <b class="button">Export XRechung</b> menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.</p>
 </div>
 <div class="paragraph">
 <p>This file can now be transferred to the receiver of the invoice via email, a private file share or the like.</p>
@@ -2300,7 +2327,7 @@ Er zijn validators voor rekeningen in het XRechnung formaat op het internet te v
 </div>
 <div id="footer">
 <div id="footer-text">
-Laatste aanpassing 2026-01-02 20:17:51 +0100
+Laatste aanpassing 2026-06-30 21:37:13 +0200
 </div>
 </div>
 </body>
