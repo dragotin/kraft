@@ -51,6 +51,12 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/kraft/kraft
           export APPIMAGE_EXTRACT_AND_RUN=1
+          # Pre-fetch the AppImage runtime. Otherwise appimagetool tries to
+          # download it itself during "Running output plugin: appimage" and
+          # hangs indefinitely inside the container. linuxdeploy-plugin-appimage
+          # forwards LDAI_RUNTIME_FILE to appimagetool as --runtime-file.
+          wget -c https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-x86_64 -O "$PWD/runtime-x86_64"
+          export LDAI_RUNTIME_FILE="$PWD/runtime-x86_64"
           wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
           chmod +x appimagecraft-x86_64.AppImage
           ./appimagecraft-x86_64.AppImage --debug
