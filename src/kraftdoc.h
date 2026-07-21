@@ -90,75 +90,75 @@ class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString docType READ docTypeStr)
-    Q_PROPERTY(QString state READ (_state.stateString))
-    Q_PROPERTY(bool isDraftState READ isDraftState)
-    Q_PROPERTY(QString address READ address)
-    Q_PROPERTY(QString clientUid READ addressUid)
-    Q_PROPERTY(QString ident READ ident)
-    Q_PROPERTY(QString salut READ salut)
-    Q_PROPERTY(QString goodbye READ goodbye)
-    Q_PROPERTY(QString preText READ preText)
-    Q_PROPERTY(QString preTextHtml READ preTextHtml)
-    Q_PROPERTY(QString postText READ postText)
-    Q_PROPERTY(QString postTextHtml READ postTextHtml)
+    Q_PROPERTY(QString docType READ docTypeStr USER true)
+    Q_PROPERTY(QString state READ (_state.stateString) USER true)
+    Q_PROPERTY(bool isDraftState READ isDraftState USER true)
+    Q_PROPERTY(QString address READ address USER true)
+    Q_PROPERTY(QString clientUid READ addressUid USER true)
+    Q_PROPERTY(QString ident READ ident USER true)
+    Q_PROPERTY(QString salut READ salut USER true)
+    Q_PROPERTY(QString goodbye READ goodbye USER true)
+    Q_PROPERTY(QString preText READ preText USER true)
+    Q_PROPERTY(QString preTextHtml READ preTextHtml USER true)
+    Q_PROPERTY(QString postText READ postText USER true)
+    Q_PROPERTY(QString postTextHtml READ postTextHtml USER true)
 
-    Q_PROPERTY(QString projectLabel READ projectLabel)
-    Q_PROPERTY(QString predecessor READ predecessor)
-    Q_PROPERTY(QString docIDStr READ uuid)
+    Q_PROPERTY(QString projectLabel READ projectLabel USER true)
+    Q_PROPERTY(QString predecessor READ predecessor USER true)
+    Q_PROPERTY(QString docIDStr READ uuid USER true)
 
-    Q_PROPERTY(QString docIdentifier READ docIdentifier)
-    Q_PROPERTY(QString dateStr READ dateStr)
-    Q_PROPERTY(QString dateStrISO READ dateStrISO)
+    Q_PROPERTY(QString docIdentifier READ docIdentifier USER true)
+    Q_PROPERTY(QString dateStr READ dateStr USER true)
+    Q_PROPERTY(QString dateStrISO READ dateStrISO USER true)
 
-    Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
-    Q_PROPERTY(QString nettoSumNum READ nettoSumNum)
+    Q_PROPERTY(QString nettoSumStr READ nettoSumStr USER true)
+    Q_PROPERTY(QString nettoSumNum READ nettoSumNum USER true)
 
-    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
-    Q_PROPERTY(QString bruttoSumNum READ bruttoSumNum)
+    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr USER true)
+    Q_PROPERTY(QString bruttoSumNum READ bruttoSumNum USER true)
 
-    Q_PROPERTY(QString taxSumStr READ vatSumStr)
-    Q_PROPERTY(QString taxSumNum READ vatSumNum)
+    Q_PROPERTY(QString taxSumStr READ vatSumStr USER true)
+    Q_PROPERTY(QString taxSumNum READ vatSumNum USER true)
 
-    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
-    Q_PROPERTY(QString fullTaxSumNum READ fullTaxSumNum)
+    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr USER true)
+    Q_PROPERTY(QString fullTaxSumNum READ fullTaxSumNum USER true)
 
-    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
-    Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
+    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr USER true)
+    Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum USER true)
 
-    Q_PROPERTY(QString owner READ owner)
+    Q_PROPERTY(QString owner READ owner USER true)
 
-    Q_PROPERTY(QString timeOfSupplyStart READ tosStart)
-    Q_PROPERTY(QString timeOfSupplyEnd   READ tosEnd)
-    Q_PROPERTY(QString timeOfSupplyStartISO READ tosStartISO)
-    Q_PROPERTY(QString timeOfSupplyEndISO   READ tosEndISO)
+    Q_PROPERTY(QString timeOfSupplyStart READ tosStart USER true)
+    Q_PROPERTY(QString timeOfSupplyEnd   READ tosEnd USER true)
+    Q_PROPERTY(QString timeOfSupplyStartISO READ tosStartISO USER true)
+    Q_PROPERTY(QString timeOfSupplyEndISO   READ tosEndISO USER true)
 
-    Q_PROPERTY(bool timeOfSupplyValid READ tosValid)
-    Q_PROPERTY(bool timeOfSupplyMultiDay READ tosMultiDay)
+    Q_PROPERTY(bool timeOfSupplyValid READ tosValid USER true)
+    Q_PROPERTY(bool timeOfSupplyMultiDay READ tosMultiDay USER true)
 
-    Q_PROPERTY(QString dueDateStrISO READ dueDate)
-    Q_PROPERTY(QString buyerReference READ buyerRef)
+    Q_PROPERTY(QString dueDateStrISO READ dueDate USER true)
+    Q_PROPERTY(QString buyerReference READ buyerRef USER true)
 
-    Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum)
-    Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr)
-    Q_PROPERTY(QString reducedTaxPercentNum READ reducedTaxPercentNum)
-    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
-    Q_PROPERTY(QString taxPercentStr READ taxPercentStr)
-    Q_PROPERTY(QString taxPercentNum READ taxPercentNum)
+    Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum USER true)
+    Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr USER true)
+    Q_PROPERTY(QString reducedTaxPercentNum READ reducedTaxPercentNum USER true)
+    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr USER true)
+    Q_PROPERTY(QString taxPercentStr READ taxPercentStr USER true)
+    Q_PROPERTY(QString taxPercentNum READ taxPercentNum USER true)
 
-    Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
-    Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
+    Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull USER true)
+    Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced USER true)
 
-    Q_PROPERTY(QList<ReportItem*> items READ reportItemList)
+    Q_PROPERTY(QList<ReportItem*> items READ reportItemList USER true)
 
     // the following one for legacy reasons, has been superseeded by the other four
-    Q_PROPERTY(bool hasIndividualTaxation READ individualTaxesDocument)
-    Q_PROPERTY(bool fullTaxesDocument READ fullTaxesDocument)
-    Q_PROPERTY(bool reducedTaxesDocument READ reducedTaxesDocument)
-    Q_PROPERTY(bool individualTaxesDocument READ individualTaxesDocument)
-    Q_PROPERTY(bool noTaxesDocument READ noTaxesDocument)
+    Q_PROPERTY(bool hasIndividualTaxation READ individualTaxesDocument USER true)
+    Q_PROPERTY(bool fullTaxesDocument READ fullTaxesDocument USER true)
+    Q_PROPERTY(bool reducedTaxesDocument READ reducedTaxesDocument USER true)
+    Q_PROPERTY(bool individualTaxesDocument READ individualTaxesDocument USER true)
+    Q_PROPERTY(bool noTaxesDocument READ noTaxesDocument USER true)
 
-    Q_PROPERTY(bool isInvoice READ isInvoice)
+    Q_PROPERTY(bool isInvoice READ isInvoice USER true)
 
 public:
     enum class Part { Header,  Positions, Footer, Unknown };
@@ -174,7 +174,7 @@ public:
     DocPosition *createPosition( DocPosition::Type t = DocPosition::Type::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
-    QList<ReportItem*> reportItemList() const;
+    ReportItemList reportItemList() const;
 
     DocDigest toDigest();
     void toJsonObj(QJsonObject& obj) const;

@@ -133,6 +133,7 @@ class Portal : public QMainWindow
     void slotDocumentSelected( const QString& );
     void slotPrintCurrentPDF();
     void slotPrintPDF(const QString &uuid);
+    void slotShowTemplateVars();
     void slotGeneratePDF(const QString& uuid);
 
     void slotViewClosed(bool, DocGuardedPtr , bool modified);

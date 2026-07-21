@@ -1937,6 +1937,680 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <div class="paragraph">
 <p>The syntax is based on the Django syntax for templates described in the <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">docs</a>.</p>
 </div>
+<div class="paragraph">
+<p>The following tables list the available variables in a document template. The variables are
+grouped under certain namespaces, depending on their meaning, ie. <code>doc</code> or <code>label</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Contacts</strong>: For both the own identity with prefix <code>me</code> and for the customer contact with prefix <code>customer</code> the following variables are defined.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 4. Variables of a contact, both own identity (prefix <code>me</code>) and the customer contact (prefix <code>customer</code>)</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.COUNTRY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Country of the contact address</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.EMAIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preferred email address of the contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="mailto:info@goofy.com">info@goofy.com</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.EXTENDED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extended address line of the contact address</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.FAX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fax number of the contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0912 232322</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.LABEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formatted address label of the contact</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.LOCALITY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locality (city) of the contact address</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.MOBILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mobile phone number of the contact</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Real name of the contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Goofy Enterprises</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.ORGANISATION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organization of the contact, falls back to the real name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Goofy Enterprises</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.PHONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Work phone number of the contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0912 211259</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.POSTBOX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Post office box of the contact address</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.POSTCODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Postal code of the contact address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">92192 Spradsdorf</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.REGION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Region (state) of the contact address</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.STREET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Street of the contact address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Steinstr. 34</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">me.URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Website URL of the contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.goofy.com" class="bare">https://www.goofy.com</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Document</strong>: Document specific variables.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 5. Specific document variables</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formatted address string of the customer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Birgit Brillant
+Bauernstr. 2
+91823 Wertheim</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.bruttoSumNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Brutto sum as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2808.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.bruttoSumStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Brutto sum localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.808,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.buyerReference</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Buyer reference string, mainly for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.clientUid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UID of the client/customer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6ef30b5a-1e02-4ea7-86cd-d5aa4ccdf340</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.dateStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Date as localized string according to user settings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">07.06.2026</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.dateStrISO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date string ISO formatted, for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2026-06-07</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.docIDStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document ID as string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">23bf7469-736e-460b-ae21-4af8b2c8f6cd</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.docIdentifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Human readable document identifier, e.g. &#39;Invoice 2026-001&#39; or a draft marker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rechnung vom 07.06.2026 (Entwurf)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.docType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Localized document type, e.g. Invoice, Offer or Delivery Receipt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rechnung</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.dueDateStrISO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Payment due date, ISO formatted, for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.fullTaxPercentNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full tax rate in percent as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.fullTaxPercentStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full tax rate in percent localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.fullTaxSumNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tax amount of the full taxed items as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">380.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.fullTaxSumStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tax amount of the full taxed items localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">380,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.fullTaxesDocument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if all items of the document are taxed with the full tax rate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.goodbye</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Closing greeting line of the document, e.g. &#39;Kind regards&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">liebe Grüsse,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.hasIndividualTaxation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the document mixes different tax rates across its items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.ident</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document identification number, &#39;draft&#39; for unsaved documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">draft</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.individualTaxesDocument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the document mixes different tax rates across its items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.isDraftState</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the document is still in draft state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.isInvoice</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the document is an invoice</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the document positions (line items)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.nettoSumNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Netto sum as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2400.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.nettoSumStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Netto sum localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.400,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.noTaxesDocument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if none of the document items are taxed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.objectName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">General object name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.owner</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Owner of the document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">klaas</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.postText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text printed after the document positions, as plain text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bitte überweise bald.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.postTextHtml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text printed after the document positions, as HTML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bitte überweise bald.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.preText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text printed before the document positions, as plain text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hier kommt die Rechnung für die ausgeführten Arbeiten in deinem Garten.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.preTextHtml</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text printed before the document positions, as HTML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hier kommt die Rechnung für die ausgeführten Arbeiten in deinem Garten.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.predecessor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifier of the predecessor document this one was created from</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">31cf5f14-7dad-409e-b93f-f18a4c528fc7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.projectLabel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label of the project the document belongs to</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">testprojekt</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.reducedTaxPercentNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reduced tax rate in percent as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.reducedTaxPercentStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reduced tax rate in percent localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.reducedTaxSumNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tax amount of the reduced taxed items as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.reducedTaxSumStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tax amount of the reduced taxed items localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.reducedTaxesDocument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if all items of the document are taxed with the reduced tax rate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.salut</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Salutation line of the document, e.g. &#39;Dear Mr. Smith&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Liebe Birgit,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document state as string, e.g. Draft, Final, Retracted or Invalid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Draft</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxMarkerFull</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marker value identifying items taxed with the full tax rate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxMarkerReduced</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marker value identifying items taxed with the reduced tax rate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxPercentNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applicable tax rate in percent as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxPercentStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applicable tax rate in percent localized as user string</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxSumNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total tax amount as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">408.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.taxSumStr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total tax amount localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">408,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyEnd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End of the time of supply as localized string according to user settings</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyEndISO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End of the time of supply, ISO formatted, for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyMultiDay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the time of supply spans more than a single day</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyStart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start of the time of supply as localized string according to user settings</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyStartISO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start of the time of supply, ISO formatted, for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc.timeOfSupplyValid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if a valid time of supply is set on the document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 6. Report items variables, from a loop over <code>doc.items</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.amount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantity of the item localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.amountNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantity of the item as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.htmlText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text of the item, as HTML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wir machen alles! Hat leider länger gedauert.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.itemNumber</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequential number of the item within the document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.kind</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kind of the item, e.g. Position, Text, Demand or Alternative</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.nettoPrice</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Net total price of the item localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.000,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.nettoPriceNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Net total price of the item as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000.00</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.objectName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">General object name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.taxMarker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marker value identifying the tax rate applied to the item</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text of the item, as plain text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wir machen alles! Hat leider länger gedauert.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unit of the item, e.g. &#39;piece&#39; or &#39;hour&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pausch.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.unitCode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UN/ECE Recommendation 20 unit code of the item, for XRechnung</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.unitPrice</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unit price of the item localized as user string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.000,00 €</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item.unitPriceNum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unit price of the item as numerical value, not localized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000.00</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 7. A generated EPC QR Code</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">epcqrcode.show</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if the EPC QR code should be shown on the document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">epcqrcode.svgfilename</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File path of the generated EPC QR code SVG image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/tmp/JyMNOz.svg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">epcqrcode.valid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True if a valid EPC QR code was generated for the document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 8. Document Labels, translated</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.CURRENCY_SIGN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configured currency symbol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">€</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.CUST_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the customer ID, e.g. &#39;Customer ID&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kundennr.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.DATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the document date, e.g. &#39;Date&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.DOC_NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the document number, e.g. &#39;Document No.&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dokument Nr.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.EMAIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the email address, e.g. &#39;Email&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.FAX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the fax number, e.g. &#39;Fax&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fax</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.ITEM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the item column, e.g. &#39;Item&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Posten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.MOBILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the mobile number, e.g. &#39;Mobile&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mobil</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.NET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the net amount, e.g. &#39;Net&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Netto</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.NO_SHORT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the position sequence number column, e.g. &#39;No.&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nr.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PAGE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the page number, e.g. &#39;Page&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Seite</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PAGE_OF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The &#39;of&#39; word in &#39;page X of Y&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">von</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PHONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the phone number, e.g. &#39;Phone&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Telefon</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PREDECESSOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the predecessor document number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vorgänger-Dokument</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PRICE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the price column, e.g. &#39;Price&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preis</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.PROJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the project, e.g. &#39;Project&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Projekt</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.QUANTITY_SHORT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the quantity column, e.g. &#39;Qty.&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Menge</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.SUM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the sum column, e.g. &#39;Sum&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Summe</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.TIMEOFSUPPLY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the time of supply, e.g. &#39;Time of supply&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time of supply</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the document type, e.g. &#39;Type&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Typ</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.UNIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the unit column, e.g. &#39;Unit&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einh.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.VAT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the value added tax, e.g. &#39;VAT&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MwSt.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label.WEBSITE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label for the website, e.g. &#39;Website&#39;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webseite</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<caption class="title">Document Template: 9. Kraft Information Variables</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name of Variable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kraft.DB_SCHEME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database schema version of the running Kraft instance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DB-Scheme 24</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kraft.HOSTNAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Host name of the machine running Kraft</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localhost.localdomain</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kraft.SYS_USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System user name running Kraft</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">klaas</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kraft.VERSION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kraft version string including code name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kraft 2.0.0 Cumulus</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_adding_a_logo">Adding a Logo</h4>
