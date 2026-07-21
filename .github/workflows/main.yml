@@ -22,6 +22,7 @@ jobs:
             "cmake(KF6TextTemplate)" \
             "cmake(KF6Codecs)" \
             "cmake(KF6Contacts)" \
+            "cmake(KF6Config)" \
             "cmake(KF6I18n)" \
             "cmake(Qt6Core)" \
             "cmake(Qt6Concurrent)" \
