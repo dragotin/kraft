@@ -1,0 +1,37 @@
+<style>
+    @charset "UTF-8";
+
+    /* Consider to install the font Oxygen on your system. If you want to use google */
+    /* web fonts, use the following line:    */
+    /* @ import url("https://fonts.googleapis.com/css?family=Oxygen"); */
+
+    /* The CSS for printing */
+    @page {
+	size: A4;
+        margin-left: 1.8cm;
+        margin-top:27mm;
+        margin-right: 1.0cm;
+        margin-bottom: 2cm;
+        color: #2f590a;
+
+        @bottom-left {
+            content: '{{ me.ORGANISATION }} | {{ label.PHONE }}: {{ me.PHONE }} | {{ label.EMAIL }}: {{ me.EMAIL }}';
+            font-size: 9pt;
+        }
+        @bottom-right {
+            content: "{{ label.PAGE }} " counter(page) " {{ label.PAGE_OF }} " counter(pages);
+            font-size: 9pt;
+        }
+    }
+    {#  Do not display the page number on first page, but the website. #}
+    @page :first {
+        margin-top: 46mm;
+	{% if me.URL %}
+        @bottom-right {
+            font-size: 9pt;
+            content: '{{ label.WEBSITE }}: {{ me.URL }}';
+        }
+	{% endif %}
+    }
+</style>
+

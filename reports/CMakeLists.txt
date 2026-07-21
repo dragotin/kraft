@@ -7,6 +7,7 @@ install(FILES
         invoice.trml
 	kraft.css
 	invoice.gtmpl
+	pagestyle.css
 	xrechnung.xrtmpl
 	DESTINATION ${KDE_INSTALL_DATADIR}/kraft/reports)
 
