@@ -31,6 +31,7 @@ jobs:
             "cmake(Qt6Widgets)" \
             "cmake(Qt6Xml)" \
             "cmake(Qt6Svg)" \
+            "cmake(Qt6Network)" \
              qt6-sql-sqlite \
              qt6-sql-mysql  \
              qt6-declarative-tools \
