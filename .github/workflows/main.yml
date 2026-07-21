@@ -5,14 +5,14 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   appimage-build:
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.6
+    container: opensuse/leap:16.0
     steps:
       # need to install Git >= 2.18 before checkout according to GitHub actions
       # we can just install all the dependencies beforehand, though
       - name: Install dependencies
         run: |
-          zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_15.6 QT6 && \
-          zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_15.6 KF && \
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Qt6/openSUSE_Leap_16.0 QT6 && \
+          zypper ar -G https://download.opensuse.org/repositories/KDE:/Frameworks/openSUSE_Leap_16.0 KF && \
           zypper install -y \
             cmake \
             make \
@@ -38,14 +38,9 @@ jobs:
              breeze6-style \
              libcairo-gobject2 \
              libpango-1_0-0 \
-             file \
-            && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-14 1 \
-            && update-alternatives --install /usr/bin/g++ gcc /usr/bin/g++-14 50 \
-            && update-alternatives --install /usr/bin/c++ gcc /usr/bin/g++-14 50 \
-            && update-alternatives --install /usr/bin/cpp cpp /usr/bin/g++-14 50
+             file
 
-
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -56,7 +51,7 @@ jobs:
           export APPIMAGE_EXTRACT_AND_RUN=1
           wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
           chmod +x appimagecraft-x86_64.AppImage
-          ./appimagecraft-x86_64.AppImage
+          ./appimagecraft-x86_64.AppImage --debug
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

@@ -105,7 +105,7 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        _errorStr = i18n("Template to convert is not existing!");
+        _errorStr = i18n("Template to convert does not exist!");
     }
     if (!fi.isReadable()) {
         _errorStr = i18n("Can not read template file!");

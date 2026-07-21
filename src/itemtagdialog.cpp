@@ -87,7 +87,7 @@ ItemTagDialog::ItemTagDialog( QWidget *parent )
 
   mainLayout->addWidget( new QLabel( QString::fromLatin1( "<h2>" )
                                      + i18n( "Item Tags" ) + QString::fromLatin1( "</h2>" ), this ) );
-  mainLayout->addWidget( new QLabel( i18n( "Select all tags for the item should be tagged with." ), this) );
+  mainLayout->addWidget( new QLabel( i18n( "Select all tags the item should be tagged with." ), this) );
 
   mListView = new QTreeWidget( this );
   mListView->setAlternatingRowColors( true );
