@@ -1,0 +1,40 @@
+body {
+    margin:20px;
+    background-image:url(pics/docoverviewbg.png);
+    color: #4e4e4e;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: large;
+}
+
+h1 {
+    margin-bottom: 4px;
+    color: #323432;
+}
+h2 {
+    color: #323432;
+}
+p {
+    margin-bottom: 0px;
+}
+
+p.intro {
+    margin-bottom: 6px;
+}
+p.caption {
+    font-style: italic;
+    margin-top: 0px;
+    margin-bottom: 12px;
+}
+th {
+    background-color: #dcdcdc;
+    text-align: left;
+    font-weight: bold;
+}
+td.name {
+    font-family: monospace;
+    white-space: nowrap;
+}
+td.example {
+    font-family: monospace;
+    color: #333333;
+}

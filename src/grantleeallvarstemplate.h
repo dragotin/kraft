@@ -58,6 +58,7 @@ public:
     QList<TemplateVariable*> vars() const { return _vars; }
     QString desc() const { return _desc; }
     void setDesc(const QString& d) { _desc = d; }
+    void setHeader(const QString& d) { setProperty("header", d); }
     void addVar(TemplateVariable* var) {
         _vars.append(var);
     }
@@ -67,7 +68,7 @@ private:
     QList<TemplateVariable*> _vars;
     QString _desc;
     QString _prefix;
-
+    QString _header;
 };
 
 
