@@ -107,8 +107,6 @@ class Portal : public QMainWindow
      * @param text the text that is displayed in the statusbar
      */
     void slotStatusMsg(const QString &text = QString());
-    /** Show the  window with floskeltemplates */
-    void slotShowTemplates();
 
     void slotOpenKatalog(const QString& );
     void slotKatalogToXML(const QString&);
@@ -167,6 +165,7 @@ class Portal : public QMainWindow
     QAction* _actEditPaste;
     QAction* _actAboutQt;
     QAction* _actAboutKraft;
+    QAction* _actTemplVars;
     QAction* _actHandbook;
     QAction* _actPreferences;
     QAction* _actReconfDb;

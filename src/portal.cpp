@@ -76,6 +76,7 @@
 #include "xmldocindex.h"
 #include "myidentity.h"
 #include "grantleeallvarstemplate.h"
+#include "htmlwindow.h"
 
 // Little class diagram to describe the main view of Kraft:
 //
@@ -254,6 +255,10 @@ void Portal::initActions()
     _actHandbook->setShortcut(QKeySequence::HelpContents);
     connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
+    newIcon = DefaultProvider::self()->icon("kraft-simple");
+    _actTemplVars = new QAction(newIcon, i18n("Template Variables Overview..."), this);
+    connect(_actTemplVars, &QAction::triggered, this, &Portal::slotShowTemplateVars);
+
     newIcon = DefaultProvider::self()->icon( "help");
     _actAboutQt = new QAction(newIcon, i18n("About Qt…"), this);
     connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);
@@ -335,6 +340,7 @@ void Portal::initActions()
 
     QMenu *helpMenu = menuBar()->addMenu(i18n("&Help"));
     helpMenu->addAction(_actHandbook);
+    helpMenu->addAction(_actTemplVars);
     helpMenu->addSeparator();
     helpMenu->addAction(_actAboutKraft);
     helpMenu->addAction(_actAboutQt);
@@ -1001,19 +1007,36 @@ void Portal::slotGeneratePDF(const QString& uuid)
 
 void Portal::slotShowTemplateVars()
 {
-    QString uuid = mCmdLineArgs->value("t");
+    QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    if (uuid.isEmpty() && mCmdLineArgs->isSet("t")) {
+        uuid = mCmdLineArgs->value("t");
+    }
+    if (uuid.isEmpty()) {
+        return;
+    }
 
-    Q_ASSERT(!uuid.isEmpty());
-
-    const QString tmplFile = DefaultProvider::self()->locateFile("reports/allvars.gtmpl");
+    const QString tmplFile = DefaultProvider::self()->locateFile("views/templatevars.gtmpl");
     if (tmplFile.isEmpty()) {
         qDebug() << "Empty all vars template file -> exit!";
         return;
     }
+    // -- open a html display window
     QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
     KContacts::Addressee contact;
     const QString expanded = templateEngine->expand(uuid, _myIdentity.contact(), contact);
 
+    auto geo = QByteArray::fromBase64(KraftSettings::self()->templVarWinGeometry().toLatin1());
+    auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow");
+    connect(window, &HtmlWindow::closing, this, [window]() {
+        auto geo = window->saveGeometry().toBase64();
+        KraftSettings::self()->setTemplVarWinGeometry(geo);
+    });
+    window->restoreGeometry(geo);
+    window->setStylesheetFile("alltemplatevars.css");
+    window->setHtml(expanded);
+    window->show();
+
+    // -- write the markdown file for including into the docs
     QString dir = DefaultProvider::self()->kraftV2Dir();
     QString f{dir + "/templatevars.md"};
     QFile file(f);
@@ -1358,10 +1381,6 @@ void Portal::slotStatusMsg(const QString &text)
     } else {
         statusBar()->showMessage(text);
     }
-}
-
-/** Show the  window with floskeltemplates */
-void Portal::slotShowTemplates(){
 }
 
 void Portal::slotOpenKatalog(const QString& kat)

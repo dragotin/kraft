@@ -373,6 +373,15 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     qDebug() << "========================================";
 
     GrantleeFileTemplate gtmpl(_tmplFile);
+    QObject obj;
+    obj.setProperty("header", i18n("Document Template Variables"));
+    obj.setProperty("intro", i18n("The following tables list the variables that are available in a document "
+                                  "template. The variables are grouped under namespaces, depending on their meaning, ie. "
+                                  "doc or label. The example values are taken from the document "
+                                  "this list was generated from."));
+    obj.setProperty("contactIntro", i18n("The following variables are defined for both the own identity with prefix `me` and"
+                                         "for the customer contact with prefix `customer`."));
+    gtmpl.addToObjMapping("main", &obj);
 
     // == The contact variables
     TemplateNameSpace tnsContact(MeContactPrefix);

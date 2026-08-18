@@ -41,6 +41,10 @@
     <entry name="docViewROGeometry" type="String">
       <label>The default geometry of the document view dialog</label>
     </entry>
+    <entry name="templVarWinGeometry" type="String">
+      <label>The default geometry of the template variable window</label>
+    </entry>
+
    <entry name="portalState" type="String">
       <label>The current state of the portal</label>
     </entry>

@@ -64,6 +64,7 @@ set(kraft_SRCS
     portalview.cpp
     reportgenerator.cpp
     htmlview.cpp
+    htmlwindow.cpp
     docpostcard.cpp
     catalogtemplate.cpp
     catalogselection.cpp

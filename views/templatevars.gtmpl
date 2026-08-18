@@ -1,0 +1,118 @@
+<!-- Kraft document template variables, rendered as a HTML page.
+
+
+  -->
+
+<body>
+
+<h1>{{ main.header }}</h1>
+
+<p class="intro">{{ main.intro }}</p>
+
+<h2>{{ me.objectName }}</h2>
+<p>{{ main.contactIntro }}</p>
+
+<p class="caption">{{ me.description }}</p>
+
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Example Value</th>
+  </tr>
+  {% for var in me.vars %}
+  <tr>
+    <td class="name">me.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ doc.objectName }}</h2>
+<p class="caption">{{ doc.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Example Value</th>
+  </tr>
+  {% for var in doc.vars %}
+  <tr>
+    <td class="name">doc.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ items.objectName }}</h2>
+<p class="caption">{{ items.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Example Value</th>
+  </tr>
+  {% for var in items.vars %}
+  <tr>
+    <td class="name">item.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ epcqrcode.objectName }}</h2>
+<p class="caption">{{ epcqrcode.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Example Value</th>
+  </tr>
+  {% for var in epcqrcode.vars %}
+  <tr>
+    <td class="name">epcqrcode.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ label.objectName }}</h2>
+<p class="caption">{{ label.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Value</th>
+  </tr>
+  {% for var in label.vars %}
+  <tr>
+    <td class="name">label.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>{{ kraft.objectName }}</h2>
+<p class="caption">{{ kraft.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Value</th>
+  </tr>
+  {% for var in kraft.vars %}
+  <tr>
+    <td class="name">kraft.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+

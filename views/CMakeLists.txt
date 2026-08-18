@@ -8,6 +8,7 @@ install(FILES
 	monthdigest.gtmpl
 	yeardigest.gtmpl
 	systemviewdetails.gtmpl
+	templatevars.gtmpl
 	welcome.gtmpl
 
 	systemviewerror.gtmpl
