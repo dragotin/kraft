@@ -120,6 +120,13 @@ target_link_libraries(t_jsonindexfile ${test_libs})
 
 # ============================================================
 
+add_executable(t_alltemplvars t_alltemplvars.cpp)
+add_test(NAME t_alltemplvars COMMAND t_alltemplvars)
+
+target_link_libraries(t_alltemplvars ${test_libs})
+
+# ============================================================
+
 add_executable(t_xmldirlister t_xmldirlister.cpp)
 add_test(NAME t_xmldirlister COMMAND t_xmldirlister)
 

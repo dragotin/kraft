@@ -520,7 +520,9 @@ void Portal::startupChecksPostAssistant()
         if (!uuid.isEmpty()) {
             // hack: wait 500msec before starting to show all template vars so
             // that the own identity is savely loaded.
-            QTimer::singleShot(500, this, &Portal::slotShowTemplateVars);
+            QTimer::singleShot(500, this, [this, uuid]() {
+                showTemplateVarsUuid(uuid);
+            });
         }
     }
 
@@ -1008,9 +1010,14 @@ void Portal::slotGeneratePDF(const QString& uuid)
 void Portal::slotShowTemplateVars()
 {
     QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-    if (uuid.isEmpty() && mCmdLineArgs->isSet("t")) {
-        uuid = mCmdLineArgs->value("t");
+
+    if (!uuid.isEmpty()) {
+        showTemplateVarsUuid(uuid);
     }
+}
+
+void Portal::showTemplateVarsUuid(const QString& uuid)
+{
     if (uuid.isEmpty()) {
         return;
     }
@@ -1026,7 +1033,7 @@ void Portal::slotShowTemplateVars()
     const QString expanded = templateEngine->expand(uuid, _myIdentity.contact(), contact);
 
     auto geo = QByteArray::fromBase64(KraftSettings::self()->templVarWinGeometry().toLatin1());
-    auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow");
+    auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow", this);
     connect(window, &HtmlWindow::closing, this, [window]() {
         auto geo = window->saveGeometry().toBase64();
         KraftSettings::self()->setTemplVarWinGeometry(geo);
@@ -1036,15 +1043,9 @@ void Portal::slotShowTemplateVars()
     window->setHtml(expanded);
     window->show();
 
-    // -- write the markdown file for including into the docs
-    QString dir = DefaultProvider::self()->kraftV2Dir();
-    QString f{dir + "/templatevars.md"};
-    QFile file(f);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        bool re = (file.write(expanded.toUtf8()) > 0);
-        if (re) {
-            qDebug() << "Saved template variable list to" << f;
-        }
+    const auto cleanupFiles = templateEngine->tempFilesCreated();
+    for (const auto &subfile : std::as_const(cleanupFiles)) {
+        QFile::remove(subfile);
     }
 }
 /*

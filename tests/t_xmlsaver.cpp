@@ -206,7 +206,7 @@ private Q_SLOTS:
         pos1->setUnit(UnitManager::self()->getUnit("Hour"));
         pos1->setUnitPrice(Geld(85.00));
         pos1->setTaxType(DocPosition::Tax::Full);
-        pos1->setTags(QStringList{"Work"});
+        pos1->wipeAndSetTags(QStringList{"Work"});
 
         DocPosition *pos2 = doc.createPosition();
         pos2->setText("Material");
@@ -214,7 +214,7 @@ private Q_SLOTS:
         pos2->setUnit(UnitManager::self()->getUnit("sm"));
         pos2->setUnitPrice(Geld(12.50));
         pos2->setTaxType(DocPosition::Tax::Reduced);
-        pos2->setTags(QStringList{"Material"});
+        pos2->wipeAndSetTags(QStringList{"Material"});
 
         // --- Save ---
         QVERIFY(xmlSaver.saveDocument(&doc));

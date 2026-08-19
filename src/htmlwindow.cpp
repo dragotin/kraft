@@ -2,7 +2,7 @@
               htmlwindow.cpp  - non modal window showing a html page
                              -------------------
     begin                : Jul 2026
-    copyright            : (C) 2026 Klaas Freitag <opensource@freisturz.de>
+    copyright            : (C) 2026 Klaas Freitag <kraft@freisturz.de>
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *

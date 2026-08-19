@@ -33,7 +33,7 @@ private Q_SLOTS:
         dt.setMergeIdent(3);
         dt.setUuid("foo-bar-baz");
         const QStringList li{"Tag1", "Tag2", "Tag3"};
-        dt.setTags(li);
+        dt.wipeAndSetTags(li);
 
         const QStringList flist{"Auftragsbestätigung", "Rechnung", "Teilrechnung"};
         dt.setFollowers(flist);

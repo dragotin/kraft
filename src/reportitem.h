@@ -47,7 +47,7 @@ class ReportItem: public QObject
     Q_PROPERTY(QString taxMarker READ taxMarker)
 
 public:
-    ReportItem() : QObject() {}
+    ReportItem();
     ReportItem(DocPosition*);
 
     QString getText() { return _text; }

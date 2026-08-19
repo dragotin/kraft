@@ -34,14 +34,7 @@
 #define DICT( THE_DICT )  QStringLiteral( THE_DICT )
 
 // ==================================================================================
-
-namespace Template {
-
-
-}
-
 namespace {
-
 
 QString generateEPCQRCodeFile(KraftDoc *doc)
 {

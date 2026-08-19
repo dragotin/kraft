@@ -18,6 +18,12 @@
 #include "docposition.h"
 #include "format.h"
 
+ReportItem::ReportItem()
+    :QObject(),
+      _itemNo(0)
+{
+
+}
 
 ReportItem::ReportItem(DocPosition *dp)
     : QObject()

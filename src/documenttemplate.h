@@ -20,12 +20,6 @@
 
 #include <kcontacts/addressee.h>
 
-namespace Template {
-    QVariantHash contactToVariantHash(const KContacts::Addressee& contact);
-    QVariantHash labelVariantHash();
-
-}
-
 class KraftDoc;
 
 class DocumentTemplate
@@ -54,12 +48,12 @@ public:
     inline static const QString EPCPrefix{"epcqrcode"};
     inline static const QString KraftPrefix{"kraft"};
 
-protected:
-    QVariantHash labelVariantHash();
-    QVariantHash kraftVariantHash();
-    QVariantHash contactToVariantHash(const KContacts::Addressee& contact );
+    static QVariantHash labelVariantHash();
+    static QVariantHash kraftVariantHash();
+    static QVariantHash contactToVariantHash(const KContacts::Addressee& contact );
     QVariantHash generateQRCodeHash(KraftDoc *doc);
 
+protected:
     QString _tmplFile;
     QString _errorStr;
     QStringList _tmpFiles;

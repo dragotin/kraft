@@ -392,7 +392,7 @@ DocDigest KraftDoc::toDigest()
     for( const auto &attrib : att) {
         digest.setAttribute(attrib);
     }
-    digest.setTags(allTags());
+    digest.wipeAndSetTags(allTags());
 
     return digest;
 }
@@ -454,7 +454,7 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
     *newDp = *dpb;
 
     // copy attribs and tags as they are not copied otherwise
-    newDp->setTags(dpb->allTags());
+    newDp->wipeAndSetTags(dpb->allTags());
     QMap<QString, KraftAttrib> attribs = dpb->attributes();
     for (const auto& attrib : attribs.values()) {
         newDp->setAttribute(attrib);
