@@ -61,7 +61,7 @@ public:
     KraftAttrib attribute(const QString& name) const;
     QMap<QString,KraftAttrib> attributes() const { return _attribs; }
 
-    void setTags(const QStringList& list);
+    void wipeAndSetTags(const QStringList& list);
     void addTag(const QString& tag);
     void removeTag(const QString& tag);
     bool hasTag(const QString& tag) const;

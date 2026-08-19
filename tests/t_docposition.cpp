@@ -27,7 +27,7 @@ DocPositionList buildPosList() {
     dp1->setAmount(2.0);
     dp1->setUnitPrice(Geld(6.50));
     dp1->setText("Position1");
-    dp1->setTags(QStringList{"Work"});
+    dp1->wipeAndSetTags(QStringList{"Work"});
 
     positions.append(dp1);
 
@@ -35,7 +35,7 @@ DocPositionList buildPosList() {
     dp2->setAmount(4.0);
     dp2->setUnitPrice(Geld(12.50));
     dp2->setText("Position2");
-    dp2->setTags(QStringList{"Work"});
+    dp2->wipeAndSetTags(QStringList{"Work"});
 
     positions.append(dp2);
 
@@ -43,7 +43,7 @@ DocPositionList buildPosList() {
     dp3->setAmount(4.0);
     dp3->setUnitPrice(Geld(1.50));
     dp3->setText("Position3");
-    dp3->setTags(QStringList{"Material"});
+    dp3->wipeAndSetTags(QStringList{"Material"});
 
     positions.append(dp3);
 
@@ -66,7 +66,7 @@ private Q_SLOTS:
         _dp.setAmount(4.0);
         _dp.setUnitPrice(Geld(1.50));
         _dp.setText("Position3");
-        _dp.setTags(QStringList{"Material"});
+        _dp.wipeAndSetTags(QStringList{"Material"});
 
         KraftAttrib attrib("attrib1", QVariant("value"), KraftAttrib::Type::String);
         _dp.setAttribute(attrib);
@@ -89,7 +89,7 @@ private Q_SLOTS:
     void kraftObjTags() {
         KraftObj obj;
         const QStringList l {"Material", "Work", "Extra"};
-        obj.setTags(l);
+        obj.wipeAndSetTags(l);
         const QStringList ol = obj.allTags();
         QCOMPARE(ol.size(), 3);
         QVERIFY(ol.contains("Material"));
@@ -100,7 +100,7 @@ private Q_SLOTS:
     void copyObj() {
         KraftObj obj;
         const QStringList l {"Material", "Work", "Extra"};
-        obj.setTags(l);
+        obj.wipeAndSetTags(l);
         const QString uuid = obj.createUuid();
 
         KraftObj cobj = obj;

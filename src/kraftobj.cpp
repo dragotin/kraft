@@ -99,7 +99,7 @@ bool KraftObj::hasTag(const QString& tag) const
     return _tags.contains(tag);
 }
 
-void KraftObj::setTags(const QStringList& list)
+void KraftObj::wipeAndSetTags(const QStringList& list)
 {
     _tags.clear();
     for( const auto &l : list) {

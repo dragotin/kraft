@@ -1,5 +1,5 @@
 /***************************************************************************
-        Description of template variabbles for Kraft Documents
+        Description of template variables for Kraft Documents
                              -------------------
     begin                : June 2026
     copyright            : (C) 2026 by Klaas Freitag

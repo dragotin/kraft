@@ -1280,7 +1280,7 @@ DocPositionList KraftView::currentPositionList()
 
                     /* set the tags */
                     const QStringList tagStrings = widget->position()->allTags();
-                    newDp->setTags(tagStrings);
+                    newDp->wipeAndSetTags(tagStrings);
                     // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings

@@ -18,10 +18,9 @@
 #include <QObject>
 #include <QMetaObject>
 #include <QMetaProperty>
-#include <QStringLiteral>
-
+#include <QMap>
+#include <algorithm>
 #include <klocalizedstring.h>
-#include "kraftdoc.h"
 
 #include "grantleeallvarstemplate.h"
 #include "kraftdoc.h"
@@ -444,7 +443,9 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
 
     bool ok;
     rendered = gtmpl.render(ok);
-
+    if (!ok) {
+        qDebug() << "Error while rendering: rendered";
+    }
 
     delete doc;
     return rendered;

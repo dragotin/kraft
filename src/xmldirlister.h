@@ -138,6 +138,13 @@ private:
             v2Dir = DefaultProvider::self()->kraftV2Dir();
         }
         QDir wdir(v2Dir);
+        auto v2subDir = v2SubDir();
+        const QString sub = DefaultProvider::self()->kraftV2Subdir(v2subDir);
+        if (v2subDir != DefaultProvider::KraftV2Dir::Root) {
+            if (!wdir.exists(sub)) {
+                wdir.mkdir(sub);
+            }
+        }
         wdir.cd(DefaultProvider::self()->kraftV2Subdir(v2SubDir()));
         return wdir;
     }

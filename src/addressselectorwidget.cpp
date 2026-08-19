@@ -18,6 +18,7 @@
 #include "kraftsettings.h"
 #include "addressselectorwidget.h"
 #include "addressprovider.h"
+#include "defaultprovider.h"
 
 #include <QtGui>
 #include <QHeaderView>
@@ -35,8 +36,6 @@
 
 #include <kcontacts/addressee.h>
 #include <kcontacts/contactgroup.h>
-
-#include "defaultprovider.h"
 
 #ifdef HAVE_AKONADI
 #include <Akonadi/EntityTreeModel>
@@ -254,9 +253,9 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 
     GrantleeFileTemplate tmpl(templateFile);
 
-    const auto contactHash = Template::contactToVariantHash(contact);
+    const auto contactHash = DocumentTemplate::contactToVariantHash(contact);
     tmpl.addToMappingHash("contact", contactHash);
-    const auto labelHash = Template::labelVariantHash();
+    const auto labelHash = DocumentTemplate::labelVariantHash();
     tmpl.addToMappingHash("label", labelHash);
 
     bool ok;

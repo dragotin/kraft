@@ -86,9 +86,12 @@ private Q_SLOTS:
         QVERIFY(fromDeleted.contains(KraftDocState::State::Draft));
         QVERIFY(!fromDeleted.contains(KraftDocState::State::Deleted));
 
+        // From Converted: may be deleted
+        const auto fromConverted = KraftDocState::validFollowStates(KraftDocState::State::Converted);
+        QVERIFY(fromConverted.contains(KraftDocState::State::Deleted));
+
         // Terminal states: no follow states.
         QVERIFY(KraftDocState::validFollowStates(KraftDocState::State::Retracted).isEmpty());
-        QVERIFY(KraftDocState::validFollowStates(KraftDocState::State::Converted).isEmpty());
     }
 
     void canBeFinalized()
@@ -184,7 +187,7 @@ private Q_SLOTS:
         doc.state().setState(KraftDocState::State::Converted);
 
         doc.slotDeleteDoc();
-        QCOMPARE(doc.state().state(), KraftDocState::State::Converted);
+        QCOMPARE(doc.state().state(), KraftDocState::State::Deleted);
     }
 };
 

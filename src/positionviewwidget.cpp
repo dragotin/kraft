@@ -298,7 +298,10 @@ void PositionViewWidget::slotTaggingButtonPressed()
   if ( dia.exec() ) {
     QStringList newTags = dia.getSelectedTags();
     if (newTags != tags) {
-        position()->setTags(newTags);
+        QStringList allTags = TagTemplateMan::self()->allTagTemplates();
+        for (const auto& t : allTags) {
+            newTags.contains(t) ? position()->addTag(t) : position()->removeTag(t);
+        }
         slotUpdateTagToolTip();
         slotModified();
         update();

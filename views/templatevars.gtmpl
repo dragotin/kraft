@@ -1,10 +1,4 @@
-<!-- Kraft document template variables, rendered as a HTML page.
-
-
-  -->
-
-<body>
-
+<!-- Kraft document template variables, rendered as a HTML page. -->
 <h1>{{ main.header }}</h1>
 
 <p class="intro">{{ main.intro }}</p>
@@ -113,6 +107,4 @@
   </tr>
   {% endfor %}
 </table>
-
-</body>
 

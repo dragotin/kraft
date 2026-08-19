@@ -432,7 +432,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
                 tagElem = tagElem.nextSiblingElement("tag");
             }
             if (tags.size() > 0) {
-                item->setTags(tags);
+                item->wipeAndSetTags(tags);
             }
 
             // Go to next item
