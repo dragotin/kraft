@@ -1,12 +1,23 @@
 #include <QTest>
 #include <QObject>
+#include <QTemporaryDir>
 
+#include "defaultprovider.h"
 #include "kraftdoc.h"
 
 class T_KraftDocState : public QObject {
     Q_OBJECT
 
 private Q_SLOTS:
+    // KraftDoc::slotDeleteDoc() saves the document. Redirect the storage tree to
+    // a temporary directory, otherwise the documents end up in the real Kraft
+    // directory of the user running the test.
+    void initTestCase()
+    {
+        QVERIFY(_dir.isValid());
+        QVERIFY(!DefaultProvider::self()->createV2BaseDir(_dir.path()).isEmpty());
+    }
+
     void defaultStateIsNew()
     {
         KraftDoc doc;
@@ -189,6 +200,9 @@ private Q_SLOTS:
         doc.slotDeleteDoc();
         QCOMPARE(doc.state().state(), KraftDocState::State::Deleted);
     }
+
+private:
+    QTemporaryDir _dir;
 };
 
 QTEST_MAIN(T_KraftDocState)

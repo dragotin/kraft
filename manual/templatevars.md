@@ -120,7 +120,7 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/XJvlby.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/jfRayr.svg
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
