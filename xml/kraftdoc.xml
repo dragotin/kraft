@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE kraftdocument>
+<!-- Example Kraft document, used by the tests and to generate the list of
+     document template variables for the manual. It intentionally makes use of
+     all elements the schema kraftdoc.xsd defines, and of all item types.
+     See README.md for how to validate it against the schema.
+  -->
 <kraftdocument schemaVersion="1">
     <meta>
         <docType>Rechnung</docType>
@@ -31,6 +36,8 @@
 
         <predecessor>id</predecessor>
 
+        <!-- One attribute per KraftAttrib type, except color which is not
+             implemented yet. -->
         <attrib>
             <name>valid until</name>
             <value>2012-01-21</value>
@@ -41,29 +48,52 @@
             <value>21</value>
             <type>integer</type>
         </attrib>
-	<attrib>
+        <attrib>
             <name>SentDate</name>
-	    <value>2023-08-23</value>
-	    <type>date</type>
-	</attrib>
+            <value>2023-08-23</value>
+            <type>date</type>
+        </attrib>
+        <attrib>
+            <name>orderNumber</name>
+            <value>PO-2010-4711</value>
+            <type>string</type>
+        </attrib>
+        <attrib>
+            <name>archived</name>
+            <value>true</value>
+            <type>bool</type>
+        </attrib>
+        <attrib>
+            <name>hoursSpent</name>
+            <value>12.50</value>
+            <type>float</type>
+        </attrib>
         <!-- Generic sort criteria -->
         <tag>foo</tag>
         <tag>bar</tag>
     </meta>
     <client>
-        <address>Goofy Stambulchicz</address>
+        <address>Goofy Stambulchicz
+Entenhausener Weg 42
+92192 Spradsdorf</address>
         <clientId>BMhh9EhLwr</clientId>
     </client>
     <header>
         <project>
             <name>hausgarten</name>
+            <id>4711</id>
         </project>
         <timeOfSupply>
-            <start>2019-11-21</start>
-            <end>2019-11-23</end>
+            <start>2019-11-21T00:00:00</start>
+            <end>2019-11-23T23:59:59</end>
         </timeOfSupply>
         <salut>lieber goofy,</salut>
         <preText>Wir freuen uns, mit Dir Gesch&#xE4;fte machen zu k&#xF6;nnen.</preText>
+        <attrib>
+            <name>orderConfirmation</name>
+            <value>AB-2010-4711</value>
+            <type>string</type>
+        </attrib>
     </header>
     <itemGroup>
         <name>General</name>
@@ -93,11 +123,12 @@
     <itemGroup>
         <name>Backyard</name>
         <collapsed>false</collapsed>
+        <!-- Alternative items carry a price, but it is not part of the sums. -->
         <item>
             <type>Alternative</type>
             <text>Alternative: first item </text>
             <amount>8.40</amount>
-            <unit>qm</unit>
+            <unit>sm</unit>
             <taxtype>Full</taxtype>
             <unitprice>22.21</unitprice>
             <itemprice>186.56</itemprice>
@@ -115,21 +146,70 @@
             <tag>Work</tag>
         </item>
     </itemGroup>
+    <itemGroup>
+        <name>Terrace</name>
+        <collapsed>true</collapsed>
+        <!-- A text item only describes, it has neither amount nor price. -->
+        <item>
+            <type>Text</type>
+            <text>Alle Arbeiten wurden gem&#xE4;ss dem Angebot vom 01.11.2019 ausgef&#xFC;hrt.</text>
+            <amount>0.00</amount>
+            <unit></unit>
+            <taxtype>None</taxtype>
+            <unitprice>0.00</unitprice>
+            <itemprice>0.00</itemprice>
+        </item>
+        <!-- Like alternative items, demand items are not part of the sums. -->
+        <item>
+            <type>Demand</type>
+            <text>Auf Wunsch: automatische Bew&#xE4;sserung der Terrasse</text>
+            <amount>1.00</amount>
+            <unit>pausch.</unit>
+            <taxtype>Full</taxtype>
+            <unitprice>450.00</unitprice>
+            <itemprice>450.00</itemprice>
+            <tag>Work</tag>
+        </item>
+        <!-- 5 percent on the netto sum of 479.86 of all counting items. -->
+        <item>
+            <type>ExtraDiscount</type>
+            <text>Treuerabatt</text>
+            <amount>1.00</amount>
+            <unit>pausch.</unit>
+            <taxtype>Full</taxtype>
+            <unitprice>-23.99</unitprice>
+            <itemprice>-23.99</itemprice>
+            <attrib>
+                <name>discount</name>
+                <value>5.00</value>
+                <type>float</type>
+            </attrib>
+        </item>
+    </itemGroup>
     <footer>
         <postText>Danke f&#xFC;r dein Interesse,</postText>
         <goodbye>mit den besten Gr&#xFC;ssen,</goodbye>
+        <customValue>
+            <name>bankAccount</name>
+            <value>DE02120300000000202051</value>
+            <type>string</type>
+        </customValue>
     </footer>
 
+    <!-- netto:   186.56 + 146.65 + 146.65 - 23.99 = 455.87
+         reduced: 7 percent of 293.30                = 20.53
+         full:    19 percent of 162.57               = 30.89
+         brutto:  455.87 + 20.53 + 30.89             = 507.29 -->
     <totals>
-        <netto>479.86</netto>
+        <netto>455.87</netto>
         <taxsum>
             <type>Reduced</type>
             <total>20.53</total>
         </taxsum>
         <taxsum>
             <type>Full</type>
-            <total>35.45</total>
+            <total>30.89</total>
         </taxsum>
-        <brutto>535.84</brutto>
+        <brutto>507.29</brutto>
     </totals>
 </kraftdocument>

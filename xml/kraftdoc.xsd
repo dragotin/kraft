@@ -39,6 +39,7 @@
         <xs:enumeration value="Retracted"/>
         <xs:enumeration value="Converted"/>
         <xs:enumeration value="Invalid"/>
+        <xs:enumeration value="Deleted"/>
     </xs:restriction>
 </xs:simpleType>
 
@@ -70,10 +71,18 @@
     </xs:simpleContent>
 </xs:complexType>
 
+<!-- The time of supply is stored with the time of day, ie.
+     2019-11-21T00:00:00. Documents written by Kraft before version 2.1 only
+     have the date, which is still accepted: the start is read as the beginning
+     and the end as the last second of that day. -->
+<xs:simpleType name="date_time_type">
+  <xs:union memberTypes="xs:dateTime xs:date"/>
+</xs:simpleType>
+
 <xs:complexType name="time_of_supply_type">
   <xs:sequence>
-    <xs:element name="start" type="xs:string" minOccurs="0" maxOccurs="1"/>
-    <xs:element name="end"   type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="start" type="date_time_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="end"   type="date_time_type" minOccurs="0" maxOccurs="1"/>
   </xs:sequence>
 </xs:complexType>
 
