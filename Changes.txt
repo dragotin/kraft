@@ -5,9 +5,15 @@ Changes since versino 2.0.0: #######################################
 - Fix: Correct switch isInvoice plus other flags
 - Show flags as checkboxes in the doc type edit dialog
 - Feature: Add time of supply to invoices
+- Feature: Add document state "deleted"
 - Feature: Allow to delete non final documents
+- Fix: Fixed many typos
+- Feature: Add a list of all supported template variables in the 
+  document template^
+- More complete example document kraftdoc.xml
+- Tons of minor fixes and improvements
 
-=> Release v. 2.1.0 (May, xx 2026)
+=> Release v. 2.1.0 (Aug, xx 2026)
 
 ####################################################################
 
