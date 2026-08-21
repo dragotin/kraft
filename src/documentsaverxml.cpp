@@ -43,6 +43,10 @@ const QString DocumentSaverXML::TaxNoneStr = QStringLiteral("None");
 
 namespace {
 
+// The time of day that is assumed for a time of supply that comes without one,
+// ie. from a document that was written before the time of day was stored.
+const QTime StartOfDay{0, 0, 0};
+const QTime EndOfDay{23, 59, 59};
 
 int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, KraftDoc *doc)
 {
@@ -193,15 +197,15 @@ QDomDocument xmlDocument(KraftDoc *doc)
         projectElem.appendChild( textElement(xmldoc, "name", prjLabel));
     }
 
-    // -------- time of supply
-    const QDate tosStart = doc->timeOfSupplyStart().date();
+    // -------- time of supply, stored with the time of day
+    const QDateTime tosStart = doc->timeOfSupplyStart();
     if (tosStart.isValid()) {
-        QDate tosEnd   = doc->timeOfSupplyEnd().date();
+        QDateTime tosEnd = doc->timeOfSupplyEnd();
         QDomElement tos = xmldoc.createElement("timeOfSupply");
         headerElem.appendChild(tos);
         tos.appendChild(textElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
         if (!tosEnd.isValid())
-            tosEnd = tosStart;
+            tosEnd = QDateTime(tosStart.date(), EndOfDay);
         tos.appendChild(textElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
     }
 
@@ -356,10 +360,10 @@ bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     const QDomElement tosElem = headerElem.firstChildElement("timeOfSupply");
     if (!tosElem.isNull()) {
-        const QDate d = childElemDate(tosElem, "start");
-        const QDate dEnd = childElemDate(tosElem, "end");
-        doc->setTimeOfSupply(QDateTime(d, QTime(0, 0)),
-                             QDateTime(dEnd, QTime(23, 59, 59)));
+        // Older documents only store the date, the time of day is added then.
+        const QDateTime start = childElemDateTime(tosElem, "start", StartOfDay);
+        const QDateTime end = childElemDateTime(tosElem, "end", EndOfDay);
+        doc->setTimeOfSupply(start, end);
     }
 
     t = childElemText(headerElem, "salut");

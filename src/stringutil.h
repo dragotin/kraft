@@ -34,6 +34,13 @@ QString childElemText(const QDomElement& elem, const QByteArray& childName);
 
 QDate childElemDate(const QDomElement& elem, const QString& childName);
 
+/**
+ * @brief read a child element as date and time.
+ *
+ * If the element only contains a date, @p fallbackTime is used as time of day.
+ */
+QDateTime childElemDateTime(const QDomElement& elem, const QString& childName, const QTime& fallbackTime);
+
 double childElemDouble(const QDomElement& elem, const QString& childName);
 
 int childElemInt(const QDomElement& elem, const QString& childName);

@@ -48,6 +48,24 @@ QDate childElemDate(const QDomElement& elem, const QString& childName)
     return QDate::fromString(t, "yyyy-MM-dd");
 }
 
+QDateTime childElemDateTime(const QDomElement& elem, const QString& childName, const QTime& fallbackTime)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+
+    // Documents written before the time of day was stored only have a date.
+    // QDateTime::fromString does parse those as well, but assumes midnight,
+    // which is not the wanted fallback for an end of a time range.
+    if (!t.contains(QLatin1Char('T'))) {
+        const QDate d = QDate::fromString(t, "yyyy-MM-dd");
+        if (d.isValid()) {
+            return QDateTime(d, fallbackTime);
+        }
+        return QDateTime();
+    }
+    return QDateTime::fromString(t, Qt::ISODate);
+}
+
 double childElemDouble(const QDomElement& elem, const QString& childName)
 {
     const QDomElement e = elem.firstChildElement(childName);

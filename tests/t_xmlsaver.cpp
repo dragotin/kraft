@@ -119,13 +119,25 @@ private Q_SLOTS:
         QCOMPARE(attrib.type(), KraftAttrib::Type::Integer);
         QCOMPARE(attrib.value().toInt(), 21);
 
+        attrib = doc.attribute("orderNumber");
+        QCOMPARE(attrib.type(), KraftAttrib::Type::String);
+        QCOMPARE(attrib.value().toString(), "PO-2010-4711");
+
+        attrib = doc.attribute("archived");
+        QCOMPARE(attrib.type(), KraftAttrib::Type::Bool);
+        QCOMPARE(attrib.value().toBool(), true);
+
+        attrib = doc.attribute("hoursSpent");
+        QCOMPARE(attrib.type(), KraftAttrib::Type::Float);
+        QCOMPARE(attrib.value().toFloat(), 12.50f);
+
         const QStringList tags = doc.allTags();
         QVERIFY(tags.contains("foo"));
         QVERIFY(tags.contains("bar"));
         QVERIFY(!doc.state().isNew());
 
         QCOMPARE(doc.addressUid(), "BMhh9EhLwr");;
-        QCOMPARE(doc.address(), "Goofy Stambulchicz");
+        QCOMPARE(doc.address(), "Goofy Stambulchicz\nEntenhausener Weg 42\n92192 Spradsdorf");
 
         QCOMPARE(doc.projectLabel(), "hausgarten");
         QCOMPARE(doc.salut(), "lieber goofy,");
@@ -133,6 +145,34 @@ private Q_SLOTS:
 
         QCOMPARE(doc.postText(), "Danke für dein Interesse,");
         QCOMPARE(doc.goodbye(), "mit den besten Grüssen,");
+    }
+
+    // Documents written before the time of supply was stored with the time of
+    // day only have the date. They still have to load.
+    void loadDateOnlyTimeOfSupply()
+    {
+        const QString src{QString(TESTS_PATH) + "/../xml/kraftdoc.xml"};
+        QFile in(src);
+        QVERIFY(in.open(QIODevice::ReadOnly | QIODevice::Text));
+        QString xml = QString::fromUtf8(in.readAll());
+        in.close();
+
+        xml.replace("<start>2019-11-21T00:00:00</start>", "<start>2019-11-21</start>");
+        xml.replace("<end>2019-11-23T23:59:59</end>", "<end>2019-11-23</end>");
+        QVERIFY(xml.contains("<start>2019-11-21</start>"));
+
+        const QString legacyFile{_dir.filePath("legacy-tos.xml")};
+        QFile out(legacyFile);
+        QVERIFY(out.open(QIODevice::WriteOnly | QIODevice::Text));
+        QVERIFY(out.write(xml.toUtf8()) > 0);
+        out.close();
+
+        DocumentSaverXML xmlSaver;
+        KraftDoc doc;
+        QVERIFY(xmlSaver.loadFromFile(QFileInfo(legacyFile), &doc));
+
+        QCOMPARE(doc.timeOfSupplyStart(), QDateTime(QDate(2019, 11, 21), QTime(0, 0)));
+        QCOMPARE(doc.timeOfSupplyEnd(), QDateTime(QDate(2019, 11, 23), QTime(23, 59, 59)));
     }
 
     void loadItems()
@@ -145,7 +185,7 @@ private Q_SLOTS:
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
         DocPositionList list = doc.positions();
-        QCOMPARE(list.count(), 4);
+        QCOMPARE(list.count(), 7);
 
         DocPosition *dp = list[0];
         QCOMPARE(dp->type(), DocPosition::Type::Position);
@@ -169,6 +209,35 @@ private Q_SLOTS:
 
         QVERIFY(dp->hasTag("Work"));
         QVERIFY(dp->hasTag("Plants"));
+
+        // Alternative items keep their price, but it does not count.
+        dp = list[2];
+        QCOMPARE(dp->type(), DocPosition::Type::Alternative);
+        QCOMPARE(dp->unitPrice().toDouble(), 22.21);
+        QCOMPARE(dp->overallPrice().toDouble(), 0.0);
+
+        // A text item has neither amount nor price.
+        dp = list[4];
+        QCOMPARE(dp->type(), DocPosition::Type::Text);
+        QCOMPARE(dp->taxType(), DocPosition::Tax::None);
+        QCOMPARE(dp->overallPrice().toDouble(), 0.0);
+
+        // Demand items are not part of the sums either.
+        dp = list[5];
+        QCOMPARE(dp->type(), DocPosition::Type::Demand);
+        QCOMPARE(dp->unit().einheitSingular(), QStringLiteral("pausch."));
+        QCOMPARE(dp->unitPrice().toDouble(), 450.00);
+        QCOMPARE(dp->overallPrice().toDouble(), 0.0);
+
+        // The discount item counts with its negative price.
+        dp = list[6];
+        QCOMPARE(dp->type(), DocPosition::Type::ExtraDiscount);
+        QCOMPARE(dp->taxType(), DocPosition::Tax::Full);
+        QCOMPARE(dp->overallPrice().toDouble(), -23.99);
+
+        const KraftAttrib discount = dp->attribute(DocPosition::Discount);
+        QCOMPARE(discount.type(), KraftAttrib::Type::Float);
+        QCOMPARE(discount.value().toFloat(), 5.0f);
     }
 
     void completeRoundTrip()
@@ -190,8 +259,8 @@ private Q_SLOTS:
 
         // header block
         doc.setProjectLabel("Musterprojekt");
-        doc.setTimeOfSupply(QDateTime(QDate(2024, 6, 10), QTime(0, 0)),
-                            QDateTime(QDate(2024, 6, 12), QTime(23, 59, 59)));
+        doc.setTimeOfSupply(QDateTime(QDate(2024, 6, 10), QTime(8, 30)),
+                            QDateTime(QDate(2024, 6, 12), QTime(16, 45)));
         doc.setSalut("Sehr geehrter Herr Mustermann,");
         doc.setPreTextRaw("Wir erlauben uns, folgende Positionen in Rechnung zu stellen.");
 
@@ -243,8 +312,9 @@ private Q_SLOTS:
 
         // header block
         QCOMPARE(doc2.projectLabel(),                QString("Musterprojekt"));
-        QCOMPARE(doc2.timeOfSupplyStart().date(),    QDate(2024, 6, 10));
-        QCOMPARE(doc2.timeOfSupplyEnd().date(),      QDate(2024, 6, 12));
+        // the time of supply survives with the time of day
+        QCOMPARE(doc2.timeOfSupplyStart(), QDateTime(QDate(2024, 6, 10), QTime(8, 30)));
+        QCOMPARE(doc2.timeOfSupplyEnd(),   QDateTime(QDate(2024, 6, 12), QTime(16, 45)));
         QCOMPARE(doc2.salut(),                       QString("Sehr geehrter Herr Mustermann,"));
         QCOMPARE(doc2.preTextRaw(),                  doc.preTextRaw());
 
