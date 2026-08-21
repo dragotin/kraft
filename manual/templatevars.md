@@ -37,8 +37,10 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 | Name of Variable |Description | Example Value
 
 |doc.address |Formatted address string of the customer |Goofy Stambulchicz
-|doc.bruttoSumNum |Brutto sum as numerical value, not localized |535.84
-|doc.bruttoSumStr |Brutto sum localized as user string |535,84 €
+Entenhausener Weg 42
+92192 Spradsdorf
+|doc.bruttoSumNum |Brutto sum as numerical value, not localized |507.29
+|doc.bruttoSumStr |Brutto sum localized as user string |507,29 €
 |doc.buyerReference |Buyer reference string, mainly for XRechnung |
 |doc.clientUid |UID of the client/customer |BMhh9EhLwr
 |doc.dateStr |Date as localized string according to user settings |27.01.2011
@@ -49,8 +51,8 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 |doc.dueDateStrISO |Payment due date, ISO formatted, for XRechnung |
 |doc.fullTaxPercentNum |Full tax rate in percent as numerical value, not localized |19.00
 |doc.fullTaxPercentStr |Full tax rate in percent localized as user string |19
-|doc.fullTaxSumNum |Tax amount of the full taxed items as numerical value, not localized |35.45
-|doc.fullTaxSumStr |Tax amount of the full taxed items localized as user string |35,45 €
+|doc.fullTaxSumNum |Tax amount of the full taxed items as numerical value, not localized |30.89
+|doc.fullTaxSumStr |Tax amount of the full taxed items localized as user string |30,89 €
 |doc.fullTaxesDocument |True if all items of the document are taxed with the full tax rate |false
 |doc.goodbye |Closing greeting line of the document, e.g. &#39;Kind regards&#39; |mit den besten Grüssen,
 |doc.hasIndividualTaxation |True if the document mixes different tax rates across its items |true
@@ -59,8 +61,8 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 |doc.isDraftState |True if the document is still in draft state |false
 |doc.isInvoice |True if the document is an invoice |true
 |doc.items |List of the document positions (line items) |
-|doc.nettoSumNum |Netto sum as numerical value, not localized |479.86
-|doc.nettoSumStr |Netto sum localized as user string |479,86 €
+|doc.nettoSumNum |Netto sum as numerical value, not localized |455.87
+|doc.nettoSumStr |Netto sum localized as user string |455,87 €
 |doc.noTaxesDocument |True if none of the document items are taxed |false
 |doc.objectName |General object name |
 |doc.owner |Owner of the document |kf
@@ -81,8 +83,8 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 |doc.taxMarkerReduced |Marker value identifying items taxed with the reduced tax rate |2
 |doc.taxPercentNum |Applicable tax rate in percent as numerical value, not localized |
 |doc.taxPercentStr |Applicable tax rate in percent localized as user string |
-|doc.taxSumNum |Total tax amount as numerical value, not localized |55.98
-|doc.taxSumStr |Total tax amount localized as user string |55,98 €
+|doc.taxSumNum |Total tax amount as numerical value, not localized |51.42
+|doc.taxSumStr |Total tax amount localized as user string |51,42 €
 |doc.timeOfSupplyEnd |End of the time of supply as localized string according to user settings |23.11.2019
 |doc.timeOfSupplyEndISO |End of the time of supply, ISO formatted, for XRechnung |2019-11-23
 |doc.timeOfSupplyMultiDay |True if the time of supply spans more than a single day |true
@@ -120,7 +122,7 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/jfRayr.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/aMhrJQ.svg
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
@@ -164,7 +166,7 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 |kraft.DB_SCHEME |Database schema version of the running Kraft instance |DB-Scheme 24
 |kraft.HOSTNAME |Host name of the machine running Kraft |localhost.localdomain
 |kraft.SYS_USER |System user name running Kraft |klaas
-|kraft.VERSION |Kraft version string including code name |Kraft 2.0.0 Cumulus
+|kraft.VERSION |Kraft version string including code name |Kraft 2.1.0~pre Carlova
 
 |===
 
