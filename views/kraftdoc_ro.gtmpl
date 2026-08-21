@@ -55,7 +55,7 @@
   <td width="100" align="right">{{ item.unitPrice }}</td>
   <td width="10" align="right">
     {% if doc.hasIndividualTaxation %}
-      {{ item.taxMarker }}
+      <sup><small>{{ item.taxMarker }}</small></sup>
     {% endif %}
   </td>
 </tr>
