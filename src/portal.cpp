@@ -982,6 +982,9 @@ void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KC
     Q_UNUSED(customerContact)
     slotStatusMsg(i18n("Document generated successfully."));
 
+    // clear the error message that might exist from before
+    m_portalView->allDocsView()->setErrorMsg({}, {});
+
     if (_currentSelectedUuid == uuid) {
         _actOpenDocumentPDF->setEnabled(true);
         _actPrintPDF->setEnabled(true);
