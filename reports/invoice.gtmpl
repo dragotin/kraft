@@ -117,6 +117,7 @@
       </tfoot>
     </table>
 
+    <!-- The table to display the sums -->
     <table id="total">
       <tbody>
         {% if not doc.noTaxesDocument %}
@@ -156,6 +157,8 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Bottom text underneath the sums -->
     <p class="bottomtext">
     {% if enableHtmlInTexts %}
       {{ doc.postText|linebreaks }}
@@ -166,8 +169,12 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
+
+    <!-- Example how to insert a signature -->
     {# add a signature from an image like the following #}
     {# <p><img src="file:///home/klaas/opensource/kraft/reports/bowie.png" width="200px" alt="Unterschrift D. Bowie" /></p> #}
+
+    <!-- For invoices, a EQC QR Code can be generated and printed -->
     {%if doc.isInvoice and epcqrcode.valid and epcqrcode.show %}
     <p class="epcqrcode">
       <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
