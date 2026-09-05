@@ -10,7 +10,6 @@ import argparse
 import io
 import os
 import sys
-import copy
 from pypdf import PdfWriter, PdfReader
 
 class Mark:
@@ -26,8 +25,9 @@ class PdfWatermark:
     """Class to put a watermark from a PDF file on another PDF file."""
 
     def watermark(self, pdf_file, watermark_file, spec):
-        # Read PDFs
-        watermark = PdfReader(open(watermark_file, "rb"))
+        # Read watermark bytes once; we create a fresh PdfReader per page below.
+        watermark_bytes = io.BytesIO(open(watermark_file, "rb").read())
+        watermark = PdfReader(watermark_bytes)
         input_pdf = PdfReader(open(pdf_file, "rb"))
         output_pdf = PdfWriter()
 
@@ -39,22 +39,24 @@ class PdfWatermark:
 
         for page_idx, pdf_page in enumerate(input_pdf.pages):
             if page_idx == 0 and spec in (Mark.FIRST_PAGE, Mark.ALL_PAGES, Mark.ALTERNATING, Mark.LASTPAGE_DIFFERENT):
-                bg_page = copy.copy(watermark.pages[0])
+                wm_idx = 0
             elif spec == Mark.ALL_PAGES:
-                bg_page = copy.copy(watermark.pages[0])
+                wm_idx = 0
             elif spec == Mark.ALTERNATING:
-                bg_page = copy.copy(watermark.pages[2 - page_idx % 2])
+                wm_idx = 2 - page_idx % 2
             elif spec == Mark.LASTPAGE_DIFFERENT:
-                if page_idx == input_length - 1:
-                    bg_page = copy.copy(watermark.pages[watermark_length - 1])
-                else:
-                    bg_page = copy.copy(watermark.pages[1])
+                wm_idx = watermark_length - 1 if page_idx == input_length - 1 else 1
             else:
                 output_pdf.add_page(pdf_page)
                 continue
 
-            bg_page.merge_page(pdf_page)
-            output_pdf.add_page(bg_page)
+            # A fresh PdfReader per page gives the writer's clone cache new Python object
+            # identities each time, so it cannot reuse a previously modified watermark
+            # content stream and accumulate source pages onto it.
+            wm_page = PdfReader(watermark_bytes).pages[wm_idx]
+            output_pdf.add_page(wm_page)
+            # merge_page defaults to set the second page (=pdf_page) over the other
+            output_pdf.pages[-1].merge_page(pdf_page)
 
         result = io.BytesIO()
         output_pdf.write(result)
