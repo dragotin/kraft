@@ -192,6 +192,28 @@ Geld DocPositionList::nettoPrice()
     return g;
 }
 
+Geld DocPositionList::nettoPrice(DocPosition::Tax taxType)
+{
+    Geld g;
+
+    DocPositionListIterator it( *this );
+    while( it.hasNext() ) {
+        DocPosition *dp = it.next();
+        if (!dp->toDelete() && dp->taxType() == taxType)
+            g += dp->overallPrice();
+    }
+    return g;
+}
+
+bool DocPositionList::hasTaxType(DocPosition::Tax taxType) const
+{
+    for (const_iterator it = begin(); it != end(); ++it) {
+        if ((*it)->taxType() == taxType && !(*it)->toDelete())
+            return true;
+    }
+    return false;
+}
+
 Geld DocPositionList::fullTaxSum( double fullTax )
 {
     Geld sum;

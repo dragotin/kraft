@@ -22,12 +22,15 @@
 
 #include <KLocalizedString>
 #include <QFile>
+#include <QRegularExpression>
 
 #include <kcontacts_version.h>
 #include <kcontacts/resourcelocatorurl.h>
 #include <kcontacts/vcardconverter.h>
 
 KContacts::Addressee MyIdentity::_myContact = KContacts::Addressee();
+
+using namespace Qt::StringLiterals;
 
 MyIdentity::MyIdentity(QObject *parent)
     : QObject{parent},
@@ -64,6 +67,50 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     add.addEmail(email);
 
     return add;
+}
+
+/* Business data of the own company that is not part of a contact and therefore
+ * has no place in the own identity vCard: tax registration, commercial register
+ * and the bank account, so it is kept in the settings instead.
+ */
+QMap<QString, QString> MyIdentity::ownBusinessData()
+{
+    QMap<QString, QString> re;
+    auto *settings = KraftSettings::self();
+
+    // BR-CO-9 wants BT-31 prefixed with the ISO 3166-1 alpha-2 country code and no
+    // spaces, so "DE 123 456 789" as a user may type it has to be squeezed first.
+    QString vatId = settings->sellerVatId();
+    vatId.remove(QRegularExpression(u"\\s"_s));
+    re.insert(u"VATID"_s, vatId.toUpper());
+    re.insert(u"TAXNUMBER"_s, settings->sellerTaxNumber().trimmed());
+    re.insert(u"REGISTRATIONID"_s, settings->sellerRegistrationId().trimmed());
+    re.insert(u"LEGALFORM"_s, settings->sellerLegalForm().trimmed());
+
+    re.insert(u"ACCOUNTNAME"_s, settings->bankAccountName().trimmed());
+    re.insert(u"IBAN"_s, settings->bankAccountIBAN().trimmed());
+    re.insert(u"BIC"_s, settings->bankAccountBIC().trimmed());
+
+    // ISO 3166-1 alpha-2 of the locale Kraft runs under. The vCard only knows the
+    // country as a localized name, which is of no use for the XRechnung BT-40.
+    const QLocale *loc = DefaultProvider::self()->locale();
+    re.insert(u"COUNTRYCODE"_s, QLocale::territoryToCode(loc->territory()));
+
+    return re;
+}
+
+/* The template variables of the `me` namespace that do not come from the contact.
+ * Escaped here, once, so no template has to remember to do it.
+ */
+QVariantHash MyIdentity::ownBusinessVariantHash()
+{
+    QVariantHash re;
+
+    const auto data = ownBusinessData();
+    for (auto it = data.constBegin(); it != data.constEnd(); ++it) {
+        re.insert(it.key(), it.value().toHtmlEscaped());
+    }
+    return re;
 }
 
 QString MyIdentity::identityFile()

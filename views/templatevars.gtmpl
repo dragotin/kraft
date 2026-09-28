@@ -23,6 +23,23 @@
   {% endfor %}
 </table>
 
+<h2>{{ meown.objectName }}</h2>
+<p class="caption">{{ meown.description }}</p>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <tr>
+    <th width="25%">Name of Variable</th>
+    <th width="50%">Description</th>
+    <th width="25%">Example Value</th>
+  </tr>
+  {% for var in meown.vars %}
+  <tr>
+    <td class="name">me.{{ var.name }}</td>
+    <td>{{ var.desc }}</td>
+    <td class="example">{{ var.example|linebreaksbr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
 <h2>{{ doc.objectName }}</h2>
 <p class="caption">{{ doc.description }}</p>
 <table border="1" cellspacing="0" cellpadding="4" width="100%">

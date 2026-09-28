@@ -23,6 +23,7 @@
 #include <klocalizedstring.h>
 
 #include "grantleeallvarstemplate.h"
+#include "myidentity.h"
 #include "kraftdoc.h"
 #include "documentman.h"
 #include "grantleetemplate.h"
@@ -176,7 +177,23 @@ QString getDesc(const QString& prefix, const QString& name)
             { u"COUNTRY"_s, i18nc("Document Template var description",
                 "Country of the contact address") },
             { u"LABEL"_s, i18nc("Document Template var description",
-                "Formatted address label of the contact") }
+                "Formatted address label of the contact") },
+            { u"VATID"_s, i18nc("Document Template var description",
+                "VAT identifier of the own company (BT-31), ie. DE123456789") },
+            { u"TAXNUMBER"_s, i18nc("Document Template var description",
+                "Tax registration number of the own company (BT-32), the german Steuernummer") },
+            { u"REGISTRATIONID"_s, i18nc("Document Template var description",
+                "Legal registration identifier of the own company (BT-30), ie. the commercial register number") },
+            { u"LEGALFORM"_s, i18nc("Document Template var description",
+                "Additional legal information (BT-33), ie. legal form and register court") },
+            { u"ACCOUNTNAME"_s, i18nc("Document Template var description",
+                "Name of the holder of the own bank account") },
+            { u"IBAN"_s, i18nc("Document Template var description",
+                "IBAN of the own bank account (BT-84)") },
+            { u"BIC"_s, i18nc("Document Template var description",
+                "BIC of the own bank account") },
+            { u"COUNTRYCODE"_s, i18nc("Document Template var description",
+                "Country of the own address as ISO 3166-1 alpha-2 code (BT-40), from the locale Kraft runs under") }
         } },
         { u"label"_s, {
             { u"NO_SHORT"_s, i18nc("Document Template var description",
@@ -379,13 +396,15 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
                                   "doc or label. The example values are taken from the document "
                                   "this list was generated from."));
     obj.setProperty("contactIntro", i18n("The following variables are defined for both the own identity with prefix `me` and"
-                                         "for the customer contact with prefix `customer`."));
+                                         "for the customer contact with prefix `customer`. The own identity has a few "
+                                         "additional variables, listed further down."));
     gtmpl.addToObjMapping("main", &obj);
 
     // == The contact variables
     TemplateNameSpace tnsContact(MeContactPrefix);
     tnsContact.setObjectName(i18n("Contact Variables"));
     tnsContact.setDesc(i18n("Variables of a contact, both own identity (prefix `me`) and the customer contact (prefix `customer`)"));
+    // Note: the own identity additionally carries the business variables, see below.
 
     const auto mtt = contactToVariantHash(myContact);
     loopHash(mtt, tnsContact);
@@ -431,6 +450,18 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     QVariantHash qrc = generateQRCodeHash(doc);
     loopHash(qrc, tnsEPC);
     gtmpl.addToObjMapping(tnsEPC.prefix(), &tnsEPC);
+
+    // == The own business data. Same `me` prefix as the contact variables above, but
+    // listed in a table of its own because it exists for the own identity only.
+    TemplateNameSpace tnsOwn(MeContactPrefix);
+    tnsOwn.setObjectName(i18n("Own Business Variables"));
+    tnsOwn.setDesc(i18n("Business data of the own company that is not part of the identity "
+                        "contact, configured on the Own Identity page of the settings. "
+                        "Defined for the prefix `me` only"));
+
+    const auto own = MyIdentity::ownBusinessVariantHash();
+    loopHash(own, tnsOwn);
+    gtmpl.addToObjMapping(u"meown"_s, &tnsOwn);
 
     // == A few Kraft system values
     TemplateNameSpace tnsKraft(KraftPrefix);

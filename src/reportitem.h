@@ -45,10 +45,14 @@ class ReportItem: public QObject
     Q_PROPERTY(QString nettoPrice READ nettoPrice)
     Q_PROPERTY(QString nettoPriceNum READ nettoPriceNum)
     Q_PROPERTY(QString taxMarker READ taxMarker)
+    // The VAT rate of this item and its EN16931 category code, for the XRechnung
+    Q_PROPERTY(QString taxPercentNum READ taxPercentNum)
+    Q_PROPERTY(QString taxCategory READ taxCategory)
 
 public:
     ReportItem();
-    ReportItem(DocPosition*);
+    // fullTax and redTax are the rates of the document the item belongs to.
+    ReportItem(DocPosition*, double fullTax = -1.0, double redTax = -1.0);
 
     QString getText() { return _text; }
     QString itemNumber() { return QString::number(_itemNo); }
@@ -62,6 +66,8 @@ public:
     QString nettoPriceNum() { return _nettoPriceNum; }
     QString unitPrice() { return _unitPrice; }
     QString taxMarker() { return _taxMarker; }
+    QString taxPercentNum() { return _taxPercentNum; }
+    QString taxCategory() { return _taxCategory; }
     QString unitPriceNum() const { return _unitPriceNum; }
 private:
     int     _itemNo;
@@ -76,6 +82,8 @@ private:
     QString _nettoPrice;
     QString _nettoPriceNum;
     QString _taxMarker;
+    QString _taxPercentNum;
+    QString _taxCategory;
     QString _unitEC20;
 };
 
