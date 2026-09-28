@@ -682,8 +682,16 @@ ReportItemList KraftDoc::reportItemList() const
     // ReportItemList reList(positions());
     ReportItemList list;
 
+    // The tax rates live on the document, the items only know their tax type.
+    double fTax{_fullTax};
+    double rTax{_redTax};
+    if (fTax < 0) {
+        fTax = UnitManager::self()->tax(date());
+        rTax = UnitManager::self()->reducedTax(date());
+    }
+
     for( auto &pos : positions()) {
-        ReportItem *ri = new ReportItem(pos);
+        ReportItem *ri = new ReportItem(pos, fTax, rTax);
         list.append(ri);
     }
 
@@ -753,6 +761,36 @@ void KraftDoc::slotDeleteDoc()
 
     DocumentMan *man = DocumentMan::self();
     man->saveDocument(this);
+}
+
+Geld KraftDoc::fullTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::Full);
+}
+
+Geld KraftDoc::reducedTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::Reduced);
+}
+
+Geld KraftDoc::noTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::None);
+}
+
+bool KraftDoc::hasFullTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::Full);
+}
+
+bool KraftDoc::hasReducedTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::Reduced);
+}
+
+bool KraftDoc::hasNoTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::None);
 }
 
 bool KraftDoc::fullTaxesDocument() const

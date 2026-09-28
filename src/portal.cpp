@@ -1198,7 +1198,7 @@ QString Portal::slotConvertToXML()
     DbToXMLConverter converter;
 
     const QString dBase = DefaultProvider::self()->createV2BaseDir();
-    const QString info{ tr("Conversion started to %1").arg(dBase)};
+    const QString info{ i18n("Conversion started to %1").arg(dBase)};
 
     // No matter what this must run, also for new instances, because at least the
     // default number cycle must be created

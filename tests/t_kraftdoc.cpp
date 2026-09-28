@@ -261,6 +261,68 @@ private Q_SLOTS:
         QCOMPARE(doc.tosEnd(),   QString(""));  // invalid QDate → empty string
     }
 
+    /* A document that mixes the full and the reduced tax rate has to report the
+     * netto sum split per rate, otherwise the VAT subtotals of an XRechnung do
+     * not add up. See issue #304.
+     */
+    void mixedTaxNettoSums() {
+        DocPositionList positions;
+
+        DocPosition *full = new DocPosition;   // 2 * 50.00 = 100.00 at 19%
+        full->setAmount(2.0);
+        full->setUnitPrice(Geld(50.00));
+        full->setTaxType(DocPosition::Tax::Full);
+        positions.append(full);
+
+        DocPosition *red = new DocPosition;    // 4 * 50.00 = 200.00 at 7%
+        red->setAmount(4.0);
+        red->setUnitPrice(Geld(50.00));
+        red->setTaxType(DocPosition::Tax::Reduced);
+        positions.append(red);
+
+        DocPosition *none = new DocPosition;   // 1 * 50.00 = 50.00 untaxed
+        none->setAmount(1.0);
+        none->setUnitPrice(Geld(50.00));
+        none->setTaxType(DocPosition::Tax::None);
+        positions.append(none);
+
+        QCOMPARE(positions.nettoPrice(DocPosition::Tax::Full).toLong(), 10000);
+        QCOMPARE(positions.nettoPrice(DocPosition::Tax::Reduced).toLong(), 20000);
+        QCOMPARE(positions.nettoPrice(DocPosition::Tax::None).toLong(), 5000);
+        // the parts must add up to the total
+        QCOMPARE(positions.nettoPrice().toLong(), 35000);
+
+        QVERIFY(positions.hasTaxType(DocPosition::Tax::Full));
+        QVERIFY(positions.hasTaxType(DocPosition::Tax::Reduced));
+        QVERIFY(positions.hasTaxType(DocPosition::Tax::None));
+        QVERIFY(!positions.hasTaxType(DocPosition::Tax::Individual));
+
+        // the taxation of the list as a whole is individual, which is exactly the
+        // case the single VAT subtotal of the old template could not express
+        QCOMPARE(positions.listTaxation(), DocPosition::Tax::Individual);
+
+        // and the tax amounts per rate
+        QCOMPARE(positions.fullTaxSum(19.0).toLong(), 1900);
+        QCOMPARE(positions.reducedTaxSum(7.0).toLong(), 1400);
+        QCOMPARE(positions.taxSum(19.0, 7.0).toLong(), 3300);
+    }
+
+    void singleRateNettoSums() {
+        DocPositionList positions;
+
+        DocPosition *full = new DocPosition;
+        full->setAmount(3.0);
+        full->setUnitPrice(Geld(10.00));
+        full->setTaxType(DocPosition::Tax::Full);
+        positions.append(full);
+
+        QCOMPARE(positions.nettoPrice(DocPosition::Tax::Full).toLong(), 3000);
+        QCOMPARE(positions.nettoPrice(DocPosition::Tax::Reduced).toLong(), 0);
+        QVERIFY(positions.hasTaxType(DocPosition::Tax::Full));
+        QVERIFY(!positions.hasTaxType(DocPosition::Tax::Reduced));
+        QCOMPARE(positions.listTaxation(), DocPosition::Tax::Full);
+    }
+
     void dateAddDay() {
         KraftDoc *kraftdoc = &kDoc;
 
