@@ -21,6 +21,9 @@
 #include <QDir>
 #include <QObject>
 #include <QScopedPointer>
+#include <QMap>
+#include <QStringList>
+#include <QVariantHash>
 
 #include "addressprovider.h"
 #include "kraftdoc.h"
@@ -52,6 +55,9 @@ public:
 
 protected:
     void lookupCustomerAddress();
+    QStringList missingSellerData(const KContacts::Addressee& myContact,
+                                  const QMap<QString, QString>& own) const;
+    QStringList missingBuyerData(const KContacts::Addressee& customer) const;
 
 protected Q_SLOTS:
     void slotAddresseeFound(const QString &uid = QString(), const KContacts::Addressee &contact = KContacts::Addressee());

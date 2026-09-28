@@ -118,6 +118,10 @@ public:
     QString posNumber( DocPosition* );
 
     Geld nettoPrice();
+    // Netto sum of the items of one taxation type only, needed to build the
+    // per-rate VAT subtotals of an XRechnung.
+    Geld nettoPrice(DocPosition::Tax taxType);
+    bool hasTaxType(DocPosition::Tax taxType) const;
     Geld bruttoPrice( double fullTax, double reducedTax );
     Geld taxSum(double fullTax, double redTax );
     Geld fullTaxSum( double fullTax );

@@ -126,6 +126,17 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
 
+    // Netto sums split by tax rate, for the VAT subtotals of an XRechnung
+    Q_PROPERTY(QString fullTaxNettoSumNum READ fullTaxNettoSumNum)
+    Q_PROPERTY(QString reducedTaxNettoSumNum READ reducedTaxNettoSumNum)
+    Q_PROPERTY(QString noTaxNettoSumNum READ noTaxNettoSumNum)
+
+    // True if at least one item uses that tax rate. Unlike fullTaxesDocument()
+    // these are not mutually exclusive: a document can have both.
+    Q_PROPERTY(bool hasFullTaxItems READ hasFullTaxItems)
+    Q_PROPERTY(bool hasReducedTaxItems READ hasReducedTaxItems)
+    Q_PROPERTY(bool hasNoTaxItems READ hasNoTaxItems)
+
     Q_PROPERTY(QString owner READ owner)
 
     Q_PROPERTY(QString timeOfSupplyStart READ tosStart)
@@ -268,6 +279,17 @@ public:
     Geld vatSum() const;
     QString vatSumStr() const { return vatSum().toLocaleString(); }
     QString vatSumNum() const { return vatSum().toNumberString(); }
+
+    Geld fullTaxNettoSum() const;
+    QString fullTaxNettoSumNum() const { return fullTaxNettoSum().toNumberString(); }
+    Geld reducedTaxNettoSum() const;
+    QString reducedTaxNettoSumNum() const { return reducedTaxNettoSum().toNumberString(); }
+    Geld noTaxNettoSum() const;
+    QString noTaxNettoSumNum() const { return noTaxNettoSum().toNumberString(); }
+
+    bool hasFullTaxItems() const;
+    bool hasReducedTaxItems() const;
+    bool hasNoTaxItems() const;
 
     QString country() const;
     QString language() const;

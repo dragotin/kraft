@@ -123,6 +123,11 @@ private:
     QLineEdit *_bacIBAN;
     QLineEdit *_bacBIC;
 
+    QLineEdit *_xrVatId;
+    QLineEdit *_xrTaxNumber;
+    QLineEdit *_xrRegistrationId;
+    QLineEdit *_xrLegalForm;
+
     MyIdentity *_myIdentity;
     KContacts::Addressee _newOwnAddress;
 

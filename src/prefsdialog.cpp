@@ -54,6 +54,8 @@
 #include "myidentity.h"
 #include "grantleetemplate.h"
 
+using namespace Qt::StringLiterals;
+
 // ################################################################################
 
 PrefsDialog::PrefsDialog( QWidget *parent)
@@ -246,13 +248,59 @@ QWidget* PrefsDialog::whoIsMeTab()
   QGroupBox *gbox = new QGroupBox(i18n("Bank Account Information"), this);
   QFormLayout *formLayout = new QFormLayout;
   _bacName = new QLineEdit(this);
-  formLayout->addRow(tr("&Bank Account Holder:"), _bacName);
+  formLayout->addRow(i18n("&Bank Account Holder:"), _bacName);
   _bacIBAN = new QLineEdit(this);
-  formLayout->addRow(tr("&IBAN:"), _bacIBAN);
+  formLayout->addRow(i18n("&IBAN:"), _bacIBAN);
   _bacBIC = new QLineEdit(this);
-  formLayout->addRow(tr("&BIC:"), _bacBIC);
+  formLayout->addRow(i18n("&BIC:"), _bacBIC);
   gbox->setLayout(formLayout);
   vboxLay->addWidget(gbox);
+
+  // == Business data of the own company that has no place in a contact
+  QGroupBox *xrBox = new QGroupBox(i18n("Business and Tax Information"), this);
+  QFormLayout *xrLayout = new QFormLayout;
+
+  QLabel *taxHint = new QLabel(u"<i>"_s +
+                               i18n("An invoice must show either the VAT identifier or the tax "
+                                    "number. Most businesses only have a tax number; the VAT "
+                                    "identifier has to be applied for and is needed for trade "
+                                    "within the EU.") + u"</i>"_s);
+  taxHint->setWordWrap(true);
+  xrLayout->addRow(taxHint);
+
+  _xrVatId = new QLineEdit(this);
+  _xrVatId->setPlaceholderText(QStringLiteral("DE123456789"));
+  _xrVatId->setToolTip(i18n("The VAT identifier of your company, issued by the Bundeszentralamt "
+                            "für Steuern on request. Country prefix and 9 digits, ie. DE123456789. "
+                            "Needed for trade within the EU. Template variable me.VATID, "
+                            "XRechnung BT-31."));
+  xrLayout->addRow(i18n("&VAT identifier (USt-IdNr.):"), _xrVatId);
+
+  _xrTaxNumber = new QLineEdit(this);
+  _xrTaxNumber->setPlaceholderText(QStringLiteral("123/456/78901"));
+  _xrTaxNumber->setToolTip(i18n("The tax number of your company, issued by your local Finanzamt. "
+                                "The format depends on the Bundesland, ie. 123/456/78901. Every "
+                                "business has one. Template variable me.TAXNUMBER, "
+                                "XRechnung BT-32."));
+  xrLayout->addRow(i18n("&Tax number (Steuernummer):"), _xrTaxNumber);
+
+  _xrRegistrationId = new QLineEdit(this);
+  _xrRegistrationId->setPlaceholderText(QStringLiteral("HRB 4711"));
+  _xrRegistrationId->setToolTip(i18n("The entry of your company in the commercial register, ie. "
+                                     "HRB 4711. Only for companies that are registered. "
+                                     "Template variable me.REGISTRATIONID, XRechnung BT-30. "
+                                     "Optional."));
+  xrLayout->addRow(i18n("Registration &number (Handelsregister):"), _xrRegistrationId);
+
+  _xrLegalForm = new QLineEdit(this);
+  _xrLegalForm->setPlaceholderText(i18n("GmbH, Amtsgericht Bonn"));
+  _xrLegalForm->setToolTip(i18n("The legal form of your company and the register court, ie. "
+                                "GmbH, Amtsgericht Bonn. Template variable me.LEGALFORM, "
+                                "XRechnung BT-33. Optional."));
+  xrLayout->addRow(i18n("&Legal information:"), _xrLegalForm);
+
+  xrBox->setLayout(xrLayout);
+  vboxLay->addWidget(xrBox);
 
   topWidget->setLayout( vboxLay );
 
@@ -520,7 +568,11 @@ void PrefsDialog::readConfig()
     h = KraftSettings::self()->bankAccountIBAN();
     _bacIBAN->setText(h);
 
-
+    // == Own business data
+    _xrVatId->setText(KraftSettings::self()->sellerVatId());
+    _xrTaxNumber->setText(KraftSettings::self()->sellerTaxNumber());
+    _xrRegistrationId->setText(KraftSettings::self()->sellerRegistrationId());
+    _xrLegalForm->setText(KraftSettings::self()->sellerLegalForm());
 }
 
 void PrefsDialog::writeIdentity(int currIndx)
@@ -608,6 +660,12 @@ void PrefsDialog::writeConfig()
     if (h != KraftSettings::self()->bankAccountIBAN()) {
         KraftSettings::self()->setBankAccountIBAN(h);
     }
+
+    // == Own business data
+    KraftSettings::self()->setSellerVatId(_xrVatId->text().trimmed());
+    KraftSettings::self()->setSellerTaxNumber(_xrTaxNumber->text().trimmed());
+    KraftSettings::self()->setSellerRegistrationId(_xrRegistrationId->text().trimmed());
+    KraftSettings::self()->setSellerLegalForm(_xrLegalForm->text().trimmed());
 
     KraftSettings::self()->save();
 }
