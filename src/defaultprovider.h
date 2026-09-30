@@ -40,6 +40,7 @@ public:
         NumberCycles,
         DocTypes,
         OwnIdentity,
+        Contacts,
         Tests
     };
 

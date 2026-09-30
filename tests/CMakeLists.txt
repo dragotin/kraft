@@ -37,6 +37,13 @@ target_link_libraries(t_defaultprovider ${test_libs})
 
 # ============================================================ 
 
+add_executable(t_kraftcontact t_kraftcontact.cpp)
+add_test(NAME t_kraftcontact COMMAND t_kraftcontact)
+
+target_link_libraries(t_kraftcontact ${test_libs})
+
+# ============================================================
+
 add_executable(t_doctype t_doctype.cpp)
 add_test(NAME t_doctype COMMAND t_doctype)
 

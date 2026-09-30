@@ -121,6 +121,7 @@ set(kraft_SRCS
     stringutil.cpp
     epcqrcode.cpp
     kraftattrib.cpp
+    kraftcontact.cpp
     kraftobj.cpp
     xmlindexdb.cpp
     reportitemlist.cpp

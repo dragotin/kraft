@@ -29,7 +29,13 @@ KraftObj::KraftObj()
 void KraftObj::setModified(bool m)
 {
     _modified = m;
-    _lastModified = QDateTime::currentDateTime();
+
+    // Only a modification changes the modification time. Marking the object clean,
+    // which is what loading and saving do when they are through, must not stamp it,
+    // otherwise the time that was just read from the storage is lost.
+    if (m) {
+        _lastModified = QDateTime::currentDateTime();
+    }
 }
 
 QString KraftObj::uuid() const
@@ -56,9 +62,35 @@ bool KraftObj::hasAttribute(const QString& name) const
 
 void KraftObj::setAttribute(const KraftAttrib& attrib)
 {
-    if (!attrib.name().isEmpty()) {
-        _attribs.insert(attrib.name(), attrib);
-        setModified();
+    if (attrib.name().isEmpty())
+        return;
+
+    // Setting the very same value again is no modification. Without this every
+    // dialog that writes all of its fields back would mark the object dirty.
+    if (_attribs.value(attrib.name()) == attrib)
+        return;
+
+    _attribs.insert(attrib.name(), attrib);
+    setModified();
+}
+
+QString KraftObj::stringAttribute(const QString& name) const
+{
+    if (!hasAttribute(name))
+        return QString();
+
+    return attribute(name).value().toString().trimmed();
+}
+
+void KraftObj::setStringAttribute(const QString& name, const QString& value)
+{
+    const QString v = value.trimmed();
+
+    if (v.isEmpty()) {
+        // An unset value and one the user cleared are the same thing.
+        removeAttribute(name);
+    } else {
+        setAttribute(KraftAttrib(name, v, KraftAttrib::Type::String));
     }
 }
 
@@ -125,11 +157,6 @@ void KraftObj::parseKobjXml(QDomElement &elem)
     Q_ASSERT(! elem.isNull());
     _uuid = QUuid::fromString(KraftXml::childElemText(elem, "uuid"));
 
-    QDate d = KraftXml::childElemDate(elem, "lastModified");
-    QDateTime dt;
-    dt.setDate(d);
-    setLastModified(dt);
-
     QDomElement attribsElem = elem.firstChildElement("attribs");
     QDomElement attribElem = attribsElem.firstChildElement("attrib");
     while(!attribElem.isNull()) {
@@ -146,6 +173,9 @@ void KraftObj::parseKobjXml(QDomElement &elem)
         tagElem = tagElem.nextSiblingElement("tag");
     }
 
+    // Last, because adding the attributes and tags above stamps the object with
+    // the current time, which would overwrite the time that was stored.
+    setLastModified(KraftXml::childElemDateTime(elem, "lastModified", QTime()));
 }
 
 QDomElement KraftObj::kobjXml(QDomDocument &xmldoc, const QString& elemName) const
