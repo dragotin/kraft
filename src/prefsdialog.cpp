@@ -52,6 +52,7 @@
 #include "format.h"
 #include "positionviewwidget.h"
 #include "myidentity.h"
+#include "kraftcontact.h"
 #include "grantleetemplate.h"
 
 using namespace Qt::StringLiterals;
@@ -560,19 +561,18 @@ void PrefsDialog::readConfig()
 
     mCbDateFormats->setCurrentIndex(index);
 
-    // == Bank Account Information
-    QString h = KraftSettings::self()->bankAccountName();
-    _bacName->setText(h);
-    h = KraftSettings::self()->bankAccountBIC();
-    _bacBIC->setText(h);
-    h = KraftSettings::self()->bankAccountIBAN();
-    _bacIBAN->setText(h);
+    // == Bank account and business data, both stored with the own contact rather
+    // than in the settings, as they belong to the company and not to the app.
+    KraftContact *own = MyIdentity::ownContact();
 
-    // == Own business data
-    _xrVatId->setText(KraftSettings::self()->sellerVatId());
-    _xrTaxNumber->setText(KraftSettings::self()->sellerTaxNumber());
-    _xrRegistrationId->setText(KraftSettings::self()->sellerRegistrationId());
-    _xrLegalForm->setText(KraftSettings::self()->sellerLegalForm());
+    _bacName->setText(own->stringAttribute(KraftContact::AccountName));
+    _bacBIC->setText(own->stringAttribute(KraftContact::Bic));
+    _bacIBAN->setText(own->stringAttribute(KraftContact::Iban));
+
+    _xrVatId->setText(own->stringAttribute(KraftContact::VatId));
+    _xrTaxNumber->setText(own->stringAttribute(KraftContact::TaxNumber));
+    _xrRegistrationId->setText(own->stringAttribute(KraftContact::RegistrationId));
+    _xrLegalForm->setText(own->stringAttribute(KraftContact::LegalForm));
 }
 
 void PrefsDialog::writeIdentity(int currIndx)
@@ -648,24 +648,21 @@ void PrefsDialog::writeConfig()
         KraftSettings::self()->setDateFormat(dateFormatString);
     }
 
-    QString h = _bacName->text();
-    if (h != KraftSettings::self()->bankAccountName()) {
-        KraftSettings::self()->setBankAccountName(h);
-    }
-    h = _bacBIC->text();
-    if (h != KraftSettings::self()->bankAccountBIC()) {
-        KraftSettings::self()->setBankAccountBIC(h);
-    }
-    h = _bacIBAN->text();
-    if (h != KraftSettings::self()->bankAccountIBAN()) {
-        KraftSettings::self()->setBankAccountIBAN(h);
-    }
+    // == Bank account and business data of the own company, see readConfig()
+    KraftContact *own = MyIdentity::ownContact();
 
-    // == Own business data
-    KraftSettings::self()->setSellerVatId(_xrVatId->text().trimmed());
-    KraftSettings::self()->setSellerTaxNumber(_xrTaxNumber->text().trimmed());
-    KraftSettings::self()->setSellerRegistrationId(_xrRegistrationId->text().trimmed());
-    KraftSettings::self()->setSellerLegalForm(_xrLegalForm->text().trimmed());
+    own->setStringAttribute(KraftContact::AccountName, _bacName->text());
+    own->setStringAttribute(KraftContact::Bic, _bacBIC->text());
+    own->setStringAttribute(KraftContact::Iban, _bacIBAN->text());
+
+    own->setStringAttribute(KraftContact::VatId, _xrVatId->text());
+    own->setStringAttribute(KraftContact::TaxNumber, _xrTaxNumber->text());
+    own->setStringAttribute(KraftContact::RegistrationId, _xrRegistrationId->text());
+    own->setStringAttribute(KraftContact::LegalForm, _xrLegalForm->text());
+
+    if (own->modified()) {
+        own->save();
+    }
 
     KraftSettings::self()->save();
 }

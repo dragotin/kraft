@@ -59,6 +59,15 @@ public:
     void removeAttribute(const QString& name);
 
     KraftAttrib attribute(const QString& name) const;
+
+    /* Convenience for the attributes that are plain strings, which most are.
+     *
+     * stringAttribute() returns the value trimmed, or an empty string if the
+     * object has no such attribute. setStringAttribute() removes the attribute if
+     * the value is empty, so that a value the user cleared leaves nothing behind.
+     */
+    QString stringAttribute(const QString& name) const;
+    void setStringAttribute(const QString& name, const QString& value);
     QMap<QString,KraftAttrib> attributes() const { return _attribs; }
 
     void wipeAndSetTags(const QStringList& list);
