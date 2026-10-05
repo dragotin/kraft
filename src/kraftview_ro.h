@@ -47,6 +47,8 @@
 class Katalog;
 class HtmlView;
 
+class KraftContact;
+
 class KraftViewRO : public KraftViewBase
 {
 public:
@@ -68,6 +70,8 @@ Q_SIGNALS:
 
 private:
     HtmlView *mHtmlView;
+    // The customer of the document that is displayed.
+    KraftContact *_customer{nullptr};
 };
 
 #endif // KRAFTVIEW_RO_H

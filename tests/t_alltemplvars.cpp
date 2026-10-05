@@ -8,6 +8,7 @@
 #include "testconfig.h"
 #include "documentsaverxml.h"
 #include "grantleeallvarstemplate.h"
+#include "kraftcontact.h"
 #include "doctype.h"
 #include "defaultprovider.h"
 #include "kraftsettings.h"
@@ -121,8 +122,9 @@ private Q_SLOTS:
         QVERIFY2(QFileInfo::exists(tmplFile), qPrintable(tmplFile));
 
         QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
-        const KContacts::Addressee contact = example_contact();
-        const QString expanded = templateEngine->expand(_docUuid, contact, contact);
+        KraftContact contact;
+        contact.setAddressee(example_contact());
+        const QString expanded = templateEngine->expand(_docUuid, &contact, &contact);
 
         QVERIFY2(templateEngine->error().isEmpty(), qPrintable(templateEngine->error()));
         QVERIFY(!expanded.isEmpty());

@@ -38,10 +38,10 @@
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "doctype.h"
-#include "addressprovider.h"
 #include "documenttemplate.h"
 #include "pdfconverter.h"
 #include "xmldocindex.h"
+#include "kraftcontact.h"
 #include "myidentity.h"
 
 namespace {
@@ -71,11 +71,10 @@ QString saveToTempFile( const QString& doc )
 
 ReportGenerator::ReportGenerator()
     : _useGrantlee(true),
+      mCustomer(nullptr),
       mProcess(nullptr)
 {
-    mAddressProvider = new AddressProvider(this);
-    connect(mAddressProvider, &AddressProvider::lookupResult,
-            this, &ReportGenerator::slotAddresseeFound);
+
 }
 
 ReportGenerator::~ReportGenerator()
@@ -130,36 +129,21 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
         qDebug () << "Using this template: " << _tmplFile;
     }
 
-    // ==== Look up the customer contact
-    const QString clientUid = doc->addressUid();
-    KContacts::Addressee contact;
-
-    if( ! clientUid.isEmpty() ) {
-        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
-        switch( state ) {
-        case AddressProvider::LookupFromCache:
-            contact = mAddressProvider->getAddresseeFromCache(clientUid);
-            break;
-        case AddressProvider::LookupNotFound:
-        case AddressProvider::ItemError:
-        case AddressProvider::BackendError:
-            // set an empty contact
-            break;
-        case AddressProvider::LookupOngoing:
-        case AddressProvider::LookupStarted:
-            // Not much to do, just wait and let the addressprovider
-            // hit the slotAddresseFound
-            return;
-        }
-    }
+    // ==== Look up the customer contact, with the Kraft data Kraft has about it
+    delete mCustomer; // from a previous run
+    mCustomer = new KraftContact(doc->addressUid(), this);
+    mCustomer->load();
     delete doc;
-    slotAddresseeFound(clientUid, contact);
+
+    connect(mCustomer, &KraftContact::addresseeLoaded,
+            this, &ReportGenerator::slotAddresseeFound);
+    // Continues in slotAddresseeFound(), which is reached in any case.
+    mCustomer->lookupAddressee();
 }
 
 void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
 {
-    mCustomerContact = contact;
-    // now the three pillars archDoc, myContact and mCustomerContact are defined.
+    // now the three pillars archDoc, the own identity and mCustomer are defined.
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
@@ -178,8 +162,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     converter->setTemplatePath(fi.path());
 
     // expand the template...
-    MyIdentity identity;
-    const QString expanded = templateEngine->expand(_uuid, identity.contact(), mCustomerContact);
+    const QString expanded = templateEngine->expand(_uuid, MyIdentity::ownContact(), mCustomer);
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
@@ -333,7 +316,8 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
         }
         mProcess->deleteLater();
         mProcess = nullptr;
-        Q_EMIT docAvailable(_requestedFormat, _uuid, mCustomerContact);
+        Q_EMIT docAvailable(_requestedFormat, _uuid,
+                            mCustomer ? mCustomer->addressee() : KContacts::Addressee());
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
     }

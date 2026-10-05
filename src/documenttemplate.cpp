@@ -17,7 +17,10 @@
 
 #include "documenttemplate.h"
 #include "defaultprovider.h"
+#include <QRegularExpression>
 #include "epcqrcode.h"
+#include "kraftcontact.h"
+#include "myidentity.h"
 #include "grantleetemplate.h"
 #include "format.h"
 #include "kraftsettings.h"
@@ -41,9 +44,12 @@ QString generateEPCQRCodeFile(KraftDoc *doc)
     QString tempFile;
     if (!doc) return tempFile;
 
-    const QString bacName = KraftSettings::self()->bankAccountName().trimmed();
-    const QString bacIBAN = KraftSettings::self()->bankAccountIBAN().trimmed();
-    const QString bacBIC  = KraftSettings::self()->bankAccountBIC().trimmed();
+    // The raw values on purpose: this ends up in a QR code that banking apps read,
+    // so an account holder like "Müller & Sohn" must not arrive HTML escaped.
+    const auto own = MyIdentity::ownBusinessData();
+    const QString bacName = own.value(QStringLiteral("ACCOUNTNAME"));
+    const QString bacIBAN = own.value(QStringLiteral("IBAN"));
+    const QString bacBIC  = own.value(QStringLiteral("BIC"));
     EPCQRCode qrCode;
     const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
                                  "%1 %2 dated %3",doc->docTypeStr(), doc->ident(), doc->dateStr());
@@ -89,8 +95,8 @@ GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
 }
 
 const QString GrantleeDocumentTemplate::expand( const QString& uuid,
-                                                const KContacts::Addressee &myContact,
-                                                const KContacts::Addressee &customerContact)
+                                                KraftContact *myContact,
+                                                KraftContact *customerContact)
 {
     // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP;
     // Grantlee::registerMetaType<ReportItemList>();
@@ -121,10 +127,18 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
         gtmpl.addToObjMapping("doc", doc);
 
-        const auto mtt = contactToVariantHash(myContact);
+        // Both namespaces carry the variables of the address plus the business data
+        // that no address book can hold. The own identity has the country code on
+        // top, which a customer brings along in its address.
+        auto mtt = contactToVariantHash(myContact ? myContact->addressee() : KContacts::Addressee());
+        mtt.insert(MyIdentity::ownBusinessVariantHash());
         gtmpl.addToMappingHash(MeContactPrefix, mtt);
 
-        const auto cct = contactToVariantHash(customerContact);
+        auto cct = contactToVariantHash(customerContact ? customerContact->addressee()
+                                                        : KContacts::Addressee());
+        if (customerContact) {
+            cct.insert(customerContact->businessVariantHash());
+        }
         gtmpl.addToMappingHash(CustomerContactPrefix, cct);
 
         const QVariantHash labelHash = labelVariantHash();

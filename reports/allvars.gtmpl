@@ -53,6 +53,17 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 {% endfor %}
 |===
 
+**Business data**: Defined for the own identity (`me`) and for the customer contact (`customer`).
+
+.{{ meown.description }}
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+{% for var in meown.vars %}|me.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}
+|===
+
 .{{ kraft.description }}
 [cols="1,2,1", width=99%]
 |===

@@ -160,6 +160,9 @@
     <entry name="UserUid" type="String">
       <label>UID of the user as reference to the KAddressbook to identify 'my' address.</label>
     </entry>
+    <!-- The bank account and the business data moved to the KraftContact of the
+         own identity. These entries are only read once to take the values over,
+         see MyIdentity::migrateSettingsToContact(). Do not add new ones here. -->
     <entry name="BankAccountName" type="String">
       <label>Bank account name.</label>
     </entry>
@@ -168,6 +171,18 @@
     </entry>
     <entry name="BankAccountIBAN" type="String">
       <label>IBAN of the bank account.</label>
+    </entry>
+    <entry name="SellerVatId" type="String">
+      <label>VAT identifier of the own company, ie. DE123456789. XRechnung BT-31.</label>
+    </entry>
+    <entry name="SellerTaxNumber" type="String">
+      <label>Tax registration number of the own company, the german Steuernummer. XRechnung BT-32.</label>
+    </entry>
+    <entry name="SellerRegistrationId" type="String">
+      <label>Legal registration identifier of the own company, ie. the commercial register number. XRechnung BT-30.</label>
+    </entry>
+    <entry name="SellerLegalForm" type="String">
+      <label>Additional legal information about the own company, ie. legal form and register court. XRechnung BT-33.</label>
     </entry>
   </group>
 

@@ -49,13 +49,17 @@ Entenhausener Weg 42
 |doc.docIdentifier |Human readable document identifier, e.g. &#39;Invoice 2026-001&#39; or a draft marker |Rechnung 20110127
 |doc.docType |Localized document type, e.g. Invoice, Offer or Delivery Receipt |Rechnung
 |doc.dueDateStrISO |Payment due date, ISO formatted, for XRechnung |
+|doc.fullTaxNettoSumNum | |162.57
 |doc.fullTaxPercentNum |Full tax rate in percent as numerical value, not localized |19.00
 |doc.fullTaxPercentStr |Full tax rate in percent localized as user string |19
 |doc.fullTaxSumNum |Tax amount of the full taxed items as numerical value, not localized |30.89
 |doc.fullTaxSumStr |Tax amount of the full taxed items localized as user string |30,89 €
 |doc.fullTaxesDocument |True if all items of the document are taxed with the full tax rate |false
 |doc.goodbye |Closing greeting line of the document, e.g. &#39;Kind regards&#39; |mit den besten Grüssen,
+|doc.hasFullTaxItems | |true
 |doc.hasIndividualTaxation |True if the document mixes different tax rates across its items |true
+|doc.hasNoTaxItems | |true
+|doc.hasReducedTaxItems | |true
 |doc.ident |Document identification number, &#39;draft&#39; for unsaved documents |20110127
 |doc.individualTaxesDocument |True if the document mixes different tax rates across its items |true
 |doc.isDraftState |True if the document is still in draft state |false
@@ -63,6 +67,7 @@ Entenhausener Weg 42
 |doc.items |List of the document positions (line items) |
 |doc.nettoSumNum |Netto sum as numerical value, not localized |455.87
 |doc.nettoSumStr |Netto sum localized as user string |455,87 €
+|doc.noTaxNettoSumNum | |0.00
 |doc.noTaxesDocument |True if none of the document items are taxed |false
 |doc.objectName |General object name |
 |doc.owner |Owner of the document |kf
@@ -72,6 +77,7 @@ Entenhausener Weg 42
 |doc.preTextHtml |Text printed before the document positions, as HTML |Wir freuen uns, mit Dir Geschäfte machen zu können.
 |doc.predecessor |Identifier of the predecessor document this one was created from |id
 |doc.projectLabel |Label of the project the document belongs to |hausgarten
+|doc.reducedTaxNettoSumNum | |293.30
 |doc.reducedTaxPercentNum |Reduced tax rate in percent as numerical value, not localized |7.00
 |doc.reducedTaxPercentStr |Reduced tax rate in percent localized as user string |7
 |doc.reducedTaxSumNum |Tax amount of the reduced taxed items as numerical value, not localized |20.53
@@ -107,7 +113,9 @@ Entenhausener Weg 42
 |item.nettoPrice |Net total price of the item localized as user string |186,56 €
 |item.nettoPriceNum |Net total price of the item as numerical value, not localized |186.56
 |item.objectName |General object name |
+|item.taxCategory | |S
 |item.taxMarker |Marker value identifying the tax rate applied to the item |1
+|item.taxPercentNum | |19.00
 |item.text |Text of the item, as plain text |first item
 |item.unit |Unit of the item, e.g. &#39;piece&#39; or &#39;hour&#39; |
 |item.unitCode |UN/ECE Recommendation 20 unit code of the item, for XRechnung |
@@ -122,7 +130,7 @@ Entenhausener Weg 42
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/aMhrJQ.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/bFAyVX.svg
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
@@ -155,6 +163,24 @@ Entenhausener Weg 42
 |label.UNIT |Label for the unit column, e.g. &#39;Unit&#39; |Unit
 |label.VAT |Label for the value added tax, e.g. &#39;VAT&#39; |VAT
 |label.WEBSITE |Label for the website, e.g. &#39;Website&#39; |Website
+
+|===
+
+**Business data**: Defined for the own identity (`me`) and for the customer contact (`customer`).
+
+.Business data of a company that is not part of its address book contact. The data of the own company is configured on the Own Identity page of the settings. Defined for the prefixes `me` and `customer`, except for COUNTRYCODE, which only `me` has
+[cols="1,2,1", width=99%]
+|===
+| Name of Variable |Description | Example Value
+
+|me.ACCOUNTNAME |Name of the holder of the own bank account |Goofy Enterprises
+|me.BIC |BIC of the own bank account |BYLADEM1001
+|me.COUNTRYCODE |Country of the own address as ISO 3166-1 alpha-2 code (BT-40), from the locale Kraft runs under |DE
+|me.IBAN |IBAN of the own bank account (BT-84) |DE02120300000000202051
+|me.LEGALFORM |Additional legal information (BT-33), ie. legal form and register court |GbR
+|me.REGISTRATIONID |Legal registration identifier of the own company (BT-30), ie. the commercial register number |HRB 4324
+|me.TAXNUMBER |Tax registration number of the own company (BT-32), the german Steuernummer |
+|me.VATID |VAT identifier of the own company (BT-31), ie. DE123456789 |DE3243243234
 
 |===
 

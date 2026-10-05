@@ -41,6 +41,7 @@
 #include "format.h"
 #include "htmlview.h"
 #include "documenttemplate.h"
+#include "kraftcontact.h"
 #include "myidentity.h"
 
 #include <QDialogButtonBox>
@@ -90,22 +91,33 @@ void KraftViewRO::setup(DocGuardedPtr doc)
 {
     KraftViewBase::setup( doc );
 
-    // use Grantlee.
-    const QString tmplFile = DefaultProvider::self()->locateFile( "views/kraftdoc_ro.gtmpl" );
-
-    GrantleeDocumentTemplate tmpl(tmplFile);
-
-    // expand the template...
-    KContacts::Addressee customerContact;
-    // FIXME: Fill contacts with values
-    MyIdentity identity;
-    const QString uuid = doc->uuid();
-    const QString html = tmpl.expand(uuid, identity.contact(), customerContact);
-    const QStringList cleanupFiles = tmpl.tempFilesCreated();
-
     setWindowTitle(doc->docIdentifier());
     mHtmlView->setTitle( doc->docIdentifier() );
-    mHtmlView->displayContent(html);
+
+    // The customer of the document. Looking the address up in the backend can take
+    // a moment, so the document is rendered once it arrived.
+    delete _customer;
+    _customer = new KraftContact(doc->addressUid(), this);
+    _customer->load();
+
+    const QString uuid = doc->uuid();
+    connect(_customer, &KraftContact::addresseeLoaded, this, [this, uuid]() {
+        // use Grantlee.
+        const QString tmplFile = DefaultProvider::self()->locateFile( "views/kraftdoc_ro.gtmpl" );
+
+        GrantleeDocumentTemplate tmpl(tmplFile);
+
+        // expand the template...
+        const QString html = tmpl.expand(uuid, MyIdentity::ownContact(), _customer);
+        const QStringList cleanupFiles = tmpl.tempFilesCreated();
+
+        mHtmlView->displayContent(html);
+
+        for (const auto &subfile : cleanupFiles) {
+            QFile::remove(subfile);
+        }
+    });
+    _customer->lookupAddressee();
 }
 
 void KraftViewRO::slotLinkClicked(const QString& link)

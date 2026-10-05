@@ -20,6 +20,7 @@
 
 #include <kcontacts/addressee.h>
 
+class KraftContact;
 class KraftDoc;
 
 class DocumentTemplate
@@ -28,9 +29,12 @@ public:
     DocumentTemplate( const QString& tmplFile );
     virtual ~DocumentTemplate(){ };
 
+    /* Both contacts may be a nullptr, ie. for a document that has no customer
+     * assigned. The variables of the namespace are empty then.
+     */
     virtual const QString expand(const QString& uuid,
-                                 const KContacts::Addressee &myContact,
-                                 const KContacts::Addressee &customerContact) = 0;
+                                 KraftContact *myContact,
+                                 KraftContact *customerContact) = 0;
 
     QString error() const { return _errorStr; }
     // The collection of temp files this process created, to be able to delete
@@ -69,8 +73,8 @@ public:
     GrantleeDocumentTemplate(const QString& tmplFile);
 
     const QString expand(const QString& uuid,
-                         const KContacts::Addressee &myContact,
-                         const KContacts::Addressee &customerContact) override;
+                         KraftContact *myContact,
+                         KraftContact *customerContact) override;
 
 };
 
