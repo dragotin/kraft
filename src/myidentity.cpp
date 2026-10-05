@@ -23,7 +23,6 @@
 
 #include <KLocalizedString>
 #include <QFile>
-#include <QRegularExpression>
 
 #include <kcontacts_version.h>
 #include <kcontacts/resourcelocatorurl.h>
@@ -111,27 +110,12 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     return add;
 }
 
-/* Business data of the own company that is not part of a contact and therefore
- * has no place in the own identity vCard: tax registration, commercial register
- * and the bank account. It is stored with the KraftContact of the own identity.
+/* The business data of the own company, plus the one value that only makes sense
+ * for it: the country code, which a customer brings along in its address.
  */
 QMap<QString, QString> MyIdentity::ownBusinessData()
 {
-    QMap<QString, QString> re;
-    KraftContact *own = ownContact();
-
-    // BR-CO-9 wants BT-31 prefixed with the ISO 3166-1 alpha-2 country code and no
-    // spaces, so "DE 123 456 789" as a user may type it has to be squeezed first.
-    QString vatId = own->stringAttribute(KraftContact::VatId);
-    vatId.remove(QRegularExpression(u"\\s"_s));
-    re.insert(KraftContact::VatId, vatId.toUpper());
-    re.insert(KraftContact::TaxNumber, own->stringAttribute(KraftContact::TaxNumber));
-    re.insert(KraftContact::RegistrationId, own->stringAttribute(KraftContact::RegistrationId));
-    re.insert(KraftContact::LegalForm, own->stringAttribute(KraftContact::LegalForm));
-
-    re.insert(KraftContact::AccountName, own->stringAttribute(KraftContact::AccountName));
-    re.insert(KraftContact::Iban, own->stringAttribute(KraftContact::Iban));
-    re.insert(KraftContact::Bic, own->stringAttribute(KraftContact::Bic));
+    QMap<QString, QString> re = ownContact()->businessData();
 
     // ISO 3166-1 alpha-2 of the locale Kraft runs under. The vCard only knows the
     // country as a localized name, which is of no use for the XRechnung BT-40.

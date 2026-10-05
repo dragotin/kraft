@@ -1032,8 +1032,9 @@ void Portal::showTemplateVarsUuid(const QString& uuid)
     }
     // -- open a html display window
     QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
-    KContacts::Addressee contact;
-    const QString expanded = templateEngine->expand(uuid, _myIdentity.contact(), contact);
+    // The list of variables needs no customer, the example values of that namespace
+    // come from the document itself.
+    const QString expanded = templateEngine->expand(uuid, MyIdentity::ownContact(), nullptr);
 
     auto geo = QByteArray::fromBase64(KraftSettings::self()->templVarWinGeometry().toLatin1());
     auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow", this);

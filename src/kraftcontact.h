@@ -21,6 +21,7 @@
 #include <QMap>
 #include <QObject>
 #include <QString>
+#include <QVariantHash>
 
 #include <KContacts/Addressee>
 
@@ -96,6 +97,17 @@ public:
 
     Source source() const { return _source; }
     void setSource(Source s) { _source = s; }
+
+    /* The Kraft specific data of the contact: tax registration, commercial
+     * register and bank account, the values under the attribute names above.
+     *
+     * businessData() returns them plain and normalized. Use it for every consumer
+     * that is not a template, ie. the EPC QR code, which is read by banking apps
+     * and must carry the account holder name verbatim. businessVariantHash() is
+     * the same data HTML escaped, to be merged into the namespace of the contact.
+     */
+    QMap<QString, QString> businessData() const;
+    QVariantHash businessVariantHash() const;
 
     // Is there an address book backend that can be asked at all?
     bool hasBackend();

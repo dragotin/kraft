@@ -80,8 +80,8 @@ public:
     GrantleeAllVarsTemplate(const QString& tmplFile);
 
     const QString expand(const QString& uuid,
-                         const KContacts::Addressee &myContact,
-                         const KContacts::Addressee &customerContact) override;
+                         KraftContact *myContact,
+                         KraftContact *customerContact) override;
 
 };
 

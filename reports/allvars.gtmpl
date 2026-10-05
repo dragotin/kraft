@@ -53,7 +53,7 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 {% endfor %}
 |===
 
-**Own business data**: Only defined for the own identity, ie. with the prefix `me`.
+**Business data**: Defined for the own identity (`me`) and for the customer contact (`customer`).
 
 .{{ meown.description }}
 [cols="1,2,1", width=99%]

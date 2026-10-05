@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QRegularExpression>
 #include <QSaveFile>
 
 using namespace Qt::StringLiterals;
@@ -81,6 +82,39 @@ void KraftContact::setAddressee(const KContacts::Addressee& contact)
     // The addressee itself belongs to the backend and is not stored here, so this
     // does not make the contact modified.
     _addressee = contact;
+}
+
+/* Business data of the contact that a vCard has no room for. The VAT id is
+ * squeezed on the way out because BR-CO-9 wants it prefixed with the ISO 3166-1
+ * alpha-2 country code and without spaces, not as "DE 123 456 789" as a user may
+ * well type it.
+ */
+QMap<QString, QString> KraftContact::businessData() const
+{
+    QMap<QString, QString> re;
+
+    QString vatId = stringAttribute(VatId);
+    vatId.remove(QRegularExpression(u"\\s"_s));
+    re.insert(VatId, vatId.toUpper());
+
+    const QStringList plain{TaxNumber, RegistrationId, LegalForm, AccountName, Iban, Bic};
+    for (const QString& name : plain) {
+        re.insert(name, stringAttribute(name));
+    }
+
+    return re;
+}
+
+/* Escaped here, once, so that no template has to remember to do it. */
+QVariantHash KraftContact::businessVariantHash() const
+{
+    QVariantHash re;
+
+    const auto data = businessData();
+    for (auto it = data.constBegin(); it != data.constEnd(); ++it) {
+        re.insert(it.key(), it.value().toHtmlEscaped());
+    }
+    return re;
 }
 
 /* The address book backend, created on first use. Going through here rather than
