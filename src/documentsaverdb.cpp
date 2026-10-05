@@ -86,7 +86,11 @@ bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
 
     if( !ident.isEmpty() ) {
         QSqlQuery q;
-        q.prepare("SELECT docID, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
+        // Note: date and lastModified are fetched as strings via CAST. The QMYSQL driver returns
+        // invalid QDate/QDateTime values for DATE and DATETIME/TIMESTAMP columns when a prepared
+        // statement is used, so the temporal columns have to be converted server side.
+        q.prepare("SELECT docID, docType, clientID, clientAddress, salut, goodbye, CAST(date AS CHAR), "
+                  "CAST(lastModified AS CHAR), language, country, "
                   "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE ident=:ident");
         q.bindValue(":ident", ident);
         q.exec();
@@ -105,8 +109,8 @@ bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
             QString salut = q.value(4).toString();
             doc->setSalut(      salut );
             doc->setGoodbye(    q.value( 5 ).toString() );
-            doc->setDate (      q.value( 6 ).toDate() );
-            QDateTime dt = q.value(7).toDateTime();
+            doc->setDate(       QDate::fromString(q.value(6).toString(), Qt::ISODate) );
+            QDateTime dt = QDateTime::fromString(q.value(7).toString(), Qt::ISODate);
 
             // Sqlite stores the timestamp as UTC in the database. Mysql does not.
             if (KraftDB::self()->isSqlite()) {
@@ -213,8 +217,10 @@ int DocumentSaverDB::addDigestsToModel(DocBaseModel* model)
 
     QSqlQuery query;
 
-    query.prepare("SELECT docID, ident, docType, docDescription, clientID, lastModified,"
-                  "date, projectLabel, clientAddress "
+    // See loadByIdent(): the temporal columns must be CAST to string, otherwise the QMYSQL
+    // driver hands back invalid QDate/QDateTime values for this prepared statement.
+    query.prepare("SELECT docID, ident, docType, docDescription, clientID, CAST(lastModified AS CHAR),"
+                  "CAST(date AS CHAR), projectLabel, clientAddress "
                   "FROM document ORDER BY date DESC");
     query.exec();
 
@@ -222,8 +228,8 @@ int DocumentSaverDB::addDigestsToModel(DocBaseModel* model)
         DocDigest digest(query.value(DocBaseModel::Columns::Document_Type).toString(),
                          query.value(DocBaseModel::Columns::Document_ClientId).toString());
 
-        digest.setDate( query.value(DocBaseModel::Columns::Document_CreationDate ).toDate() );
-        QDateTime dt = query.value(DocBaseModel::Columns::Document_LastModified).toDateTime();
+        digest.setDate( QDate::fromString(query.value(DocBaseModel::Columns::Document_CreationDate).toString(), Qt::ISODate) );
+        QDateTime dt = QDateTime::fromString(query.value(DocBaseModel::Columns::Document_LastModified).toString(), Qt::ISODate);
         if (KraftDB::self()->isSqlite()) {
             // The timestamps in Sqlite are in UTC
             dt.setTimeSpec(Qt::UTC);

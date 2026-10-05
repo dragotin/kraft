@@ -196,8 +196,11 @@ int Katalog::chapterSortKey( const QString& chap )
 
 QPair<int, QDateTime> Katalog::usageCount(int id)
 {
+    // Note: lastUsed is fetched as a string via CAST. The QMYSQL driver returns invalid
+    // QDateTime values for DATETIME/TIMESTAMP columns when a prepared statement is used, so
+    // the temporal column has to be converted server side.
     QSqlQuery q;
-    q.prepare("SELECT usageCount, lastUsed FROM catItemUsage WHERE catId=:catId AND itemId=:itemId");
+    q.prepare("SELECT usageCount, CAST(lastUsed AS CHAR) FROM catItemUsage WHERE catId=:catId AND itemId=:itemId");
     q.bindValue(":catId", this->id().toInt());
     q.bindValue(":itemId", id);
     q.exec();
@@ -206,7 +209,7 @@ QPair<int, QDateTime> Katalog::usageCount(int id)
     QDateTime lu;
     if (q.next()) {
         cnt = q.value(0).toInt();
-        lu = q.value(1).toDateTime();
+        lu = QDateTime::fromString(q.value(1).toString(), Qt::ISODate);
     }
     return QPair<int, QDateTime> (cnt, lu) ;
 }

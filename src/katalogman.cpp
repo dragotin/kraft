@@ -155,10 +155,13 @@ KatalogMan::CatalogDetails KatalogMan::catalogDetails( const QString& catName )
     QString sql;
     QString catTypeString = KatalogMan::catalogTypeString( catName );
 
+    // Note: the max date is fetched as a string via CAST. The QMYSQL driver returns invalid
+    // QDateTime values for DATETIME/TIMESTAMP columns when a prepared statement is used, so
+    // the temporal column has to be converted server side.
     if( catTypeString == QLatin1String("MaterialCatalog") ) {
-        sql = "SELECT count(matID), COUNT(distinct chapterID), MAX(modifyDate) FROM stockMaterial";
+        sql = "SELECT count(matID), COUNT(distinct chapterID), CAST(MAX(modifyDate) AS CHAR) FROM stockMaterial";
     } else if( catTypeString == QLatin1String("TemplCatalog") ) {
-        sql = "SELECT count(TemplID), COUNT(distinct chapterID), MAX(modifyDatum) FROM Catalog";
+        sql = "SELECT count(TemplID), COUNT(distinct chapterID), CAST(MAX(modifyDatum) AS CHAR) FROM Catalog";
     }
     QSqlQuery q;
     q.prepare( sql );
@@ -166,7 +169,7 @@ KatalogMan::CatalogDetails KatalogMan::catalogDetails( const QString& catName )
     if ( !sql.isEmpty() && q.exec() && q.next() ) {
         details.countEntries  = q.value( 0 ).toInt();
         details.countChapters = q.value( 1 ).toInt();
-        details.maxModDate    = q.value( 2 ).toDateTime();
+        details.maxModDate    = QDateTime::fromString( q.value( 2 ).toString(), Qt::ISODate );
     }
 
     return details;

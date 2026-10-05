@@ -212,7 +212,10 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
     bool ok{false};
 
     // query the most recent PDF from the db.
-    const QString sql{"select ident, archDocID, date, printDate from archdoc where ident=:ident order by printDate desc limit 1;"};
+    // Note: date and printDate are fetched as strings via CAST. The QMYSQL driver returns
+    // invalid QDateTime values for DATETIME/TIMESTAMP columns when a prepared statement is
+    // used, so the temporal columns have to be converted server side.
+    const QString sql{"select ident, archDocID, CAST(date AS CHAR), CAST(printDate AS CHAR) from archdoc where ident=:ident order by printDate desc limit 1;"};
     QSqlQuery q;
     q.prepare(sql);
     q.bindValue(":ident", ident);
@@ -222,8 +225,8 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
     if (q.next()) {
         const QString dbIdent = q.value(0).toString();
         const QString archId = q.value(1).toString();
-        const QDateTime docDate = q.value(2).toDateTime();
-        const QDateTime printDate = q.value(3).toDateTime();
+        const QDateTime docDate = QDateTime::fromString(q.value(2).toString(), Qt::ISODate);
+        const QDateTime printDate = QDateTime::fromString(q.value(3).toString(), Qt::ISODate);
 
         const QString copyPdfName = QString("%1_%2.pdf").arg(dbIdent).arg(archId);
         const QString newPdfName = QString("%1.pdf").arg(uuid);
