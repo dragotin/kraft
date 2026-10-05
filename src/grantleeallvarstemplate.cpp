@@ -374,8 +374,8 @@ GrantleeAllVarsTemplate::GrantleeAllVarsTemplate(const QString& tmplFile)
 }
 
 const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
-                     const KContacts::Addressee &myContact,
-                     const KContacts::Addressee &customerContact)
+                     KraftContact *myContact,
+                     KraftContact *customerContact)
 {
     Q_UNUSED(customerContact)
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
@@ -396,8 +396,8 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
                                   "doc or label. The example values are taken from the document "
                                   "this list was generated from."));
     obj.setProperty("contactIntro", i18n("The following variables are defined for both the own identity with prefix `me` and"
-                                         "for the customer contact with prefix `customer`. The own identity has a few "
-                                         "additional variables, listed further down."));
+                                         "for the customer contact with prefix `customer`. Both have a few additional "
+                                         "variables, listed further down."));
     gtmpl.addToObjMapping("main", &obj);
 
     // == The contact variables
@@ -406,7 +406,8 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     tnsContact.setDesc(i18n("Variables of a contact, both own identity (prefix `me`) and the customer contact (prefix `customer`)"));
     // Note: the own identity additionally carries the business variables, see below.
 
-    const auto mtt = contactToVariantHash(myContact);
+    const auto mtt = contactToVariantHash(myContact ? myContact->addressee()
+                                                    : KContacts::Addressee());
     loopHash(mtt, tnsContact);
     gtmpl.addToObjMapping(tnsContact.prefix(), &tnsContact);
 
@@ -451,13 +452,15 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     loopHash(qrc, tnsEPC);
     gtmpl.addToObjMapping(tnsEPC.prefix(), &tnsEPC);
 
-    // == The own business data. Same `me` prefix as the contact variables above, but
-    // listed in a table of its own because it exists for the own identity only.
+    // == The business data of a contact. Same prefixes as the contact variables
+    // above, but listed in a table of its own because it does not come from the
+    // address book but from the Kraft contact.
     TemplateNameSpace tnsOwn(MeContactPrefix);
-    tnsOwn.setObjectName(i18n("Own Business Variables"));
-    tnsOwn.setDesc(i18n("Business data of the own company that is not part of the identity "
-                        "contact, configured on the Own Identity page of the settings. "
-                        "Defined for the prefix `me` only"));
+    tnsOwn.setObjectName(i18n("Business Variables"));
+    tnsOwn.setDesc(i18n("Business data of a company that is not part of its address book "
+                        "contact. The data of the own company is configured on the Own "
+                        "Identity page of the settings. Defined for the prefixes `me` and "
+                        "`customer`, except for COUNTRYCODE, which only `me` has"));
 
     const auto own = MyIdentity::ownBusinessVariantHash();
     loopHash(own, tnsOwn);
