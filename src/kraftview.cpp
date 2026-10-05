@@ -481,20 +481,22 @@ void KraftView::redrawDocPositions( )
     // the doc has no positions yet. Let's show a help page
     if ( ! mHelpLabel ) {
       mHelpLabel = new QLabel(this);
+      mHelpLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
       mHelpLabel->setTextFormat(Qt::RichText);
-      // mHelpLabel->setMinimumHeight(400);
-//TODO PORT QT5       mHelpLabel->setMargin( QDialog::marginHint() );
+      mHelpLabel->setMargin(20);
       mHelpLabel->setText( i18n( "<qt><h2>The Document Items List is still empty, but Items "
                                  "can be added now.</h2>"
                                  "To add items to the document either "
                                  "<ul>"
                                  "<li>Press the 'Add item' button above.</li>"
                                  "<li>Open the template catalog by clicking on the 'show Template' "
-                                  "button on the right and pick one of the available templates.</li>"
-                                   "</ul></qt>" ) );
+                                  "button on the right and pick one of the available templates.</li></ul>"
+                                 "<h2>Change between Document Areas</h2>"
+                                 "<p>To change between the header-, item- or footer area for editing "
+                                 "click on the colored bars in the document overview on the right side.</p>"
+                                 "</qt>" ) );
       mHelpLabel->setWordWrap(true);
-      mHelpLabel->setMinimumHeight(200);
-      m_positionScroll->addChild( mHelpLabel, 0);
+      m_positionScroll->setWidget(mHelpLabel);
     }
     return;
 
