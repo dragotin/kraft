@@ -85,6 +85,16 @@
                     <cbc:IdentificationCode>DE</cbc:IdentificationCode>
                 </cac:Country>
             </cac:PostalAddress>
+            {% if customer.VATID %}
+            <!-- BT-48, only for a customer that is registered for VAT. Set it in
+                 the Kraft data of the contact. -->
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>{{ customer.VATID }}</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+            {% endif %}
             <cac:PartyLegalEntity>
                 <cbc:RegistrationName>{{ customer.ORGANISATION }}</cbc:RegistrationName>
             </cac:PartyLegalEntity>

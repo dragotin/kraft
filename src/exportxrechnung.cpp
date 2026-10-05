@@ -20,7 +20,6 @@
 #include <QDir>
 #include <QTemporaryFile>
 #include <QRegularExpression>
-#include <QTimer>
 
 #include "exportxrechnung.h"
 #include "documentman.h"
@@ -29,7 +28,6 @@
 #include "kraftdb.h"
 #include "doctype.h"
 #include "format.h"
-#include "addressprovider.h"
 #include "documenttemplate.h"
 #include "myidentity.h"
 #include "defaultprovider.h"
@@ -38,11 +36,9 @@
 
 ExporterXRechnung::ExporterXRechnung(QObject *parent)
     : QObject(parent),
-      _validateWithSchema {false}
+      _validateWithSchema {false},
+      _customer {nullptr}
 {
-    mAddressProvider = new AddressProvider(this);
-    connect(mAddressProvider, &AddressProvider::lookupResult,
-            this, &ExporterXRechnung::slotAddresseeFound);
 
 }
 
@@ -74,33 +70,17 @@ bool ExporterXRechnung::exportDocument(const QString& uuid)
     _docTypeStr = doc->docTypeStr();
     _error.clear();
 
-    const QString clientUid = doc->addressUid();
-    _customerContact = KContacts::Addressee();
+    // The customer of the document, with the Kraft data Kraft has about it.
+    delete _customer; // from a previous export
+    _customer = new KraftContact(doc->addressUid(), this);
+    _customer->load();
 
-    AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
-    switch( state ) {
-    case AddressProvider::LookupFromCache:
-        _customerContact = mAddressProvider->getAddresseeFromCache(clientUid);
-        break;
-    case AddressProvider::LookupNotFound:
-    case AddressProvider::ItemError:
-    case AddressProvider::BackendError:
-        // set an empty contact
-        break;
-    case AddressProvider::LookupOngoing:
-    case AddressProvider::LookupStarted:
-        // Not much to do, just wait and let the addressprovider
-        // hit the slotAddresseFound
-        return true;
-    }
+    connect(_customer, &KraftContact::addresseeLoaded,
+            this, &ExporterXRechnung::slotAddresseeFound);
+    // Continues in slotAddresseeFound(), which is reached in any case.
+    _customer->lookupAddressee();
 
-    QTimer::singleShot(0, this, &ExporterXRechnung::slotSkipLookup);
     return true;
-}
-
-void ExporterXRechnung::slotSkipLookup()
-{
-    slotAddresseeFound(QString(), _customerContact);
 }
 
 /* Check the seller data that the receiver of the invoice will reject it for if
@@ -197,9 +177,9 @@ QStringList ExporterXRechnung::missingBuyerData(const KContacts::Addressee& cust
 void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
     Q_UNUSED(uid)
-    MyIdentity identity;
-    const KContacts::Addressee myContact = identity.contact();
-    // now the three pillars archDoc, myContact and mCustomerContact are defined.
+    KraftContact *me = MyIdentity::ownContact();
+    const KContacts::Addressee myContact = me->addressee();
+    // now the three pillars archDoc, me and _customer are defined.
 
     // The raw values, so the checks below see what the user actually entered.
     const QMap<QString, QString> own = MyIdentity::ownBusinessData();
@@ -249,7 +229,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     xr.insert("buyerRef", _buyerRef);
     templateEngine->addExtraHash("xrechnung", xr);
 
-    const QString expanded = templateEngine->expand(_uuid, myContact, contact);
+    const QString expanded = templateEngine->expand(_uuid, me, _customer);
 
     if (expanded.isEmpty()) {
         // Q_EMIT failure(i18n("The template expansion failed."));

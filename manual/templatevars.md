@@ -130,7 +130,7 @@ Entenhausener Weg 42
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/gsiQjU.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/bFAyVX.svg
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
@@ -166,9 +166,9 @@ Entenhausener Weg 42
 
 |===
 
-**Own business data**: Only defined for the own identity, ie. with the prefix `me`.
+**Business data**: Defined for the own identity (`me`) and for the customer contact (`customer`).
 
-.Business data of the own company that is not part of the identity contact, configured on the Own Identity page of the settings. Defined for the prefix `me` only
+.Business data of a company that is not part of its address book contact. The data of the own company is configured on the Own Identity page of the settings. Defined for the prefixes `me` and `customer`, except for COUNTRYCODE, which only `me` has
 [cols="1,2,1", width=99%]
 |===
 | Name of Variable |Description | Example Value
