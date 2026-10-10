@@ -526,6 +526,7 @@ void Portal::startupChecksPostAssistant()
         }
     }
 
+    // this takes a while
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();

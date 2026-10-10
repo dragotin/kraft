@@ -72,7 +72,8 @@ QJsonArray JsonIndexFile::docsPerYear(const QString& year)
     QJsonArray reArr;
 
     if (years().indexOf(year) > -1) {
-        reArr = _indexJsonObj[YearsDataStr].toObject()[year].toArray();
+        const auto obj = _indexJsonObj[YearsDataStr].toObject();
+        reArr = obj[year].toArray();
     }
     return reArr;
 }
