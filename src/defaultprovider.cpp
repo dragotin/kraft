@@ -32,7 +32,7 @@
 #include "doctype.h"
 #include "kraftdoc.h"
 #include "dbids.h"
-#include "xmldocindex.h"
+#include "xmlindexdb.h"
 
 #include <klocalizedstring.h>
 

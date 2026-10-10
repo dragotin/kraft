@@ -99,10 +99,10 @@ target_link_libraries(t_xmlsaver ${test_libs})
 
 # ============================================================
 
-add_executable(t_xmldocindex t_xmldocindex.cpp)
-add_test(NAME t_xmldocindex COMMAND t_xmldocindex)
+add_executable(t_xmlindexdb t_xmlindexdb.cpp)
+add_test(NAME t_xmlindexdb COMMAND t_xmlindexdb)
 
-target_link_libraries(t_xmldocindex ${test_libs})
+target_link_libraries(t_xmlindexdb ${test_libs})
 
 # ============================================================
 

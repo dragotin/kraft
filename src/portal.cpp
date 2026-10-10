@@ -73,7 +73,7 @@
 #include "ui_finalizedoc.h"
 #include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
-#include "xmldocindex.h"
+#include "xmlindexdb.h"
 #include "myidentity.h"
 #include "grantleeallvarstemplate.h"
 #include "htmlwindow.h"
@@ -495,7 +495,7 @@ void Portal::startupChecksPostAssistant()
         qCritical() << "BasePath is still empty after conversion - XML conversion failed.";
         return; // FIXME Error handling.
     } else {
-        XmlDocIndex indx;
+        XmlIndexDb indx;
         indx.setBasePath(basePath);
 
         // Check the conversion of DocTypes
@@ -804,7 +804,7 @@ void Portal::slotDoubleClicked()
         return;
     }
     if (doc->state().forcesReadOnly()) {
-        XmlDocIndex indx;
+        XmlIndexDb indx;
         if (indx.pdfOutdated(uuid)) { // either not existing or outdated -> not valid
             _actViewDocument->trigger();
         } else {
@@ -883,7 +883,7 @@ void Portal::slotFinalizeDoc()
 void Portal::slotMailDocument()
 {
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-    XmlDocIndex indx;
+    XmlIndexDb indx;
     QFileInfo fi = indx.pdfPathByUuid(uuid);
 
     if (!fi.exists())
@@ -1065,7 +1065,7 @@ void Portal::slotPrintCurrentPDF()
 
 void Portal::slotPrintPDF(const QString& uuid)
 {
-    XmlDocIndex indx;
+    XmlIndexDb indx;
     QString fileName;
 
     if (!uuid.isEmpty()) {
@@ -1094,7 +1094,7 @@ void Portal::slotOpenCurrentPDF()
 
 void Portal::slotOpenPDF(const QString& uuid)
 {
-    XmlDocIndex indx;
+    XmlIndexDb indx;
 
     const QString fileName = indx.pdfPathByUuid(uuid).filePath();
     QUrl url(fileName);
@@ -1153,7 +1153,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
     _actDeleteDocument->setEnabled(enable && docWriteEnabled);
 
-    XmlDocIndex indx;
+    XmlIndexDb indx;
 
     if (indx.pdfOutdated(uuid)) {
         // the PDF should exist. if not, try to create if that is feasible
@@ -1225,7 +1225,7 @@ QString Portal::slotConvertToXML()
     // switch to the new base dir
 
     if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
-        XmlDocIndex indx;
+        XmlIndexDb indx;
         Q_UNUSED(indx)
     }
     return dBase;

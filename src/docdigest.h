@@ -46,6 +46,8 @@ public:
 
   QString type() const;
   void setType( const QString& t );
+  // sets the type from an already loaded doctype, avoids loading all doc types from disk
+  void setType( const DocType& dt ) { _docType = dt; }
 
   bool isInvoice() const;
   bool isXRechnungEnabled() const;

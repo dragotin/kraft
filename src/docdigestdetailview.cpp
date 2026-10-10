@@ -33,7 +33,7 @@
 #include "kraftsettings.h"
 #include "grantleetemplate.h"
 
-#include "xmldocindex.h"
+#include "xmlindexdb.h"
 #include "version.h"
 
 
@@ -434,7 +434,7 @@ void DocDigestDetailView::slotShowDocDetails(const DocDigest& digest, const QStr
     obj.setProperty("errorDetails",    errDetails);
 
     // PDF file info
-    XmlDocIndex indx;
+    XmlIndexDb indx;
     const QFileInfo fi = indx.pdfPathByUuid(digest.uuid());
     bool pdfAvail = fi.exists();
     obj.setProperty("pdfAvailable", pdfAvail);

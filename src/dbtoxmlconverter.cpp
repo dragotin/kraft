@@ -1,7 +1,7 @@
 #include "dbtoxmlconverter.h"
 #include "documentman.h"
 #include "kraftdb.h"
-#include "xmldocindex.h"
+#include "xmlindexdb.h"
 #include "defaultprovider.h"
 #include "documentsaverdb.h"
 #include "numbercycle.h"

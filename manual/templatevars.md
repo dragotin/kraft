@@ -122,7 +122,7 @@ Entenhausener Weg 42
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/aMhrJQ.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/lxiUyQ.svg
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
@@ -164,7 +164,7 @@ Entenhausener Weg 42
 | Name of Variable |Description | Value
 
 |kraft.DB_SCHEME |Database schema version of the running Kraft instance |DB-Scheme 24
-|kraft.HOSTNAME |Host name of the machine running Kraft |localhost.localdomain
+|kraft.HOSTNAME |Host name of the machine running Kraft |rio
 |kraft.SYS_USER |System user name running Kraft |klaas
 |kraft.VERSION |Kraft version string including code name |Kraft 2.1.0~pre Carlova
 
