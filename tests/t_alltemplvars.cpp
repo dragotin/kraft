@@ -2,7 +2,7 @@
 
 #include <QTemporaryDir>
 #include <QFile>
-#include <xmldocindex.h>
+#include <xmlindexdb.h>
 
 #include "qtestcase.h"
 #include "testconfig.h"
@@ -70,7 +70,7 @@ private Q_SLOTS:
         qDebug() << "Copied from" << src << "to filepath" << filePath;
 
         // generate the index
-        XmlDocIndex indx;
+        XmlIndexDb indx;
         indx.setBasePath(_baseDir); // FIXME needs to go away
 
         QFileInfo fi(docPath);

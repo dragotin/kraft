@@ -800,14 +800,15 @@ bool KraftDoc::noTaxesDocument() const
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
 
-     QRegularExpression rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegularExpression rxEndif("\\s{1}END_HAS_TAG");
-     QRegularExpression rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegularExpression rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
+     // static, to compile the expressions only once
+     static const QRegularExpression rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
+     static const QRegularExpression rxEndif("\\s{1}END_HAS_TAG");
+     static const QRegularExpression rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
+     static const QRegularExpression rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
      // look for tag SUM_PER_TAG( HNDL )
-     QRegularExpression rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegularExpression rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegularExpression rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     static const QRegularExpression rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     static const QRegularExpression rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     static const QRegularExpression rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
 
      int pos{0};
      QMap<QString, Geld> bruttoSums;

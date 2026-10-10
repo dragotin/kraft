@@ -41,7 +41,7 @@
 #include "addressprovider.h"
 #include "documenttemplate.h"
 #include "pdfconverter.h"
-#include "xmldocindex.h"
+#include "xmlindexdb.h"
 #include "myidentity.h"
 
 namespace {
@@ -395,7 +395,7 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 
 QString ReportGenerator::targetFileName() const
 {
-    XmlDocIndex indx;
+    XmlIndexDb indx;
     const QString fileName = indx.pdfPathByUuid(_uuid).filePath();
 
     return fileName;

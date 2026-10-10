@@ -122,7 +122,7 @@ set(kraft_SRCS
     epcqrcode.cpp
     kraftattrib.cpp
     kraftobj.cpp
-    xmldocindex.cpp
+    xmlindexdb.cpp
     jsonindexfile.cpp
     reportitemlist.cpp
     reportitem.cpp
