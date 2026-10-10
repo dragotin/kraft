@@ -134,11 +134,16 @@ const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 
 DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
 {
-    DocDigest dd;
 
     JsonIndexFile jsonIndx;
 
     QJsonObject obj = jsonIndx.findDocObj(year, uuid);
+    return toDocDigest(obj);
+ }
+
+DocDigest XmlDocIndex::toDocDigest(QJsonObject obj)
+{
+    DocDigest dd;
 
     if (obj.isEmpty()) {
         qDebug() << "Digest is empty";
@@ -161,7 +166,6 @@ DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
     }
     return dd;
 }
-
 
 bool XmlDocIndex::buildIndexFromFile()
 {

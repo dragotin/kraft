@@ -47,6 +47,7 @@ public:
 
     DocDigest findDigest(const QString& year, const QString& uuid);
 
+    DocDigest toDocDigest(QJsonObject obj);
 private:
     const QFileInfo fullPathWithExtension(const QString& subPath, const QString& extension);
 

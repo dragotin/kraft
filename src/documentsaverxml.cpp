@@ -22,7 +22,9 @@
 #include <QDomDocument>
 #include <QFileDevice>
 #include <QSaveFile>
+#include <qelapsedtimer.h>
 
+#include "jsonindexfile.h"
 #include "models/docbasemodel.h"
 
 #include "documentsaverxml.h"
@@ -705,12 +707,20 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
     int cnt{0};
     XmlDocIndex indx;
 
+    QElapsedTimer ti;
+    ti.start();
+
     const QMultiMap<QDate, QString> dateMap = indx.dateMap();
     QList<QDate> dates = dateMap.uniqueKeys();
 
+    qDebug() << "Date from Map.uniqueKeys: " << ti.elapsed();
+
     std::sort(dates.begin(), dates.end(), [](QDate const& l, QDate const& r) {
-        return l < r;
+        return l > r;
     });
+    qDebug() << "Sorted:" << ti.elapsed();
+
+    JsonIndexFile jsonIndx;
 
     for( const QDate& d : std::as_const(dates)) {
         const QList<QString> files = dateMap.values(d);
@@ -718,7 +728,8 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
 
         for( const QString& fragm : files) {
             // we have the year and the uuid to find the entry from the index
-            DocDigest dd = indx.findDigest(yearStr, fragm);
+            //DocDigest dd = indx.findDigest(yearStr, fragm);
+            DocDigest dd = indx.toDocDigest(jsonIndx.findDocObj(yearStr, fragm));
             // Do not load deleted documents
             if (dd.state().state() != KraftDocState::State::Deleted) {
                 model->addData(dd);
@@ -726,6 +737,7 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
             }
         }
     }
+    qDebug() << "For loop done: " << ti.elapsed();
     qDebug() << "Added"<< cnt << "digests to" << model->objectName();
 
     return cnt;
