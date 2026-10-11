@@ -231,7 +231,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="mCbPartialInvoice">
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A document type marked as partial invoice is substracted from the final sum of an invoice that is following on it.&lt;/p&gt;&lt;p&gt;It is used for partial invoices that are substracted in the final invoice created as followup document of this.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A document type marked as partial invoice is subtracted from the final sum of an invoice that is following on it.&lt;/p&gt;&lt;p&gt;It is used for partial invoices that are subtracted in the final invoice created as followup document of this.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Partial Invoice</string>

@@ -151,7 +151,7 @@ class KraftDoc : public QObject, public KraftObj
 
     Q_PROPERTY(QList<ReportItem*> items READ reportItemList)
 
-    // the following one for legacy reasons, has been superseeded by the other four
+    // the following one for legacy reasons, has been superseded by the other four
     Q_PROPERTY(bool hasIndividualTaxation READ individualTaxesDocument)
     Q_PROPERTY(bool fullTaxesDocument READ fullTaxesDocument)
     Q_PROPERTY(bool reducedTaxesDocument READ reducedTaxesDocument)

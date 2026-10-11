@@ -45,7 +45,7 @@ public:
    * @brief lookupAddressee - look up an addressee by it's uid.
    * @param uid - A unique string identifying the contact
    *
-   * This is asynchron an asynchronous method that returns immediately.
+   * This is asynchronous an asynchronous method that returns immediately.
    * Connect to the signal lookupResult() for the result.
    *
    * Make sure to always use a non empty uid.
