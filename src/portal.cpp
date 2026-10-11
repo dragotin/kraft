@@ -519,7 +519,7 @@ void Portal::startupChecksPostAssistant()
         uuid = mCmdLineArgs->value("t");
         if (!uuid.isEmpty()) {
             // hack: wait 500msec before starting to show all template vars so
-            // that the own identity is savely loaded.
+            // that the own identity is safely loaded.
             QTimer::singleShot(500, this, [this, uuid]() {
                 showTemplateVarsUuid(uuid);
             });
