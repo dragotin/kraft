@@ -1039,7 +1039,7 @@ void Portal::showTemplateVarsUuid(const QString& uuid)
     auto geo = QByteArray::fromBase64(KraftSettings::self()->templVarWinGeometry().toLatin1());
     auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow", this);
     connect(window, &HtmlWindow::closing, this, [window]() {
-        auto geo = window->saveGeometry().toBase64();
+        const auto geo = window->saveGeometry().toBase64();
         KraftSettings::self()->setTemplVarWinGeometry(geo);
     });
     window->restoreGeometry(geo);

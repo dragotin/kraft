@@ -18,7 +18,6 @@
 #ifndef KRAFTDOCPOSITIONSEDIT_H
 #define KRAFTDOCPOSITIONSEDIT_H
 
-#include "ui_docheader.h"
 #include "kraftdocedit.h"
 
 #include <QScrollArea>
@@ -29,42 +28,46 @@ class PositionViewWidget;
 
 class KraftViewScroll : public QScrollArea
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  KraftViewScroll( QWidget* );
-  ~KraftViewScroll() { }
+    KraftViewScroll( QWidget* );
+    ~KraftViewScroll();
 
-  void addChild( QWidget *child, int index );
-  void removeChild( PositionViewWidget *child );
-  void moveChild( PositionViewWidget *child, int index);
-  int indexOf( PositionViewWidget *child);
+    void addChild( QWidget *child, int index );
+    void showHelpWidget( QWidget *help );
+    void hideHelpWidget();
+    void removeChild( PositionViewWidget *child );
+    void moveChild( PositionViewWidget *child, int index);
+    int indexOf( PositionViewWidget *child);
+
+    void setMyWidget(QWidget *newMyWidget);
 
 private:
-  QWidget *myWidget;
-  QVBoxLayout *layout;
+    QWidget *_myWidget;
+    QVBoxLayout *_layout;
 };
 
 // ###########################################################################
 
 class KraftDocPositionsEdit : public KraftDocEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  KraftDocPositionsEdit( QWidget* );
+    KraftDocPositionsEdit( QWidget* );
 
-  // FIXME: Remove access to internal widgets
-  KraftViewScroll *positionScroll() { return m_positionScroll; }
+    // FIXME: Remove access to internal widgets
+    KraftViewScroll *positionScroll() { return _positionScroll; }
 
-  void setDiscountButtonVisible( bool visible );
+    void setDiscountButtonVisible( bool visible );
 
 Q_SIGNALS:
-  void addPositionClicked();
-  void addExtraClicked();
+    void addPositionClicked();
+    void addExtraClicked();
 
 private:
-  KraftViewScroll *m_positionScroll;
-  QPushButton *m_discountBtn;
+    KraftViewScroll *_positionScroll;
+    QPushButton *_discountBtn;
 
 };
 

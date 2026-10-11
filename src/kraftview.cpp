@@ -496,13 +496,13 @@ void KraftView::redrawDocPositions( )
                                  "click on the colored bars in the document overview on the right side.</p>"
                                  "</qt>" ) );
       mHelpLabel->setWordWrap(true);
-      m_positionScroll->setWidget(mHelpLabel);
+      m_positionScroll->showHelpWidget(mHelpLabel);
     }
     return;
 
   } else {
     if ( mHelpLabel ) {
-      delete mHelpLabel;
+      m_positionScroll->hideHelpWidget(); // deletes mHelpLabel
       mHelpLabel = nullptr;
     }
   }
@@ -580,7 +580,8 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPosition *dp, int po
   /* do resizing and add the widget to the scrollview and move it to the final place */
 
   if ( mHelpLabel ) {
-    mHelpLabel->hide();
+    m_positionScroll->hideHelpWidget(); // deletes mHelpLabel
+    mHelpLabel = nullptr;
   }
 
   mPositionWidgetList.insert( pos,  w );

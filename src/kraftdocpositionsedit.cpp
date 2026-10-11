@@ -35,46 +35,77 @@
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
 QScrollArea( parent )
 {
-  myWidget = new QWidget;
-  myWidget->setAutoFillBackground(false);
-  layout = new QVBoxLayout;
-  layout->setAlignment(Qt::AlignTop);
-  layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-  layout->setContentsMargins( 0,0,0,0 );
-  layout->setSpacing(0);
-  myWidget->setLayout(layout);
-  setWidget(myWidget);
+  _myWidget = new QWidget;
+  _myWidget->setAutoFillBackground(false);
+  _layout = new QVBoxLayout;
+  _layout->setAlignment(Qt::AlignTop);
+  _layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+  _layout->setContentsMargins( 0,0,0,0 );
+  _layout->setSpacing(0);
+  _myWidget->setLayout(_layout);
+  setWidget(_myWidget);
   setWidgetResizable(true);
-  myWidget->resize(0,0);
-  myWidget->setMinimumHeight(0);
-  myWidget->setMaximumHeight(0);
-  myWidget->setContentsMargins(0, 0, 0, 0);
+  _myWidget->resize(0,0);
+  _myWidget->setMinimumHeight(0);
+  _myWidget->setMaximumHeight(0);
+  _myWidget->setContentsMargins(0, 0, 0, 0);
+}
+
+KraftViewScroll::~KraftViewScroll()
+{
+  // if the help widget is shown, myWidget is not owned by the scroll area
+  if (widget() != _myWidget) {
+    delete _myWidget;
+  }
+}
+
+// Shows the help widget instead of the item list. The scroll area takes
+// ownership of help. _myWidget is taken out, but not deleted.
+void KraftViewScroll::showHelpWidget( QWidget *help )
+{
+  if (widget() == _myWidget) {
+    takeWidget();
+  }
+  setWidget(help);
+}
+
+// Deletes the help widget and puts the item list back in place.
+void KraftViewScroll::hideHelpWidget()
+{
+  if (widget() != _myWidget) {
+    QWidget *w = takeWidget();
+    if (w) {
+      w->deleteLater();
+    }
+    setWidget(_myWidget);
+    setWidgetResizable(true);
+  }
 }
 
 void KraftViewScroll::addChild( QWidget *child, int index )
 {
-    int y1 = myWidget->height();
-    layout->insertWidget(index, child);
+    int y1 = _myWidget->height();
+    _layout->insertWidget(index, child);
     int y2 = y1+child->height();
-    myWidget->resize( child->width(), y2);
-    myWidget->setMinimumHeight(y2);
-    myWidget->setMaximumHeight(y2);
+    _myWidget->resize( child->width(), y2);
+    _myWidget->setMinimumHeight(y2);
+    _myWidget->setMaximumHeight(y2);
 }
 
 void KraftViewScroll::removeChild( PositionViewWidget *child )
 {
-  layout->removeWidget( child ); // from the scrollview
+  _layout->removeWidget( child ); // from the scrollview
 }
 
 void KraftViewScroll::moveChild( PositionViewWidget *child, int index)
 {
-  layout->removeWidget(child);
-  layout->insertWidget(index, child);
+  _layout->removeWidget(child);
+  _layout->insertWidget(index, child);
 }
 
 int KraftViewScroll::indexOf(PositionViewWidget *child)
 {
-  return layout->indexOf(child);
+  return _layout->indexOf(child);
 }
 
 // #########################################################
@@ -97,17 +128,17 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   upperHBoxLayout->addWidget(button);
   upperHBoxLayout->setSpacing( 3 );
 
-  m_discountBtn = new QPushButton( i18n("Add Discount Item") );
-  connect( m_discountBtn, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
-  upperHBoxLayout->addWidget(m_discountBtn);
-  m_discountBtn->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
+  _discountBtn = new QPushButton( i18n("Add Discount Item") );
+  connect( _discountBtn, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
+  upperHBoxLayout->addWidget(_discountBtn);
+  _discountBtn->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 
   QWidget *spaceEater = new QWidget( );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
   upperHBoxLayout->addWidget(spaceEater);
 
-  m_positionScroll = new KraftViewScroll( this );
-  topLayout->addWidget( m_positionScroll );
+  _positionScroll = new KraftViewScroll( this );
+  topLayout->addWidget( _positionScroll );
 
   setTitle( i18n( "Document Items" ) );
   setColor( "#9affa9" );
@@ -116,5 +147,5 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
 
 void KraftDocPositionsEdit::setDiscountButtonVisible( bool visible )
 {
-    m_discountBtn->setVisible( visible );
+    _discountBtn->setVisible( visible );
 }
