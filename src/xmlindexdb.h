@@ -102,7 +102,6 @@ private:
     bool writeEntry(KraftDoc *doc, const QString &subPath);
     DocDigest toDocDigest(const QSqlQuery &q, const DocTypes &docTypes);
 
-    bool importJsonIndex();
     void buildIndexFromXml();
     void buildDateMap();
 

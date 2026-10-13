@@ -36,7 +36,7 @@ const int XmlIndexDb::SchemaVersion = 1;
 QMultiMap<QDate, QString> XmlIndexDb::_dateMap = QMultiMap<QDate, QString>();
 
 namespace {
-const QString DocColumns = QStringLiteral("uuid, ident, docType, docDate, subPath, lastModified, clientAddress, prjtLabel, state, whiteboard");
+const QString DocColumns = QStringLiteral("uuid, ident, docType, docDate, subPath, lastModified, clientUid, clientAddress, prjtLabel, state, whiteboard");
 
 bool execOrWarn(QSqlQuery &q, const QString &sql = QString())
 {
@@ -73,9 +73,9 @@ void XmlIndexDb::setBasePath(const QString &basePath)
     if (isNew) {
         QElapsedTimer timer;
         timer.start();
-        if (!importJsonIndex()) {
-            buildIndexFromXml();
-        }
+        // always build the index from the xml files because the json index does not contain
+        // all data
+        buildIndexFromXml();
         qDebug() << "Built the index database in" << timer.elapsed() << "msec";
     }
     buildDateMap();
@@ -125,6 +125,7 @@ bool XmlIndexDb::createSchema()
                                             "docDate       TEXT,"
                                             "subPath       TEXT NOT NULL,"
                                             "lastModified  TEXT,"
+                                            "clientUid     TEXT,"
                                             "clientAddress TEXT,"
                                             "prjtLabel     TEXT,"
                                             "state         TEXT,"
@@ -275,6 +276,7 @@ DocDigest XmlIndexDb::toDocDigest(const QSqlQuery &q, const DocTypes &docTypes)
     const QString t{q.value("docType").toString()};
     Q_ASSERT(!t.isEmpty());
     dd.setType(docTypes.get(t));
+    dd.setClientId(q.value("clientUid").toString());
     dd.setClientAddress(q.value("clientAddress").toString());
     dd.setDate(QDate::fromString(q.value("docDate").toString(), Qt::ISODate));
     dd.setIdent(q.value("ident").toString());
@@ -300,6 +302,9 @@ DocDigest XmlIndexDb::toDocDigest(QJsonObject obj)
         const QString t{obj["docType"].toString()};
         Q_ASSERT(!t.isEmpty());
         dd.setType(t);
+        if (obj.contains("clientUid")) {
+            dd.setClientId(obj["clientUid"].toString());
+        }
         dd.setClientAddress(obj["clientAddress"].toString());
         dd.setDate(QDate::fromString(obj["date"].toString(), Qt::ISODate));
         dd.setIdent(obj["ident"].toString());
@@ -323,22 +328,27 @@ QString XmlIndexDb::subPathForDoc(KraftDoc *doc)
 bool XmlIndexDb::writeEntry(KraftDoc *doc, const QString &subPath)
 {
     QJsonObject obj;
-    doc->toJsonObj(obj);
+
+    if (doc == nullptr) {
+        return false;
+    }
 
     QSqlQuery q(db());
     q.prepare(QStringLiteral("INSERT OR REPLACE INTO docindex (%1) VALUES "
-                             "(:uuid, :ident, :docType, :docDate, :subPath, :lastModified, :clientAddress, :prjtLabel, :state, :whiteboard)")
+                             "(:uuid, :ident, :docType, :docDate, :subPath, :lastModified, :clientUid, :clientAddress, :prjtLabel, :state, :whiteboard)")
                   .arg(DocColumns));
-    q.bindValue(":uuid", obj["uuid"].toString());
-    q.bindValue(":ident", obj["ident"].toString());
-    q.bindValue(":docType", obj["docType"].toString());
-    q.bindValue(":docDate", obj["date"].toString());
+
+    q.bindValue(":uuid", doc->uuid());
+    q.bindValue(":ident", doc->ident());
+    q.bindValue(":docType", doc->docTypeStr());
+    q.bindValue(":docDate", doc->dateStrISO());
     q.bindValue(":subPath", subPath);
-    q.bindValue(":lastModified", obj["lastModified"].toString());
-    q.bindValue(":clientAddress", obj["clientAddress"].toString());
-    q.bindValue(":prjtLabel", obj["prjtLabel"].toString());
-    q.bindValue(":state", obj["state"].toString());
-    q.bindValue(":whiteboard", obj["whiteboard"].toString());
+    q.bindValue(":lastModified", doc->lastModified());
+    q.bindValue(":clientUid", doc->addressUid());
+    q.bindValue(":clientAddress", doc->address());
+    q.bindValue(":prjtLabel", doc->projectLabel());
+    q.bindValue(":state", doc->state().stateString());
+    q.bindValue(":whiteboard", doc->whiteboard());
 
     return execOrWarn(q);
 }
@@ -395,57 +405,6 @@ void XmlIndexDb::updateEntry(KraftDoc *doc)
             _dateMap.insert(doc->date(), entry);
         }
     }
-}
-
-// Migration: fills the database from the legacy json index file if it exists.
-bool XmlIndexDb::importJsonIndex()
-{
-    JsonIndexFile jsonIndx;
-    if (!jsonIndx.indexFileInfo().exists()) {
-        return false;
-    }
-
-    QSqlDatabase database = db();
-    database.transaction();
-
-    QSqlQuery q(database);
-    q.prepare(QStringLiteral("INSERT OR REPLACE INTO docindex (%1) VALUES "
-                             "(:uuid, :ident, :docType, :docDate, :subPath, :lastModified, :clientAddress, :prjtLabel, :state, :whiteboard)")
-                  .arg(DocColumns));
-    int cnt{0};
-
-    const QStringList years = jsonIndx.years();
-    for (const QString &year : years) {
-        const QJsonArray jsonDocs = jsonIndx.docsPerYear(year);
-
-        for (const QJsonValue &val : jsonDocs) {
-            const QJsonObject obj = val.toObject();
-            const QString uuid = obj["uuid"].toString();
-            const QString dateStr = obj["date"].toString();
-            if (uuid.isEmpty() || dateStr.size() < 7) {
-                qDebug() << "Skipping incomplete index entry" << obj;
-                continue;
-            }
-            const QString subPath = QString("%1/%2/%3").arg(year, dateStr.mid(5, 2), uuid);
-
-            q.bindValue(":uuid", uuid);
-            q.bindValue(":ident", obj["ident"].toString());
-            q.bindValue(":docType", obj["docType"].toString());
-            q.bindValue(":docDate", dateStr);
-            q.bindValue(":subPath", subPath);
-            q.bindValue(":lastModified", obj["lastModified"].toString());
-            q.bindValue(":clientAddress", obj["clientAddress"].toString());
-            q.bindValue(":prjtLabel", obj["prjtLabel"].toString());
-            q.bindValue(":state", obj["state"].toString());
-            q.bindValue(":whiteboard", obj["whiteboard"].toString());
-            if (execOrWarn(q)) {
-                cnt++;
-            }
-        }
-    }
-    database.commit();
-    qDebug() << "Imported" << cnt << "documents from json index file";
-    return true;
 }
 
 // Scans all xml documents and adds them to the index database
