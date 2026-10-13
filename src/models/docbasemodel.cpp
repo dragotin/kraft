@@ -50,8 +50,12 @@ QString DocBaseModel::firstLineOf( const QString& str) const
 {
     QString var;
     if( !str.isEmpty() ) {
-        QStringList li = str.split(QChar('\n'));
-        var = QString( "> %1").arg(li[0]);
+        const QStringList li = str.split(QChar('\n'));
+        if (li.count() == 1) {
+            var = li[0];
+        } else if (li.count() > 1) {
+            var = QString("%1 %2").arg(li[0], li[1]);
+        }
     }
     return var;
 }
@@ -98,7 +102,12 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         var = digest.projectLabel();
         break;
     case Document_ClientAddress: {
-        var = firstLineOf( digest.clientAddress());
+        bool isManual = digest.clientId().isEmpty();
+        QString v = firstLineOf(digest.clientAddress());
+        if (isManual) {
+            v.prepend("✋ ");
+        }
+        var = v;
         break;
     }
     case Document_StateStr: {
@@ -107,19 +116,26 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
     }
     case Document_ClientName: {
         help = digest.clientId();
-        AddressProvider::LookupState state = mAddressProvider->lookupAddressee(help);
-        if( state == AddressProvider::LookupFromCache ) {
-            KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
-            var = addressee.assembledName();
-            // qDebug() << "Address from Cache: " << var.toString();
-        } else if( state == AddressProvider::LookupOngoing ) {
-            var = i18n("Looking up address…");
-        } else if( state == AddressProvider::LookupStarted ) {
-            var = i18n("Lookup started…");
-        } else if( state == AddressProvider::LookupNotFound ||
-                   state == AddressProvider::BackendError   ||
-                   state == AddressProvider::ItemError ) {
-            var = firstLineOf(digest.clientAddress());
+        if (help.isEmpty()) {
+            // manual address for sure
+            var = QString("✋ %1").arg(firstLineOf(digest.clientAddress()));
+        } else {
+            AddressProvider::LookupState state = mAddressProvider->lookupAddressee(help);
+            QString p = "🕮 "; // for address book
+            if( state == AddressProvider::LookupFromCache ) {
+                KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
+                var = addressee.assembledName();
+                // qDebug() << "Address from Cache: " << var.toString();
+            } else if( state == AddressProvider::LookupOngoing ) {
+                var = i18n("Looking up address…");
+            } else if( state == AddressProvider::LookupStarted ) {
+                var = i18n("Lookup started…");
+            } else if( state == AddressProvider::LookupNotFound ||
+                       state == AddressProvider::BackendError   ||
+                       state == AddressProvider::ItemError ) {
+                p += QStringLiteral("❌");
+            }
+            var = QString("%1 %2").arg(p, firstLineOf(digest.clientAddress()));
         }
         break;
     }

@@ -52,7 +52,7 @@ public Q_SLOTS:
     void setErrorStrings(const QString& = QString(), const QString& = QString());
 
 private:
-    void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+    void showAddress(const DocDigest &digest);
     QList<QObject*> documentListing(int year, int month );
 
     enum Location { Left, Middle, Right };

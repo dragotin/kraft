@@ -354,41 +354,25 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 
 }
 
-void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
+void DocDigestDetailView::showAddress( const DocDigest& digest)
 {
-    Q_UNUSED(addressee)
     QString content;
 
-    if( !manAddress.isEmpty() ) {
-        content += QStringLiteral("<pre>") + manAddress + QStringLiteral("</pre>");
+    // the client Adress from addressee() is still always empty.
+    // decide if it is a manual address by checking the cleintId
+
+    if( digest.addressee().isEmpty() ) {
+        content += QStringLiteral("<pre>") + digest.clientAddress() + QStringLiteral("</pre>");
     } else {
         content += QStringLiteral("<p>")+i18n("not set")+QStringLiteral("</p>");
     }
 
-    QString addressContent;
-    if (addressee.isEmpty()) {
-        addressContent += i18n("manual address");
-    } else {
-        const QString email = addressee.preferredEmail();
-        if (!email.isEmpty()) {
-            addressContent += i18n("Email:%1").arg(email.toHtmlEscaped());
-        }
-        const auto phone = addressee.phoneNumber(KContacts::PhoneNumber::Home);
-        if (!phone.isEmpty()) {
-            addressContent += i18n("Number (Home):%1").arg(phone.number());
-        }
-        const auto phoneW = addressee.phoneNumber(KContacts::PhoneNumber::Work);
-        if (!phoneW.isEmpty()) {
-            addressContent += i18n("Number (Work):%1").arg(phoneW.number());
-        }
-    }
+    if (digest.clientId().isEmpty()) {
 
-    if (!addressContent.isEmpty()) {
-        content += QStringLiteral("<hr/>");
-        content += QStringLiteral("<span style=\" font-size:8pt;\">");
-        content.append(addressContent);
-        content += QStringLiteral("</span>");
     }
+    const QString addressContent = digest.clientId().isEmpty() ? i18n("manual address") : i18n("from address book");
+
+    content.append(QString("<hr/><span style=\" font-size:8pt;\">%1</span>").arg(addressContent));
 
     _leftDetails->setText( content );
 }
@@ -408,7 +392,7 @@ void DocDigestDetailView::slotShowDocDetails(const DocDigest& digest, const QStr
     QObject obj;
     QObject labels;
 
-    showAddress(digest.addressee(), digest.clientAddress());
+    showAddress(digest);
 
     if( _docTemplFileName.isEmpty() ) {
         _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.gtmpl" );
