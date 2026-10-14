@@ -121,7 +121,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
             var = QString("✋ %1").arg(firstLineOf(digest.clientAddress()));
         } else {
             AddressProvider::LookupState state = mAddressProvider->lookupAddressee(help);
-            QString p = "🕮 "; // for address book
+            QString p; // = "🕮 "; // for address book
             if( state == AddressProvider::LookupFromCache ) {
                 KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
                 var = addressee.assembledName();
@@ -133,9 +133,9 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
             } else if( state == AddressProvider::LookupNotFound ||
                        state == AddressProvider::BackendError   ||
                        state == AddressProvider::ItemError ) {
-                p += QStringLiteral("❌");
+                p += QStringLiteral("❌ ");
             }
-            var = QString("%1 %2").arg(p, firstLineOf(digest.clientAddress()));
+            var = QString("%1%2").arg(p, firstLineOf(digest.clientAddress()));
         }
         break;
     }
