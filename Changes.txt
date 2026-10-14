@@ -16,10 +16,11 @@ Changes since versino 2.0.0: #######################################
 - Improvement: Use an Sqlite based index for the file based docs
 - Fix: PDF overlay on all pages works again
 - Fix: Taxmarker on the document
+- Fix: Mark address source (addressbook or manual) correctly
 - More complete example document kraftdoc.xml
 - Tons of minor fixes and improvements
 
-=> Release v. 2.1.0 (Oct, xx 2026)
+=> Release v. 2.1.0 (Oct, 14 2026)
 
 ####################################################################
 
