@@ -373,28 +373,25 @@ void XmlIndexDb::updateEntry(KraftDoc *doc)
     if (!doc)
         return;
 
-    // The sub path is not changed, because the document file remains where it is
-    QString entry;
+    // The sub path follows the date, the saver moves the file to the new month folder
+    const QString entry = subPathForDoc(doc);
+    QString oldEntry;
     QDate oldDate;
     QSqlQuery q(db());
     q.prepare(QStringLiteral("SELECT subPath, docDate FROM docindex WHERE uuid = :uuid"));
     q.bindValue(":uuid", doc->uuid());
     if (execOrWarn(q) && q.next()) {
-        entry = q.value(0).toString();
+        oldEntry = q.value(0).toString();
         oldDate = QDate::fromString(q.value(1).toString(), Qt::ISODate);
-    }
-    const bool known = !entry.isEmpty();
-    if (!known) {
-        entry = subPathForDoc(doc);
     }
 
     if (writeEntry(doc, entry)) {
         // the date might have changed. Only look at the entries of the old date
         // instead of iterating the whole map, which is slow for bulk updates.
-        if (known && oldDate.isValid()) {
+        if (!oldEntry.isEmpty() && oldDate.isValid()) {
             auto it = _dateMap.find(oldDate);
             while (it != _dateMap.end() && it.key() == oldDate) {
-                if (it.value() == entry) {
+                if (it.value() == oldEntry) {
                     _dateMap.erase(it);
                     break;
                 }

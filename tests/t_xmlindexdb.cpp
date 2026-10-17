@@ -84,15 +84,16 @@ private Q_SLOTS:
         const QString sExp{_baseDir + "/xmldoc/2026/03/aaaaaaaa-1111-2222-3333-444444444444.xml"};
         QCOMPARE(_indx.xmlPathByIdent("77-2026").filePath(), sExp);
 
-        // date change keeps the file path but updates the digest and the date map
+        // date change moves the path to the new month and updates the digest and the date map
         doc.setDate(QDate(2026, 4, 1));
         doc.setWhiteboard("changed");
         _indx.updateEntry(&doc);
-        QCOMPARE(_indx.xmlPathByUuid(doc.uuid()).filePath(), sExp);
+        QCOMPARE(_indx.xmlPathByUuid(doc.uuid()).filePath(), _baseDir + "/xmldoc/2026/04/aaaaaaaa-1111-2222-3333-444444444444.xml");
         QCOMPARE(XmlIndexDb::dateMap().size(), mapSize + 1);
         QVERIFY(XmlIndexDb::dateMap().contains(QDate(2026, 4, 1)));
+        QVERIFY(!XmlIndexDb::dateMap().contains(QDate(2026, 3, 7)));
 
-        DocDigest d = _indx.findDigest("2026", "2026/03/" + doc.uuid());
+        DocDigest d = _indx.findDigest("2026", "2026/04/" + doc.uuid());
         QCOMPARE(d.rawDate(), QDate(2026, 4, 1));
         QCOMPARE(d.ident(), QString("77-2026"));
     }

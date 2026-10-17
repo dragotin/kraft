@@ -579,12 +579,19 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QString xml = xmldoc.toString();
     const QString xmlFile = xmlDocFileName(doc);
 
-    // TODO: Write to temp file first, and move only if it validates.
+    // remember the indexed files, the date might have moved the doc to another month folder
+    XmlIndexDb indx;
+    QFileInfo oldXml, oldPdf;
+    if (!newState) {
+        oldXml = indx.xmlPathByUuid(doc->uuid());
+        oldPdf = indx.pdfPathByUuid(doc->uuid());
+    }
+
     qDebug () << "Storing XML to " << xmlFile;
 
     bool re{false};
     QSaveFile file( xmlFile );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
+    if (file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
         re = file.write(xml.toUtf8());
 
         if (re) {
@@ -603,11 +610,15 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
     result = verifyXmlFile(schemaFile, xmlFile);
 
-    XmlIndexDb indx;
     if (newState) {
         indx.addEntry(doc);
     } else {
         indx.updateEntry(doc);
+        // the new file is written and indexed, now drop the old files. The pdf shows the old date and gets regenerated.
+        if (!oldXml.filePath().isEmpty() && oldXml.absoluteFilePath() != QFileInfo(xmlFile).absoluteFilePath()) {
+            QFile::remove(oldXml.absoluteFilePath());
+            QFile::remove(oldPdf.absoluteFilePath());
+        }
     }
 
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
