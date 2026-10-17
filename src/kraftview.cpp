@@ -1225,7 +1225,7 @@ DocPositionList KraftView::currentPositionList()
                     while (  calculatable && it.hasNext() ) {
                         w1 = it.next();
 
-                        if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
+                        if ( widget != w1 && !w1->deleted() ) { // ATTENTION Porting: do not take the own value into account
                             if ( tagRequiredStr.isEmpty()  // means that all positions are to calculate
                                  || w1->position()->allTags().contains( tagRequiredStr ) ) {
                                 if ( w1->priceValid() ) {
