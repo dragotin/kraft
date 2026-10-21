@@ -48,6 +48,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         Q_ASSERT(_dir.isValid());
+        qputenv("KRAFT_DATA_DIR", _dir.path().toUtf8());
 
         // dir.path() returns the unique directory path
         const QString baseDir = DefaultProvider::self()->createV2BaseDir(_dir.path());
@@ -58,15 +59,14 @@ private Q_SLOTS:
         const QString filePath = d.filePath(_docUuid+".xml");
         qDebug() << "Example document path: " << docPath;
 
-        const QString kraftHome{TESTS_PATH};
-        QVERIFY(!kraftHome.isEmpty());
-        const QString src{kraftHome+"/../xml/kraftdoc.xml"};
+        const QString kraftHome{TESTS_PATH"/../"};
+        const QString src{kraftHome+"xml/kraftdoc.xml"};
+        qputenv("KRAFT_HOME", kraftHome.toUtf8());
         QVERIFY(QFile::copy(src, filePath));
         qDebug() << "Copied from" << src << "to filepath" << filePath;
 
         // generate the index
         XmlIndexDb indx;
-        indx.setBasePath(baseDir); // FIXME needs to go away
 
         QFileInfo fi(docPath);
         QVERIFY(fi.exists());

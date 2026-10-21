@@ -123,7 +123,6 @@ set(kraft_SRCS
     kraftattrib.cpp
     kraftobj.cpp
     xmlindexdb.cpp
-    jsonindexfile.cpp
     reportitemlist.cpp
     reportitem.cpp
     docidentgenerator.cpp

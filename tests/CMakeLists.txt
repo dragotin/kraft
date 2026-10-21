@@ -113,13 +113,6 @@ target_link_libraries(t_kraftattrib ${test_libs})
 
 # ============================================================
 
-add_executable(t_jsonindexfile t_jsonindexfile.cpp)
-add_test(NAME t_jsonindexfile COMMAND t_jsonindexfile)
-
-target_link_libraries(t_jsonindexfile ${test_libs})
-
-# ============================================================
-
 add_executable(t_alltemplvars t_alltemplvars.cpp)
 add_test(NAME t_alltemplvars COMMAND t_alltemplvars)
 

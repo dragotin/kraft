@@ -24,7 +24,6 @@
 #include "kraftdoc.h"
 #include "documentman.h"
 #include "defaultprovider.h"
-#include "jsonindexfile.h"
 #include "docdigest.h"
 #include "format.h"
 #include "doctype.h"
@@ -50,20 +49,23 @@ bool execOrWarn(QSqlQuery &q, const QString &sql = QString())
 
 XmlIndexDb::XmlIndexDb()
 {
+    initIndex();
 }
 
 QSqlDatabase XmlIndexDb::db() const
 {
-    // returns an invalid database object if setBasePath was not called before
+    // returns an invalid database object if initIndex failed
     return QSqlDatabase::database(ConnectionName, false);
 }
 
-void XmlIndexDb::setBasePath(const QString &basePath)
+void XmlIndexDb::initIndex()
 {
-    Q_UNUSED(basePath); // the location is taken from the DefaultProvider, as in XmlDocIndex
-
     const QDir dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root)};
     const QString dbFile = dir.absoluteFilePath(DbFileName);
+    // XmlIndexDb objects are short living, only open once per base dir
+    if (db().isOpen() && db().databaseName() == dbFile) {
+        return;
+    }
     const bool isNew = !QFileInfo::exists(dbFile);
 
     if (!openDb(dbFile)) {
@@ -154,17 +156,23 @@ const QFileInfo XmlIndexDb::fullPathWithExtension(const QString &subPath, const 
         }
         re.append(extension);
     }
+
+    Q_ASSERT(extension.endsWith("pdf") || extension.endsWith("xml"));
+
     const auto pathSelect{extension.endsWith("pdf", Qt::CaseInsensitive) ? DefaultProvider::KraftV2Dir::PdfDocs : DefaultProvider::KraftV2Dir::XmlDocs};
     const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
 
     fi.setFile(QDir(dir), re);
+
     return fi;
 }
 
 QString XmlIndexDb::subPathBy(const QString &column, const QString &value)
 {
-    if (value.isEmpty() || !db().isOpen())
+    if (value.isEmpty() || !db().isOpen()) {
+        qDebug() << "WRN: Value is empty or db closed!";
         return QString();
+    }
 
     // column is never user input, only "uuid" or "ident"
     QSqlQuery q(db());
@@ -183,7 +191,8 @@ const QFileInfo XmlIndexDb::xmlPathByUuid(const QString &uuid)
 
 const QFileInfo XmlIndexDb::xmlPathByIdent(const QString &ident)
 {
-    return fullPathWithExtension(subPathBy(QStringLiteral("ident"), ident), ".xml");
+    const QString sp = subPathBy(QStringLiteral("ident"), ident);
+    return fullPathWithExtension(sp, ".xml");
 }
 
 // so far, for the pdf path, only the extension is changed from xml to pdf.

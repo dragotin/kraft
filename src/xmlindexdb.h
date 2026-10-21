@@ -65,7 +65,6 @@ class XmlIndexDb
 public:
     XmlIndexDb();
 
-    void setBasePath(const QString &basePath);
     static QMultiMap<QDate, QString> const &dateMap();
 
     const QFileInfo xmlPathByIdent(const QString &ident);
@@ -104,6 +103,7 @@ private:
 
     void buildIndexFromXml();
     void buildDateMap();
+    void initIndex();
 
     static QString subPathForDoc(KraftDoc *doc);
 

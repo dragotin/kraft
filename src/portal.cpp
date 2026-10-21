@@ -496,7 +496,6 @@ void Portal::startupChecksPostAssistant()
         return; // FIXME Error handling.
     } else {
         XmlIndexDb indx;
-        indx.setBasePath(basePath);
 
         // Check the conversion of DocTypes
         // The doctype dir directory has to exist

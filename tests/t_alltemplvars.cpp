@@ -71,7 +71,6 @@ private Q_SLOTS:
 
         // generate the index
         XmlIndexDb indx;
-        indx.setBasePath(_baseDir); // FIXME needs to go away
 
         QFileInfo fi(docPath);
         QVERIFY(fi.exists());
