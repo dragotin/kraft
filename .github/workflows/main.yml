@@ -36,6 +36,7 @@ jobs:
              qt6-sql-sqlite \
              qt6-sql-mysql  \
              qt6-declarative-tools \
+             qt6-wayland \
              kf6-ktexttemplate \
              breeze6-style \
              libcairo-gobject2 \
