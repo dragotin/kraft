@@ -29,6 +29,12 @@ scripts:
       cp /usr/lib64/qt6/plugins/styles/breeze6.so "$BUILD_DIR"/AppDir/usr/plugins/styles
       mkdir -p "$BUILD_DIR"/AppDir/usr/lib
       cp /usr/lib64/libpango* "$BUILD_DIR"/AppDir/usr/lib/
+      # AppRun is a symlink; Qt resolves applicationDirPath to the AppDir root, so qt.conf must live there too
+      cat > "$BUILD_DIR"/AppDir/qt.conf <<\IOF
+      [Paths]
+      Prefix = usr
+      Plugins = plugins
+      IOF
 
 appimage:
   linuxdeploy:
