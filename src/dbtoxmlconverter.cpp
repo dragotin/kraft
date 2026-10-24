@@ -233,10 +233,11 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
         QDir oldPdfDir{DefaultProvider::self()->pdfOutputDir()};
         QDir newPdfDir(basePath);
         newPdfDir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::PdfDocs));
-        newPdfDir.cd(QString("%1/%2/").arg(docDate.date().year()).arg(docDate.date().month()));
-        if (!newPdfDir.exists()) {
-            newPdfDir.mkpath(newPdfDir.absolutePath());
-        }
+
+        const QString relPath = QString("%1/%2").arg(docDate.date().year()).arg(docDate.date().month(), 2, 10, '0');
+        qDebug() << "storing PDF to relative Path:" << relPath;
+        newPdfDir.mkpath(relPath);
+        newPdfDir.cd(relPath);
 
         const QString oldPdfFile{oldPdfDir.absoluteFilePath(copyPdfName)};
         const QString newPdfFile{newPdfDir.absoluteFilePath(newPdfName)};
