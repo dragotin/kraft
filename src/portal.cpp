@@ -1096,8 +1096,7 @@ void Portal::slotOpenPDF(const QString& uuid)
     XmlIndexDb indx;
 
     const QString fileName = indx.pdfPathByUuid(uuid).filePath();
-    QUrl url(fileName);
-    QDesktopServices::openUrl(url);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
 }
 
 void Portal::slotOpenDocument(const QString& uuid)
