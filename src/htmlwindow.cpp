@@ -48,8 +48,14 @@ HtmlWindow::HtmlWindow(const QString& title, const QString &name, QWidget *paren
     restoreGeometry(geo);
 
     setWindowTitle(title);
-    connect(_htmlView, &HtmlView::openUrl, this, [](const QUrl &url) {
-        QDesktopServices::openUrl(url);
+    connect(_htmlView, &HtmlView::openUrl, this, [this](const QUrl &url) {
+        if (url.scheme() == QLatin1String("kraft")) {
+            Q_EMIT kraftUrlClicked(url);
+        } else if (url.scheme().isEmpty() && url.path().isEmpty() && url.hasFragment()) {
+            _htmlView->scrollToAnchor(url.fragment());
+        } else {
+            QDesktopServices::openUrl(url);
+        }
     });
 }
 

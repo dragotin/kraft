@@ -16,6 +16,7 @@
 #ifndef HTMLWINDOW_H
 #define HTMLWINDOW_H
 
+#include <QUrl>
 #include <QWidget>
 
 class HtmlView;
@@ -41,6 +42,8 @@ protected:
 
 Q_SIGNALS:
     void closing();
+    // emitted for links with the kraft: scheme, all others are opened externally
+    void kraftUrlClicked(const QUrl &url);
 
 public Q_SLOTS:
     void setHtml(const QString &content);
