@@ -132,6 +132,7 @@ class Portal : public QMainWindow
     void slotPrintCurrentPDF();
     void slotPrintPDF(const QString &uuid);
     void slotShowTemplateVars();
+    void slotShowVatReport();
     void slotGeneratePDF(const QString& uuid);
 
     void slotViewClosed(bool, DocGuardedPtr , bool modified);
@@ -167,6 +168,7 @@ class Portal : public QMainWindow
     QAction* _actAboutQt;
     QAction* _actAboutKraft;
     QAction* _actTemplVars;
+    QAction* _actVatReport;
     QAction* _actHandbook;
     QAction* _actPreferences;
     QAction* _actReconfDb;

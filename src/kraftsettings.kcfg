@@ -44,6 +44,9 @@
     <entry name="templVarWinGeometry" type="String">
       <label>The default geometry of the template variable window</label>
     </entry>
+    <entry name="vatReportWinGeometry" type="String">
+      <label>The default geometry of the VAT report window</label>
+    </entry>
 
    <entry name="portalState" type="String">
       <label>The current state of the portal</label>
@@ -129,6 +132,10 @@
     </entry>
     <entry name="PdfOutputDir" type="Path">
       <label>The path to the output directory for document pdfs</label>
+    </entry>
+    <entry name="VatReportQuarterly" type="Bool">
+      <label>Show the VAT report per quarter instead of per month</label>
+      <default>false</default>
     </entry>
   </group>
 

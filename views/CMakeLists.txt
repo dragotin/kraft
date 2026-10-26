@@ -7,6 +7,7 @@ install(FILES
 	kraftdoc_ro.gtmpl
 	monthdigest.gtmpl
 	yeardigest.gtmpl
+	vatreport.gtmpl
 	systemviewdetails.gtmpl
 	templatevars.gtmpl
 	welcome.gtmpl

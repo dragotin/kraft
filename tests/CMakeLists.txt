@@ -129,3 +129,10 @@ target_link_libraries(t_xmldirlister ${test_libs})
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")
 
+
+# ============================================================
+
+add_executable(t_vatreport t_vatreport.cpp)
+add_test(NAME t_vatreport COMMAND t_vatreport)
+
+target_link_libraries(t_vatreport ${test_libs})

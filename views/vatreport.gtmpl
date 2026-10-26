@@ -1,0 +1,110 @@
+<h1>{{ label.headline }}</h1>
+
+<p class="nav">
+  <a href="kraft:year?y={{ kraft.prevYear }}">&#8249; {{ kraft.prevYear }}</a>
+  {% if kraft.hasNextYear %}&nbsp;|&nbsp; <a href="kraft:year?y={{ kraft.nextYear }}">{{ kraft.nextYear }} &#8250;</a>{% endif %}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  {% if kraft.quarterly %}
+    <a href="kraft:period?type=month">{{ label.monthly }}</a> &nbsp;|&nbsp; <b>{{ label.quarterly }}</b>
+  {% else %}
+    <b>{{ label.monthly }}</b> &nbsp;|&nbsp; <a href="kraft:period?type=quarter">{{ label.quarterly }}</a>
+  {% endif %}
+</p>
+
+<p class="intro">{{ label.intro }}</p>
+<p class="caution">{{ label.noInputTax }}</p>
+
+{% if not kraft.hasDocs %}
+<p>{{ label.noDocs }}</p>
+{% else %}
+
+<table class="sums" cellspacing="0" cellpadding="4" width="98%">
+<tr>
+  <th align="left">{{ label.period }}</th>
+  <th align="right">{{ label.netFull }}</th>
+  <th align="right">{{ label.taxFull }}</th>
+  <th align="right">{{ label.netReduced }}</th>
+  <th align="right">{{ label.taxReduced }}</th>
+  <th align="right">{{ label.netNoTax }}</th>
+  <th align="right">{{ label.taxSum }}</th>
+  <th align="right">{{ label.invoices }}</th>
+</tr>
+{% for p in kraft.periods %}
+<tr>
+  <td align="left">{% if p.hasDocs %}<a href="#{{ p.anchor }}">{{ p.label }}</a>{% else %}<span class="empty">{{ p.label }}</span>{% endif %}</td>
+  {% if p.hasDocs %}
+  <td align="right">{{ p.netFull }}</td>
+  <td align="right">{{ p.taxFull }}</td>
+  <td align="right">{{ p.netReduced }}</td>
+  <td align="right">{{ p.taxReduced }}</td>
+  <td align="right">{{ p.netNoTax }}</td>
+  <td align="right"><b>{{ p.taxSum }}</b></td>
+  <td align="right">{{ p.docCount }}</td>
+  {% else %}
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">–</td>
+  <td align="right" class="empty">0</td>
+  {% endif %}
+</tr>
+{% endfor %}
+<tr class="total">
+  <td align="left"><b>{{ label.total }}</b></td>
+  <td align="right"><b>{{ total.netFull }}</b></td>
+  <td align="right"><b>{{ total.taxFull }}</b></td>
+  <td align="right"><b>{{ total.netReduced }}</b></td>
+  <td align="right"><b>{{ total.taxReduced }}</b></td>
+  <td align="right"><b>{{ total.netNoTax }}</b></td>
+  <td align="right"><b>{{ total.taxSum }}</b></td>
+  <td align="right"><b>{{ total.docCount }}</b></td>
+</tr>
+</table>
+
+{% if kraft.fromInvoiceCnt %}<p class="caution">{{ label.fromInvoice }}</p>{% endif %}
+{% if kraft.retractedCnt %}<p class="caution">{{ label.retracted }}</p>{% endif %}
+{% if kraft.hasUnknownTax %}<p class="caution">{{ label.unknownTax }} {{ kraft.unknownTax }}</p>{% endif %}
+
+<h2>{{ label.details }}</h2>
+
+{% for p in kraft.periods %}{% if p.hasDocs %}
+<h3><a name="{{ p.anchor }}"></a>{{ p.label }} <small>({{ p.range }})</small></h3>
+<table class="docs" cellspacing="0" cellpadding="3" width="98%">
+<tr>
+  <th align="left">{{ label.ident }}</th>
+  <th align="left">{{ label.invoiceDate }}</th>
+  <th align="left">{{ label.taxDate }}</th>
+  <th align="left">{{ label.client }}</th>
+  <th align="right">{{ label.netFull }}</th>
+  <th align="right">{{ label.taxFull }}</th>
+  <th align="right">{{ label.netReduced }}</th>
+  <th align="right">{{ label.taxReduced }}</th>
+  <th align="right">{{ label.netNoTax }}</th>
+</tr>
+{% for d in p.docs %}
+<tr>
+  <td align="left"><a href="kraft:document?uuid={{ d.uuid }}">{{ d.ident }}</a>{% if d.retracted %} <span class="caution">({{ label.retractedMarker }})</span>{% endif %}</td>
+  <td align="left">{{ d.invoiceDate }}</td>
+  <td align="left">{{ d.taxDate }}{% if d.dateFromInvoice %} {{ label.fromInvoiceMarker }}{% endif %}</td>
+  <td align="left">{{ d.client }}</td>
+  <td align="right">{{ d.netFull }}</td>
+  <td align="right">{{ d.taxFull }}</td>
+  <td align="right">{{ d.netReduced }}</td>
+  <td align="right">{{ d.taxReduced }}</td>
+  <td align="right">{{ d.netNoTax }}</td>
+</tr>
+{% endfor %}
+<tr class="total">
+  <td colspan="4" align="left"><b>{{ p.label }}</b></td>
+  <td align="right"><b>{{ p.netFull }}</b></td>
+  <td align="right"><b>{{ p.taxFull }}</b></td>
+  <td align="right"><b>{{ p.netReduced }}</b></td>
+  <td align="right"><b>{{ p.taxReduced }}</b></td>
+  <td align="right"><b>{{ p.netNoTax }}</b></td>
+</tr>
+</table>
+{% endif %}{% endfor %}
+
+{% endif %}

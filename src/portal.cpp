@@ -77,6 +77,7 @@
 #include "myidentity.h"
 #include "grantleeallvarstemplate.h"
 #include "htmlwindow.h"
+#include "vatreportwindow.h"
 
 // Little class diagram to describe the main view of Kraft:
 //
@@ -235,6 +236,10 @@ void Portal::initActions()
     _actXRechnung->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_R ));
     connect(_actXRechnung, &QAction::triggered, this, &Portal::slotXRechnungCurrentDocument);
 
+    newIcon = DefaultProvider::self()->icon( "receipt-tax");
+    _actVatReport = new QAction(newIcon, i18n("VAT Overview…"), this);
+    connect(_actVatReport, &QAction::triggered, this, &Portal::slotShowVatReport);
+
     newIcon = DefaultProvider::self()->icon( "settings");
     _actEditTemplates= new QAction(newIcon, i18n("Edit Tag Templates"), this);
     _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_E ));
@@ -323,6 +328,8 @@ void Portal::initActions()
         docMenu->addAction(_actFinalizeDocument);
         docMenu->addAction(_actDeleteDocument);
     }
+    docMenu->addSeparator();
+    docMenu->addAction(_actVatReport);
 
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
 
@@ -1017,6 +1024,14 @@ void Portal::slotShowTemplateVars()
     if (!uuid.isEmpty()) {
         showTemplateVarsUuid(uuid);
     }
+}
+
+void Portal::slotShowVatReport()
+{
+    auto *window = new VatReportWindow(this);
+    connect(window, &VatReportWindow::openDocument, this, &Portal::slotViewDocument);
+    window->showYear(QDate::currentDate().year());
+    window->show();
 }
 
 void Portal::showTemplateVarsUuid(const QString& uuid)

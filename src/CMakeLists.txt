@@ -103,6 +103,7 @@ set(kraft_SRCS
     models/datemodel.cpp
     models/docbasemodel.cpp
     models/contactsdirmodel.cpp
+    models/vatreportmodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp
@@ -123,6 +124,9 @@ set(kraft_SRCS
     kraftattrib.cpp
     kraftobj.cpp
     xmlindexdb.cpp
+    vatreport.cpp
+    vatreportwindow.cpp
+    vatreporttreeview.cpp
     reportitemlist.cpp
     reportitem.cpp
     docidentgenerator.cpp

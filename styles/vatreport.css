@@ -1,0 +1,46 @@
+body {
+    margin: 16px;
+}
+
+h1 {
+    margin-bottom: 4px;
+}
+
+h3 {
+    margin-top: 18px;
+    margin-bottom: 4px;
+}
+
+p.nav {
+    margin-top: 0px;
+    margin-bottom: 12px;
+}
+
+p.intro {
+    margin-bottom: 2px;
+}
+
+.caution {
+    color: #b35900;
+}
+
+.empty {
+    color: #8c8c8c;
+}
+
+table.sums, table.docs {
+    border-collapse: collapse;
+}
+
+th {
+    font-weight: bold;
+    border-bottom: 1px solid #8c8c8c;
+}
+
+tr.total td {
+    border-top: 1px solid #8c8c8c;
+}
+
+td.empty {
+    color: #8c8c8c;
+}
