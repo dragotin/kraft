@@ -114,7 +114,7 @@ double Geld::toDouble() const
     return m_cent/100.0;
 }
 
-long Geld::toLong()
+long Geld::toLong() const
 {
     return m_cent;
 }

@@ -50,7 +50,7 @@ public:
     QString toHtmlString() const;
     double toDouble() const;
     // toLong returns the amount in cents!
-    long   toLong();
+    long   toLong() const;
 private:
     long m_cent;
 };
