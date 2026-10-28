@@ -98,8 +98,8 @@ QByteArray EPCQRCode::asText(const Geld& g,
 
     const QString money = QString("EUR%1").arg(QString::number(sum, 'f', 2));
     re.append(money.toUtf8());
-    re.append("\n\n");
-    re.append(reason.toUtf8());
+    re.append("\n\n\n");
+    re.append(reason.left(140).toUtf8());
 
     return re;
 }
