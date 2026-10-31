@@ -66,7 +66,6 @@
 #include "kraftview_ro.h"
 #include "databasesettings.h"
 #include "setupassistant.h"
-#include "addressprovider.h"
 #include "alldocsview.h"
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
@@ -121,8 +120,6 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
 
     setAttribute( Qt::WA_QuitOnClose );
     ///////////////////////////////////////////////////////////////////
-
-    mAddressProvider = new AddressProvider( this );
 
     const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toLatin1() );
     restoreState(state);
@@ -895,30 +892,11 @@ void Portal::slotMailDocument()
 
     const QString& addrUid = doc->addressUid();
 
-    connect( mAddressProvider, &AddressProvider::lookupResult,
+    KraftContact *kraftContact = new KraftContact(addrUid);
+    connect( kraftContact, &KraftContact::addresseeLoaded,
              this, &Portal::openInMailer);
-
-    KContacts::Addressee contact;
-
-    AddressProvider::LookupState state = mAddressProvider->lookupAddressee(addrUid);
-    switch( state ) {
-    case AddressProvider::LookupFromCache:
-        contact = mAddressProvider->getAddresseeFromCache(addrUid);
-        break;
-    case AddressProvider::LookupNotFound:
-    case AddressProvider::ItemError:
-    case AddressProvider::BackendError:
-        break;
-    case AddressProvider::LookupOngoing:
-    case AddressProvider::LookupStarted:
-        // the signal to openInMailer will come later.
-        return;
-        break;
-        // Not much to do, just wait
-    }
-    openInMailer(addrUid, contact);
-
     // qDebug () << "Mailing document " << locId << endl;
+    kraftContact->lookupAddressee();
 }
 
 void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& contact)
@@ -926,8 +904,7 @@ void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& c
     QString mailReceiver;
     Q_UNUSED(addrUuid);
 
-    disconnect(mAddressProvider, &AddressProvider::lookupResult,
-               this, &Portal::openInMailer);
+    sender()->deleteLater();
 
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the preferred email

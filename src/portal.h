@@ -32,7 +32,6 @@
 #include "myidentity.h"
 
 class KraftViewBase;
-class AddressProvider;
 class PrefsDialog;
 class ExporterXRechnung;
 
@@ -193,7 +192,6 @@ class Portal : public QMainWindow
     QMap<QString, KatalogView*> mKatalogViews;
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
 
-    AddressProvider *mAddressProvider;
     PrefsDialog *_prefsDialog;
     ExporterXRechnung *_exporter;
 
