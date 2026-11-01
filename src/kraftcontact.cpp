@@ -20,6 +20,8 @@
 #include "defaultprovider.h"
 #include "stringutil.h"
 
+#include <KCountry>
+
 #include <QCryptographicHash>
 #include <QDebug>
 #include <QDir>
@@ -37,6 +39,8 @@ const QString KraftContact::LegalForm      = u"LEGALFORM"_s;
 const QString KraftContact::AccountName    = u"ACCOUNTNAME"_s;
 const QString KraftContact::Iban           = u"IBAN"_s;
 const QString KraftContact::Bic            = u"BIC"_s;
+const QString KraftContact::SmallBusiness  = u"SMALLBUSINESS"_s;
+const QString KraftContact::BuyerReference = u"BUYERREFERENCE"_s;
 
 KraftContact::KraftContact(QObject *parent)
     : QObject{parent},
@@ -97,12 +101,31 @@ QMap<QString, QString> KraftContact::businessData() const
     vatId.remove(QRegularExpression(u"\\s"_s));
     re.insert(VatId, vatId.toUpper());
 
-    const QStringList plain{TaxNumber, RegistrationId, LegalForm, AccountName, Iban, Bic};
+    const QStringList plain{TaxNumber, RegistrationId, LegalForm, AccountName, Iban, Bic,
+                            SmallBusiness, BuyerReference};
     for (const QString& name : plain) {
         re.insert(name, stringAttribute(name));
     }
+    re.insert(u"COUNTRYCODE"_s, countryCode());
 
     return re;
+}
+
+QString KraftContact::countryCode() const
+{
+    KContacts::Address addr = _addressee.address(KContacts::Address::Pref);
+    if (addr.isEmpty())
+        addr = _addressee.address(KContacts::Address::Work);
+    if (addr.isEmpty())
+        addr = _addressee.address(KContacts::Address::Home);
+    if (addr.isEmpty())
+        addr = _addressee.address(KContacts::Address::Postal);
+
+    if (addr.country().isEmpty())
+        return QLocale::territoryToCode(DefaultProvider::self()->locale()->territory());
+
+    // The vCard has the country as a name in any language, ie. Deutschland
+    return KCountry::fromName(addr.country()).alpha2();
 }
 
 /* Escaped here, once, so that no template has to remember to do it. */

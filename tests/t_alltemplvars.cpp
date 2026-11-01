@@ -13,7 +13,13 @@
 #include "defaultprovider.h"
 #include "kraftsettings.h"
 #include "docposition.h"
+#include "documenttemplate.h"
+#include "myidentity.h"
 
+#include <QDomDocument>
+
+
+using namespace Qt::StringLiterals;
 
 // The example contact that is used as own identity as well as customer contact.
 // It only provides the example values in the generated variable list.
@@ -70,6 +76,18 @@ private Q_SLOTS:
         QVERIFY(QFile::copy(src, filePath));
         qDebug() << "Copied from" << src << "to filepath" << filePath;
 
+        // The same document without any VAT, as a small business writes it.
+        QFile srcFile(src);
+        QVERIFY(srcFile.open(QIODevice::ReadOnly));
+        QString noTax = QString::fromUtf8(srcFile.readAll());
+        noTax.replace(_docUuid, _noTaxDocUuid).replace(_docIdent, u"20110128"_s);
+        noTax.replace(u"<taxtype>Full</taxtype>"_s, u"<taxtype>None</taxtype>"_s);
+        noTax.replace(u"<taxtype>Reduced</taxtype>"_s, u"<taxtype>None</taxtype>"_s);
+        QFile noTaxFile(d.filePath(_noTaxDocUuid + ".xml"));
+        QVERIFY(noTaxFile.open(QIODevice::WriteOnly));
+        noTaxFile.write(noTax.toUtf8());
+        noTaxFile.close();
+
         // generate the index
         XmlIndexDb indx;
 
@@ -81,6 +99,13 @@ private Q_SLOTS:
         KraftSettings::self()->setBankAccountName("Goofy Enterprises");
         KraftSettings::self()->setBankAccountIBAN("DE02120300000000202051");
         KraftSettings::self()->setBankAccountBIC("BYLADEM1001");
+
+        // Same for the business data of the own identity, only in memory, not saved.
+        KraftContact *me = MyIdentity::ownContact();
+        me->setStringAttribute(KraftContact::VatId, u"DE123456789"_s);
+        me->setStringAttribute(KraftContact::TaxNumber, u"143/123/45678"_s);
+        me->setStringAttribute(KraftContact::RegistrationId, u"HRB 4324"_s);
+        me->setStringAttribute(KraftContact::LegalForm, u"GbR"_s);
     }
 
     // The example document is of doc type Rechnung, which has to exist in the
@@ -123,6 +148,7 @@ private Q_SLOTS:
         QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
         KraftContact contact;
         contact.setAddressee(example_contact());
+        contact.setStringAttribute(KraftContact::BuyerReference, u"04011000-1234512345-06"_s);
         const QString expanded = templateEngine->expand(_docUuid, &contact, &contact);
 
         QVERIFY2(templateEngine->error().isEmpty(), qPrintable(templateEngine->error()));
@@ -146,7 +172,57 @@ private Q_SLOTS:
         qDebug() << "Saved template variable list to" << f;
     }
 
+    void xrechnungTemplate()
+    {
+        const QString out = expandXRechnung(_docUuid);
+        QDomDocument dom;
+        QVERIFY2(dom.setContent(out), qPrintable(out));
+
+        // BT-55 comes from the country name of the customer address, Germany.
+        QVERIFY(out.contains(u"<cbc:IdentificationCode>DE</cbc:IdentificationCode>"_s));
+        // UBL demands Telephone before ElectronicMail in the customer contact.
+        const QDomElement customerContact = dom.documentElement()
+                                                .firstChildElement(u"cac:AccountingCustomerParty"_s)
+                                                .firstChildElement(u"cac:Party"_s)
+                                                .firstChildElement(u"cac:Contact"_s);
+        QCOMPARE(customerContact.firstChildElement(u"cbc:Telephone"_s).nextSiblingElement().tagName(),
+                 u"cbc:ElectronicMail"_s);
+        QVERIFY(!out.contains(u"<cbc:ID>E</cbc:ID>"_s));
+    }
+
+    void xrechnungTemplateSmallBusiness()
+    {
+        MyIdentity::ownContact()->setStringAttribute(KraftContact::SmallBusiness, u"1"_s);
+        const QString out = expandXRechnung(_noTaxDocUuid);
+        MyIdentity::ownContact()->removeAttribute(KraftContact::SmallBusiness);
+
+        QDomDocument dom;
+        QVERIFY2(dom.setContent(out), qPrintable(out));
+        QVERIFY(out.contains(u"<cbc:TaxExemptionReason>Kleinunternehmer gemäß § 19 UStG</cbc:TaxExemptionReason>"_s));
+        QVERIFY(out.contains(u"<cbc:ID>E</cbc:ID>"_s));
+        QVERIFY(!out.contains(u"<cbc:ID>Z</cbc:ID>"_s));
+        QVERIFY(!out.contains(u"<cbc:ID>S</cbc:ID>"_s));
+    }
+
 private:
+    QString expandXRechnung(const QString& uuid)
+    {
+        GrantleeDocumentTemplate tmpl(_sourceDir + "/reports/xrechnung.xrtmpl");
+        tmpl.addExtraHash(u"xrechnung"_s, {{u"dueDate"_s, u"2011-02-27"_s}, {u"buyerRef"_s, u"04011000-1234512345-06"_s}});
+
+        KraftContact *me = MyIdentity::ownContact();
+        me->setAddressee(example_contact());
+        KraftContact customer;
+        customer.setAddressee(example_contact());
+
+        const QString out = tmpl.expand(uuid, me, &customer);
+        for (const QString& tmpFile : tmpl.tempFilesCreated()) {
+            QFile::remove(tmpFile);
+        }
+        return out;
+    }
+
+    const QString _noTaxDocUuid{"f4deb784-6131-4e49-bd6d-92bd1355ea4e"};
     const QString _sourceDir {QDir(TESTS_PATH).filePath("..")};
     const QString _subdir {"/xmldoc/2011/01"};
     const QString _docIdent {"20110127"};

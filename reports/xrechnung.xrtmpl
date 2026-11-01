@@ -8,7 +8,6 @@
     <cbc:IssueDate>{{ doc.dateStrISO }}</cbc:IssueDate>
     <cbc:DueDate>{{ xrechnung.dueDate }}</cbc:DueDate>
     <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
-    <cbc:Note>#ADU#Es gelten unsere Allgem. Geschäftsbedingungen, die Sie unter […] finden.</cbc:Note>
     <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
     <cbc:BuyerReference>{{ xrechnung.buyerRef }}</cbc:BuyerReference>
     {% if doc.timeOfSupplyValid %}
@@ -19,15 +18,17 @@
         {% endif %}
     </cac:InvoicePeriod>
     {% endif %}
+    {% if doc.projectLabel %}
     <cac:ProjectReference>
       <cbc:ID>{{ doc.projectLabel }}</cbc:ID>
    </cac:ProjectReference>
+    {% endif %}
    
    <cac:AccountingSupplierParty>
        <cac:Party>
            <cbc:EndpointID schemeID="EM">{{ me.EMAIL }}</cbc:EndpointID>
            <cac:PartyName>
-               <cbc:Name>{{ me.ORGANISATION }}</cbc:Name>
+               <cbc:Name>{% if me.ORGANISATION %}{{ me.ORGANISATION }}{% else %}{{ me.NAME }}{% endif %}</cbc:Name>
            </cac:PartyName>
            <cac:PostalAddress>
                <cbc:StreetName>{{ me.STREET }}</cbc:StreetName>
@@ -57,7 +58,8 @@
            </cac:PartyTaxScheme>
            {% endif %}
            <cac:PartyLegalEntity>
-               <cbc:RegistrationName>{{ me.ORGANISATION }}</cbc:RegistrationName>
+               <!-- BT-27, a sole trader without a company name invoices under the own name -->
+               <cbc:RegistrationName>{% if me.ORGANISATION %}{{ me.ORGANISATION }}{% else %}{{ me.NAME }}{% endif %}</cbc:RegistrationName>
                {% if me.REGISTRATIONID %}
                <cbc:CompanyID>{{ me.REGISTRATIONID }}</cbc:CompanyID>
                {% endif %}
@@ -76,13 +78,13 @@
    <cac:AccountingCustomerParty>
         <cac:Party>
             <cbc:EndpointID schemeID="EM">{{ customer.EMAIL }}</cbc:EndpointID>
-            <cac:PartyName><cbc:Name>{{ customer.NAME }}</cbc:Name></cac:PartyName> 
+            <cac:PartyName><cbc:Name>{% if customer.ORGANISATION %}{{ customer.ORGANISATION }}{% else %}{{ customer.NAME }}{% endif %}</cbc:Name></cac:PartyName>
             <cac:PostalAddress>
                 <cbc:StreetName>{{ customer.STREET }}</cbc:StreetName>
                 <cbc:CityName>{{ customer.LOCALITY }}</cbc:CityName>
                 <cbc:PostalZone>{{ customer.POSTCODE }}</cbc:PostalZone>
                 <cac:Country>
-                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                    <cbc:IdentificationCode>{{ customer.COUNTRYCODE }}</cbc:IdentificationCode>
                 </cac:Country>
             </cac:PostalAddress>
             {% if customer.VATID %}
@@ -96,15 +98,19 @@
             </cac:PartyTaxScheme>
             {% endif %}
             <cac:PartyLegalEntity>
-                <cbc:RegistrationName>{{ customer.ORGANISATION }}</cbc:RegistrationName>
+                <!-- BT-44, a private customer has no company name -->
+                <cbc:RegistrationName>{% if customer.ORGANISATION %}{{ customer.ORGANISATION }}{% else %}{{ customer.NAME }}{% endif %}</cbc:RegistrationName>
             </cac:PartyLegalEntity>
+            <!-- UBL demands the order Name, Telephone, ElectronicMail -->
             <cac:Contact>
+                {% if customer.NAME %}
                 <cbc:Name>{{ customer.NAME }}</cbc:Name>
-                {% if customer.EMAIL %}
-                <cbc:ElectronicMail>{{ customer.EMAIL }}</cbc:ElectronicMail>
                 {% endif %}
                 {% if customer.PHONE %}
                 <cbc:Telephone>{{ customer.PHONE }}</cbc:Telephone>
+                {% endif %}
+                {% if customer.EMAIL %}
+                <cbc:ElectronicMail>{{ customer.EMAIL }}</cbc:ElectronicMail>
                 {% endif %}
             </cac:Contact>
         </cac:Party>
@@ -123,9 +129,6 @@
             {% endif %}
         </cac:PayeeFinancialAccount>
     </cac:PaymentMeans>
-    <cac:PaymentTerms>
-        <cbc:Note>Zahlbar sofort ohne Abzug.</cbc:Note>
-    </cac:PaymentTerms>
     <!-- One TaxSubtotal per VAT rate that actually occurs in the document. A single
          subtotal over the whole netto sum breaks BR-S-09 as soon as the document
          mixes the full and the reduced rate. -->
@@ -137,8 +140,15 @@
                 <cbc:TaxableAmount currencyID="EUR">{{ doc.noTaxNettoSumNum }}</cbc:TaxableAmount>
                 <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
                 <cac:TaxCategory>
+                    {% if me.SMALLBUSINESS %}
+                    <!-- BR-E-10: an exempt subtotal needs the reason -->
+                    <cbc:ID>E</cbc:ID>
+                    <cbc:Percent>0.00</cbc:Percent>
+                    <cbc:TaxExemptionReason>Kleinunternehmer gemäß § 19 UStG</cbc:TaxExemptionReason>
+                    {% else %}
                     <cbc:ID>Z</cbc:ID>
                     <cbc:Percent>0.00</cbc:Percent>
+                    {% endif %}
                     <cac:TaxScheme>
                         <cbc:ID>VAT</cbc:ID>
                     </cac:TaxScheme>
@@ -195,7 +205,7 @@
                 <cbc:ID>{{ item.itemNumber }}</cbc:ID>
             </cac:SellersItemIdentification>
             <cac:ClassifiedTaxCategory>
-                <cbc:ID>{{ item.taxCategory }}</cbc:ID>
+                <cbc:ID>{% if me.SMALLBUSINESS %}E{% else %}{{ item.taxCategory }}{% endif %}</cbc:ID>
                 <cbc:Percent>{{ item.taxPercentNum }}</cbc:Percent>
                 <cac:TaxScheme>
                     <cbc:ID>VAT</cbc:ID>

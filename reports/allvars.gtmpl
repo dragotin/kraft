@@ -61,6 +61,7 @@ grouped under certain namespaces, depending on their meaning, ie. `doc` or `labe
 | Name of Variable |Description | Example Value
 
 {% for var in meown.vars %}|me.{{ var.name }} |{{ var.desc }} |{{ var.example }}
+{% endfor %}{% for var in customerown.vars %}|customer.{{ var.name }} |{{ var.desc }} |{{ var.example }}
 {% endfor %}
 |===
 

@@ -127,6 +127,7 @@ private:
     QLineEdit *_xrTaxNumber;
     QLineEdit *_xrRegistrationId;
     QLineEdit *_xrLegalForm;
+    QCheckBox *_xrSmallBusiness;
 
     MyIdentity *_myIdentity;
     KContacts::Addressee _newOwnAddress;

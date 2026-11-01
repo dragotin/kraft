@@ -26,6 +26,34 @@ private Q_SLOTS:
     }
 
     // The contacts dir is part of a freshly created Kraft base dir.
+    // The vCard has the country as a name, the XRechnung wants the ISO code (BT-55).
+    void countryCode()
+    {
+        KraftContact c;
+        KContacts::Addressee a;
+        KContacts::Address addr(KContacts::Address::Work);
+        addr.setCountry(u"Deutschland"_s);
+        a.insertAddress(addr);
+        c.setAddressee(a);
+        QCOMPARE(c.countryCode(), u"DE"_s);
+
+        addr.setCountry(u"Austria"_s);
+        a.insertAddress(addr);
+        c.setAddressee(a);
+        QCOMPARE(c.countryCode(), u"AT"_s);
+
+        // No country at all means the country Kraft runs in.
+        addr.setCountry(QString());
+        a.insertAddress(addr);
+        c.setAddressee(a);
+        QCOMPARE(c.countryCode(), QLocale::territoryToCode(DefaultProvider::self()->locale()->territory()));
+
+        addr.setCountry(u"Atlantis"_s);
+        a.insertAddress(addr);
+        c.setAddressee(a);
+        QVERIFY(c.countryCode().isEmpty());
+    }
+
     void contactsDirExists()
     {
         const QString d = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Contacts);

@@ -735,12 +735,28 @@ void Portal::slotXRechnungCurrentDocument()
 
     QDate today = QDate::currentDate();
     ui._dueDateEdit->setDate(today.addDays(21));
-    ui._buyerRefEdit->setText("unknown");
+    // The buyer reference, ie. the Leitweg-ID of an authority, is the same on every
+    // invoice to that customer, so it is kept with the customer contact.
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    DocGuardedPtr doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    auto *customer = new KraftContact(doc ? doc->addressUid() : QString(), dia);
+    delete doc;
+    customer->load();
+
+    const QString noRef{QStringLiteral("unknown")};
+    const QString buyerRef = customer->stringAttribute(KraftContact::BuyerReference);
+    ui._buyerRefEdit->setText(buyerRef.isEmpty() ? noRef : buyerRef);
 
     dia->open();
-    connect(dia, &QDialog::finished, [ui, dia, this](int result) {
+    connect(dia, &QDialog::finished, [ui, dia, customer, noRef, this](int result) {
         if (result == QDialog::Accepted) {
-            _exporter->setBuyerRef(ui._buyerRefEdit->text());
+            const QString ref = ui._buyerRefEdit->text().trimmed();
+            if (ref != noRef) {
+                customer->setStringAttribute(KraftContact::BuyerReference, ref);
+                if (customer->modified())
+                    customer->save();
+            }
+            _exporter->setBuyerRef(ref);
             const QDate d = ui._dueDateEdit->date();
             _exporter->setDueDate(d);
             const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();

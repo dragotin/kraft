@@ -192,8 +192,14 @@ QString getDesc(const QString& prefix, const QString& name)
                 "IBAN of the own bank account (BT-84)") },
             { u"BIC"_s, i18nc("Document Template var description",
                 "BIC of the own bank account") },
+            { u"SMALLBUSINESS"_s, i18nc("Document Template var description",
+                "Set if the own company charges no VAT as a small business (§19 UStG)") },
             { u"COUNTRYCODE"_s, i18nc("Document Template var description",
-                "Country of the own address as ISO 3166-1 alpha-2 code (BT-40), from the locale Kraft runs under") }
+                "Country of the address as ISO 3166-1 alpha-2 code (BT-40/BT-55), from the locale Kraft runs under if the address has no country") }
+        } },
+        { u"customer"_s, {
+            { u"BUYERREFERENCE"_s, i18nc("Document Template var description",
+                "Buyer reference (BT-10) of the customer, ie. the Leitweg-ID of an authority") }
         } },
         { u"label"_s, {
             { u"NO_SHORT"_s, i18nc("Document Template var description",
@@ -377,7 +383,6 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
                      KraftContact *myContact,
                      KraftContact *customerContact)
 {
-    Q_UNUSED(customerContact)
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
     QString rendered;
 
@@ -449,6 +454,7 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     tnsEPC.setObjectName(i18n("Kraft EPC QR Code"));
     tnsEPC.setDesc(i18n("A generated EPC QR Code"));
     QVariantHash qrc = generateQRCodeHash(doc);
+    qrc["svgfilename"] = u"/path/to/svg.file"_s;
     loopHash(qrc, tnsEPC);
     gtmpl.addToObjMapping(tnsEPC.prefix(), &tnsEPC);
 
@@ -460,11 +466,17 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     tnsOwn.setDesc(i18n("Business data of a company that is not part of its address book "
                         "contact. The data of the own company is configured on the Own "
                         "Identity page of the settings. Defined for the prefixes `me` and "
-                        "`customer`, except for COUNTRYCODE, which only `me` has"));
+                        "`customer`, except for BUYERREFERENCE, which only `customer` has"));
 
     const auto own = MyIdentity::ownBusinessVariantHash();
     loopHash(own, tnsOwn);
     gtmpl.addToObjMapping(u"meown"_s, &tnsOwn);
+
+    // The business data that only a customer has.
+    TemplateNameSpace tnsCustomerOwn(CustomerContactPrefix);
+    const QString buyerRef = customerContact ? customerContact->stringAttribute(KraftContact::BuyerReference) : QString();
+    loopHash({{KraftContact::BuyerReference, buyerRef.toHtmlEscaped()}}, tnsCustomerOwn);
+    gtmpl.addToObjMapping(u"customerown"_s, &tnsCustomerOwn);
 
     // == A few Kraft system values
     TemplateNameSpace tnsKraft(KraftPrefix);
