@@ -300,6 +300,12 @@ QWidget* PrefsDialog::whoIsMeTab()
                                 "XRechnung BT-33. Optional."));
   xrLayout->addRow(i18n("&Legal information:"), _xrLegalForm);
 
+  _xrSmallBusiness = new QCheckBox(i18n("Small business, no VAT charged (Kleinunternehmer, § 19 UStG)"), this);
+  _xrSmallBusiness->setToolTip(i18n("Your company does not charge VAT because it is a small "
+                                    "business by § 19 UStG. The XRechnung then marks all items as "
+                                    "VAT exempt. Template variable me.SMALLBUSINESS."));
+  xrLayout->addRow(_xrSmallBusiness);
+
   xrBox->setLayout(xrLayout);
   vboxLay->addWidget(xrBox);
 
@@ -573,6 +579,7 @@ void PrefsDialog::readConfig()
     _xrTaxNumber->setText(own->stringAttribute(KraftContact::TaxNumber));
     _xrRegistrationId->setText(own->stringAttribute(KraftContact::RegistrationId));
     _xrLegalForm->setText(own->stringAttribute(KraftContact::LegalForm));
+    _xrSmallBusiness->setChecked(!own->stringAttribute(KraftContact::SmallBusiness).isEmpty());
 }
 
 void PrefsDialog::writeIdentity(int currIndx)
@@ -659,6 +666,7 @@ void PrefsDialog::writeConfig()
     own->setStringAttribute(KraftContact::TaxNumber, _xrTaxNumber->text());
     own->setStringAttribute(KraftContact::RegistrationId, _xrRegistrationId->text());
     own->setStringAttribute(KraftContact::LegalForm, _xrLegalForm->text());
+    own->setStringAttribute(KraftContact::SmallBusiness, _xrSmallBusiness->isChecked() ? u"1"_s : QString());
 
     if (own->modified()) {
         own->save();

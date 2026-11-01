@@ -42,8 +42,8 @@ cd build && ctest
 
 Run a single test binary directly:
 ```bash
-./build/tests/t_unitman
-./build/tests/t_kraftdoc
+./build/bin/t_unitman
+./build/bin/t_kraftdoc
 ```
 
 Test sources are in `tests/`. Each `t_*.cpp` maps to one test binary.

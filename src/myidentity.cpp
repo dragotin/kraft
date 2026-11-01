@@ -110,18 +110,12 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     return add;
 }
 
-/* The business data of the own company, plus the one value that only makes sense
- * for it: the country code, which a customer brings along in its address.
- */
+/* The business data of the own company. */
 QMap<QString, QString> MyIdentity::ownBusinessData()
 {
     QMap<QString, QString> re = ownContact()->businessData();
-
-    // ISO 3166-1 alpha-2 of the locale Kraft runs under. The vCard only knows the
-    // country as a localized name, which is of no use for the XRechnung BT-40.
-    const QLocale *loc = DefaultProvider::self()->locale();
-    re.insert(u"COUNTRYCODE"_s, QLocale::territoryToCode(loc->territory()));
-
+    // A buyer reference is given by a customer, never by the own company.
+    re.remove(KraftContact::BuyerReference);
     return re;
 }
 
@@ -159,8 +153,6 @@ void MyIdentity::load()
     // The identity is loaded more than once over the lifetime of Kraft, ie. again
     // after the user picked another address in the settings.
     own->setAddressee(KContacts::Addressee());
-    connect(own, &KraftContact::addresseeLoaded,
-            this, &MyIdentity::slotAddresseeFound, Qt::UniqueConnection);
 
     // Fetch my address
     const QString myUid = KraftSettings::self()->userUid();
@@ -168,6 +160,11 @@ void MyIdentity::load()
 
     if (!myUid.isEmpty()) {
         qDebug() << "looking up my identity" << myUid << "in address provider";
+        // The contact is shared by all MyIdentity objects, so only listen for the
+        // answer to this lookup, not for the ones other objects start later.
+        connect(own, &KraftContact::addresseeLoaded,
+                this, &MyIdentity::slotAddresseeFound,
+                static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::SingleShotConnection));
         // Emits addresseeLoaded, either right away or once the backend answers.
         own->lookupAddressee();
     } else {

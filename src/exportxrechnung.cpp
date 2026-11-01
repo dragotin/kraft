@@ -30,7 +30,6 @@
 #include "format.h"
 #include "documenttemplate.h"
 #include "myidentity.h"
-#include "defaultprovider.h"
 
 #include <KLocalizedString>
 
@@ -130,6 +129,8 @@ QStringList ExporterXRechnung::missingSellerData(const KContacts::Addressee& myC
         re << i18n("City of the address (BT-37)");
     if (addr.postalCode().isEmpty())
         re << i18n("Post code of the address (BT-38)");
+    if (own.value(QStringLiteral("COUNTRYCODE")).isEmpty())
+        re << i18n("Country of the address, as a country name Kraft knows (BT-40)");
 
     return re;
 }
@@ -170,6 +171,8 @@ QStringList ExporterXRechnung::missingBuyerData(const KContacts::Addressee& cust
         re << i18n("Customer city (BT-52)");
     if (addr.postalCode().isEmpty())
         re << i18n("Customer post code (BT-53)");
+    if (_customer->countryCode().isEmpty())
+        re << i18n("Customer country, as a country name Kraft knows (BT-55)");
 
     return re;
 }
@@ -184,17 +187,6 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     // The raw values, so the checks below see what the user actually entered.
     const QMap<QString, QString> own = MyIdentity::ownBusinessData();
 
-    // Not part of missingSellerData() because the fix is not in the settings but
-    // in the locale Kraft is started with.
-    if (own.value(QStringLiteral("COUNTRYCODE")).isEmpty()) {
-        _error = i18n("The country code of the seller address (BT-40) can not be derived from the "
-                      "locale %1 that Kraft runs under. Please start Kraft with a locale that "
-                      "has a country, ie. de_DE instead of C.",
-                      DefaultProvider::self()->locale()->name());
-        Q_EMIT xRechnungTmpFile(QString());
-        return;
-    }
-
     const QStringList missing = missingSellerData(myContact, own);
     if (!missing.isEmpty()) {
         _error = i18n("The own identity is incomplete for an XRechnung. Please add the "
@@ -202,6 +194,20 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
                       missing.join(QStringLiteral(", ")));
         Q_EMIT xRechnungTmpFile(QString());
         return;
+    }
+
+    // A small business must not charge VAT, the invoice says category E throughout.
+    if (!own.value(KraftContact::SmallBusiness).isEmpty()) {
+        KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(_uuid);
+        // The same condition the template uses to write the E subtotal.
+        const bool taxed = doc && !doc->noTaxesDocument();
+        delete doc;
+        if (taxed) {
+            _error = i18n("The own company is set up as a small business (§19 UStG), but the "
+                          "document has items with VAT. Please remove the VAT from the items.");
+            Q_EMIT xRechnungTmpFile(QString());
+            return;
+        }
     }
 
     const QStringList missingBuyer = missingBuyerData(contact);

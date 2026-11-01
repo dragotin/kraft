@@ -73,6 +73,8 @@ public:
     static const QString AccountName;
     static const QString Iban;            // BT-84
     static const QString Bic;
+    static const QString SmallBusiness;   // "1" if VAT exempt by §19 UStG
+    static const QString BuyerReference;  // BT-10, ie. the Leitweg-ID of an authority
 
     explicit KraftContact(QObject *parent = nullptr);
     // The contact of the address with this backend uid, ie. KraftDoc::addressUid().
@@ -108,6 +110,12 @@ public:
      */
     QMap<QString, QString> businessData() const;
     QVariantHash businessVariantHash() const;
+
+    /* The country of the address as ISO 3166-1 alpha-2 code, ie. DE. An address
+     * without a country is taken to be in the country of the locale Kraft runs
+     * under. Empty if the country name is not known.
+     */
+    QString countryCode() const;
 
     // Is there an address book backend that can be asked at all?
     bool hasBackend();

@@ -22,9 +22,7 @@
 #include "docbasemodel.h"
 #include <QSqlTableModel>
 
-
 class DocDigest;
-class AddressProvider;
 
 class DocumentModel : public DocBaseModel
 {

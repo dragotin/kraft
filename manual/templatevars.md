@@ -130,7 +130,7 @@ Entenhausener Weg 42
 | Name of Variable |Description | Example Value
 
 |epcqrcode.show |True if the EPC QR code should be shown on the document |true
-|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/tmp/QKFFpL.svg
+|epcqrcode.svgfilename |File path of the generated EPC QR code SVG image |/path/to/svg.file
 |epcqrcode.valid |True if a valid EPC QR code was generated for the document |true
 
 |===
@@ -168,19 +168,21 @@ Entenhausener Weg 42
 
 **Business data**: Defined for the own identity (`me`) and for the customer contact (`customer`).
 
-.Business data of a company that is not part of its address book contact. The data of the own company is configured on the Own Identity page of the settings. Defined for the prefixes `me` and `customer`, except for COUNTRYCODE, which only `me` has
+.Business data of a company that is not part of its address book contact. The data of the own company is configured on the Own Identity page of the settings. Defined for the prefixes `me` and `customer`, except for BUYERREFERENCE, which only `customer` has
 [cols="1,2,1", width=99%]
 |===
 | Name of Variable |Description | Example Value
 
 |me.ACCOUNTNAME |Name of the holder of the own bank account |Goofy Enterprises
 |me.BIC |BIC of the own bank account |BYLADEM1001
-|me.COUNTRYCODE |Country of the own address as ISO 3166-1 alpha-2 code (BT-40), from the locale Kraft runs under |DE
+|me.COUNTRYCODE |Country of the address as ISO 3166-1 alpha-2 code (BT-40/BT-55), from the locale Kraft runs under if the address has no country |DE
 |me.IBAN |IBAN of the own bank account (BT-84) |DE02120300000000202051
 |me.LEGALFORM |Additional legal information (BT-33), ie. legal form and register court |GbR
 |me.REGISTRATIONID |Legal registration identifier of the own company (BT-30), ie. the commercial register number |HRB 4324
-|me.TAXNUMBER |Tax registration number of the own company (BT-32), the german Steuernummer |
-|me.VATID |VAT identifier of the own company (BT-31), ie. DE123456789 |DE3243243234
+|me.SMALLBUSINESS |Set if the own company charges no VAT as a small business (§19 UStG) |
+|me.TAXNUMBER |Tax registration number of the own company (BT-32), the german Steuernummer |143/123/45678
+|me.VATID |VAT identifier of the own company (BT-31), ie. DE123456789 |DE123456789
+|customer.BUYERREFERENCE |Buyer reference (BT-10) of the customer, ie. the Leitweg-ID of an authority |04011000-1234512345-06
 
 |===
 
