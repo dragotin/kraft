@@ -786,8 +786,12 @@ void Portal::slotExporterFinished(const QString& fName)
     if (QFile::exists(f))  // copy does not overwrite the target file
         QFile::remove(f);
 
-    QFile::copy(fName, f);
-    this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
+    if (QFile::copy(fName, f)) {
+        this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
+        QFile::remove(fName); // remove the tmp-file
+    } else {
+        this->slotStatusMsg(i18n("Unable to copy XRechnung tmp file %1").arg(fName));
+    }
 }
 
 QDebug operator<<(QDebug debug, const dbID &id)

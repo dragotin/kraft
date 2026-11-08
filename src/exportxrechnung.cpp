@@ -66,6 +66,10 @@ bool ExporterXRechnung::exportDocument(const QString& uuid)
 {
     _uuid = uuid;
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    if (doc == nullptr) {
+        qDebug() << "Unable to open export doc" << uuid;
+        return false;
+    }
     _docTypeStr = doc->docTypeStr();
     _error.clear();
 
@@ -219,6 +223,14 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
         return;
     }
 
+    // BR-DE-15: the buyer reference BT-10 is mandatory for an XRechnung.
+    if (_buyerRef.trimmed().isEmpty()) {
+        _error = i18n("The buyer reference (BT-10) is missing. Please enter it in the XRechnung "
+                      "dialog, ie. the Leitweg-ID of an authority.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
+
     QScopedPointer<DocumentTemplate> templateEngine;
 
     const QString tmplFile = templateFile();
@@ -232,7 +244,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
 
     QVariantHash xr;
     xr.insert("dueDate", _dueDate);
-    xr.insert("buyerRef", _buyerRef);
+    xr.insert("buyerRef", _buyerRef.toHtmlEscaped()); // free text from the dialog
     templateEngine->addExtraHash("xrechnung", xr);
 
     const QString expanded = templateEngine->expand(_uuid, me, _customer);
