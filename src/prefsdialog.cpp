@@ -624,7 +624,7 @@ void PrefsDialog::writeIdentity(int currIndx)
     if( origin.isEmpty() || origin == "manual") {
         _myIdentity->save(QString(), _newOwnAddress);
     } else { /* AddressBook */        
-        _myIdentity->save(_newOwnAddress.uid());
+        _myIdentity->save(_newOwnAddress.uid(), _newOwnAddress);
     }
 }
 
