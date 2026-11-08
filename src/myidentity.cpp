@@ -231,7 +231,8 @@ void MyIdentity::save(const QString& uuid, const KContacts::Addressee& contact)
 
     const QString myUid = KraftSettings::self()->userUid();
     if (!uuid.isEmpty() && myUid == uuid) {
-        // nothing has changed
+        // Still the same address book entry, but maybe edited in the address book since.
+        slotAddresseeFound(uuid, contact);
         return;
     }
 

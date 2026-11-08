@@ -68,8 +68,9 @@ public:
 
     void load();
 
-    // One of the parameters need to be empty when calling this method
-    void save(const QString& uuid, const KContacts::Addressee& contact = KContacts::Addressee());
+    // uuid is the address book uid, empty for a manually entered address. contact is the
+    // address the identity uses from now on, in both cases.
+    void save(const QString& uuid, const KContacts::Addressee& contact);
 
     QString identityFile();
 
