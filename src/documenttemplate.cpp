@@ -31,6 +31,7 @@
 #include "reportitemlist.h"
 
 #include <QTemporaryFile>
+#include <KTextTemplate/SafeString>
 #include <klocalizedstring.h>
 
 #define TAG( THE_TAG )  QStringLiteral( THE_TAG )
@@ -94,6 +95,23 @@ GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
 
 }
 
+namespace {
+/* The contact values are escaped already. Marked safe, a template that escapes
+ * automatically, ie. the XRechnung, does not escape them a second time.
+ */
+QVariantHash markSafe(const QVariantHash& hash)
+{
+    QVariantHash re;
+    for (auto it = hash.constBegin(); it != hash.constEnd(); ++it) {
+        if (it.value().typeId() == QMetaType::QString)
+            re.insert(it.key(), QVariant::fromValue(KTextTemplate::SafeString(it.value().toString(), KTextTemplate::SafeString::IsSafe)));
+        else
+            re.insert(it.key(), it.value());
+    }
+    return re;
+}
+}
+
 const QString GrantleeDocumentTemplate::expand( const QString& uuid,
                                                 KraftContact *myContact,
                                                 KraftContact *customerContact)
@@ -132,14 +150,14 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
         // top, which a customer brings along in its address.
         auto mtt = contactToVariantHash(myContact ? myContact->addressee() : KContacts::Addressee());
         mtt.insert(MyIdentity::ownBusinessVariantHash());
-        gtmpl.addToMappingHash(MeContactPrefix, mtt);
+        gtmpl.addToMappingHash(MeContactPrefix, markSafe(mtt));
 
         auto cct = contactToVariantHash(customerContact ? customerContact->addressee()
                                                         : KContacts::Addressee());
         if (customerContact) {
             cct.insert(customerContact->businessVariantHash());
         }
-        gtmpl.addToMappingHash(CustomerContactPrefix, cct);
+        gtmpl.addToMappingHash(CustomerContactPrefix, markSafe(cct));
 
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMappingHash(LabelsPrefix, labelHash);

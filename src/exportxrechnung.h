@@ -48,10 +48,10 @@ public:
     ExporterXRechnung(QObject *parent = nullptr);
     virtual ~ExporterXRechnung();
 
-    void setDueDate(const QDate&);
-    void setBuyerRef(const QString&);
     bool exportDocument(const QString&);
     QString error() { return _error; };
+    // The ident of the exported document, "draft" for a draft.
+    QString docIdent() const { return _docIdent; }
 
 protected:
     QStringList missingSellerData(const KContacts::Addressee& myContact,
@@ -69,6 +69,8 @@ private:
     KraftContact *_customer;
     QString _uuid;
     QString _docTypeStr;
+    QString _docIdent;
+    // From the document, for the checks before the export.
     QString _buyerRef;
     QDate _dueDate;
     QString _error;

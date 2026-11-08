@@ -41,15 +41,6 @@ ExporterXRechnung::ExporterXRechnung(QObject *parent)
 
 }
 
-void ExporterXRechnung::setDueDate(const QDate& d)
-{
-    _dueDate = d;
-}
-
-void ExporterXRechnung::setBuyerRef(const QString& br)
-{
-    _buyerRef = br;
-}
 
 QString ExporterXRechnung::templateFile() const
 {
@@ -75,6 +66,10 @@ bool ExporterXRechnung::exportDocument(const QString& uuid)
         return false;
     }
     _docTypeStr = doc->docTypeStr();
+    // A draft has no final number yet, its ident is only a placeholder.
+    _docIdent = doc->isDraftState() || doc->ident().isEmpty() ? QStringLiteral("draft") : doc->ident();
+    _buyerRef = doc->buyerRef();
+    _dueDate = doc->dueDate();
 
     // The customer of the document, with the Kraft data Kraft has about it.
     delete _customer; // from a previous export
@@ -228,9 +223,15 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     }
 
     // BR-DE-15: the buyer reference BT-10 is mandatory for an XRechnung.
-    if (_buyerRef.trimmed().isEmpty()) {
-        _error = i18n("The buyer reference (BT-10) is missing. Please enter it in the XRechnung "
-                      "dialog, ie. the Leitweg-ID of an authority.");
+    if (_buyerRef.isEmpty()) {
+        _error = i18n("The buyer reference (BT-10) is missing, ie. the Leitweg-ID of an authority. "
+                      "Please enter it in the footer of the document.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
+    // The template writes the due date BT-9, it is the payment term of the invoice.
+    if (!_dueDate.isValid()) {
+        _error = i18n("The due date is missing. Please set it in the footer of the document.");
         Q_EMIT xRechnungTmpFile(QString());
         return;
     }
@@ -245,11 +246,6 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
         qDebug() << "Using this XRechnung Template:" << tmplFile;
     }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
-
-    QVariantHash xr;
-    xr.insert("dueDate", _dueDate);
-    xr.insert("buyerRef", _buyerRef.toHtmlEscaped()); // free text from the dialog
-    templateEngine->addExtraHash("xrechnung", xr);
 
     const QString expanded = templateEngine->expand(_uuid, me, _customer);
 

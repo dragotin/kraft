@@ -41,7 +41,7 @@ Entenhausener Weg 42
 92192 Spradsdorf
 |doc.bruttoSumNum |Brutto sum as numerical value, not localized |507.29
 |doc.bruttoSumStr |Brutto sum localized as user string |507,29 €
-|doc.buyerReference |Buyer reference string, mainly for XRechnung |
+|doc.buyerReference |Buyer reference string, mainly for XRechnung |04011000-1234512345-06
 |doc.clientUid |UID of the client/customer |BMhh9EhLwr
 |doc.dateStr |Date as localized string according to user settings |27.01.2011
 |doc.dateStrISO |date string ISO formatted, for XRechnung |2011-01-27
@@ -119,6 +119,7 @@ Entenhausener Weg 42
 |item.taxMarker |Marker value identifying the tax rate applied to the item |1
 |item.taxPercentNum | |19.00
 |item.text |Text of the item, as plain text |first item
+|item.textFirstLine |First line of the item text, ie. the item name for XRechnung |first item
 |item.unit |Unit of the item, e.g. &#39;piece&#39; or &#39;hour&#39; |
 |item.unitCode |UN/ECE Recommendation 20 unit code of the item, for XRechnung |
 |item.unitPrice |Unit price of the item localized as user string |22,21 €

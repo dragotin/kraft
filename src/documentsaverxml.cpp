@@ -230,6 +230,8 @@ QDomDocument xmlDocument(KraftDoc *doc)
     itemGroupFooter.appendChild( textElement( xmldoc, "goodbye", doc->goodbye()));
     if (doc->dueDate().isValid())
         itemGroupFooter.appendChild(textElement(xmldoc, "dueDate", doc->dueDateStrISO()));
+    if (!doc->buyerRef().isEmpty())
+        itemGroupFooter.appendChild(textElement(xmldoc, "buyerReference", doc->buyerRef()));
 
     // **** Next toplevel: totals
     QDomElement itemGroupTotals = xmldoc.createElement("totals");
@@ -464,6 +466,7 @@ bool loadFooter(const QDomDocument& domDoc, KraftDoc *doc)
     doc->setGoodbye(t);
     // Invalid, ie. unset, if the element is missing.
     doc->setDueDate(QDate::fromString(childElemText(footerElem, "dueDate"), Qt::ISODate));
+    doc->setBuyerRef(childElemText(footerElem, "buyerReference"));
 
     return res;
 }

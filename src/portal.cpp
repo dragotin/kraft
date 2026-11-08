@@ -68,7 +68,6 @@
 #include "setupassistant.h"
 #include "alldocsview.h"
 #include "exportxrechnung.h"
-#include "ui_xrechnung.h"
 #include "ui_finalizedoc.h"
 #include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
@@ -727,52 +726,9 @@ void Portal::slotViewDocument( const QString& uuid )
 
 void Portal::slotXRechnungCurrentDocument()
 {
-    // FIXME: Error handling - error needs to be returned from exporter
-    auto dia = new QDialog(this);
-    Ui::XRechnungDialog ui;
-    ui.setupUi(dia);
-    dia->setWindowTitle(i18n("XRechnung"));
-
-    // The buyer reference, ie. the Leitweg-ID of an authority, is the same on every
-    // invoice to that customer, so it is kept with the customer contact.
+    // The due date and the buyer reference are part of the document, ie. its footer.
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-    DocGuardedPtr doc = DocumentMan::self()->openDocumentByUuid(uuid);
-
-    // The same due date as on the PDF of the invoice, only editable if the document has none.
-    QDate dueDate = doc ? doc->dueDate() : QDate();
-    ui._dueDateEdit->setReadOnly(dueDate.isValid());
-    if (dueDate.isValid())
-        ui._dueDateEdit->setToolTip(i18n("The due date is set in the footer of the document."));
-    if (!dueDate.isValid())
-        dueDate = KraftDoc::calcDueDate(doc && doc->date().isValid() ? doc->date() : QDate::currentDate());
-    ui._dueDateEdit->setDate(dueDate);
-
-    auto *customer = new KraftContact(doc ? doc->addressUid() : QString(), dia);
-    delete doc;
-    customer->load();
-
-    const QString noRef{QStringLiteral("unknown")};
-    const QString buyerRef = customer->stringAttribute(KraftContact::BuyerReference);
-    ui._buyerRefEdit->setText(buyerRef.isEmpty() ? noRef : buyerRef);
-
-    dia->open();
-    connect(dia, &QDialog::finished, [ui, dia, customer, noRef, this](int result) {
-        if (result == QDialog::Accepted) {
-            const QString ref = ui._buyerRefEdit->text().trimmed();
-            if (ref != noRef) {
-                customer->setStringAttribute(KraftContact::BuyerReference, ref);
-                if (customer->modified())
-                    customer->save();
-            }
-            _exporter->setBuyerRef(ref);
-            const QDate d = ui._dueDateEdit->date();
-            _exporter->setDueDate(d);
-            const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-            _exporter->exportDocument(uuid);
-        }
-        dia->deleteLater();
-    });
-
+    _exporter->exportDocument(uuid);
 }
 
 void Portal::slotExporterFinished(const QString& fName)
@@ -784,7 +740,10 @@ void Portal::slotExporterFinished(const QString& fName)
         return;
     }
     qDebug() << "This is the xrechnung file name." << fName;
-    const QString proposeName = QString("%1/xrechnung.xml").arg(QDir::homePath());
+    // An ident can contain chars that are not allowed in a file name, ie. a slash.
+    QString ident = _exporter->docIdent();
+    ident.replace(QRegularExpression(QStringLiteral("[^\\w.-]")), QStringLiteral("_"));
+    const QString proposeName = QString("%1/xrechnung-%2.xml").arg(QDir::homePath(), ident);
     const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
 
     if( f.isEmpty()) {
