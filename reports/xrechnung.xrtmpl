@@ -6,11 +6,10 @@
     <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
     <cbc:ID>{{ doc.ident }}</cbc:ID>
     <cbc:IssueDate>{{ doc.dateStrISO }}</cbc:IssueDate>
-    <cbc:DueDate>{{ xrechnung.dueDate }}</cbc:DueDate>
+    <cbc:DueDate>{{ doc.dueDateStrISO }}</cbc:DueDate>
     <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
-    <cbc:Note>#ADU#Es gelten unsere Allgem. Geschäftsbedingungen, die Sie unter […] finden.</cbc:Note>
     <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
-    <cbc:BuyerReference>{{ xrechnung.buyerRef }}</cbc:BuyerReference>
+    <cbc:BuyerReference>{{ doc.buyerReference }}</cbc:BuyerReference>
     {% if doc.timeOfSupplyValid %}
     <cac:InvoicePeriod>
         <cbc:StartDate>{{ doc.timeOfSupplyStartISO }}</cbc:StartDate>
@@ -19,39 +18,59 @@
         {% endif %}
     </cac:InvoicePeriod>
     {% endif %}
+    {% if doc.projectLabel %}
     <cac:ProjectReference>
-      <cbc:ID>{{ doc.projectLabel|default:"not set" }}</cbc:ID>
+      <cbc:ID>{{ doc.projectLabel }}</cbc:ID>
    </cac:ProjectReference>
+    {% endif %}
    
    <cac:AccountingSupplierParty>
        <cac:Party>
-           <cbc:EndpointID schemeID="EM">seller@email.de</cbc:EndpointID>
+           <cbc:EndpointID schemeID="EM">{{ me.EMAIL }}</cbc:EndpointID>
            <cac:PartyName>
-               <cbc:Name>[Seller trading name]</cbc:Name>
+               <cbc:Name>{% if me.ORGANISATION %}{{ me.ORGANISATION }}{% else %}{{ me.NAME }}{% endif %}</cbc:Name>
            </cac:PartyName>
            <cac:PostalAddress>
-               <cbc:StreetName>[Seller address line 1]</cbc:StreetName>
-               <cbc:CityName>[Seller city]</cbc:CityName>
-               <cbc:PostalZone>12345</cbc:PostalZone>
+               <cbc:StreetName>{{ me.STREET }}</cbc:StreetName>
+               {% if me.EXTENDED %}
+               <cbc:AdditionalStreetName>{{ me.EXTENDED }}</cbc:AdditionalStreetName>
+               {% endif %}
+               <cbc:CityName>{{ me.LOCALITY }}</cbc:CityName>
+               <cbc:PostalZone>{{ me.POSTCODE }}</cbc:PostalZone>
                <cac:Country>
-                   <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                   <cbc:IdentificationCode>{{ me.COUNTRYCODE }}</cbc:IdentificationCode>
                </cac:Country>
            </cac:PostalAddress>
+           {% if me.VATID %}
            <cac:PartyTaxScheme>
-               <cbc:CompanyID>DE 123456789</cbc:CompanyID>
+               <cbc:CompanyID>{{ me.VATID }}</cbc:CompanyID>
                <cac:TaxScheme>
                    <cbc:ID>VAT</cbc:ID>
                </cac:TaxScheme>
            </cac:PartyTaxScheme>
+           {% endif %}
+           {% if me.TAXNUMBER %}
+           <cac:PartyTaxScheme>
+               <cbc:CompanyID>{{ me.TAXNUMBER }}</cbc:CompanyID>
+               <cac:TaxScheme>
+                   <cbc:ID>FC</cbc:ID>
+               </cac:TaxScheme>
+           </cac:PartyTaxScheme>
+           {% endif %}
            <cac:PartyLegalEntity>
-               <cbc:RegistrationName>[Seller name]</cbc:RegistrationName>
-               <cbc:CompanyID>[HRA-Eintrag]</cbc:CompanyID>
-               <cbc:CompanyLegalForm>123/456/7890, HRA-Eintrag in […]</cbc:CompanyLegalForm>
+               <!-- BT-27, a sole trader without a company name invoices under the own name -->
+               <cbc:RegistrationName>{% if me.ORGANISATION %}{{ me.ORGANISATION }}{% else %}{{ me.NAME }}{% endif %}</cbc:RegistrationName>
+               {% if me.REGISTRATIONID %}
+               <cbc:CompanyID>{{ me.REGISTRATIONID }}</cbc:CompanyID>
+               {% endif %}
+               {% if me.LEGALFORM %}
+               <cbc:CompanyLegalForm>{{ me.LEGALFORM }}</cbc:CompanyLegalForm>
+               {% endif %}
            </cac:PartyLegalEntity>
            <cac:Contact>
-               <cbc:Name>nicht vorhanden</cbc:Name>
-               <cbc:Telephone>+49 1234-5678</cbc:Telephone>
-               <cbc:ElectronicMail>seller@email.de</cbc:ElectronicMail>
+               <cbc:Name>{{ me.NAME }}</cbc:Name>
+               <cbc:Telephone>{% if me.PHONE %}{{ me.PHONE }}{% else %}{{ me.MOBILE }}{% endif %}</cbc:Telephone>
+               <cbc:ElectronicMail>{{ me.EMAIL }}</cbc:ElectronicMail>
            </cac:Contact>
         </cac:Party>
     </cac:AccountingSupplierParty>
@@ -59,25 +78,39 @@
    <cac:AccountingCustomerParty>
         <cac:Party>
             <cbc:EndpointID schemeID="EM">{{ customer.EMAIL }}</cbc:EndpointID>
-            <cac:PartyName><cbc:Name>{{ customer.NAME|default:"not set" }}</cbc:Name></cac:PartyName> 
+            <cac:PartyName><cbc:Name>{% if customer.ORGANISATION %}{{ customer.ORGANISATION }}{% else %}{{ customer.NAME }}{% endif %}</cbc:Name></cac:PartyName>
             <cac:PostalAddress>
-                <cbc:StreetName>{{ customer.STREET|default:"not set" }}</cbc:StreetName>
-                <cbc:CityName>{{ customer.LOCALITY|default:"not set" }}</cbc:CityName>
-                <cbc:PostalZone>{{ customer.POSTCODE|default:"not set" }}</cbc:PostalZone>
+                <cbc:StreetName>{{ customer.STREET }}</cbc:StreetName>
+                <cbc:CityName>{{ customer.LOCALITY }}</cbc:CityName>
+                <cbc:PostalZone>{{ customer.POSTCODE }}</cbc:PostalZone>
                 <cac:Country>
-                    <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+                    <cbc:IdentificationCode>{{ customer.COUNTRYCODE }}</cbc:IdentificationCode>
                 </cac:Country>
             </cac:PostalAddress>
+            {% if customer.VATID %}
+            <!-- BT-48, only for a customer that is registered for VAT. Set it in
+                 the Kraft data of the contact. -->
+            <cac:PartyTaxScheme>
+                <cbc:CompanyID>{{ customer.VATID }}</cbc:CompanyID>
+                <cac:TaxScheme>
+                    <cbc:ID>VAT</cbc:ID>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+            {% endif %}
             <cac:PartyLegalEntity>
-                <cbc:RegistrationName>{{ customer.ORGANISATION|default:"not set" }}</cbc:RegistrationName>
+                <!-- BT-44, a private customer has no company name -->
+                <cbc:RegistrationName>{% if customer.ORGANISATION %}{{ customer.ORGANISATION }}{% else %}{{ customer.NAME }}{% endif %}</cbc:RegistrationName>
             </cac:PartyLegalEntity>
+            <!-- UBL demands the order Name, Telephone, ElectronicMail -->
             <cac:Contact>
-                <cbc:Name>{{ customer.NAME|default:"not set" }}</cbc:Name>
-                {% if costumer.EMAIL %}
-                <cbc:ElectronicMail>{{ customer.EMAIL }}</cbc:ElectronicMail>
+                {% if customer.NAME %}
+                <cbc:Name>{{ customer.NAME }}</cbc:Name>
                 {% endif %}
                 {% if customer.PHONE %}
                 <cbc:Telephone>{{ customer.PHONE }}</cbc:Telephone>
+                {% endif %}
+                {% if customer.EMAIL %}
+                <cbc:ElectronicMail>{{ customer.EMAIL }}</cbc:ElectronicMail>
                 {% endif %}
             </cac:Contact>
         </cac:Party>
@@ -85,26 +118,72 @@
     <cac:PaymentMeans>
         <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
         <cac:PayeeFinancialAccount>
-            <!-- dies ist eine nicht existerende aber valide IBAN als test dummy -->
-            <cbc:ID>DE75512108001245126199</cbc:ID>
+            <cbc:ID>{{ me.IBAN|cut:" " }}</cbc:ID>
+            {% if me.ACCOUNTNAME %}
+            <cbc:Name>{{ me.ACCOUNTNAME }}</cbc:Name>
+            {% endif %}
+            {% if me.BIC %}
+            <cac:FinancialInstitutionBranch>
+                <cbc:ID>{{ me.BIC }}</cbc:ID>
+            </cac:FinancialInstitutionBranch>
+            {% endif %}
         </cac:PayeeFinancialAccount>
     </cac:PaymentMeans>
-    <cac:PaymentTerms>
-        <cbc:Note>Zahlbar sofort ohne Abzug.</cbc:Note>
-    </cac:PaymentTerms>
+    <!-- One TaxSubtotal per VAT rate that actually occurs in the document. A single
+         subtotal over the whole netto sum breaks BR-S-09 as soon as the document
+         mixes the full and the reduced rate. -->
     <cac:TaxTotal>
         <cbc:TaxAmount currencyID="EUR">{{ doc.taxSumNum }}</cbc:TaxAmount>
-        <cac:TaxSubtotal>
-            <cbc:TaxableAmount currencyID="EUR">{{ doc.nettoSumNum }}</cbc:TaxableAmount>
-            <cbc:TaxAmount currencyID="EUR">{{ doc.taxSumNum }}</cbc:TaxAmount>
-            <cac:TaxCategory>
-                <cbc:ID>S</cbc:ID>
-                <cbc:Percent>{{ doc.fullTaxPercentNum }}</cbc:Percent>
-                <cac:TaxScheme>
-                    <cbc:ID>VAT</cbc:ID>
-                </cac:TaxScheme>
-            </cac:TaxCategory>
-        </cac:TaxSubtotal>
+
+        {% if doc.noTaxesDocument %}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="EUR">{{ doc.noTaxNettoSumNum }}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    {% if me.SMALLBUSINESS %}
+                    <!-- BR-E-10: an exempt subtotal needs the reason -->
+                    <cbc:ID>E</cbc:ID>
+                    <cbc:Percent>0.00</cbc:Percent>
+                    <cbc:TaxExemptionReason>Kleinunternehmer gemäß § 19 UStG</cbc:TaxExemptionReason>
+                    {% else %}
+                    <cbc:ID>Z</cbc:ID>
+                    <cbc:Percent>0.00</cbc:Percent>
+                    {% endif %}
+                    <cac:TaxScheme>
+                        <cbc:ID>VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        {% else %}
+            <!-- the document has taxes -->
+            {% if doc.hasFullTaxItems %}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="EUR">{{ doc.fullTaxNettoSumNum }}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="EUR">{{ doc.fullTaxSumNum }}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:ID>S</cbc:ID>
+                    <cbc:Percent>{{ doc.fullTaxPercentNum }}</cbc:Percent>
+                    <cac:TaxScheme>
+                        <cbc:ID>VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {% endif %}
+            {% if doc.hasReducedTaxItems %}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="EUR">{{ doc.reducedTaxNettoSumNum }}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="EUR">{{ doc.reducedTaxSumNum }}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:ID>S</cbc:ID>
+                    <cbc:Percent>{{ doc.reducedTaxPercentNum }}</cbc:Percent>
+                    <cac:TaxScheme>
+                        <cbc:ID>VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {% endif %}
+        {% endif %}
+
     </cac:TaxTotal>
     
     <cac:LegalMonetaryTotal>
@@ -117,17 +196,19 @@
    {% for item in doc.items %}
    <cac:InvoiceLine>
         <cbc:ID>{{ item.itemNumber }}</cbc:ID>
-        <cbc:InvoicedQuantity unitCode="{{ item.unitCode }}">{{ item.amountNum }}</cbc:InvoicedQuantity>
+        <!-- BT-130 is mandatory, C62 ("one") for units without a UN/ECE Rec 20 code, ie. lump sum -->
+        <cbc:InvoicedQuantity unitCode="{% if item.unitCode %}{{ item.unitCode }}{% else %}C62{% endif %}">{{ item.amountNum }}</cbc:InvoicedQuantity>
         <cbc:LineExtensionAmount currencyID="EUR">{{ item.nettoPriceNum }}</cbc:LineExtensionAmount>
         <cac:Item>
-            <cbc:Description>{{ item.htmlText }}</cbc:Description>
-            <cbc:Name>{{ item.htmlText }}</cbc:Name>
+            <!-- the plain text, escaped by the template, as XRechnung knows no HTML -->
+            <cbc:Description>{{ item.text }}</cbc:Description>
+            <cbc:Name>{{ item.textFirstLine }}</cbc:Name>
             <cac:SellersItemIdentification>
                 <cbc:ID>{{ item.itemNumber }}</cbc:ID>
             </cac:SellersItemIdentification>
             <cac:ClassifiedTaxCategory>
-                <cbc:ID>S</cbc:ID>
-                <cbc:Percent>{{ doc.fullTaxPercentNum }}</cbc:Percent>
+                <cbc:ID>{% if me.SMALLBUSINESS %}E{% else %}{{ item.taxCategory }}{% endif %}</cbc:ID>
+                <cbc:Percent>{{ item.taxPercentNum }}</cbc:Percent>
                 <cac:TaxScheme>
                     <cbc:ID>VAT</cbc:ID>
                 </cac:TaxScheme>

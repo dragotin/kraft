@@ -30,7 +30,7 @@
 class dbID;
 class KJob;
 class QFile;
-class AddressProvider;
+class KraftContact;
 
 enum class ReportFormat { PDF, PDFMail, HTML };
 
@@ -58,8 +58,6 @@ private Q_SLOTS:
 
 private:
     QString findTemplateFile( const QString& );
-
-    void lookupCustomerAddress();
 
     QString _tmplFile;
 protected:
@@ -89,13 +87,13 @@ private:
     QString   _uuid;
     long      mOutputSize;
 
-    KContacts::Addressee mCustomerContact;
+    // The customer of the document that is generated, valid for one run.
+    KraftContact *mCustomer;
 
     QPointer<QProcess> mProcess;
 
     QFile mFile;
     QDataStream mTargetStream;
-    AddressProvider *mAddressProvider;
     ReportFormat _requestedFormat;
 };
 

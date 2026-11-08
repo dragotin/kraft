@@ -21,8 +21,11 @@
 #include <QDir>
 #include <QObject>
 #include <QScopedPointer>
+#include <QMap>
+#include <QStringList>
+#include <QVariantHash>
 
-#include "addressprovider.h"
+#include "kraftcontact.h"
 #include "kraftdoc.h"
 
 class QSqlRecord;
@@ -45,26 +48,29 @@ public:
     ExporterXRechnung(QObject *parent = nullptr);
     virtual ~ExporterXRechnung();
 
-    void setDueDate(const QDate&);
-    void setBuyerRef(const QString&);
     bool exportDocument(const QString&);
     QString error() { return _error; };
+    // The ident of the exported document, "draft" for a draft.
+    QString docIdent() const { return _docIdent; }
 
 protected:
-    void lookupCustomerAddress();
+    QStringList missingSellerData(const KContacts::Addressee& myContact,
+                                  const QMap<QString, QString>& own) const;
+    QStringList missingBuyerData(const KContacts::Addressee& customer) const;
 
 protected Q_SLOTS:
     void slotAddresseeFound(const QString &uid = QString(), const KContacts::Addressee &contact = KContacts::Addressee());
-    void slotSkipLookup();
 
 private:
     QString templateFile() const;
 
     bool _validateWithSchema;
-    AddressProvider *mAddressProvider;
-    KContacts::Addressee _customerContact;
+    // The customer of the document that is exported, valid for one export.
+    KraftContact *_customer;
     QString _uuid;
     QString _docTypeStr;
+    QString _docIdent;
+    // From the document, for the checks before the export.
     QString _buyerRef;
     QDate _dueDate;
     QString _error;

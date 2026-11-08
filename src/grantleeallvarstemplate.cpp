@@ -23,6 +23,7 @@
 #include <klocalizedstring.h>
 
 #include "grantleeallvarstemplate.h"
+#include "myidentity.h"
 #include "kraftdoc.h"
 #include "documentman.h"
 #include "grantleetemplate.h"
@@ -59,6 +60,8 @@ QString getDesc(const QString& prefix, const QString& name)
                 "Human readable document identifier, e.g. 'Invoice 2026-001' or a draft marker") },
             { u"docType"_s, i18nc("Document Template var description",
                 "Localized document type, e.g. Invoice, Offer or Delivery Receipt") },
+            { u"dueDateStr"_s, i18nc("Document Template var description",
+                "Payment due date as localized string according to user settings, empty if not set") },
             { u"dueDateStrISO"_s, i18nc("Document Template var description",
                 "Payment due date, ISO formatted, for XRechnung") },
             { u"fullTaxPercentNum"_s, i18nc("Document Template var description",
@@ -71,6 +74,8 @@ QString getDesc(const QString& prefix, const QString& name)
                 "Tax amount of the full taxed items localized as user string") },
             { u"fullTaxesDocument"_s, i18nc("Document Template var description",
                 "True if all items of the document are taxed with the full tax rate") },
+            { u"paymentDueDays"_s, i18nc("Document Template var description",
+                "Days from the document date to the payment due date, 0 if there is no due date") },
             { u"goodbye"_s, i18nc("Document Template var description",
                 "Closing greeting line of the document, e.g. 'Kind regards'") },
             { u"hasIndividualTaxation"_s, i18nc("Document Template var description",
@@ -176,7 +181,29 @@ QString getDesc(const QString& prefix, const QString& name)
             { u"COUNTRY"_s, i18nc("Document Template var description",
                 "Country of the contact address") },
             { u"LABEL"_s, i18nc("Document Template var description",
-                "Formatted address label of the contact") }
+                "Formatted address label of the contact") },
+            { u"VATID"_s, i18nc("Document Template var description",
+                "VAT identifier of the own company (BT-31), ie. DE123456789") },
+            { u"TAXNUMBER"_s, i18nc("Document Template var description",
+                "Tax registration number of the own company (BT-32), the german Steuernummer") },
+            { u"REGISTRATIONID"_s, i18nc("Document Template var description",
+                "Legal registration identifier of the own company (BT-30), ie. the commercial register number") },
+            { u"LEGALFORM"_s, i18nc("Document Template var description",
+                "Additional legal information (BT-33), ie. legal form and register court") },
+            { u"ACCOUNTNAME"_s, i18nc("Document Template var description",
+                "Name of the holder of the own bank account") },
+            { u"IBAN"_s, i18nc("Document Template var description",
+                "IBAN of the own bank account (BT-84)") },
+            { u"BIC"_s, i18nc("Document Template var description",
+                "BIC of the own bank account") },
+            { u"SMALLBUSINESS"_s, i18nc("Document Template var description",
+                "Set if the own company charges no VAT as a small business (§19 UStG)") },
+            { u"COUNTRYCODE"_s, i18nc("Document Template var description",
+                "Country of the address as ISO 3166-1 alpha-2 code (BT-40/BT-55), from the locale Kraft runs under if the address has no country") }
+        } },
+        { u"customer"_s, {
+            { u"BUYERREFERENCE"_s, i18nc("Document Template var description",
+                "Buyer reference (BT-10) of the customer, ie. the Leitweg-ID of an authority") }
         } },
         { u"label"_s, {
             { u"NO_SHORT"_s, i18nc("Document Template var description",
@@ -235,6 +262,8 @@ QString getDesc(const QString& prefix, const QString& name)
                 "Text of the item, as plain text") },
             { u"htmlText"_s, i18nc("Document Template var description",
                 "Text of the item, as HTML") },
+            { u"textFirstLine"_s, i18nc("Document Template var description",
+                "First line of the item text, ie. the item name for XRechnung") },
             { u"amount"_s, i18nc("Document Template var description",
                 "Quantity of the item localized as user string") },
             { u"amountNum"_s, i18nc("Document Template var description",
@@ -357,10 +386,9 @@ GrantleeAllVarsTemplate::GrantleeAllVarsTemplate(const QString& tmplFile)
 }
 
 const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
-                     const KContacts::Addressee &myContact,
-                     const KContacts::Addressee &customerContact)
+                     KraftContact *myContact,
+                     KraftContact *customerContact)
 {
-    Q_UNUSED(customerContact)
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
     QString rendered;
 
@@ -379,15 +407,18 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
                                   "doc or label. The example values are taken from the document "
                                   "this list was generated from."));
     obj.setProperty("contactIntro", i18n("The following variables are defined for both the own identity with prefix `me` and"
-                                         "for the customer contact with prefix `customer`."));
+                                         "for the customer contact with prefix `customer`. Both have a few additional "
+                                         "variables, listed further down."));
     gtmpl.addToObjMapping("main", &obj);
 
     // == The contact variables
     TemplateNameSpace tnsContact(MeContactPrefix);
     tnsContact.setObjectName(i18n("Contact Variables"));
     tnsContact.setDesc(i18n("Variables of a contact, both own identity (prefix `me`) and the customer contact (prefix `customer`)"));
+    // Note: the own identity additionally carries the business variables, see below.
 
-    const auto mtt = contactToVariantHash(myContact);
+    const auto mtt = contactToVariantHash(myContact ? myContact->addressee()
+                                                    : KContacts::Addressee());
     loopHash(mtt, tnsContact);
     gtmpl.addToObjMapping(tnsContact.prefix(), &tnsContact);
 
@@ -429,8 +460,29 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
     tnsEPC.setObjectName(i18n("Kraft EPC QR Code"));
     tnsEPC.setDesc(i18n("A generated EPC QR Code"));
     QVariantHash qrc = generateQRCodeHash(doc);
+    qrc["svgfilename"] = u"/path/to/svg.file"_s;
     loopHash(qrc, tnsEPC);
     gtmpl.addToObjMapping(tnsEPC.prefix(), &tnsEPC);
+
+    // == The business data of a contact. Same prefixes as the contact variables
+    // above, but listed in a table of its own because it does not come from the
+    // address book but from the Kraft contact.
+    TemplateNameSpace tnsOwn(MeContactPrefix);
+    tnsOwn.setObjectName(i18n("Business Variables"));
+    tnsOwn.setDesc(i18n("Business data of a company that is not part of its address book "
+                        "contact. The data of the own company is configured on the Own "
+                        "Identity page of the settings. Defined for the prefixes `me` and "
+                        "`customer`, except for BUYERREFERENCE, which only `customer` has"));
+
+    const auto own = MyIdentity::ownBusinessVariantHash();
+    loopHash(own, tnsOwn);
+    gtmpl.addToObjMapping(u"meown"_s, &tnsOwn);
+
+    // The business data that only a customer has.
+    TemplateNameSpace tnsCustomerOwn(CustomerContactPrefix);
+    const QString buyerRef = customerContact ? customerContact->stringAttribute(KraftContact::BuyerReference) : QString();
+    loopHash({{KraftContact::BuyerReference, buyerRef.toHtmlEscaped()}}, tnsCustomerOwn);
+    gtmpl.addToObjMapping(u"customerown"_s, &tnsCustomerOwn);
 
     // == A few Kraft system values
     TemplateNameSpace tnsKraft(KraftPrefix);

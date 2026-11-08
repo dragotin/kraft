@@ -126,6 +126,17 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
 
+    // Netto sums split by tax rate, for the VAT subtotals of an XRechnung
+    Q_PROPERTY(QString fullTaxNettoSumNum READ fullTaxNettoSumNum)
+    Q_PROPERTY(QString reducedTaxNettoSumNum READ reducedTaxNettoSumNum)
+    Q_PROPERTY(QString noTaxNettoSumNum READ noTaxNettoSumNum)
+
+    // True if at least one item uses that tax rate. Unlike fullTaxesDocument()
+    // these are not mutually exclusive: a document can have both.
+    Q_PROPERTY(bool hasFullTaxItems READ hasFullTaxItems)
+    Q_PROPERTY(bool hasReducedTaxItems READ hasReducedTaxItems)
+    Q_PROPERTY(bool hasNoTaxItems READ hasNoTaxItems)
+
     Q_PROPERTY(QString owner READ owner)
 
     Q_PROPERTY(QString timeOfSupplyStart READ tosStart)
@@ -136,7 +147,9 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(bool timeOfSupplyValid READ tosValid)
     Q_PROPERTY(bool timeOfSupplyMultiDay READ tosMultiDay)
 
-    Q_PROPERTY(QString dueDateStrISO READ dueDate)
+    Q_PROPERTY(QString dueDateStrISO READ dueDateStrISO)
+    Q_PROPERTY(QString dueDateStr READ dueDateStr)
+    Q_PROPERTY(int paymentDueDays READ paymentDueDays)
     Q_PROPERTY(QString buyerReference READ buyerRef)
 
     Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum)
@@ -206,7 +219,8 @@ public:
     // take a string with macros and generate the text replacements for the macros
     // with the help of the position list
     QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date,
-                          double fullTax, double redTax, const QString& dateFormat = QString()) const;
+                          double fullTax, double redTax, const QString& dateFormat = QString(),
+                          const QDate& dueDate = QDate()) const;
 
     // preText is the variant with expanded macros
     QString preText() const;
@@ -269,6 +283,17 @@ public:
     QString vatSumStr() const { return vatSum().toLocaleString(); }
     QString vatSumNum() const { return vatSum().toNumberString(); }
 
+    Geld fullTaxNettoSum() const;
+    QString fullTaxNettoSumNum() const { return fullTaxNettoSum().toNumberString(); }
+    Geld reducedTaxNettoSum() const;
+    QString reducedTaxNettoSumNum() const { return reducedTaxNettoSum().toNumberString(); }
+    Geld noTaxNettoSum() const;
+    QString noTaxNettoSumNum() const { return noTaxNettoSum().toNumberString(); }
+
+    bool hasFullTaxItems() const;
+    bool hasReducedTaxItems() const;
+    bool hasNoTaxItems() const;
+
     QString country() const;
     QString language() const;
 
@@ -281,7 +306,14 @@ public:
     bool tosValid() const;
     bool tosMultiDay() const;
 
-    QString dueDate() const { return _dueDate.toString("yyyy-MM-dd"); }
+    // Payment due date of an invoice, invalid if not set.
+    QDate dueDate() const { return _dueDate; }
+    QString dueDateStrISO() const { return _dueDate.toString("yyyy-MM-dd"); }
+    QString dueDateStr() const;
+    // Days from the document date to the due date, 0 if there is no due date.
+    int paymentDueDays() const;
+    // The date plus the payment term of the settings, moved to Monday if on a weekend.
+    static QDate calcDueDate(const QDate& docDate);
     QString buyerRef() const { return _buyerRef; }
     void setDueDate(const QDate& d) { _dueDate = d; }
     void setBuyerRef(const QString& br) { _buyerRef = br; }

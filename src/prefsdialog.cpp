@@ -52,7 +52,10 @@
 #include "format.h"
 #include "positionviewwidget.h"
 #include "myidentity.h"
+#include "kraftcontact.h"
 #include "grantleetemplate.h"
+
+using namespace Qt::StringLiterals;
 
 // ################################################################################
 
@@ -246,13 +249,65 @@ QWidget* PrefsDialog::whoIsMeTab()
   QGroupBox *gbox = new QGroupBox(i18n("Bank Account Information"), this);
   QFormLayout *formLayout = new QFormLayout;
   _bacName = new QLineEdit(this);
-  formLayout->addRow(tr("&Bank Account Holder:"), _bacName);
+  formLayout->addRow(i18n("&Bank Account Holder:"), _bacName);
   _bacIBAN = new QLineEdit(this);
-  formLayout->addRow(tr("&IBAN:"), _bacIBAN);
+  formLayout->addRow(i18n("&IBAN:"), _bacIBAN);
   _bacBIC = new QLineEdit(this);
-  formLayout->addRow(tr("&BIC:"), _bacBIC);
+  formLayout->addRow(i18n("&BIC:"), _bacBIC);
   gbox->setLayout(formLayout);
   vboxLay->addWidget(gbox);
+
+  // == Business data of the own company that has no place in a contact
+  QGroupBox *xrBox = new QGroupBox(i18n("Business and Tax Information"), this);
+  QFormLayout *xrLayout = new QFormLayout;
+
+  QLabel *taxHint = new QLabel(u"<i>"_s +
+                               i18n("An invoice must show either the VAT identifier or the tax "
+                                    "number. Most businesses only have a tax number; the VAT "
+                                    "identifier has to be applied for and is needed for trade "
+                                    "within the EU.") + u"</i>"_s);
+  taxHint->setWordWrap(true);
+  xrLayout->addRow(taxHint);
+
+  _xrVatId = new QLineEdit(this);
+  _xrVatId->setPlaceholderText(QStringLiteral("DE123456789"));
+  _xrVatId->setToolTip(i18n("The VAT identifier of your company, issued by the Bundeszentralamt "
+                            "für Steuern on request. Country prefix and 9 digits, ie. DE123456789. "
+                            "Needed for trade within the EU. Template variable me.VATID, "
+                            "XRechnung BT-31."));
+  xrLayout->addRow(i18n("&VAT identifier (USt-IdNr.):"), _xrVatId);
+
+  _xrTaxNumber = new QLineEdit(this);
+  _xrTaxNumber->setPlaceholderText(QStringLiteral("123/456/78901"));
+  _xrTaxNumber->setToolTip(i18n("The tax number of your company, issued by your local Finanzamt. "
+                                "The format depends on the Bundesland, ie. 123/456/78901. Every "
+                                "business has one. Template variable me.TAXNUMBER, "
+                                "XRechnung BT-32."));
+  xrLayout->addRow(i18n("&Tax number (Steuernummer):"), _xrTaxNumber);
+
+  _xrRegistrationId = new QLineEdit(this);
+  _xrRegistrationId->setPlaceholderText(QStringLiteral("HRB 4711"));
+  _xrRegistrationId->setToolTip(i18n("The entry of your company in the commercial register, ie. "
+                                     "HRB 4711. Only for companies that are registered. "
+                                     "Template variable me.REGISTRATIONID, XRechnung BT-30. "
+                                     "Optional."));
+  xrLayout->addRow(i18n("Registration &number (Handelsregister):"), _xrRegistrationId);
+
+  _xrLegalForm = new QLineEdit(this);
+  _xrLegalForm->setPlaceholderText(i18n("GmbH, Amtsgericht Bonn"));
+  _xrLegalForm->setToolTip(i18n("The legal form of your company and the register court, ie. "
+                                "GmbH, Amtsgericht Bonn. Template variable me.LEGALFORM, "
+                                "XRechnung BT-33. Optional."));
+  xrLayout->addRow(i18n("&Legal information:"), _xrLegalForm);
+
+  _xrSmallBusiness = new QCheckBox(i18n("Small business, no VAT charged (Kleinunternehmer, § 19 UStG)"), this);
+  _xrSmallBusiness->setToolTip(i18n("Your company does not charge VAT because it is a small "
+                                    "business by § 19 UStG. The XRechnung then marks all items as "
+                                    "VAT exempt. Template variable me.SMALLBUSINESS."));
+  xrLayout->addRow(_xrSmallBusiness);
+
+  xrBox->setLayout(xrLayout);
+  vboxLay->addWidget(xrBox);
 
   topWidget->setLayout( vboxLay );
 
@@ -334,6 +389,18 @@ QWidget* PrefsDialog::docTab()
   mCbDefaultTaxType->insertItem( 2, i18n("Calculate full tax for all items" ) );
   // mCbDefaultTaxType->insertItem( 3, i18n("Calculate on individual item tax rate" ));
   vboxLay->addLayout( butLay );
+
+  butLay = new QHBoxLayout;
+  l = new QLabel(i18n("&Payment term for invoices:"), this);
+  butLay->addWidget(l);
+  mSbPaymentTerm = new QSpinBox(this);
+  mSbPaymentTerm->setRange(0, 365);
+  mSbPaymentTerm->setSuffix(i18n(" days"));
+  mSbPaymentTerm->setToolTip(i18n("The due date of an invoice is preset to the document date plus this many days."));
+  l->setBuddy(mSbPaymentTerm);
+  butLay->addWidget(mSbPaymentTerm);
+  butLay->addStretch();
+  vboxLay->addLayout(butLay);
 
   f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
@@ -477,6 +544,7 @@ void PrefsDialog::readConfig()
     mCbDocTypes->setCurrentIndex( mCbDocTypes->findText( t ));
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
+    mSbPaymentTerm->setValue(KraftSettings::self()->paymentTermDays());
 
     _lineEditXRechnung->setText(KraftSettings::self()->xRechnungTemplate());
 
@@ -512,15 +580,19 @@ void PrefsDialog::readConfig()
 
     mCbDateFormats->setCurrentIndex(index);
 
-    // == Bank Account Information
-    QString h = KraftSettings::self()->bankAccountName();
-    _bacName->setText(h);
-    h = KraftSettings::self()->bankAccountBIC();
-    _bacBIC->setText(h);
-    h = KraftSettings::self()->bankAccountIBAN();
-    _bacIBAN->setText(h);
+    // == Bank account and business data, both stored with the own contact rather
+    // than in the settings, as they belong to the company and not to the app.
+    KraftContact *own = MyIdentity::ownContact();
 
+    _bacName->setText(own->stringAttribute(KraftContact::AccountName));
+    _bacBIC->setText(own->stringAttribute(KraftContact::Bic));
+    _bacIBAN->setText(own->stringAttribute(KraftContact::Iban));
 
+    _xrVatId->setText(own->stringAttribute(KraftContact::VatId));
+    _xrTaxNumber->setText(own->stringAttribute(KraftContact::TaxNumber));
+    _xrRegistrationId->setText(own->stringAttribute(KraftContact::RegistrationId));
+    _xrLegalForm->setText(own->stringAttribute(KraftContact::LegalForm));
+    _xrSmallBusiness->setChecked(!own->stringAttribute(KraftContact::SmallBusiness).isEmpty());
 }
 
 void PrefsDialog::writeIdentity(int currIndx)
@@ -552,7 +624,7 @@ void PrefsDialog::writeIdentity(int currIndx)
     if( origin.isEmpty() || origin == "manual") {
         _myIdentity->save(QString(), _newOwnAddress);
     } else { /* AddressBook */        
-        _myIdentity->save(_newOwnAddress.uid());
+        _myIdentity->save(_newOwnAddress.uid(), _newOwnAddress);
     }
 }
 
@@ -560,6 +632,7 @@ void PrefsDialog::writeConfig()
 {
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
+    KraftSettings::self()->setPaymentTermDays(mSbPaymentTerm->value());
 
     // There is no way to set the XRechnung doc type specifically yet
     // Have one for all invoices for now
@@ -596,17 +669,21 @@ void PrefsDialog::writeConfig()
         KraftSettings::self()->setDateFormat(dateFormatString);
     }
 
-    QString h = _bacName->text();
-    if (h != KraftSettings::self()->bankAccountName()) {
-        KraftSettings::self()->setBankAccountName(h);
-    }
-    h = _bacBIC->text();
-    if (h != KraftSettings::self()->bankAccountBIC()) {
-        KraftSettings::self()->setBankAccountBIC(h);
-    }
-    h = _bacIBAN->text();
-    if (h != KraftSettings::self()->bankAccountIBAN()) {
-        KraftSettings::self()->setBankAccountIBAN(h);
+    // == Bank account and business data of the own company, see readConfig()
+    KraftContact *own = MyIdentity::ownContact();
+
+    own->setStringAttribute(KraftContact::AccountName, _bacName->text());
+    own->setStringAttribute(KraftContact::Bic, _bacBIC->text());
+    own->setStringAttribute(KraftContact::Iban, _bacIBAN->text());
+
+    own->setStringAttribute(KraftContact::VatId, _xrVatId->text());
+    own->setStringAttribute(KraftContact::TaxNumber, _xrTaxNumber->text());
+    own->setStringAttribute(KraftContact::RegistrationId, _xrRegistrationId->text());
+    own->setStringAttribute(KraftContact::LegalForm, _xrLegalForm->text());
+    own->setStringAttribute(KraftContact::SmallBusiness, _xrSmallBusiness->isChecked() ? u"1"_s : QString());
+
+    if (own->modified()) {
+        own->save();
     }
 
     KraftSettings::self()->save();

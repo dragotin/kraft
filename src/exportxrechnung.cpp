@@ -19,7 +19,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QTemporaryFile>
-#include <QTimer>
+#include <QRegularExpression>
 
 #include "exportxrechnung.h"
 #include "documentman.h"
@@ -28,30 +28,19 @@
 #include "kraftdb.h"
 #include "doctype.h"
 #include "format.h"
-#include "addressprovider.h"
 #include "documenttemplate.h"
+#include "myidentity.h"
 
 #include <KLocalizedString>
 
 ExporterXRechnung::ExporterXRechnung(QObject *parent)
     : QObject(parent),
-      _validateWithSchema {false}
+      _validateWithSchema {false},
+      _customer {nullptr}
 {
-    mAddressProvider = new AddressProvider(this);
-    connect(mAddressProvider, &AddressProvider::lookupResult,
-            this, &ExporterXRechnung::slotAddresseeFound);
 
 }
 
-void ExporterXRechnung::setDueDate(const QDate& d)
-{
-    _dueDate = d;
-}
-
-void ExporterXRechnung::setBuyerRef(const QString& br)
-{
-    _buyerRef = br;
-}
 
 QString ExporterXRechnung::templateFile() const
 {
@@ -67,44 +56,185 @@ QString ExporterXRechnung::templateFile() const
 bool ExporterXRechnung::exportDocument(const QString& uuid)
 {
     _uuid = uuid;
-    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
-    _docTypeStr = doc->docTypeStr();
     _error.clear();
-
-    const QString clientUid = doc->addressUid();
-    _customerContact = KContacts::Addressee();
-
-    AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
-    switch( state ) {
-    case AddressProvider::LookupFromCache:
-        _customerContact = mAddressProvider->getAddresseeFromCache(clientUid);
-        break;
-    case AddressProvider::LookupNotFound:
-    case AddressProvider::ItemError:
-    case AddressProvider::BackendError:
-        // set an empty contact
-        break;
-    case AddressProvider::LookupOngoing:
-    case AddressProvider::LookupStarted:
-        // Not much to do, just wait and let the addressprovider
-        // hit the slotAddresseFound
-        return true;
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    if (doc == nullptr) {
+        qDebug() << "Unable to open export doc" << uuid;
+        // Reported like any other export error, through the finished signal.
+        _error = i18n("The document could not be opened, its file might be missing.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return false;
     }
+    _docTypeStr = doc->docTypeStr();
+    // A draft has no final number yet, its ident is only a placeholder.
+    _docIdent = doc->isDraftState() || doc->ident().isEmpty() ? QStringLiteral("draft") : doc->ident();
+    _buyerRef = doc->buyerRef();
+    _dueDate = doc->dueDate();
 
-    QTimer::singleShot(0, this, &ExporterXRechnung::slotSkipLookup);
+    // The customer of the document, with the Kraft data Kraft has about it.
+    delete _customer; // from a previous export
+    _customer = new KraftContact(doc->addressUid(), this);
+    delete doc;
+    _customer->load();
+
+    connect(_customer, &KraftContact::addresseeLoaded,
+            this, &ExporterXRechnung::slotAddresseeFound);
+    // Continues in slotAddresseeFound(), which is reached in any case.
+    _customer->lookupAddressee();
+
     return true;
 }
 
-void ExporterXRechnung::slotSkipLookup()
+/* Check the seller data that the receiver of the invoice will reject it for if
+ * missing. Without this, an incomplete configuration results in an XRechnung
+ * that looks fine but gets refused by the validator of the recipient.
+ */
+QStringList ExporterXRechnung::missingSellerData(const KContacts::Addressee& myContact,
+                                                 const QMap<QString, QString>& own) const
 {
-    slotAddresseeFound(QString(), _customerContact);
+    QStringList re;
+
+    if (myContact.organization().isEmpty() && myContact.realName().isEmpty())
+        re << i18n("Company name (BT-27)");
+    if (myContact.realName().isEmpty())
+        re << i18n("Contact name (BT-41)");
+    // BT-42 is required, the template falls back to the mobile if there is no work phone.
+    if (myContact.phoneNumber(KContacts::PhoneNumber::Work).number().isEmpty() &&
+        myContact.phoneNumber(KContacts::PhoneNumber::Cell).number().isEmpty())
+        re << i18n("Contact phone number (BT-42)");
+    // The email is both the contact address and the electronic address BT-34.
+    if (myContact.preferredEmail().isEmpty())
+        re << i18n("Contact email address (BT-43/BT-34)");
+    // Either of the two is enough, both on a german invoice (§14 UStG) and for the
+    // EN16931 rule BR-S-02.
+    const QString vatId = own.value(QStringLiteral("VATID"));
+    if (vatId.isEmpty() && own.value(QStringLiteral("TAXNUMBER")).isEmpty())
+        re << i18n("VAT identifier or tax number (BT-31/BT-32)");
+
+    // BR-CO-9: the VAT identifier has to start with the country code, ie. DE123456789.
+    if (!vatId.isEmpty() &&
+        !QRegularExpression(QStringLiteral("^[A-Z]{2}[A-Z0-9]+$")).match(vatId).hasMatch())
+        re << i18n("VAT identifier with a leading country code, ie. DE123456789 (BT-31)");
+    if (own.value(QStringLiteral("IBAN")).isEmpty())
+        re << i18n("Bank account IBAN (BT-84)");
+
+    KContacts::Address addr = myContact.address(KContacts::Address::Pref);
+    if (addr.isEmpty())
+        addr = myContact.address(KContacts::Address::Work);
+    if (addr.isEmpty())
+        addr = myContact.address(KContacts::Address::Home);
+    if (addr.isEmpty())
+        addr = myContact.address(KContacts::Address::Postal);
+
+    if (addr.street().isEmpty())
+        re << i18n("Street of the address (BT-35)");
+    if (addr.locality().isEmpty())
+        re << i18n("City of the address (BT-37)");
+    if (addr.postalCode().isEmpty())
+        re << i18n("Post code of the address (BT-38)");
+    if (own.value(QStringLiteral("COUNTRYCODE")).isEmpty())
+        re << i18n("Country of the address, as a country name Kraft knows (BT-40)");
+
+    return re;
+}
+
+/* The customer side of the invoice. The electronic address BT-49 is mandatory for
+ * an XRechnung and has no sensible default, so an export without it has to fail
+ * rather than produce an invoice the recipient rejects.
+ */
+QStringList ExporterXRechnung::missingBuyerData(const KContacts::Addressee& customer) const
+{
+    QStringList re;
+
+    if (customer.isEmpty()) {
+        // No contact at all, ie. the document was written with a manually typed
+        // address. Naming every single field would not help here.
+        re << i18n("the whole customer address. The document has no contact from the "
+                   "address book assigned");
+        return re;
+    }
+
+    if (customer.realName().isEmpty() && customer.organization().isEmpty())
+        re << i18n("Customer name (BT-44)");
+    // BT-49, mandatory for an XRechnung.
+    if (customer.preferredEmail().isEmpty())
+        re << i18n("Customer email address, used as the electronic address (BT-49)");
+
+    KContacts::Address addr = customer.address(KContacts::Address::Pref);
+    if (addr.isEmpty())
+        addr = customer.address(KContacts::Address::Work);
+    if (addr.isEmpty())
+        addr = customer.address(KContacts::Address::Home);
+    if (addr.isEmpty())
+        addr = customer.address(KContacts::Address::Postal);
+
+    if (addr.street().isEmpty())
+        re << i18n("Customer street (BT-50)");
+    if (addr.locality().isEmpty())
+        re << i18n("Customer city (BT-52)");
+    if (addr.postalCode().isEmpty())
+        re << i18n("Customer post code (BT-53)");
+    if (_customer->countryCode().isEmpty())
+        re << i18n("Customer country, as a country name Kraft knows (BT-55)");
+
+    return re;
 }
 
 void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
     Q_UNUSED(uid)
-    KContacts::Addressee myContact; // leave empty for now
-    // now the three pillars archDoc, myContact and mCustomerContact are defined.
+    KraftContact *me = MyIdentity::ownContact();
+    const KContacts::Addressee myContact = me->addressee();
+    // now the three pillars archDoc, me and _customer are defined.
+
+    // The raw values, so the checks below see what the user actually entered.
+    const QMap<QString, QString> own = MyIdentity::ownBusinessData();
+
+    const QStringList missing = missingSellerData(myContact, own);
+    if (!missing.isEmpty()) {
+        _error = i18n("The own identity is incomplete for an XRechnung. Please add the "
+                      "following in the Own Identity page of the Kraft settings: %1",
+                      missing.join(QStringLiteral(", ")));
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
+
+    // A small business must not charge VAT, the invoice says category E throughout.
+    if (!own.value(KraftContact::SmallBusiness).isEmpty()) {
+        KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(_uuid);
+        // The same condition the template uses to write the E subtotal.
+        const bool taxed = doc && !doc->noTaxesDocument();
+        delete doc;
+        if (taxed) {
+            _error = i18n("The own company is set up as a small business (§19 UStG), but the "
+                          "document has items with VAT. Please remove the VAT from the items.");
+            Q_EMIT xRechnungTmpFile(QString());
+            return;
+        }
+    }
+
+    const QStringList missingBuyer = missingBuyerData(contact);
+    if (!missingBuyer.isEmpty()) {
+        _error = i18n("The customer data is incomplete for an XRechnung. Please add the "
+                      "following to the address book contact of the customer: %1",
+                      missingBuyer.join(QStringLiteral(", ")));
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
+
+    // BR-DE-15: the buyer reference BT-10 is mandatory for an XRechnung.
+    if (_buyerRef.isEmpty()) {
+        _error = i18n("The buyer reference (BT-10) is missing, ie. the Leitweg-ID of an authority. "
+                      "Please enter it in the footer of the document.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
+    // The template writes the due date BT-9, it is the payment term of the invoice.
+    if (!_dueDate.isValid()) {
+        _error = i18n("The due date is missing. Please set it in the footer of the document.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
 
     QScopedPointer<DocumentTemplate> templateEngine;
 
@@ -117,12 +247,7 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
 
-    QVariantHash xr;
-    xr.insert("dueDate", _dueDate);
-    xr.insert("buyerRef", _buyerRef);
-    templateEngine->addExtraHash("xrechnung", xr);
-
-    const QString expanded = templateEngine->expand(_uuid, myContact, contact);
+    const QString expanded = templateEngine->expand(_uuid, me, _customer);
 
     if (expanded.isEmpty()) {
         // Q_EMIT failure(i18n("The template expansion failed."));

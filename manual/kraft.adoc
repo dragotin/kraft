@@ -402,6 +402,8 @@ Both the header- and footer-templates can contain so called macros which are rep
 The following list of macros are supported:
 
 - `DATE_ADD_DAYS(<amount_days>)`: Returns the date of the document plus the number of days specified as parameter to the macro.
+- `DUE_DATE`: Returns the payment due date of the invoice, or nothing if the document has no due date.
+- `PAYMENT_DUE_DAYS`: Returns the number of days from the document date to the due date, or 0 if the document has no due date.
 - `ITEM_COUNT_WITH_TAG(<tag>)`: Returns the amount of items tagged with the tag.
 - `NETTO_SUM_PER_TAG(<tag>)`: Returns the net sum of all items that are tagged with the named tag.
 - `BRUTTO_SUM_PER_TAG(<tag>)`: Returns the gross sum of all items that are tagged with the named tag.
@@ -464,6 +466,31 @@ the footer.
 
 Adapt the header and the footer to your situation, on the footer you can
 place a text: `We make your garden-dream come to reality.`.
+
+An invoice has to state when the work was done or the goods were
+delivered. For that, the header section of invoices has the checkbox
+btn:[Benefit Period:] with a btn:[from] and a btn:[to] date. Once the
+checkbox is set, the dates can be edited. For work that was done on a
+single day, set both dates to the same day. The invoice then lists the
+benefit period with the document details such as date and number, as a
+single date or as a range from the first to the last day. The benefit period is also exported as
+the invoice period in an XRechnung. If the checkbox is not set, the
+invoice has no benefit period.
+
+Invoices also have a due date for the payment, which is set in the footer
+section with the checkbox btn:[Due date]. As long as the checkbox is not
+set, the date is preset to the document date plus the payment term, which
+is 21 days by default and can be changed on the Document Defaults page of
+the settings. If that date falls on a weekend, the following Monday is
+taken. Public holidays are not considered. The due date can be printed
+in the footer text with the macros `DUE_DATE` and `PAYMENT_DUE_DAYS`, see
+<<Macros>>.
+
+For document types with XRechnung support, the footer section also has the
+field btn:[Buyer reference]. That is the buyer reference (BT-10) of the
+XRechnung, for a public authority its Leitweg-ID. The field is preset with
+the buyer reference of the customer, and the first buyer reference entered
+for a customer is remembered for the next invoices to that customer.
 
 Click on the button btn:[Show templates].
 
@@ -1021,7 +1048,7 @@ Once the file is adapted to the needs, open the Settings dialog of Kraft and ins
 
 Next is to specify for which document types the XRechnung export should be made available. For that, open the Kraft Settings dialog, and proceed to the Document Type tab on the left. For each document type listed there, you can mark the checkbox btn:[Enable XRechnung Support]. 
 
-After those steps, the btn:[Export XRechung] menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.
+The XRechnung needs a due date and a buyer reference (BT-10), ie. the Leitweg-ID of a public authority. Both are entered in the footer section of the document. After those steps, the btn:[Export XRechung] menu item lets you pick a filename where to save the XRechnung invoice file to. If data is missing for a valid XRechnung, Kraft names it instead of exporting.
 
 This file can now be transferred to the receiver of the invoice via email, a private file share or the like.
 

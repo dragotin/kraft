@@ -247,6 +247,8 @@ void KraftDoc::clear()
     // Time of supply
     _toSStart = QDateTime();
     _toSEnd = QDateTime();
+    _dueDate = QDate();
+    _buyerRef.clear();
     _owner.clear();
 
     mPositions.clear();
@@ -682,8 +684,16 @@ ReportItemList KraftDoc::reportItemList() const
     // ReportItemList reList(positions());
     ReportItemList list;
 
+    // The tax rates live on the document, the items only know their tax type.
+    double fTax{_fullTax};
+    double rTax{_redTax};
+    if (fTax < 0) {
+        fTax = UnitManager::self()->tax(date());
+        rTax = UnitManager::self()->reducedTax(date());
+    }
+
     for( auto &pos : positions()) {
-        ReportItem *ri = new ReportItem(pos);
+        ReportItem *ri = new ReportItem(pos, fTax, rTax);
         list.append(ri);
     }
 
@@ -755,6 +765,36 @@ void KraftDoc::slotDeleteDoc()
     man->saveDocument(this);
 }
 
+Geld KraftDoc::fullTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::Full);
+}
+
+Geld KraftDoc::reducedTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::Reduced);
+}
+
+Geld KraftDoc::noTaxNettoSum() const
+{
+    return positions().nettoPrice(DocPosition::Tax::None);
+}
+
+bool KraftDoc::hasFullTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::Full);
+}
+
+bool KraftDoc::hasReducedTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::Reduced);
+}
+
+bool KraftDoc::hasNoTaxItems() const
+{
+    return positions().hasTaxType(DocPosition::Tax::None);
+}
+
 bool KraftDoc::fullTaxesDocument() const
 {
     bool re = (positions().listTaxation() == DocPosition::Tax::Full);
@@ -794,8 +834,10 @@ bool KraftDoc::noTaxesDocument() const
   *    are tagged with this tag
   *
   * 4. DATE_ADD_DAYS(days): Adds the amount of days to the date delivered in the call parameters
+  * 5. DUE_DATE: The payment due date, empty if there is none
+  * 6. PAYMENT_DUE_DAYS: Days from the date to the due date, 0 if there is no due date
   */
- QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax, const QString& dateFormat) const
+ QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax, const QString& dateFormat, const QDate& dueDate) const
  {
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
@@ -895,6 +937,11 @@ bool KraftDoc::noTaxesDocument() const
          myStr.replace(pos, match.captured().length(), newDateStr);
      }
 
+     const QString dueDays = QString::number(dueDate.isValid() && date.isValid() ? date.daysTo(dueDate) : 0);
+     myStr.replace(QStringLiteral("PAYMENT_DUE_DAYS"), dueDays);
+     myStr.replace(QStringLiteral("DUE_DATE"),
+                   Format::toDateString(dueDate, dateFormat.isEmpty() ? KraftSettings::self()->dateFormat() : dateFormat));
+
      // IF_ANY_HAS_TAG(tag) ..... END_HAS_TAG
      // check the IF_HAS_TAG(tag) ... END_HAS_TAG macro
      pos = 0;
@@ -958,7 +1005,7 @@ bool KraftDoc::noTaxesDocument() const
  {
      double fullTax = UnitManager::self()->tax(date());
      double redTax = UnitManager::self()->reducedTax(date());
-     const QString myStr = resolveMacros(mPreText, positions(), date(), fullTax, redTax);
+     const QString myStr = resolveMacros(mPreText, positions(), date(), fullTax, redTax, QString(), _dueDate);
      return myStr;
  }
 
@@ -966,7 +1013,7 @@ bool KraftDoc::noTaxesDocument() const
  {
      double fullTax = UnitManager::self()->tax(date());
      double redTax = UnitManager::self()->reducedTax(date());
-     const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax);
+     const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax, QString(), _dueDate);
      return myStr;
  }
 
@@ -979,3 +1026,26 @@ bool KraftDoc::noTaxesDocument() const
  {
      return multilineHtml(mPostText);
  }
+
+QString KraftDoc::dueDateStr() const
+{
+    return Format::toDateString(_dueDate, KraftSettings::self()->dateFormat());
+}
+
+int KraftDoc::paymentDueDays() const
+{
+    if (!_dueDate.isValid() || !mDate.isValid())
+        return 0;
+    return mDate.daysTo(_dueDate);
+}
+
+QDate KraftDoc::calcDueDate(const QDate& docDate)
+{
+    // shortcut: weekends only, public holidays are not skipped
+    QDate d = docDate.addDays(KraftSettings::self()->paymentTermDays());
+    if (d.dayOfWeek() == Qt::Saturday)
+        d = d.addDays(2);
+    else if (d.dayOfWeek() == Qt::Sunday)
+        d = d.addDays(1);
+    return d;
+}

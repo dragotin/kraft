@@ -145,6 +145,8 @@ private Q_SLOTS:
 
         QCOMPARE(doc.postText(), "Danke für dein Interesse,");
         QCOMPARE(doc.goodbye(), "mit den besten Grüssen,");
+        QCOMPARE(doc.dueDate(), QDate(2011, 2, 17));
+        QCOMPARE(doc.paymentDueDays(), 21);
     }
 
     // Documents written before the time of supply was stored with the time of
@@ -265,8 +267,11 @@ private Q_SLOTS:
         doc.setPreTextRaw("Wir erlauben uns, folgende Positionen in Rechnung zu stellen.");
 
         // footer block
-        doc.setPostTextRaw("Bitte überweisen Sie den Betrag innerhalb von 14 Tagen.");
+        // the macro has to survive the save, not be expanded into the file
+        doc.setPostTextRaw("Bitte überweisen Sie den Betrag bis zum DUE_DATE.");
         doc.setGoodbye("Mit freundlichen Grüßen");
+        doc.setDueDate(QDate(2024, 7, 6));
+        doc.setBuyerRef("04011000-1234512345-06");
 
         // two line items
         DocPosition *pos1 = doc.createPosition();
@@ -319,8 +324,10 @@ private Q_SLOTS:
         QCOMPARE(doc2.preTextRaw(),                  doc.preTextRaw());
 
         // footer block
-        QCOMPARE(doc2.postTextRaw(), doc.postTextRaw());
+        QCOMPARE(doc2.postTextRaw(), QString("Bitte überweisen Sie den Betrag bis zum DUE_DATE."));
         QCOMPARE(doc2.goodbye(),     QString("Mit freundlichen Grüßen"));
+        QCOMPARE(doc2.dueDate(),     QDate(2024, 7, 6));
+        QCOMPARE(doc2.buyerRef(),    QString("04011000-1234512345-06"));
 
         // items
         DocPositionList items = doc2.positions();

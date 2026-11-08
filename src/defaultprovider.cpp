@@ -452,6 +452,7 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
             currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::NumberCycles)); // "numbercycles"
             currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::XmlDocs));      // "xmldoc"
             currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::DocTypes));     // "doctypes"
+            currV2Dir.mkdir(kraftV2Subdir(KraftV2Dir::Contacts));     // "contacts"
         }
         cnt++;
     } while(!(ok && cnt < 5));
@@ -514,6 +515,9 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
         break;
     case KraftV2Dir::DocTypes:
         subdir = "doctypes";
+        break;
+    case KraftV2Dir::Contacts:
+        subdir = "contacts";
         break;
     case KraftV2Dir::Tests:
         subdir = "tests";

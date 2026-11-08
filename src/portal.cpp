@@ -66,10 +66,8 @@
 #include "kraftview_ro.h"
 #include "databasesettings.h"
 #include "setupassistant.h"
-#include "addressprovider.h"
 #include "alldocsview.h"
 #include "exportxrechnung.h"
-#include "ui_xrechnung.h"
 #include "ui_finalizedoc.h"
 #include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
@@ -121,8 +119,6 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
 
     setAttribute( Qt::WA_QuitOnClose );
     ///////////////////////////////////////////////////////////////////
-
-    mAddressProvider = new AddressProvider( this );
 
     const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toLatin1() );
     restoreState(state);
@@ -730,28 +726,9 @@ void Portal::slotViewDocument( const QString& uuid )
 
 void Portal::slotXRechnungCurrentDocument()
 {
-    // FIXME: Error handling - error needs to be returned from exporter
-    auto dia = new QDialog(this);
-    Ui::XRechnungDialog ui;
-    ui.setupUi(dia);
-    dia->setWindowTitle(i18n("XRechnung"));
-
-    QDate today = QDate::currentDate();
-    ui._dueDateEdit->setDate(today.addDays(21));
-    ui._buyerRefEdit->setText("unknown");
-
-    dia->open();
-    connect(dia, &QDialog::finished, [ui, dia, this](int result) {
-        if (result == QDialog::Accepted) {
-            _exporter->setBuyerRef(ui._buyerRefEdit->text());
-            const QDate d = ui._dueDateEdit->date();
-            _exporter->setDueDate(d);
-            const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-            _exporter->exportDocument(uuid);
-        }
-        dia->deleteLater();
-    });
-
+    // The due date and the buyer reference are part of the document, ie. its footer.
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    _exporter->exportDocument(uuid);
 }
 
 void Portal::slotExporterFinished(const QString& fName)
@@ -763,7 +740,10 @@ void Portal::slotExporterFinished(const QString& fName)
         return;
     }
     qDebug() << "This is the xrechnung file name." << fName;
-    const QString proposeName = QString("%1/xrechnung.xml").arg(QDir::homePath());
+    // An ident can contain chars that are not allowed in a file name, ie. a slash.
+    QString ident = _exporter->docIdent();
+    ident.replace(QRegularExpression(QStringLiteral("[^\\w.-]")), QStringLiteral("_"));
+    const QString proposeName = QString("%1/xrechnung-%2.xml").arg(QDir::homePath(), ident);
     const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
 
     if( f.isEmpty()) {
@@ -773,8 +753,12 @@ void Portal::slotExporterFinished(const QString& fName)
     if (QFile::exists(f))  // copy does not overwrite the target file
         QFile::remove(f);
 
-    QFile::copy(fName, f);
-    this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
+    if (QFile::copy(fName, f)) {
+        this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
+        QFile::remove(fName); // remove the tmp-file
+    } else {
+        this->slotStatusMsg(i18n("Unable to copy XRechnung tmp file %1").arg(fName));
+    }
 }
 
 QDebug operator<<(QDebug debug, const dbID &id)
@@ -895,30 +879,11 @@ void Portal::slotMailDocument()
 
     const QString& addrUid = doc->addressUid();
 
-    connect( mAddressProvider, &AddressProvider::lookupResult,
+    KraftContact *kraftContact = new KraftContact(addrUid);
+    connect( kraftContact, &KraftContact::addresseeLoaded,
              this, &Portal::openInMailer);
-
-    KContacts::Addressee contact;
-
-    AddressProvider::LookupState state = mAddressProvider->lookupAddressee(addrUid);
-    switch( state ) {
-    case AddressProvider::LookupFromCache:
-        contact = mAddressProvider->getAddresseeFromCache(addrUid);
-        break;
-    case AddressProvider::LookupNotFound:
-    case AddressProvider::ItemError:
-    case AddressProvider::BackendError:
-        break;
-    case AddressProvider::LookupOngoing:
-    case AddressProvider::LookupStarted:
-        // the signal to openInMailer will come later.
-        return;
-        break;
-        // Not much to do, just wait
-    }
-    openInMailer(addrUid, contact);
-
     // qDebug () << "Mailing document " << locId << endl;
+    kraftContact->lookupAddressee();
 }
 
 void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& contact)
@@ -926,8 +891,7 @@ void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& c
     QString mailReceiver;
     Q_UNUSED(addrUuid);
 
-    disconnect(mAddressProvider, &AddressProvider::lookupResult,
-               this, &Portal::openInMailer);
+    sender()->deleteLater();
 
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the preferred email
@@ -1032,8 +996,9 @@ void Portal::showTemplateVarsUuid(const QString& uuid)
     }
     // -- open a html display window
     QScopedPointer<GrantleeAllVarsTemplate> templateEngine(new GrantleeAllVarsTemplate(tmplFile));
-    KContacts::Addressee contact;
-    const QString expanded = templateEngine->expand(uuid, _myIdentity.contact(), contact);
+    // The list of variables needs no customer, the example values of that namespace
+    // come from the document itself.
+    const QString expanded = templateEngine->expand(uuid, MyIdentity::ownContact(), nullptr);
 
     auto geo = QByteArray::fromBase64(KraftSettings::self()->templVarWinGeometry().toLatin1());
     auto *window = new HtmlWindow(i18n("Template Variables Overview"), "alltemplwindow", this);
@@ -1197,7 +1162,7 @@ QString Portal::slotConvertToXML()
     DbToXMLConverter converter;
 
     const QString dBase = DefaultProvider::self()->createV2BaseDir();
-    const QString info{ tr("Conversion started to %1").arg(dBase)};
+    const QString info{ i18n("Conversion started to %1").arg(dBase)};
 
     // No matter what this must run, also for new instances, because at least the
     // default number cycle must be created

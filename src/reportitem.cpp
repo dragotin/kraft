@@ -25,7 +25,7 @@ ReportItem::ReportItem()
 
 }
 
-ReportItem::ReportItem(DocPosition *dp)
+ReportItem::ReportItem(DocPosition *dp, double fullTax, double redTax)
     : QObject()
 {
 //    int     _itemNo;
@@ -49,12 +49,20 @@ ReportItem::ReportItem(DocPosition *dp)
 
     QString re;
     DocPosition::Tax tt = dp->taxType();
+    // EN16931 uses the category code S for both the standard and the reduced rate,
+    // the rates are told apart by the percentage in BT-152. Z is zero rated.
     if ( tt == DocPosition::Tax::Reduced ) {
         re = QStringLiteral("2");
+        _taxPercentNum = QString::number(redTax, 'f', 2);
+        _taxCategory = QStringLiteral("S");
     } else if ( tt == DocPosition::Tax::None) {
         re = QStringLiteral("");
+        _taxPercentNum = QStringLiteral("0.00");
+        _taxCategory = QStringLiteral("Z");
     } else if (tt == DocPosition::Tax::Full) {
         re = QStringLiteral("1");
+        _taxPercentNum = QString::number(fullTax, 'f', 2);
+        _taxCategory = QStringLiteral("S");
     }
 
     _unit = dp->unit().einheit(dp->amount() > 1 ? 2 : 1);

@@ -31,6 +31,7 @@ class QLineEdit;
 class QLabel;
 class QPushButton;
 class QComboBox;
+class QSpinBox;
 class QCheckBox;
 class QSqlTableModel;
 class QTreeView;
@@ -101,6 +102,7 @@ private:
 
     QComboBox *mCbDocTypes;
     QComboBox *mCbDefaultTaxType;
+    QSpinBox *mSbPaymentTerm;
     QComboBox *mCbDateFormats;
     QPushButton *_pbChangeIdentity;
 
@@ -122,6 +124,12 @@ private:
     QLineEdit *_bacName;
     QLineEdit *_bacIBAN;
     QLineEdit *_bacBIC;
+
+    QLineEdit *_xrVatId;
+    QLineEdit *_xrTaxNumber;
+    QLineEdit *_xrRegistrationId;
+    QLineEdit *_xrLegalForm;
+    QCheckBox *_xrSmallBusiness;
 
     MyIdentity *_myIdentity;
     KContacts::Addressee _newOwnAddress;

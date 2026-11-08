@@ -121,6 +121,7 @@ set(kraft_SRCS
     stringutil.cpp
     epcqrcode.cpp
     kraftattrib.cpp
+    kraftcontact.cpp
     kraftobj.cpp
     xmlindexdb.cpp
     reportitemlist.cpp
@@ -161,7 +162,6 @@ set( kraft_UIS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
-    xrechnung.ui
     documentactions.ui
     finalizedoc.ui
     dbtoxml.ui
@@ -176,6 +176,7 @@ set(KRAFT_LINK_LIBS
     Qt6::Xml
 
     KF6::I18n
+    KF6::I18nLocaleData
     KF6::Contacts
     KF6::ConfigCore
     KF6::ConfigGui
