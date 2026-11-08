@@ -36,6 +36,8 @@ class ReportItem: public QObject
     Q_PROPERTY(QString itemNumber READ itemNumber)
     Q_PROPERTY(QString text READ getText)
     Q_PROPERTY(QString htmlText READ htmlText)
+    // The first line of the text, ie. the item name BT-153 of the XRechnung
+    Q_PROPERTY(QString textFirstLine READ textFirstLine)
     Q_PROPERTY(QString amount READ amount)
     Q_PROPERTY(QString amountNum READ amountNum)
     Q_PROPERTY(QString unit READ unit)
@@ -58,6 +60,7 @@ public:
     QString itemNumber() { return QString::number(_itemNo); }
     QString getKind() { return _kind; }
     QString htmlText();
+    QString textFirstLine() { return _text.section(QLatin1Char('\n'), 0, 0).trimmed(); }
     QString amount() { return _amount; }
     QString amountNum() { return _amountNum; }
     QString unit() { return _unit; }

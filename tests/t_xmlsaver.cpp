@@ -271,6 +271,7 @@ private Q_SLOTS:
         doc.setPostTextRaw("Bitte überweisen Sie den Betrag bis zum DUE_DATE.");
         doc.setGoodbye("Mit freundlichen Grüßen");
         doc.setDueDate(QDate(2024, 7, 6));
+        doc.setBuyerRef("04011000-1234512345-06");
 
         // two line items
         DocPosition *pos1 = doc.createPosition();
@@ -326,6 +327,7 @@ private Q_SLOTS:
         QCOMPARE(doc2.postTextRaw(), QString("Bitte überweisen Sie den Betrag bis zum DUE_DATE."));
         QCOMPARE(doc2.goodbye(),     QString("Mit freundlichen Grüßen"));
         QCOMPARE(doc2.dueDate(),     QDate(2024, 7, 6));
+        QCOMPARE(doc2.buyerRef(),    QString("04011000-1234512345-06"));
 
         // items
         DocPositionList items = doc2.positions();

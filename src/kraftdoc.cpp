@@ -248,6 +248,7 @@ void KraftDoc::clear()
     _toSStart = QDateTime();
     _toSEnd = QDateTime();
     _dueDate = QDate();
+    _buyerRef.clear();
     _owner.clear();
 
     mPositions.clear();

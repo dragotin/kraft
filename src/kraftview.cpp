@@ -67,6 +67,7 @@
 #include "stockmaterial.h"
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
+#include "kraftcontact.h"
 #include "catalogtemplate.h"
 #include "importitemdialog.h"
 #include "addressprovider.h"
@@ -389,6 +390,8 @@ void KraftView::redrawDocument( )
                                                          : KraftDoc::calcDueDate(docDate));
     m_footerEdit->ui()->_cbDueDate->setChecked(hasDueDate);
     m_footerEdit->ui()->_dueDateEdit->setEnabled(hasDueDate);
+    m_footerEdit->ui()->_buyerRefEdit->setText(doc->buyerRef());
+    presetBuyerRef();
 
     mAssistant->slotSetDocType( doc->docTypeStr() );
 
@@ -465,6 +468,9 @@ void KraftView::slotNewAddress( const KContacts::Addressee& contact, bool intera
 
     if( replace ) {
         mContactUid = contact.uid();
+        // Another customer, so the reference of the previous one does not apply.
+        m_footerEdit->ui()->_buyerRefEdit->clear();
+        presetBuyerRef();
 
         m_headerEdit->m_postAddressEdit->setText( newAddress );
 
@@ -744,6 +750,7 @@ void KraftView::setupFooter()
       slotModifiedFooter();
   });
   connect(m_footerEdit->ui()->_dueDateEdit, &QDateEdit::dateChanged, this, &KraftView::slotModifiedFooter);
+  connect(m_footerEdit->ui()->_buyerRefEdit, &QLineEdit::textEdited, this, &KraftView::slotModifiedFooter);
   // As long as the user did not set a due date, it follows the document date.
   connect(m_headerEdit->m_dateEdit, &QDateEdit::dateChanged, this, [this](QDate d) {
       if (!m_footerEdit->ui()->_cbDueDate->isChecked())
@@ -927,6 +934,9 @@ void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee&
 
     if( replace ) {
         mContactUid = uid;
+        // Another customer, so the reference of the previous one does not apply.
+        m_footerEdit->ui()->_buyerRefEdit->clear();
+        presetBuyerRef();
         m_headerEdit->m_labName->setText( contact.realName() );
 
         m_headerEdit->m_postAddressEdit->setText( newAddress );
@@ -967,6 +977,9 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   m_footerEdit->ui()->_taxGroup->setVisible( !docType.pricesHidden() );
   m_headerEdit->tosFrame->setVisible(docType.isInvoice());
   m_footerEdit->ui()->_dueDateGroup->setVisible(docType.isInvoice());
+  m_footerEdit->ui()->_labBuyerRef->setVisible(docType.isXRechnungEnabled());
+  m_footerEdit->ui()->_buyerRefEdit->setVisible(docType.isXRechnungEnabled());
+  m_footerEdit->ui()->_labXRechnungHint->setVisible(docType.isXRechnungEnabled());
 
   if( mDocPosEditorIndx > -1 ) {
       KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
@@ -1417,6 +1430,18 @@ void KraftView::done( int r )
     QDialog::done( r );
 }
 
+/* The buyer reference is usually the same on all invoices to a customer, ie. the
+ * Leitweg-ID of an authority, so an empty field gets the one of the customer.
+ */
+void KraftView::presetBuyerRef()
+{
+    if (!m_footerEdit->ui()->_buyerRefEdit->text().isEmpty() || mContactUid.isEmpty())
+        return;
+    KraftContact customer(mContactUid);
+    customer.load();
+    m_footerEdit->ui()->_buyerRefEdit->setText(customer.stringAttribute(KraftContact::BuyerReference));
+}
+
 QDate KraftView::editorDueDate() const
 {
     // Only invoices have a due date, the group is hidden for other types.
@@ -1451,6 +1476,20 @@ void KraftView::saveChanges()
     m_doc->setTimeOfSupply(startD, endD);
 
     m_doc->setDueDate(editorDueDate());
+
+    // The buyer reference is only used for an XRechnung.
+    const bool xr = m_footerEdit->ui()->_buyerRefEdit->isVisibleTo(m_footerEdit);
+    const QString buyerRef = xr ? m_footerEdit->ui()->_buyerRefEdit->text().trimmed() : QString();
+    m_doc->setBuyerRef(buyerRef);
+    // The first buyer reference of a customer becomes the default for the next invoices.
+    if (!buyerRef.isEmpty() && !mContactUid.isEmpty()) {
+        KraftContact customer(mContactUid);
+        customer.load();
+        if (customer.stringAttribute(KraftContact::BuyerReference).isEmpty()) {
+            customer.setStringAttribute(KraftContact::BuyerReference, buyerRef);
+            customer.save();
+        }
+    }
 
     if (mModified) m_doc->setModified();
 

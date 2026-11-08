@@ -262,6 +262,8 @@ QString getDesc(const QString& prefix, const QString& name)
                 "Text of the item, as plain text") },
             { u"htmlText"_s, i18nc("Document Template var description",
                 "Text of the item, as HTML") },
+            { u"textFirstLine"_s, i18nc("Document Template var description",
+                "First line of the item text, ie. the item name for XRechnung") },
             { u"amount"_s, i18nc("Document Template var description",
                 "Quantity of the item localized as user string") },
             { u"amountNum"_s, i18nc("Document Template var description",

@@ -83,6 +83,11 @@ private Q_SLOTS:
         noTax.replace(_docUuid, _noTaxDocUuid).replace(_docIdent, u"20110128"_s);
         noTax.replace(u"<taxtype>Full</taxtype>"_s, u"<taxtype>None</taxtype>"_s);
         noTax.replace(u"<taxtype>Reduced</taxtype>"_s, u"<taxtype>None</taxtype>"_s);
+        // an item text with two lines and a char that needs XML escaping
+        noTax.replace(u"<text>first item</text>"_s, u"<text>first item &amp; more\nsecond line</text>"_s);
+        // a free text buyer reference that needs XML escaping
+        noTax.replace(u"<buyerReference>04011000-1234512345-06</buyerReference>"_s,
+                      u"<buyerReference>Order A&amp;B</buyerReference>"_s);
         QFile noTaxFile(d.filePath(_noTaxDocUuid + ".xml"));
         QVERIFY(noTaxFile.open(QIODevice::WriteOnly));
         noTaxFile.write(noTax.toUtf8());
@@ -188,13 +193,20 @@ private Q_SLOTS:
         QCOMPARE(customerContact.firstChildElement(u"cbc:Telephone"_s).nextSiblingElement().tagName(),
                  u"cbc:ElectronicMail"_s);
         QVERIFY(!out.contains(u"<cbc:ID>E</cbc:ID>"_s));
+        // BT-9 and BT-10 come from the document
+        QVERIFY(out.contains(u"<cbc:DueDate>2011-02-17</cbc:DueDate>"_s));
+        QVERIFY(out.contains(u"<cbc:BuyerReference>04011000-1234512345-06</cbc:BuyerReference>"_s));
     }
 
     void xrechnungTemplateSmallBusiness()
     {
-        MyIdentity::ownContact()->setStringAttribute(KraftContact::SmallBusiness, u"1"_s);
-        const QString out = expandXRechnung(_noTaxDocUuid);
-        MyIdentity::ownContact()->removeAttribute(KraftContact::SmallBusiness);
+        KraftContact *own = MyIdentity::ownContact();
+        const QString iban = own->stringAttribute(KraftContact::Iban);
+        own->setStringAttribute(KraftContact::SmallBusiness, u"1"_s);
+        own->setStringAttribute(KraftContact::Iban, u"DE02 1203 0000 0000 2020 51"_s);
+        const QString out = expandXRechnung(_noTaxDocUuid, u"Goofy & Sons"_s);
+        own->removeAttribute(KraftContact::SmallBusiness);
+        own->setStringAttribute(KraftContact::Iban, iban);
 
         QDomDocument dom;
         QVERIFY2(dom.setContent(out), qPrintable(out));
@@ -202,18 +214,31 @@ private Q_SLOTS:
         QVERIFY(out.contains(u"<cbc:ID>E</cbc:ID>"_s));
         QVERIFY(!out.contains(u"<cbc:ID>Z</cbc:ID>"_s));
         QVERIFY(!out.contains(u"<cbc:ID>S</cbc:ID>"_s));
+        // escaped exactly once, the document and the contact values
+        QVERIFY2(out.contains(u"<cbc:Name>first item &amp; more</cbc:Name>"_s), qPrintable(out));
+        QVERIFY(out.contains(u"<cbc:Description>first item &amp; more\nsecond line</cbc:Description>"_s));
+        QVERIFY(!out.contains(u"&lt;br/&gt;"_s));
+        // BT-84 without the spaces of the printed IBAN
+        QVERIFY(out.contains(u"<cbc:ID>DE02120300000000202051</cbc:ID>"_s));
+        // every unit has a code, the lump sum unit gets C62
+        QVERIFY(!out.contains(u"unitCode=\"\""_s));
+        QVERIFY(out.contains(u"unitCode=\"C62\""_s));
+        QVERIFY2(out.contains(u"<cbc:RegistrationName>Goofy &amp; Sons</cbc:RegistrationName>"_s), qPrintable(out));
+        QVERIFY2(out.contains(u"<cbc:BuyerReference>Order A&amp;B</cbc:BuyerReference>"_s), qPrintable(out));
     }
 
 private:
-    QString expandXRechnung(const QString& uuid)
+    QString expandXRechnung(const QString& uuid, const QString& customerOrg = QString())
     {
         GrantleeDocumentTemplate tmpl(_sourceDir + "/reports/xrechnung.xrtmpl");
-        tmpl.addExtraHash(u"xrechnung"_s, {{u"dueDate"_s, u"2011-02-27"_s}, {u"buyerRef"_s, u"04011000-1234512345-06"_s}});
 
         KraftContact *me = MyIdentity::ownContact();
         me->setAddressee(example_contact());
         KraftContact customer;
-        customer.setAddressee(example_contact());
+        KContacts::Addressee c = example_contact();
+        if (!customerOrg.isEmpty())
+            c.setOrganization(customerOrg);
+        customer.setAddressee(c);
 
         const QString out = tmpl.expand(uuid, me, &customer);
         for (const QString& tmpFile : tmpl.tempFilesCreated()) {

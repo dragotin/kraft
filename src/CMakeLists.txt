@@ -162,7 +162,6 @@ set( kraft_UIS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
-    xrechnung.ui
     documentactions.ui
     finalizedoc.ui
     dbtoxml.ui
