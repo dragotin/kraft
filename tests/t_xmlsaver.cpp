@@ -145,6 +145,8 @@ private Q_SLOTS:
 
         QCOMPARE(doc.postText(), "Danke für dein Interesse,");
         QCOMPARE(doc.goodbye(), "mit den besten Grüssen,");
+        QCOMPARE(doc.dueDate(), QDate(2011, 2, 17));
+        QCOMPARE(doc.paymentDueDays(), 21);
     }
 
     // Documents written before the time of supply was stored with the time of
@@ -267,6 +269,7 @@ private Q_SLOTS:
         // footer block
         doc.setPostTextRaw("Bitte überweisen Sie den Betrag innerhalb von 14 Tagen.");
         doc.setGoodbye("Mit freundlichen Grüßen");
+        doc.setDueDate(QDate(2024, 7, 6));
 
         // two line items
         DocPosition *pos1 = doc.createPosition();
@@ -321,6 +324,7 @@ private Q_SLOTS:
         // footer block
         QCOMPARE(doc2.postTextRaw(), doc.postTextRaw());
         QCOMPARE(doc2.goodbye(),     QString("Mit freundlichen Grüßen"));
+        QCOMPARE(doc2.dueDate(),     QDate(2024, 7, 6));
 
         // items
         DocPositionList items = doc2.positions();

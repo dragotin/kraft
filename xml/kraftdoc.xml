@@ -189,6 +189,7 @@ Entenhausener Weg 42
     <footer>
         <postText>Danke f&#xFC;r dein Interesse,</postText>
         <goodbye>mit den besten Gr&#xFC;ssen,</goodbye>
+        <dueDate>2011-02-17</dueDate>
         <customValue>
             <name>bankAccount</name>
             <value>DE02120300000000202051</value>

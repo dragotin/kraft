@@ -197,6 +197,12 @@
         <default>3</default>
      </entry>
 
+     <entry name="PaymentTermDays" type="Int">
+        <label>Days from the document date until an invoice is due.</label>
+        <default>21</default>
+        <min>0</min>
+     </entry>
+
      <entry name="AlternativeLabel" type="String">
         <label>The label for alternative positions</label>
      </entry>

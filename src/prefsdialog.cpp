@@ -390,6 +390,18 @@ QWidget* PrefsDialog::docTab()
   // mCbDefaultTaxType->insertItem( 3, i18n("Calculate on individual item tax rate" ));
   vboxLay->addLayout( butLay );
 
+  butLay = new QHBoxLayout;
+  l = new QLabel(i18n("&Payment term for invoices:"), this);
+  butLay->addWidget(l);
+  mSbPaymentTerm = new QSpinBox(this);
+  mSbPaymentTerm->setRange(0, 365);
+  mSbPaymentTerm->setSuffix(i18n(" days"));
+  mSbPaymentTerm->setToolTip(i18n("The due date of an invoice is preset to the document date plus this many days."));
+  l->setBuddy(mSbPaymentTerm);
+  butLay->addWidget(mSbPaymentTerm);
+  butLay->addStretch();
+  vboxLay->addLayout(butLay);
+
   f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
   vboxLay->addWidget( f );
@@ -532,6 +544,7 @@ void PrefsDialog::readConfig()
     mCbDocTypes->setCurrentIndex( mCbDocTypes->findText( t ));
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
+    mSbPaymentTerm->setValue(KraftSettings::self()->paymentTermDays());
 
     _lineEditXRechnung->setText(KraftSettings::self()->xRechnungTemplate());
 
@@ -619,6 +632,7 @@ void PrefsDialog::writeConfig()
 {
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
+    KraftSettings::self()->setPaymentTermDays(mSbPaymentTerm->value());
 
     // There is no way to set the XRechnung doc type specifically yet
     // Have one for all invoices for now
