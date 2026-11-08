@@ -733,12 +733,20 @@ void Portal::slotXRechnungCurrentDocument()
     ui.setupUi(dia);
     dia->setWindowTitle(i18n("XRechnung"));
 
-    QDate today = QDate::currentDate();
-    ui._dueDateEdit->setDate(KraftDoc::calcDueDate(today));
     // The buyer reference, ie. the Leitweg-ID of an authority, is the same on every
     // invoice to that customer, so it is kept with the customer contact.
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
     DocGuardedPtr doc = DocumentMan::self()->openDocumentByUuid(uuid);
+
+    // The same due date as on the PDF of the invoice, only editable if the document has none.
+    QDate dueDate = doc ? doc->dueDate() : QDate();
+    ui._dueDateEdit->setReadOnly(dueDate.isValid());
+    if (dueDate.isValid())
+        ui._dueDateEdit->setToolTip(i18n("The due date is set in the footer of the document."));
+    if (!dueDate.isValid())
+        dueDate = KraftDoc::calcDueDate(doc && doc->date().isValid() ? doc->date() : QDate::currentDate());
+    ui._dueDateEdit->setDate(dueDate);
+
     auto *customer = new KraftContact(doc ? doc->addressUid() : QString(), dia);
     delete doc;
     customer->load();
