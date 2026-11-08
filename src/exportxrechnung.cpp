@@ -65,17 +65,21 @@ QString ExporterXRechnung::templateFile() const
 bool ExporterXRechnung::exportDocument(const QString& uuid)
 {
     _uuid = uuid;
+    _error.clear();
     KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
     if (doc == nullptr) {
         qDebug() << "Unable to open export doc" << uuid;
+        // Reported like any other export error, through the finished signal.
+        _error = i18n("The document could not be opened, its file might be missing.");
+        Q_EMIT xRechnungTmpFile(QString());
         return false;
     }
     _docTypeStr = doc->docTypeStr();
-    _error.clear();
 
     // The customer of the document, with the Kraft data Kraft has about it.
     delete _customer; // from a previous export
     _customer = new KraftContact(doc->addressUid(), this);
+    delete doc;
     _customer->load();
 
     connect(_customer, &KraftContact::addresseeLoaded,

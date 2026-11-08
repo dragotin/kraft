@@ -267,7 +267,8 @@ private Q_SLOTS:
         doc.setPreTextRaw("Wir erlauben uns, folgende Positionen in Rechnung zu stellen.");
 
         // footer block
-        doc.setPostTextRaw("Bitte überweisen Sie den Betrag innerhalb von 14 Tagen.");
+        // the macro has to survive the save, not be expanded into the file
+        doc.setPostTextRaw("Bitte überweisen Sie den Betrag bis zum DUE_DATE.");
         doc.setGoodbye("Mit freundlichen Grüßen");
         doc.setDueDate(QDate(2024, 7, 6));
 
@@ -322,7 +323,7 @@ private Q_SLOTS:
         QCOMPARE(doc2.preTextRaw(),                  doc.preTextRaw());
 
         // footer block
-        QCOMPARE(doc2.postTextRaw(), doc.postTextRaw());
+        QCOMPARE(doc2.postTextRaw(), QString("Bitte überweisen Sie den Betrag bis zum DUE_DATE."));
         QCOMPARE(doc2.goodbye(),     QString("Mit freundlichen Grüßen"));
         QCOMPARE(doc2.dueDate(),     QDate(2024, 7, 6));
 
