@@ -1,3 +1,38 @@
+Changes since version 2.1.0: #######################################
+- Feature: Store business data of the own company (VAT ID, tax number,
+  commercial register, legal form, bank account) in the Own Identity
+- Feature: Store Kraft specific data along with address book contacts,
+  ie. the buyer reference (Leitweg-ID) of a customer
+- Feature: Small business setting (Kleinunternehmer, Par. 19 UStG); the
+  XRechnung marks all items as VAT exempt
+- Feature: Due date for invoices, edited in the document footer. Preset
+  to the document date plus a payment term (setting, default 21 days),
+  moved to Monday if it falls on a weekend
+- Feature: New template variables doc.dueDateStr, doc.paymentDueDays
+  and item.textFirstLine
+- Feature: New text macros DUE_DATE and PAYMENT_DUE_DAYS for header
+  and footer texts
+- Feature: Buyer reference (BT-10) is entered in the document footer,
+  preset from the customer. The XRechnung dialog is gone
+- Improvement: XRechnung export checks seller, buyer and document
+  data and names what is missing instead of writing an invalid file
+- Improvement: XRechnung file name proposal contains the document
+  number, or "draft"
+- Fix: XRechnung country codes come from the addresses, not hard coded
+- Fix: XRechnung with mixed VAT rates has one subtotal per rate
+- Fix: XRechnung special chars like & were escaped twice
+- Fix: XRechnung item texts without HTML line breaks, units without
+  code get C62, IBAN without spaces
+- Fix: Macros in header and footer texts were replaced permanently on
+  the first save
+- Fix: XRechnung export crashed if the document file was missing
+- Fix: Own identity picked from the address book was not shown before
+  a restart (#317)
+
+=> Release v. 2.2.0 ( 2026)
+
+####################################################################
+
 Changes since versino 2.0.0: #######################################
 - Feature: Add UID as hoover text above the header in the detail
   view of the document list
