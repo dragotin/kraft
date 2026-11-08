@@ -383,6 +383,13 @@ void KraftView::redrawDocument( )
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
 
+    const bool hasDueDate = doc->dueDate().isValid();
+    const QDate docDate = doc->date().isValid() ? doc->date() : QDate::currentDate();
+    m_footerEdit->ui()->_dueDateEdit->setDate(hasDueDate ? doc->dueDate()
+                                                         : KraftDoc::calcDueDate(docDate));
+    m_footerEdit->ui()->_cbDueDate->setChecked(hasDueDate);
+    m_footerEdit->ui()->_dueDateEdit->setEnabled(hasDueDate);
+
     mAssistant->slotSetDocType( doc->docTypeStr() );
 
     redrawDocPositions( );
@@ -634,10 +641,11 @@ void KraftView::refreshPostCard()
 
     double fullTax = UnitManager::self()->tax(d);
     double redTax = UnitManager::self()->reducedTax(d);
+    const QDate dueDate = editorDueDate();
     const QString preText = kraftDoc->resolveMacros(m_headerEdit->m_teEntry->toPlainText(),
-                                                    positions, d, fullTax, redTax);
+                                                    positions, d, fullTax, redTax, QString(), dueDate);
     const QString postText = kraftDoc->resolveMacros(m_footerEdit->ui()->m_teSummary->toPlainText(),
-                                                     positions, d, fullTax, redTax);
+                                                     positions, d, fullTax, redTax, QString(), dueDate);
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
                                            getDocument()->docIdentifier(),
@@ -731,6 +739,16 @@ void KraftView::setupFooter()
   mTaxBefore = taxIndex;
 
   connect(m_footerEdit,SIGNAL(modified()),this,SLOT(slotModifiedFooter()));
+  connect(m_footerEdit->ui()->_cbDueDate, &QCheckBox::toggled, this, [this](bool checked) {
+      m_footerEdit->ui()->_dueDateEdit->setEnabled(checked);
+      slotModifiedFooter();
+  });
+  connect(m_footerEdit->ui()->_dueDateEdit, &QDateEdit::dateChanged, this, &KraftView::slotModifiedFooter);
+  // As long as the user did not set a due date, it follows the document date.
+  connect(m_headerEdit->m_dateEdit, &QDateEdit::dateChanged, this, [this](QDate d) {
+      if (!m_footerEdit->ui()->_cbDueDate->isChecked())
+          m_footerEdit->ui()->_dueDateEdit->setDate(KraftDoc::calcDueDate(d));
+  });
 }
 
 void KraftView::slotTaxComboChanged(int newId)
@@ -948,6 +966,7 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   mAssistant->postCard()->slotShowPrices( !docType.pricesHidden() );
   m_footerEdit->ui()->_taxGroup->setVisible( !docType.pricesHidden() );
   m_headerEdit->tosFrame->setVisible(docType.isInvoice());
+  m_footerEdit->ui()->_dueDateGroup->setVisible(docType.isInvoice());
 
   if( mDocPosEditorIndx > -1 ) {
       KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
@@ -1398,6 +1417,13 @@ void KraftView::done( int r )
     QDialog::done( r );
 }
 
+QDate KraftView::editorDueDate() const
+{
+    // Only invoices have a due date, the group is hidden for other types.
+    const bool set = m_footerEdit->ui()->_dueDateGroup->isVisibleTo(m_footerEdit) && m_footerEdit->ui()->_cbDueDate->isChecked();
+    return set ? m_footerEdit->ui()->_dueDateEdit->date() : QDate();
+}
+
 void KraftView::saveChanges()
 {
     // qDebug () << "Saving changes!";
@@ -1423,6 +1449,8 @@ void KraftView::saveChanges()
         endD = m_headerEdit->bpEnd->dateTime();
     }
     m_doc->setTimeOfSupply(startD, endD);
+
+    m_doc->setDueDate(editorDueDate());
 
     if (mModified) m_doc->setModified();
 

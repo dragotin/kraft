@@ -172,6 +172,7 @@ private:
   void setupMappers();
   void saveChanges();
   void discardChanges();
+  QDate editorDueDate() const;
 
   PositionViewWidget *createPositionViewWidget( DocPosition*, int );
 

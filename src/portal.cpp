@@ -734,7 +734,7 @@ void Portal::slotXRechnungCurrentDocument()
     dia->setWindowTitle(i18n("XRechnung"));
 
     QDate today = QDate::currentDate();
-    ui._dueDateEdit->setDate(today.addDays(21));
+    ui._dueDateEdit->setDate(KraftDoc::calcDueDate(today));
     // The buyer reference, ie. the Leitweg-ID of an authority, is the same on every
     // invoice to that customer, so it is kept with the customer contact.
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();

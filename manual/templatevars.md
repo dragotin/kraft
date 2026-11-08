@@ -48,7 +48,8 @@ Entenhausener Weg 42
 |doc.docIDStr |Document ID as string |f4deb784-6131-4e49-bd6d-92bd1355ea4d
 |doc.docIdentifier |Human readable document identifier, e.g. &#39;Invoice 2026-001&#39; or a draft marker |Rechnung 20110127
 |doc.docType |Localized document type, e.g. Invoice, Offer or Delivery Receipt |Rechnung
-|doc.dueDateStrISO |Payment due date, ISO formatted, for XRechnung |
+|doc.dueDateStr |Payment due date as localized string according to user settings, empty if not set |17.02.2011
+|doc.dueDateStrISO |Payment due date, ISO formatted, for XRechnung |2011-02-17
 |doc.fullTaxNettoSumNum | |162.57
 |doc.fullTaxPercentNum |Full tax rate in percent as numerical value, not localized |19.00
 |doc.fullTaxPercentStr |Full tax rate in percent localized as user string |19
@@ -71,6 +72,7 @@ Entenhausener Weg 42
 |doc.noTaxesDocument |True if none of the document items are taxed |false
 |doc.objectName |General object name |
 |doc.owner |Owner of the document |kf
+|doc.paymentDueDays |Days from the document date to the payment due date, 0 if there is no due date |21
 |doc.postText |Text printed after the document positions, as plain text |Danke für dein Interesse,
 |doc.postTextHtml |Text printed after the document positions, as HTML |Danke für dein Interesse,
 |doc.preText |Text printed before the document positions, as plain text |Wir freuen uns, mit Dir Geschäfte machen zu können.

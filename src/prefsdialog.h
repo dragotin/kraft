@@ -31,6 +31,7 @@ class QLineEdit;
 class QLabel;
 class QPushButton;
 class QComboBox;
+class QSpinBox;
 class QCheckBox;
 class QSqlTableModel;
 class QTreeView;
@@ -101,6 +102,7 @@ private:
 
     QComboBox *mCbDocTypes;
     QComboBox *mCbDefaultTaxType;
+    QSpinBox *mSbPaymentTerm;
     QComboBox *mCbDateFormats;
     QPushButton *_pbChangeIdentity;
 

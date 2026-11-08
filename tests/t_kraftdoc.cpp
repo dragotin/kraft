@@ -323,6 +323,32 @@ private Q_SLOTS:
         QCOMPARE(positions.listTaxation(), DocPosition::Tax::Full);
     }
 
+    void dueDateMacros() {
+        DocPositionList positions = buildPosList();
+        const QDate d{2020, 1, 24};
+        KraftDoc *kraftdoc = &kDoc;
+        const QString tmpl{"Pay PAYMENT_DUE_DAYS days, until DUE_DATE."};
+
+        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, 19.0, 7.0, Format::DateFormatGerman, QDate(2020, 2, 14));
+        QCOMPARE(expanded, QString("Pay 21 days, until 14.02.2020."));
+
+        // no due date
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, 19.0, 7.0, Format::DateFormatGerman);
+        QCOMPARE(expanded, QString("Pay 0 days, until ."));
+    }
+
+    void calcDueDate() {
+        KraftSettings::self()->setPaymentTermDays(21);
+        // Mon 2024-06-03 + 21 = Mon 2024-06-24, stays
+        QCOMPARE(KraftDoc::calcDueDate(QDate(2024, 6, 3)), QDate(2024, 6, 24));
+        // Sat 2024-06-08 + 21 = Sat 2024-06-29 -> Mon 2024-07-01
+        QCOMPARE(KraftDoc::calcDueDate(QDate(2024, 6, 8)), QDate(2024, 7, 1));
+        // Sun 2024-06-09 + 21 = Sun 2024-06-30 -> Mon 2024-07-01
+        QCOMPARE(KraftDoc::calcDueDate(QDate(2024, 6, 9)), QDate(2024, 7, 1));
+        // Fri 2024-06-07 + 21 = Fri 2024-06-28, stays
+        QCOMPARE(KraftDoc::calcDueDate(QDate(2024, 6, 7)), QDate(2024, 6, 28));
+    }
+
     void dateAddDay() {
         KraftDoc *kraftdoc = &kDoc;
 
