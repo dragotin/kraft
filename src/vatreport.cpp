@@ -27,6 +27,8 @@
 #include "unitmanager.h"
 #include "xmlindexdb.h"
 
+using namespace Qt::StringLiterals;
+
 void VatReport::PeriodSum::add(const DocEntry &e)
 {
     netFull += e.netFull;
@@ -63,7 +65,7 @@ QString VatReport::PeriodSum::label() const
     if (type == PeriodType::Quarter) {
         return i18nc("Tax period label, %1 is the quarter, %2 the year", "Q%1/%2", period, QString::number(year));
     }
-    return QStringLiteral("%1 %2").arg(QLocale().standaloneMonthName(period), QString::number(year));
+    return u"%1 %2"_s.arg(QLocale().standaloneMonthName(period), QString::number(year));
 }
 
 // ##############################################################
@@ -188,7 +190,7 @@ int VatReport::loadYear(int year)
 
     XmlIndexDb indx;
     int cnt{0};
-    const QList<DocDigest> digests = indx.allDigests();
+    const QList<DocDigest> digests = indx.digestsOfYear(year);
     for (const DocDigest &digest : digests) {
         const QDate d = digest.rawDate();
         // countsForVat checks if it is an invoice

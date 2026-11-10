@@ -28,14 +28,16 @@
 #include "format.h"
 #include "doctype.h"
 
-const QString XmlIndexDb::ConnectionName = QStringLiteral("kraftXmlIndex");
-const QString XmlIndexDb::DbFileName = QStringLiteral("kraftindx.db");
+using namespace Qt::StringLiterals;
+
+const QString XmlIndexDb::ConnectionName = u"kraftXmlIndex"_s;
+const QString XmlIndexDb::DbFileName = u"kraftindx.db"_s;
 const int XmlIndexDb::SchemaVersion = 1;
 
 QMultiMap<QDate, QString> XmlIndexDb::_dateMap = QMultiMap<QDate, QString>();
 
 namespace {
-const QString DocColumns = QStringLiteral("uuid, ident, docType, docDate, subPath, lastModified, clientUid, clientAddress, prjtLabel, state, whiteboard");
+const QString DocColumns = u"uuid, ident, docType, docDate, subPath, lastModified, clientUid, clientAddress, prjtLabel, state, whiteboard"_s;
 
 bool execOrWarn(QSqlQuery &q, const QString &sql = QString())
 {
@@ -95,7 +97,7 @@ bool XmlIndexDb::openDb(const QString &dbFile)
             _dateMap.clear();
         }
     } else {
-        database = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), ConnectionName);
+        database = QSqlDatabase::addDatabase(u"QSQLITE"_s, ConnectionName);
         database.setDatabaseName(dbFile);
     }
 
@@ -107,8 +109,8 @@ bool XmlIndexDb::openDb(const QString &dbFile)
     // The index can always be rebuilt from the xml files, so trade durability for speed:
     // WAL with synchronous=NORMAL avoids an fsync for every single index update.
     QSqlQuery q(database);
-    execOrWarn(q, QStringLiteral("PRAGMA journal_mode=WAL"));
-    execOrWarn(q, QStringLiteral("PRAGMA synchronous=NORMAL"));
+    execOrWarn(q, u"PRAGMA journal_mode=WAL"_s);
+    execOrWarn(q, u"PRAGMA synchronous=NORMAL"_s);
 
     return createSchema();
 }
@@ -117,26 +119,26 @@ bool XmlIndexDb::createSchema()
 {
     QSqlQuery q(db());
 
-    bool ok = execOrWarn(q, QStringLiteral("CREATE TABLE IF NOT EXISTS meta ("
-                                           "key   TEXT PRIMARY KEY,"
-                                           "value TEXT)"));
-    ok = ok && execOrWarn(q, QStringLiteral("CREATE TABLE IF NOT EXISTS docindex ("
-                                            "uuid          TEXT PRIMARY KEY,"
-                                            "ident         TEXT,"
-                                            "docType       TEXT NOT NULL,"
-                                            "docDate       TEXT,"
-                                            "subPath       TEXT NOT NULL,"
-                                            "lastModified  TEXT,"
-                                            "clientUid     TEXT,"
-                                            "clientAddress TEXT,"
-                                            "prjtLabel     TEXT,"
-                                            "state         TEXT,"
-                                            "whiteboard    TEXT)"));
-    ok = ok && execOrWarn(q, QStringLiteral("CREATE INDEX IF NOT EXISTS docindex_ident ON docindex(ident)"));
-    ok = ok && execOrWarn(q, QStringLiteral("CREATE INDEX IF NOT EXISTS docindex_date ON docindex(docDate)"));
+    bool ok = execOrWarn(q, u"CREATE TABLE IF NOT EXISTS meta ("
+                              "key   TEXT PRIMARY KEY,"
+                              "value TEXT)"_s);
+            ok = ok && execOrWarn(q, u"CREATE TABLE IF NOT EXISTS docindex ("
+                                     "uuid          TEXT PRIMARY KEY,"
+                                     "ident         TEXT,"
+                                     "docType       TEXT NOT NULL,"
+                                     "docDate       TEXT,"
+                                     "subPath       TEXT NOT NULL,"
+                                     "lastModified  TEXT,"
+                                     "clientUid     TEXT,"
+                                     "clientAddress TEXT,"
+                                     "prjtLabel     TEXT,"
+                                     "state         TEXT,"
+                                     "whiteboard    TEXT)"_s);
+    ok = ok && execOrWarn(q, u"CREATE INDEX IF NOT EXISTS docindex_ident ON docindex(ident)"_s);
+    ok = ok && execOrWarn(q, u"CREATE INDEX IF NOT EXISTS docindex_date ON docindex(docDate)"_s);
 
     if (ok) {
-        q.prepare(QStringLiteral("INSERT OR IGNORE INTO meta (key, value) VALUES ('schemaVersion', :v)"));
+        q.prepare(u"INSERT OR IGNORE INTO meta (key, value) VALUES ('schemaVersion', :v)"_s);
         q.bindValue(":v", QString::number(SchemaVersion));
         ok = execOrWarn(q);
     }
@@ -160,297 +162,318 @@ const QFileInfo XmlIndexDb::fullPathWithExtension(const QString &subPath, const 
     Q_ASSERT(extension.endsWith("pdf") || extension.endsWith("xml"));
 
     const auto pathSelect{extension.endsWith("pdf", Qt::CaseInsensitive) ? DefaultProvider::KraftV2Dir::PdfDocs : DefaultProvider::KraftV2Dir::XmlDocs};
-    const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
+                          const QString dir{DefaultProvider::self()->kraftV2Dir(pathSelect)};
 
-    fi.setFile(QDir(dir), re);
+                                            fi.setFile(QDir(dir), re);
 
-    return fi;
-}
+                                                              return fi;
+                         }
 
-QString XmlIndexDb::subPathBy(const QString &column, const QString &value)
-{
-    if (value.isEmpty() || !db().isOpen()) {
-        qDebug() << "WRN: Value is empty or db closed!";
+    QString XmlIndexDb::subPathBy(const QString &column, const QString &value)
+    {
+        if (value.isEmpty() || !db().isOpen()) {
+            qDebug() << "WRN: Value is empty or db closed!";
+            return QString();
+        }
+
+        // column is never user input, only "uuid" or "ident"
+        QSqlQuery q(db());
+        q.prepare(u"SELECT subPath FROM docindex WHERE %1 = :v"_s.arg(column));
+        q.bindValue(":v", value);
+        if (execOrWarn(q) && q.next()) {
+            return q.value(0).toString();
+        }
         return QString();
     }
 
-    // column is never user input, only "uuid" or "ident"
-    QSqlQuery q(db());
-    q.prepare(QStringLiteral("SELECT subPath FROM docindex WHERE %1 = :v").arg(column));
-    q.bindValue(":v", value);
-    if (execOrWarn(q) && q.next()) {
-        return q.value(0).toString();
+    const QFileInfo XmlIndexDb::xmlPathByUuid(const QString &uuid)
+    {
+        return fullPathWithExtension(subPathBy(u"uuid"_s, uuid), ".xml");
     }
-    return QString();
-}
 
-const QFileInfo XmlIndexDb::xmlPathByUuid(const QString &uuid)
-{
-    return fullPathWithExtension(subPathBy(QStringLiteral("uuid"), uuid), ".xml");
-}
-
-const QFileInfo XmlIndexDb::xmlPathByIdent(const QString &ident)
-{
-    const QString sp = subPathBy(QStringLiteral("ident"), ident);
-    return fullPathWithExtension(sp, ".xml");
-}
-
-// so far, for the pdf path, only the extension is changed from xml to pdf.
-const QFileInfo XmlIndexDb::pdfPathByUuid(const QString &uuid)
-{
-    return fullPathWithExtension(subPathBy(QStringLiteral("uuid"), uuid), ".pdf");
-}
-
-const QFileInfo XmlIndexDb::pdfPathByIdent(const QString &ident)
-{
-    return fullPathWithExtension(subPathBy(QStringLiteral("ident"), ident), ".pdf");
-}
-
-bool XmlIndexDb::pdfOutdated(const QString &uuid)
-{
-    if (uuid.isEmpty())
-        return false;
-
-    const QFileInfo fiPdf = pdfPathByUuid(uuid);
-    const QFileInfo fiXml = xmlPathByUuid(uuid);
-
-    if (!fiPdf.exists())
-        return true;
-
-    return fiPdf.lastModified() < fiXml.lastModified();
-}
-
-const QMultiMap<QDate, QString> &XmlIndexDb::dateMap()
-{
-    return _dateMap;
-}
-
-void XmlIndexDb::buildDateMap()
-{
-    _dateMap.clear();
-    QSqlQuery q(db());
-    q.setForwardOnly(true);
-    if (!execOrWarn(q, QStringLiteral("SELECT docDate, subPath FROM docindex"))) {
-        return;
+    const QFileInfo XmlIndexDb::xmlPathByIdent(const QString &ident)
+    {
+        const QString sp = subPathBy(u"ident"_s, ident);
+        return fullPathWithExtension(sp, ".xml");
     }
-    while (q.next()) {
-        const QDate d = QDate::fromString(q.value(0).toString(), Qt::ISODate);
-        if (d.isValid()) {
-            _dateMap.insert(d, q.value(1).toString());
+
+    // so far, for the pdf path, only the extension is changed from xml to pdf.
+    const QFileInfo XmlIndexDb::pdfPathByUuid(const QString &uuid)
+    {
+        return fullPathWithExtension(subPathBy(u"uuid"_s, uuid), ".pdf");
+    }
+
+    const QFileInfo XmlIndexDb::pdfPathByIdent(const QString &ident)
+    {
+        return fullPathWithExtension(subPathBy(u"ident"_s, ident), ".pdf");
+    }
+
+    bool XmlIndexDb::pdfOutdated(const QString &uuid)
+    {
+        if (uuid.isEmpty())
+            return false;
+
+        const QFileInfo fiPdf = pdfPathByUuid(uuid);
+        const QFileInfo fiXml = xmlPathByUuid(uuid);
+
+        if (!fiPdf.exists())
+            return true;
+
+        return fiPdf.lastModified() < fiXml.lastModified();
+    }
+
+    const QMultiMap<QDate, QString> &XmlIndexDb::dateMap()
+    {
+        return _dateMap;
+    }
+
+    void XmlIndexDb::buildDateMap()
+    {
+        _dateMap.clear();
+        QSqlQuery q(db());
+        q.setForwardOnly(true);
+        if (!execOrWarn(q, u"SELECT docDate, subPath FROM docindex"_s)) {
+            return;
         }
-    }
-    qDebug() << "Date map contains" << _dateMap.size() << "documents";
-}
-
-DocDigest XmlIndexDb::findDigest(const QString &year, const QString &uuid)
-{
-    Q_UNUSED(year); // the uuid is unique, the year is not needed for the lookup
-
-    // the uuid might be a sub path like 2025/05/<uuid> as stored in the dateMap
-    const QString pureUuid = uuid.section('/', -1);
-
-    QSqlQuery q(db());
-    q.prepare(QStringLiteral("SELECT %1 FROM docindex WHERE uuid = :uuid").arg(DocColumns));
-    q.bindValue(":uuid", pureUuid);
-    if (execOrWarn(q) && q.next()) {
-        DocTypes docTypes;
-        return toDocDigest(q, docTypes);
-    }
-    qDebug() << "Digest is empty for" << uuid;
-    return DocDigest();
-}
-
-QList<DocDigest> XmlIndexDb::allDigests()
-{
-    QList<DocDigest> re;
-    if (!db().isOpen())
-        return re;
-
-    QSqlQuery q(db());
-    q.setForwardOnly(true);
-    // DocTypes reads all doctype files from disk on first access, so use one instance for all digests
-    DocTypes docTypes;
-    if (execOrWarn(q, QStringLiteral("SELECT %1 FROM docindex ORDER BY docDate DESC, lastModified DESC").arg(DocColumns))) {
         while (q.next()) {
-            re.append(toDocDigest(q, docTypes));
-        }
-    }
-    return re;
-}
-
-DocDigest XmlIndexDb::toDocDigest(const QSqlQuery &q, const DocTypes &docTypes)
-{
-    DocDigest dd;
-
-    const QString t{q.value("docType").toString()};
-    Q_ASSERT(!t.isEmpty());
-    dd.setType(docTypes.get(t));
-    dd.setClientId(q.value("clientUid").toString());
-    dd.setClientAddress(q.value("clientAddress").toString());
-    dd.setDate(QDate::fromString(q.value("docDate").toString(), Qt::ISODate));
-    dd.setIdent(q.value("ident").toString());
-    KraftDocState state;
-    state.setStateFromString(q.value("state").toString());
-    dd.setState(state);
-    dd.setUuid(q.value("uuid").toString());
-    dd.setProjectLabel(q.value("prjtLabel").toString());
-    dd.setLastModified(QDateTime::fromString(q.value("lastModified").toString(), Qt::ISODate));
-    dd.setWhiteboard(q.value("whiteboard").toString());
-
-    return dd;
-}
-
-// Kept for interface compatibility with XmlDocIndex
-DocDigest XmlIndexDb::toDocDigest(QJsonObject obj)
-{
-    DocDigest dd;
-
-    if (obj.isEmpty()) {
-        qDebug() << "Digest is empty";
-    } else {
-        const QString t{obj["docType"].toString()};
-        Q_ASSERT(!t.isEmpty());
-        dd.setType(t);
-        if (obj.contains("clientUid")) {
-            dd.setClientId(obj["clientUid"].toString());
-        }
-        dd.setClientAddress(obj["clientAddress"].toString());
-        dd.setDate(QDate::fromString(obj["date"].toString(), Qt::ISODate));
-        dd.setIdent(obj["ident"].toString());
-        KraftDocState state;
-        state.setStateFromString(obj["state"].toString());
-        dd.setState(state);
-        dd.setUuid(obj["uuid"].toString());
-        dd.setProjectLabel(obj["prjtLabel"].toString());
-        dd.setLastModified(QDateTime::fromString(obj["lastModified"].toString(), Qt::ISODate));
-        dd.setWhiteboard(obj["whiteboard"].toString());
-    }
-    return dd;
-}
-
-QString XmlIndexDb::subPathForDoc(KraftDoc *doc)
-{
-    const QDate d = doc->date();
-    return QString("%1/%2/%3").arg(d.year(), 4, 10, QLatin1Char('0')).arg(d.month(), 2, 10, QLatin1Char('0')).arg(doc->uuid());
-}
-
-bool XmlIndexDb::writeEntry(KraftDoc *doc, const QString &subPath)
-{
-    QJsonObject obj;
-
-    if (doc == nullptr) {
-        return false;
-    }
-
-    QSqlQuery q(db());
-    q.prepare(QStringLiteral("INSERT OR REPLACE INTO docindex (%1) VALUES "
-                             "(:uuid, :ident, :docType, :docDate, :subPath, :lastModified, :clientUid, :clientAddress, :prjtLabel, :state, :whiteboard)")
-                  .arg(DocColumns));
-
-    q.bindValue(":uuid", doc->uuid());
-    q.bindValue(":ident", doc->ident());
-    q.bindValue(":docType", doc->docTypeStr());
-    q.bindValue(":docDate", doc->dateStrISO());
-    q.bindValue(":subPath", subPath);
-    q.bindValue(":lastModified", doc->lastModified());
-    q.bindValue(":clientUid", doc->addressUid());
-    q.bindValue(":clientAddress", doc->address());
-    q.bindValue(":prjtLabel", doc->projectLabel());
-    q.bindValue(":state", doc->state().stateString());
-    q.bindValue(":whiteboard", doc->whiteboard());
-
-    return execOrWarn(q);
-}
-
-// Add a new document to the index database.
-// The stored path is relative to the xml base dir, without extension because the pdf
-// path lookup uses the same index
-void XmlIndexDb::addEntry(KraftDoc *doc)
-{
-    if (!doc)
-        return;
-    Q_ASSERT(!doc->uuid().isEmpty());
-
-    const QString entry = subPathForDoc(doc);
-    if (writeEntry(doc, entry) && doc->date().isValid()) {
-        _dateMap.insert(doc->date(), entry);
-    }
-}
-
-void XmlIndexDb::updateEntry(KraftDoc *doc)
-{
-    if (!doc)
-        return;
-
-    // The sub path follows the date, the saver moves the file to the new month folder
-    const QString entry = subPathForDoc(doc);
-    QString oldEntry;
-    QDate oldDate;
-    QSqlQuery q(db());
-    q.prepare(QStringLiteral("SELECT subPath, docDate FROM docindex WHERE uuid = :uuid"));
-    q.bindValue(":uuid", doc->uuid());
-    if (execOrWarn(q) && q.next()) {
-        oldEntry = q.value(0).toString();
-        oldDate = QDate::fromString(q.value(1).toString(), Qt::ISODate);
-    }
-
-    if (writeEntry(doc, entry)) {
-        // the date might have changed. Only look at the entries of the old date
-        // instead of iterating the whole map, which is slow for bulk updates.
-        if (!oldEntry.isEmpty() && oldDate.isValid()) {
-            auto it = _dateMap.find(oldDate);
-            while (it != _dateMap.end() && it.key() == oldDate) {
-                if (it.value() == oldEntry) {
-                    _dateMap.erase(it);
-                    break;
-                }
-                ++it;
+            const QDate d = QDate::fromString(q.value(0).toString(), Qt::ISODate);
+            if (d.isValid()) {
+                _dateMap.insert(d, q.value(1).toString());
             }
         }
-        if (doc->date().isValid()) {
+        qDebug() << "Date map contains" << _dateMap.size() << "documents";
+    }
+
+    DocDigest XmlIndexDb::findDigest(const QString &year, const QString &uuid)
+    {
+        Q_UNUSED(year); // the uuid is unique, the year is not needed for the lookup
+
+        // the uuid might be a sub path like 2025/05/<uuid> as stored in the dateMap
+        const QString pureUuid = uuid.section('/', -1);
+
+        QSqlQuery q(db());
+        q.prepare(u"SELECT %1 FROM docindex WHERE uuid = :uuid"_s.arg(DocColumns));
+        q.bindValue(":uuid", pureUuid);
+        if (execOrWarn(q) && q.next()) {
+            DocTypes docTypes;
+            return toDocDigest(q, docTypes);
+        }
+        qDebug() << "Digest is empty for" << uuid;
+        return DocDigest();
+    }
+
+    QList<DocDigest> XmlIndexDb::allDigests()
+    {
+        QList<DocDigest> re;
+        if (!db().isOpen())
+            return re;
+
+        QSqlQuery q(db());
+        q.setForwardOnly(true);
+        // DocTypes reads all doctype files from disk on first access, so use one instance for all digests
+        DocTypes docTypes;
+        if (execOrWarn(q, u"SELECT %1 FROM docindex ORDER BY docDate DESC, lastModified DESC"_s.arg(DocColumns))) {
+            while (q.next()) {
+                re.append(toDocDigest(q, docTypes));
+            }
+        }
+        return re;
+    }
+
+    QList<DocDigest> XmlIndexDb::digestsOfYear(int year)
+    {
+        QList<DocDigest> re;
+        if (!db().isOpen())
+            return re;
+
+        QSqlQuery q(db());
+        q.setForwardOnly(true);
+        // DocTypes reads all doctype files from disk on first access, so use one instance for all digests
+        DocTypes docTypes;
+
+        if (execOrWarn(q, u"SELECT %1 FROM docindex where docDate LIKE '%2-%' ORDER BY docDate DESC, lastModified DESC"_s
+                       .arg(DocColumns).arg(year))) {
+            while (q.next()) {
+                re.append(toDocDigest(q, docTypes));
+            }
+        }
+        return re;
+    }
+
+
+    DocDigest XmlIndexDb::toDocDigest(const QSqlQuery &q, const DocTypes &docTypes)
+    {
+        DocDigest dd;
+
+        const QString t{q.value("docType").toString()};
+        Q_ASSERT(!t.isEmpty());
+        dd.setType(docTypes.get(t));
+        dd.setClientId(q.value("clientUid").toString());
+        dd.setClientAddress(q.value("clientAddress").toString());
+        dd.setDate(QDate::fromString(q.value("docDate").toString(), Qt::ISODate));
+        dd.setIdent(q.value("ident").toString());
+        KraftDocState state;
+        state.setStateFromString(q.value("state").toString());
+        dd.setState(state);
+        dd.setUuid(q.value("uuid").toString());
+        dd.setProjectLabel(q.value("prjtLabel").toString());
+        dd.setLastModified(QDateTime::fromString(q.value("lastModified").toString(), Qt::ISODate));
+        dd.setWhiteboard(q.value("whiteboard").toString());
+
+        return dd;
+    }
+
+    // Kept for interface compatibility with XmlDocIndex
+    DocDigest XmlIndexDb::toDocDigest(QJsonObject obj)
+    {
+        DocDigest dd;
+
+        if (obj.isEmpty()) {
+            qDebug() << "Digest is empty";
+        } else {
+            const QString t{obj["docType"].toString()};
+            Q_ASSERT(!t.isEmpty());
+            dd.setType(t);
+            if (obj.contains("clientUid")) {
+                dd.setClientId(obj["clientUid"].toString());
+            }
+            dd.setClientAddress(obj["clientAddress"].toString());
+            dd.setDate(QDate::fromString(obj["date"].toString(), Qt::ISODate));
+            dd.setIdent(obj["ident"].toString());
+            KraftDocState state;
+            state.setStateFromString(obj["state"].toString());
+            dd.setState(state);
+            dd.setUuid(obj["uuid"].toString());
+            dd.setProjectLabel(obj["prjtLabel"].toString());
+            dd.setLastModified(QDateTime::fromString(obj["lastModified"].toString(), Qt::ISODate));
+            dd.setWhiteboard(obj["whiteboard"].toString());
+        }
+        return dd;
+    }
+
+    QString XmlIndexDb::subPathForDoc(KraftDoc *doc)
+    {
+        const QDate d = doc->date();
+        return QString("%1/%2/%3").arg(d.year(), 4, 10, QLatin1Char('0')).arg(d.month(), 2, 10, QLatin1Char('0')).arg(doc->uuid());
+    }
+
+    bool XmlIndexDb::writeEntry(KraftDoc *doc, const QString &subPath)
+    {
+        QJsonObject obj;
+
+        if (doc == nullptr) {
+            return false;
+        }
+
+        QSqlQuery q(db());
+        q.prepare(u"INSERT OR REPLACE INTO docindex (%1) VALUES "
+                  "(:uuid, :ident, :docType, :docDate, :subPath, :lastModified, :clientUid, :clientAddress, :prjtLabel, :state, :whiteboard)"_s
+                  .arg(DocColumns));
+
+        q.bindValue(":uuid", doc->uuid());
+        q.bindValue(":ident", doc->ident());
+        q.bindValue(":docType", doc->docTypeStr());
+        q.bindValue(":docDate", doc->dateStrISO());
+        q.bindValue(":subPath", subPath);
+        q.bindValue(":lastModified", doc->lastModified());
+        q.bindValue(":clientUid", doc->addressUid());
+        q.bindValue(":clientAddress", doc->address());
+        q.bindValue(":prjtLabel", doc->projectLabel());
+        q.bindValue(":state", doc->state().stateString());
+        q.bindValue(":whiteboard", doc->whiteboard());
+
+        return execOrWarn(q);
+    }
+
+    // Add a new document to the index database.
+    // The stored path is relative to the xml base dir, without extension because the pdf
+    // path lookup uses the same index
+    void XmlIndexDb::addEntry(KraftDoc *doc)
+    {
+        if (!doc)
+            return;
+        Q_ASSERT(!doc->uuid().isEmpty());
+
+        const QString entry = subPathForDoc(doc);
+        if (writeEntry(doc, entry) && doc->date().isValid()) {
             _dateMap.insert(doc->date(), entry);
         }
     }
-}
 
-// Scans all xml documents and adds them to the index database
-void XmlIndexDb::buildIndexFromXml()
-{
-    const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
+    void XmlIndexDb::updateEntry(KraftDoc *doc)
+    {
+        if (!doc)
+            return;
 
-    QFileInfo fi(dir);
-    if (!(fi.exists() && fi.isDir())) {
-        qDebug() << "Base path is not valid:" << dir;
-        return;
-    }
+        // The sub path follows the date, the saver moves the file to the new month folder
+        const QString entry = subPathForDoc(doc);
+        QString oldEntry;
+        QDate oldDate;
+        QSqlQuery q(db());
+        q.prepare(u"SELECT subPath, docDate FROM docindex WHERE uuid = :uuid"_s);
+        q.bindValue(":uuid", doc->uuid());
+        if (execOrWarn(q) && q.next()) {
+            oldEntry = q.value(0).toString();
+            oldDate = QDate::fromString(q.value(1).toString(), Qt::ISODate);
+        }
 
-    QSqlDatabase database = db();
-    database.transaction();
-
-    int cnt{0};
-    const QDir::Filters filter{QDir::Dirs | QDir::NoDotAndDotDot};
-    const QFileInfoList years = QDir(dir).entryInfoList(filter, QDir::Name);
-
-    for (const QFileInfo &yearFi : years) {
-        const QFileInfoList monthEntries = QDir(yearFi.absoluteFilePath()).entryInfoList(filter, QDir::Name);
-
-        for (const QFileInfo &mFi : monthEntries) {
-            const QFileInfoList docEntries = QDir(mFi.absoluteFilePath()).entryInfoList({"*.xml"}, QDir::Files, QDir::NoSort);
-
-            for (const QFileInfo &docFi : docEntries) {
-                KraftDoc doc;
-                if (DocumentMan::self()->loadMetaFromFilename(docFi.absoluteFilePath(), &doc)) {
-                    // use the real location of the file as sub path
-                    const QString subPath = QString("%1/%2/%3").arg(yearFi.fileName(), mFi.fileName(), docFi.completeBaseName());
-                    if (writeEntry(&doc, subPath)) {
-                        cnt++;
+        if (writeEntry(doc, entry)) {
+            // the date might have changed. Only look at the entries of the old date
+            // instead of iterating the whole map, which is slow for bulk updates.
+            if (!oldEntry.isEmpty() && oldDate.isValid()) {
+                auto it = _dateMap.find(oldDate);
+                while (it != _dateMap.end() && it.key() == oldDate) {
+                    if (it.value() == oldEntry) {
+                        _dateMap.erase(it);
+                        break;
                     }
-                } else {
-                    qDebug() << "Unable to load meta data from file for" << docFi.absoluteFilePath();
+                    ++it;
                 }
+            }
+            if (doc->date().isValid()) {
+                _dateMap.insert(doc->date(), entry);
             }
         }
     }
-    database.commit();
-    qDebug() << "Indexed" << cnt << "xml files";
-}
+
+    // Scans all xml documents and adds them to the index database
+    void XmlIndexDb::buildIndexFromXml()
+    {
+        const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
+
+        QFileInfo fi(dir);
+        if (!(fi.exists() && fi.isDir())) {
+            qDebug() << "Base path is not valid:" << dir;
+            return;
+        }
+
+        QSqlDatabase database = db();
+        database.transaction();
+
+        int cnt{0};
+        const QDir::Filters filter{QDir::Dirs | QDir::NoDotAndDotDot};
+        const QFileInfoList years = QDir(dir).entryInfoList(filter, QDir::Name);
+
+        for (const QFileInfo &yearFi : years) {
+            const QFileInfoList monthEntries = QDir(yearFi.absoluteFilePath()).entryInfoList(filter, QDir::Name);
+
+            for (const QFileInfo &mFi : monthEntries) {
+                const QFileInfoList docEntries = QDir(mFi.absoluteFilePath()).entryInfoList({"*.xml"}, QDir::Files, QDir::NoSort);
+
+                for (const QFileInfo &docFi : docEntries) {
+                    KraftDoc doc;
+                    if (DocumentMan::self()->loadMetaFromFilename(docFi.absoluteFilePath(), &doc)) {
+                        // use the real location of the file as sub path
+                        const QString subPath = QString("%1/%2/%3").arg(yearFi.fileName(), mFi.fileName(), docFi.completeBaseName());
+                        if (writeEntry(&doc, subPath)) {
+                            cnt++;
+                        }
+                    } else {
+                        qDebug() << "Unable to load meta data from file for" << docFi.absoluteFilePath();
+                    }
+                }
+            }
+        }
+        database.commit();
+        qDebug() << "Indexed" << cnt << "xml files";
+    }

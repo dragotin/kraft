@@ -86,6 +86,7 @@ public:
 
     // all digests in the index, sorted by document date, newest first
     QList<DocDigest> allDigests();
+    QList<DocDigest> digestsOfYear(int year);
 
     static const QString ConnectionName;
     static const QString DbFileName;
