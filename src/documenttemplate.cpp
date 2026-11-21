@@ -47,7 +47,8 @@ QString generateEPCQRCodeFile(KraftDoc *doc)
 
     // The raw values on purpose: this ends up in a QR code that banking apps read,
     // so an account holder like "Müller & Sohn" must not arrive HTML escaped.
-    const auto own = MyIdentity::ownBusinessData();
+    const auto ownContact = MyIdentity::ownContact();
+    const auto own = ownContact->businessData();
     const QString bacName = own.value(QStringLiteral("ACCOUNTNAME"));
     const QString bacIBAN = own.value(QStringLiteral("IBAN"));
     const QString bacBIC  = own.value(QStringLiteral("BIC"));

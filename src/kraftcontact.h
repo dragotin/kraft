@@ -139,6 +139,8 @@ public:
     // The file this contact is stored in, empty if it has no storage key.
     QString storageFile() const;
 
+    static QString formattedAddress(const KContacts::Addressee& contact );
+
 Q_SIGNALS:
     /* The result of lookupAddressee(). The uid is the one that was looked up, the
      * contact is empty if it was not found.

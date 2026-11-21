@@ -474,7 +474,7 @@ const QString GrantleeAllVarsTemplate::expand(const QString& uuid,
                         "Identity page of the settings. Defined for the prefixes `me` and "
                         "`customer`, except for BUYERREFERENCE, which only `customer` has"));
 
-    const auto own = MyIdentity::ownBusinessVariantHash();
+    const auto own = myContact->businessVariantHash(); // MyIdentity::ownBusinessVariantHash();
     loopHash(own, tnsOwn);
     gtmpl.addToObjMapping(u"meown"_s, &tnsOwn);
 

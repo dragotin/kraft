@@ -110,29 +110,6 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     return add;
 }
 
-/* The business data of the own company. */
-QMap<QString, QString> MyIdentity::ownBusinessData()
-{
-    QMap<QString, QString> re = ownContact()->businessData();
-    // A buyer reference is given by a customer, never by the own company.
-    re.remove(KraftContact::BuyerReference);
-    return re;
-}
-
-/* The template variables of the `me` namespace that do not come from the contact.
- * Escaped here, once, so no template has to remember to do it.
- */
-QVariantHash MyIdentity::ownBusinessVariantHash()
-{
-    QVariantHash re;
-
-    const auto data = ownBusinessData();
-    for (auto it = data.constBegin(); it != data.constEnd(); ++it) {
-        re.insert(it.key(), it.value().toHtmlEscaped());
-    }
-    return re;
-}
-
 QString MyIdentity::identityFile()
 {
     QString file = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::OwnIdentity);

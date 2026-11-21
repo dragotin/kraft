@@ -192,6 +192,9 @@ void KraftContact::lookupAddressee()
 
 void KraftContact::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
+    if (uid != _backendUid) {
+        return;
+    }
     setAddressee(contact);
     Q_EMIT addresseeLoaded(uid, contact);
 }
@@ -325,3 +328,26 @@ bool KraftContact::save()
     setModified(false);
     return true;
 }
+
+QString KraftContact::formattedAddress( const KContacts::Addressee& contact )
+{
+  QString re;
+  KContacts::Address address;
+
+  address = contact.address( KContacts::Address::Pref );
+  if( address.isEmpty() )
+    address = contact.address(KContacts::Address::Work );
+  if( address.isEmpty() )
+    address = contact.address(KContacts::Address::Home );
+  if( address.isEmpty() )
+    address = contact.address(KContacts::Address::Postal );
+
+  if( address.isEmpty() ) {
+    re = contact.realName();
+  } else {
+      re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
+                              contact.realName(), contact.organization() );
+  }
+  return re;
+}
+

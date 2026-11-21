@@ -194,8 +194,6 @@ private:
   QSignalMapper *mLockPositionMapper;
   QSignalMapper *mModifiedMapper;
 
-  AddressProvider *mAddressProvider;
-
   QLabel        *mDetailHeader;
   QSplitter     *mCSplit;
   QPushButton   *mCatalogToggle;

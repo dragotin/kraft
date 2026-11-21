@@ -82,6 +82,7 @@ void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
 {
     if( !uid.isEmpty() ) {
         _errMessages[uid] = msg;
+        Q_EMIT lookupResult(uid, KContacts::Addressee());
     }
 }
 
@@ -143,27 +144,5 @@ KContacts::Addressee AddressProvider::getAddressee( int row, const QModelIndex &
 QAbstractItemModel *AddressProvider::model()
 {
     return _d->model();
-}
-
-QString AddressProvider::formattedAddress( const KContacts::Addressee& contact ) const
-{
-  QString re;
-  KContacts::Address address;
-
-  address = contact.address( KContacts::Address::Pref );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Work );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Home );
-  if( address.isEmpty() )
-    address = contact.address(KContacts::Address::Postal );
-
-  if( address.isEmpty() ) {
-    re = contact.realName();
-  } else {
-      re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
-                              contact.realName(), contact.organization() );
-  }
-  return re;
 }
 

@@ -33,6 +33,7 @@
 class DocumentSaverBase;
 class Geld;
 class DocDigest;
+class DocType;
 
 class KraftView;
 class KLazyLocalizedString;
@@ -324,6 +325,7 @@ public:
 
     bool isInvoice() const;
     bool isDraftState() const;
+    bool supportsXRechnung() const;
 
     void setTaxValues(double fullTax, double redTax);
 
@@ -368,6 +370,7 @@ protected:
 private:
     /** deletes the document's contents */
     void deleteItems();
+    DocType docType() const;
 
     QString mAddressUid;
     QString mProjectLabel;
