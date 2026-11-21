@@ -182,6 +182,19 @@
                 </cac:TaxCategory>
             </cac:TaxSubtotal>
             {% endif %}
+            {% if doc.hasNoTaxItems %}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="EUR">{{ doc.noTaxNettoSumNum }}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="EUR">0.00</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:ID>Z</cbc:ID>
+                    <cbc:Percent>0.00</cbc:Percent>
+                    <cac:TaxScheme>
+                        <cbc:ID>VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {% endif %}
         {% endif %}
 
     </cac:TaxTotal>
