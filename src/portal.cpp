@@ -1125,14 +1125,13 @@ void Portal::slotDocumentSelected( const QString& uuid)
         pdfEnabled = true;
     }
 
-    _actXRechnung->setEnabled(pdfEnabled);
     _actOpenDocumentPDF->setEnabled(pdfEnabled);
     _actPrintPDF->setEnabled(pdfEnabled);
     _actMailPDF->setEnabled(pdfEnabled);
     _actGeneratePDF->setEnabled(pdfEnabled);
 
     if (enable) {
-        _actXRechnung->setEnabled(docPtr->isInvoice());
+        _actXRechnung->setEnabled(docPtr->supportsXRechnung() );
         if (docWriteEnabled)
             _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
     }

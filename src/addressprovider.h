@@ -51,7 +51,6 @@ public:
    * Make sure to always use a non empty uid.
    */
   LookupState lookupAddressee( const QString& uid );
-  QString formattedAddress( const KContacts::Addressee& ) const;
 
   /**
     * @brief return an address from cache

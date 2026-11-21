@@ -664,14 +664,27 @@ QString KraftDoc::language() const
      return mPostText;
  }
 
-bool KraftDoc::isInvoice() const
+
+DocType KraftDoc::docType() const
 {
     DocTypes dts;
 
     Q_ASSERT(!mDocType.isEmpty());
     Q_ASSERT(dts.allNames().contains(mDocType));
     const DocType dt = dts.get(mDocType);
+    return dt;
+}
+
+bool KraftDoc::isInvoice() const
+{
+    const DocType dt = docType();
     return dt.isInvoice();
+}
+
+bool KraftDoc::supportsXRechnung() const
+{
+    const DocType dt = docType();
+    return dt.isInvoice() && dt.isXRechnungEnabled();
 }
 
 bool KraftDoc::isDraftState() const
@@ -1019,12 +1032,12 @@ bool KraftDoc::noTaxesDocument() const
 
  QString KraftDoc::preTextHtml() const
  {
-     return multilineHtml(mPreText);
+     return multilineHtml(preText());
  }
 
  QString KraftDoc::postTextHtml() const
  {
-     return multilineHtml(mPostText);
+     return multilineHtml(postText());
  }
 
 QString KraftDoc::dueDateStr() const

@@ -184,11 +184,16 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
 {
     Q_UNUSED(uid)
     KraftContact *me = MyIdentity::ownContact();
+    if (!me) {
+        _error = i18n("Own identity could not be found.");
+        Q_EMIT xRechnungTmpFile(QString());
+        return;
+    }
     const KContacts::Addressee myContact = me->addressee();
     // now the three pillars archDoc, me and _customer are defined.
 
     // The raw values, so the checks below see what the user actually entered.
-    const QMap<QString, QString> own = MyIdentity::ownBusinessData();
+    const QMap<QString, QString> own = me->businessData(); // MyIdentity::ownBusinessData();
 
     const QStringList missing = missingSellerData(myContact, own);
     if (!missing.isEmpty()) {

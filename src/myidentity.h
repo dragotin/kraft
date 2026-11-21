@@ -74,21 +74,6 @@ public:
 
     QString identityFile();
 
-    /* The business data of the own company: tax registration, commercial register
-     * and bank account. It does not fit into a vCard and is therefore stored with
-     * the KraftContact of the own identity rather than in the contact itself.
-     *
-     * ownBusinessData() returns the plain values, trimmed and normalized. Use it
-     * for every consumer that is not a template, ie. the EPC QR code, which is
-     * read by banking apps and must carry the account holder name verbatim.
-     */
-    static QMap<QString, QString> ownBusinessData();
-
-    /* The same data HTML escaped for the templates, merged into the `me` namespace.
-     * Never feed this to anything but a template.
-     */
-    static QVariantHash ownBusinessVariantHash();
-
     // returns the addressee that was found on the last attempt to look up the own identity.
     // If there was no call to load before, the returned addressee is obviously empty.
     KContacts::Addressee contact() const;

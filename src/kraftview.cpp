@@ -70,7 +70,6 @@
 #include "kraftcontact.h"
 #include "catalogtemplate.h"
 #include "importitemdialog.h"
-#include "addressprovider.h"
 #include "addressselectordialog.h"
 #include "format.h"
 #include "stringutil.h"
@@ -96,10 +95,6 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setAutoFillBackground(true);
-
-  mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-           this, SLOT( slotAddresseeFound(QString,KContacts::Addressee)));
 
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
@@ -348,9 +343,10 @@ void KraftView::redrawDocument( )
 
     // qDebug () << "Loaded address uid from database " << mContactUid;
     if( ! mContactUid.isEmpty() ) {
-      mAddressProvider->lookupAddressee( mContactUid );
+        KraftContact *cont = new KraftContact(mContactUid);
+        connect(cont, &KraftContact::addresseeLoaded, this, &KraftView::slotAddresseeFound);
+        cont->lookupAddressee();
     }
-
     if( !address.isEmpty() ) {
       // custom address stored in the document.
       // qDebug() << "custom address came in: " << address;
@@ -415,26 +411,24 @@ void KraftView::slotPickAddressee()
 
 void KraftView::slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
+    auto *s = qobject_cast<KraftContact*>(sender());
     if( contact.isEmpty() ) {
-        const QString err = mAddressProvider->errorMsg(uid);
-        if( !err.isEmpty() ) {
-            qDebug () << "Error while looking up address for uid" << uid << ":" << err;
-        }
+        const QString err = s->errorMsg(uid);
+        qDebug () << "Error while looking up address for uid" << uid << ":" << (err.isEmpty() ? "<empty>" : err);
     } else {
         slotNewAddress( contact, false );
         qDebug () << "No contact found for uid " << uid;
     }
+    s->deleteLater();
 }
 
 void KraftView::slotNewAddress( const KContacts::Addressee& contact, bool interactive )
 {
-
-    Addressee adr( contact );
-
     if( contact.isEmpty() ) {
         return;
     }
-    QString newAddress = mAddressProvider->formattedAddress( contact );
+
+    QString newAddress = KraftContact::formattedAddress( contact );
     const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
 
     bool replace = true;
@@ -467,16 +461,18 @@ void KraftView::slotNewAddress( const KContacts::Addressee& contact, bool intera
     }
 
     if( replace ) {
-        mContactUid = contact.uid();
-        // Another customer, so the reference of the previous one does not apply.
-        m_footerEdit->ui()->_buyerRefEdit->clear();
-        presetBuyerRef();
+        if (mContactUid != contact.uid()) {
+            mContactUid = contact.uid();
+            // Another customer, so the reference of the previous one does not apply.
+            m_footerEdit->ui()->_buyerRefEdit->clear();
+            presetBuyerRef();
+        }
 
         m_headerEdit->m_postAddressEdit->setText( newAddress );
 
         // Generate the welcome
         m_headerEdit->m_letterHead->clear();
-        QStringList li = generateLetterHead(adr.familyName(), adr.givenName());
+        QStringList li = generateLetterHead(contact.familyName(), contact.givenName());
 
         m_headerEdit->m_letterHead->insertItems(-1, li );
         m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
@@ -912,7 +908,7 @@ void KraftView::slotPositionModified( int )
 void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee& contact)
 {
     const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
-    const QString newAddress = mAddressProvider->formattedAddress(contact);
+    const QString newAddress = KraftContact::formattedAddress(contact);
     bool replace = true;
 
     if( currAddress.isEmpty() ) {
@@ -1435,8 +1431,9 @@ void KraftView::done( int r )
  */
 void KraftView::presetBuyerRef()
 {
-    if (!m_footerEdit->ui()->_buyerRefEdit->text().isEmpty() || mContactUid.isEmpty())
+    if (!m_footerEdit->ui()->_buyerRefEdit->text().isEmpty() || mContactUid.isEmpty()) {
         return;
+    }
     KraftContact customer(mContactUid);
     customer.load();
     const QString buyerRef = customer.stringAttribute(KraftContact::BuyerReference);
