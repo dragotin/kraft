@@ -1439,7 +1439,12 @@ void KraftView::presetBuyerRef()
         return;
     KraftContact customer(mContactUid);
     customer.load();
-    m_footerEdit->ui()->_buyerRefEdit->setText(customer.stringAttribute(KraftContact::BuyerReference));
+    const QString buyerRef = customer.stringAttribute(KraftContact::BuyerReference);
+    m_footerEdit->ui()->_buyerRefEdit->setText(buyerRef);
+    DocTypes docTypes;
+    const DocType docType = docTypes.get(m_headerEdit->m_cbType->currentText());
+    if (!buyerRef.isEmpty() && docType.isInvoice() && docType.isXRechnungEnabled())
+        mModified = true;
 }
 
 QDate KraftView::editorDueDate() const
