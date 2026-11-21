@@ -149,7 +149,11 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
         // that no address book can hold. The own identity has the country code on
         // top, which a customer brings along in its address.
         auto mtt = contactToVariantHash(myContact ? myContact->addressee() : KContacts::Addressee());
-        mtt.insert(MyIdentity::ownBusinessVariantHash());
+        if (myContact) {
+            auto business = myContact->businessVariantHash();
+            business.remove(KraftContact::BuyerReference);
+            mtt.insert(business);
+        }
         gtmpl.addToMappingHash(MeContactPrefix, markSafe(mtt));
 
         auto cct = contactToVariantHash(customerContact ? customerContact->addressee()
