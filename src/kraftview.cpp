@@ -1416,8 +1416,9 @@ void KraftView::done( int r )
         //Closed using the OK button .. it can be closed, but data needs saved
         if( doSave)
             saveChanges();
-        Q_EMIT viewClosed( r == 1, m_doc, mModified );
     }
+    // always, the portal needs to forget the view also if nothing was modified
+    Q_EMIT viewClosed( r == 1, m_doc, mModified );
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
     KraftSettings::self()->setDocViewSplitter(mCSplit->sizes());

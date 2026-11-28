@@ -11,6 +11,9 @@
   {% if doc.project %}
       <p>{{ label.project }}: {{ doc.project }}</p>
   {% endif %}
+  {% if doc.invalidReason %}
+      <p>{{ label.withdrawn }} ({{ doc.invalidatedAt }}): {{ doc.invalidReason }}</p>
+  {% endif %}
   <p>{{ label.doclastmodified }}: {{ doc.modifiedDateDoc }}</p>
 
   <p>

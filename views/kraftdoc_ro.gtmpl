@@ -11,8 +11,16 @@
    DRAFT
  {% else %}
    {{ doc.ident }}
+ {% endif %}
+ {% if doc.isInvalidState %}
+   <br/><span class="invalidStamp">{{ label.INVALID }}</span>
  {% endif %}</td>
 </tr>
+{% if doc.isInvalidState %}
+<tr>
+ <td colspan="2" class="invalidReason">{{ label.WITHDRAWN }}: {{ doc.invalidReason }}</td>
+</tr>
+{% endif %}
 </table>
 <hr width="90%" color="#431222"/>
 <p style="margin-top:1em;">

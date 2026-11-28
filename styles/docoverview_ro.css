@@ -23,3 +23,14 @@ td {
   vertical-align: bottom;
   font-weight: bold;
 }
+
+.invalidStamp {
+  color: #F00000;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.invalidReason {
+  color: #F00000;
+}

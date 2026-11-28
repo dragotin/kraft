@@ -121,6 +121,7 @@ class Portal : public QMainWindow
     void slotViewDocument( const QString& );
     void slotChangeDocStatus();
     void slotFinalizeDoc();
+    void slotWithdrawDoc();
     void slotDeleteDoc();
 
     void slotOpenCurrentPDF();
@@ -152,6 +153,7 @@ class Portal : public QMainWindow
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
     void startupChecksPostAssistant();
+    bool isWithdrawn(const QString& uuid) const;
     void showTemplateVarsUuid(const QString& uuid);
 
     QScopedPointer<PortalView> m_portalView;
@@ -180,6 +182,7 @@ class Portal : public QMainWindow
     QAction* _actEditTemplates;
 
     QAction* _actFinalizeDocument;
+    QAction* _actWithdrawDocument;
     QAction* _actDeleteDocument;
     QAction* _actChangeDocStatus;
     QAction* _actOpenDocumentPDF;

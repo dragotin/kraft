@@ -43,6 +43,16 @@
     </xs:restriction>
 </xs:simpleType>
 
+<!-- The attributes are set if the document was withdrawn, ie. is in state Invalid -->
+<xs:complexType name="doc_state_type">
+    <xs:simpleContent>
+      <xs:extension base="state_type">
+        <xs:attribute name="reason" type="xs:string" use="optional"/>
+        <xs:attribute name="invalidatedAt" type="xs:dateTime" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+</xs:complexType>
+
 <xs:complexType name="meta_type">
   <xs:sequence>
     <xs:element name="docType" type="xs:string"/>
@@ -53,7 +63,7 @@
     <xs:element name="ident" type="xs:string"/>
     <xs:element name="uuid"  type="uuid_type"/>
     <xs:element name="date"  type="xs:string"/>
-    <xs:element name="state" type="state_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="state" type="doc_state_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="tax" type="tax_def_type" minOccurs="0" maxOccurs="3"/>
     <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="lastModified" type="xs:dateTime"/>

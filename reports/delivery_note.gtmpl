@@ -34,6 +34,8 @@
   <body>
     {% if doc.isDraftState %}
         <div class="draft-watermark-stamp">DRAFT</div>
+    {% elif doc.isInvalidState %}
+        <div class="draft-watermark-stamp">{{ label.INVALID }}</div>
 	{% endif %}
 
    <!-- Example how to add a logo to the document, see kraft.css for positioning: -->

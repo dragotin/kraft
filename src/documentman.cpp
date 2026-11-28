@@ -61,6 +61,27 @@ DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromUuid)
     return doc;
 }
 
+DocGuardedPtr DocumentMan::createCorrection(const QString& uuid)
+{
+    DocGuardedPtr sourceDoc = openDocumentByUuid(uuid);
+    if (!sourceDoc)
+        return nullptr;
+
+    DocGuardedPtr doc = copyDocument(uuid);
+    const QDate today = QDate::currentDate();
+    doc->setDate(today);
+    // These are not part of a normal copy, but a correction is about the same delivery
+    doc->setBuyerRef(sourceDoc->buyerRef());
+    doc->setTimeOfSupply(sourceDoc->timeOfSupplyStart(), sourceDoc->timeOfSupplyEnd());
+    if (sourceDoc->dueDate().isValid()) // keep the payment term
+        doc->setDueDate(today.addDays(sourceDoc->paymentDueDays()));
+    // the withdrawn document is the predecessor of the correction
+    doc->setPredecessor(sourceDoc->uuid());
+
+    delete sourceDoc;
+    return doc;
+}
+
 DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromUuid, const DocPositionList& listToCopy)
 {
     DocGuardedPtr doc = new KraftDoc();

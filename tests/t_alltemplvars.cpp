@@ -15,6 +15,8 @@
 #include "docposition.h"
 #include "documenttemplate.h"
 #include "myidentity.h"
+#include "documentman.h"
+#include "kraftdoc.h"
 
 #include <QDomDocument>
 
@@ -227,7 +229,55 @@ private Q_SLOTS:
         QVERIFY2(out.contains(u"<cbc:BuyerReference>Order A&amp;B</cbc:BuyerReference>"_s), qPrintable(out));
     }
 
+    // A withdrawn document gets a stamp on the PDF and in the read only view,
+    // a final one does not. Runs last because it changes the document.
+    void invalidStamp()
+    {
+        const QString pdfTmpl{_sourceDir + "/reports/invoice.gtmpl"};
+        const QString roTmpl{_sourceDir + "/views/kraftdoc_ro.gtmpl"};
+        const QString stamp{u"<div class=\"draft-watermark-stamp\">Invalid</div>"_s};
+
+        QString out = expandTemplate(pdfTmpl, _docUuid);
+        QVERIFY(!out.isEmpty());
+        QVERIFY(!out.contains(stamp));
+        QVERIFY(!out.contains(u"DRAFT"_s));
+        out = expandTemplate(roTmpl, _docUuid);
+        QVERIFY(!out.isEmpty());
+        QVERIFY(!out.contains(u"invalidStamp"_s));
+
+        QScopedPointer<KraftDoc> doc(DocumentMan::self()->openDocumentByUuid(_docUuid));
+        QVERIFY(doc);
+        QVERIFY(doc->state().is(KraftDocState::State::Final));
+        QVERIFY(doc->invalidate(u"wrong price"_s));
+
+        out = expandTemplate(pdfTmpl, _docUuid);
+        QVERIFY2(out.contains(stamp), qPrintable(out));
+        QVERIFY(!out.contains(u"DRAFT"_s));
+
+        out = expandTemplate(roTmpl, _docUuid);
+        QVERIFY2(out.contains(u"<span class=\"invalidStamp\">Invalid</span>"_s), qPrintable(out));
+        QVERIFY(out.contains(u"Withdrawn: wrong price"_s));
+    }
+
 private:
+    QString expandTemplate(const QString& tmplFile, const QString& uuid)
+    {
+        GrantleeDocumentTemplate tmpl(tmplFile);
+        KraftContact *me = MyIdentity::ownContact();
+        me->setAddressee(example_contact());
+        KraftContact customer;
+        customer.setAddressee(example_contact());
+
+        const QString out = tmpl.expand(uuid, me, &customer);
+        for (const QString& tmpFile : tmpl.tempFilesCreated()) {
+            QFile::remove(tmpFile);
+        }
+        // an empty result means a broken template
+        if (out.isEmpty())
+            qWarning() << "Template expansion failed:" << tmplFile << tmpl.error();
+        return out;
+    }
+
     QString expandXRechnung(const QString& uuid, const QString& customerOrg = QString())
     {
         GrantleeDocumentTemplate tmpl(_sourceDir + "/reports/xrechnung.xrtmpl");

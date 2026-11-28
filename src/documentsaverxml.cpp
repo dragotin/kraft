@@ -135,7 +135,12 @@ QDomDocument xmlDocument(KraftDoc *doc)
     meta.appendChild(textElement(xmldoc, "uuid", doc->uuid()));
     const QDate d = doc->date();
     meta.appendChild(textElement(xmldoc, "date", d.toString(Qt::ISODate)));
-    meta.appendChild(textElement(xmldoc, "state", doc->state().stateString()));
+    QDomElement stateElem = textElement(xmldoc, "state", doc->state().stateString());
+    if (!doc->invalidReason().isEmpty())
+        stateElem.setAttribute("reason", doc->invalidReason());
+    if (doc->invalidatedAt().isValid())
+        stateElem.setAttribute("invalidatedAt", doc->invalidatedAt().toString(Qt::ISODate));
+    meta.appendChild(stateElem);
 
     // -------- taxes
     QDomElement taxReduced = xmldoc.createElement("tax");
@@ -287,6 +292,8 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     t = childElemText(metaElem, "state");
     doc->state().setStateFromString(t);
+    const QDomElement stateElem = metaElem.firstChildElement("state");
+    doc->setInvalidated(stateElem.attribute("reason"), QDateTime::fromString(stateElem.attribute("invalidatedAt"), Qt::ISODate));
 
     // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
     QDomElement taxElem = metaElem.firstChildElement("tax");

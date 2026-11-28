@@ -1,9 +1,13 @@
 #include <QTest>
+#include <QDomDocument>
+#include <QFile>
 #include <QObject>
 #include <QTemporaryDir>
 
 #include "defaultprovider.h"
+#include "documentman.h"
 #include "kraftdoc.h"
+#include "xmlindexdb.h"
 
 class T_KraftDocState : public QObject {
     Q_OBJECT
@@ -83,9 +87,11 @@ private Q_SLOTS:
         QVERIFY(fromDraft.contains(KraftDocState::State::Deleted));
         QVERIFY(fromDraft.contains(KraftDocState::State::Final));
 
-        // From Final: only Retracted. In particular, Deleted is NOT allowed.
+        // From Final: Retracted or Invalid. In particular, Deleted is NOT allowed.
         const auto fromFinal = KraftDocState::validFollowStates(KraftDocState::State::Final);
         QVERIFY(fromFinal.contains(KraftDocState::State::Retracted));
+        QVERIFY(fromFinal.contains(KraftDocState::State::Invalid));
+        QVERIFY(!fromFinal.contains(KraftDocState::State::Draft));
         QVERIFY(!fromFinal.contains(KraftDocState::State::Deleted));
 
         // From Invalid: may transition to Deleted.
@@ -127,6 +133,12 @@ private Q_SLOTS:
         KraftDocState s;
 
         s.setState(KraftDocState::State::Final);
+        QVERIFY(s.forcesReadOnly());
+
+        s.setState(KraftDocState::State::Invalid);
+        QVERIFY(s.forcesReadOnly());
+
+        s.setState(KraftDocState::State::Retracted);
         QVERIFY(s.forcesReadOnly());
 
         s.setState(KraftDocState::State::Draft);
@@ -199,6 +211,75 @@ private Q_SLOTS:
 
         doc.slotDeleteDoc();
         QCOMPARE(doc.state().state(), KraftDocState::State::Deleted);
+    }
+
+    void invalidateNeedsReason()
+    {
+        KraftDoc doc;
+        doc.state().setState(KraftDocState::State::Final);
+        QVERIFY(!doc.invalidate(QStringLiteral("  ")));
+        QVERIFY(doc.state().is(KraftDocState::State::Final));
+    }
+
+    void invalidateOnlyFinal()
+    {
+        for (auto s : {KraftDocState::State::New, KraftDocState::State::Draft, KraftDocState::State::Retracted,
+                       KraftDocState::State::Invalid, KraftDocState::State::Deleted, KraftDocState::State::Converted}) {
+            KraftDoc doc;
+            doc.state().setState(s);
+            QVERIFY(!doc.invalidate(QStringLiteral("wrong price")));
+            QVERIFY(doc.state().is(s));
+            QVERIFY(doc.invalidReason().isEmpty());
+        }
+    }
+
+    void invalidateAndCorrect()
+    {
+        KraftDoc doc;
+        doc.setDocType(QStringLiteral("Rechnung")); // the index requires a type
+        doc.setDate(QDate(2026, 1, 5));
+        doc.setDueDate(QDate(2026, 1, 19));
+        doc.setBuyerRef(QStringLiteral("ref-1"));
+        QVERIFY(DocumentMan::self()->saveDocument(&doc)); // add to the index
+        doc.setIdent(QStringLiteral("2026-042"));
+        doc.state().setState(KraftDocState::State::Final);
+        QVERIFY(DocumentMan::self()->saveDocument(&doc));
+
+        // special chars and line breaks must survive in the XML attribute
+        const QString reason = QStringLiteral("wrong price: 5 < 6 & \"x\"\nsecond line ä");
+        QVERIFY(doc.invalidate(reason));
+        QVERIFY(!doc.canBeDeleted());
+        doc.slotDeleteDoc();
+
+        // All needs to survive the reload
+        QScopedPointer<KraftDoc> loaded(DocumentMan::self()->openDocumentByUuid(doc.uuid()));
+        QVERIFY(loaded);
+        QVERIFY(loaded->state().is(KraftDocState::State::Invalid));
+        QCOMPARE(loaded->ident(), QStringLiteral("2026-042"));
+        QCOMPARE(loaded->invalidReason(), reason);
+        QVERIFY(loaded->invalidatedAt().isValid());
+
+        QFile f(XmlIndexDb().xmlPathByUuid(doc.uuid()).filePath());
+        QVERIFY(f.open(QIODevice::ReadOnly));
+        QDomDocument dom;
+        QVERIFY(dom.setContent(f.readAll()));
+        const QDomElement meta = dom.documentElement().firstChildElement("meta");
+        const QDomElement state = meta.firstChildElement("state");
+        QCOMPARE(state.text(), KraftDocState::StateInvalidStr);
+        QCOMPARE(state.attribute("reason"), reason);
+        QVERIFY(QDateTime::fromString(state.attribute("invalidatedAt"), Qt::ISODate).isValid());
+        QVERIFY(meta.firstChildElement("attrib").isNull());
+
+        QScopedPointer<KraftDoc> draft(DocumentMan::self()->createCorrection(doc.uuid()));
+        QVERIFY(draft);
+        QVERIFY(draft->state().isNew());
+        QVERIFY(draft->ident() != doc.ident());
+        QVERIFY(draft->uuid() != doc.uuid());
+        QVERIFY(draft->invalidReason().isEmpty());
+        QVERIFY(!draft->invalidatedAt().isValid());
+        QCOMPARE(draft->predecessor(), doc.uuid());
+        QCOMPARE(draft->buyerRef(), QStringLiteral("ref-1"));
+        QCOMPARE(draft->paymentDueDays(), 14);
     }
 
 private:

@@ -5482,3 +5482,59 @@ msgstr "Ein generierter EPC QR Code"
 #, kde-format
 msgid "Kraft Information Variables"
 msgstr "Kraft Information Variablen"
+
+msgid "Withdraw Invoice..."
+msgstr "Rechnung zurückziehen..."
+
+msgid "Withdraw a final invoice that was not sent to the customer"
+msgstr "Eine finale Rechnung zurückziehen, die nicht an den Kunden verschickt wurde"
+
+msgid "Withdraw Invoice"
+msgstr "Rechnung zurückziehen"
+
+msgid "Are you sure you want to withdraw the invoice?"
+msgstr "Soll die Rechnung wirklich zurückgezogen werden?"
+
+msgid "Withdrawn"
+msgstr "Zurückgezogen"
+
+msgid "Please close the editor of this document first."
+msgstr "Bitte zuerst den Editor dieses Dokuments schließen."
+
+msgid "The invoice could not be withdrawn because saving failed."
+msgstr "Die Rechnung konnte nicht zurückgezogen werden, weil das Speichern fehlgeschlagen ist."
+
+msgid "The invoice was withdrawn, but the corrected draft could not be created."
+msgstr "Die Rechnung wurde zurückgezogen, aber der korrigierte Entwurf konnte nicht angelegt werden."
+
+msgid "A withdrawn document can not be printed."
+msgstr "Ein zurückgezogenes Dokument kann nicht gedruckt werden."
+
+msgid ""
+"<html><head/><body><p>The invoice becomes invalid. It keeps its number, and "
+"can not be changed, deleted or sent any more. This can not be undone.</p>"
+"<p>If the customer already received the invoice, it must be cancelled or "
+"corrected with a new document instead.</p></body></html>"
+msgstr ""
+"<html><head/><body><p>Die Rechnung wird ungültig. Sie behält ihre Nummer und "
+"kann nicht mehr geändert, gelöscht oder verschickt werden. Das kann nicht "
+"rückgängig gemacht werden.</p><p>Hat der Kunde die Rechnung bereits "
+"erhalten, muss sie stattdessen mit einem neuen Dokument storniert oder "
+"berichtigt werden.</p></body></html>"
+
+msgid "Reason:"
+msgstr "Grund:"
+
+msgid "This invoice was not sent to the customer."
+msgstr "Diese Rechnung wurde nicht an den Kunden übermittelt."
+
+msgid "Create a corrected draft"
+msgstr "Korrigierten Entwurf anlegen"
+
+msgctxt "Stamp printed on a withdrawn document"
+msgid "Invalid"
+msgstr "Ungültig"
+
+msgctxt "Label of the reason why a document was withdrawn"
+msgid "Withdrawn"
+msgstr "Zurückgezogen"

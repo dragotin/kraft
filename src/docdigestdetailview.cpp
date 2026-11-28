@@ -25,6 +25,8 @@
 #include <klocalizedstring.h>
 #include <kcontacts/phonenumber.h>
 
+#include "documentman.h"
+#include "kraftdoc.h"
 #include "docdigest.h"
 #include "docdigestdetailview.h"
 #include "defaultprovider.h"
@@ -410,6 +412,15 @@ void DocDigestDetailView::slotShowDocDetails(const DocDigest& digest, const QStr
     obj.setProperty("isDraft", digest.state().is(KraftDocState::State::Draft));
     obj.setProperty("state", digest.stateStr());
     obj.setProperty("ident", digest.ident());
+    if (digest.state().is(KraftDocState::State::Invalid)) {
+        // digests from the index do not have the attributes, so load the document
+        QScopedPointer<KraftDoc> doc(DocumentMan::self()->openDocumentByUuid(digest.uuid()));
+        if (doc && !doc->invalidReason().isEmpty()) {
+            obj.setProperty("invalidReason", doc->invalidReason());
+            obj.setProperty("invalidatedAt", Format::toDateTimeString(doc->invalidatedAt(), KraftSettings::self()->dateFormat()));
+            labels.setProperty("withdrawn", i18n("Withdrawn"));
+        }
+    }
     const QString lmd = Format::toDateTimeString(digest.lastModified(), KraftSettings::self()-> dateFormat());
     obj.setProperty("modifiedDateDoc", lmd);
 

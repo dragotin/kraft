@@ -49,6 +49,8 @@ class DocumentMan
     DocGuardedPtr createDocument(const QString& docType, const QString& copyFromUuid = QString(),
                                  const DocPositionList &listToCopy = DocPositionList() );
     DocGuardedPtr copyDocument(const QString& copyFromUuid );
+    // A new document dated today to replace a withdrawn one
+    DocGuardedPtr createCorrection(const QString& uuid);
 
     bool loadMetaFromFilename(const QString&, KraftDoc *doc);
 

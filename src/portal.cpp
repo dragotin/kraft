@@ -29,6 +29,10 @@
 #include <QAction>
 #include <QIcon>
 #include <QMessageBox>
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QPlainTextEdit>
+#include <QPushButton>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMenuBar>
@@ -69,6 +73,7 @@
 #include "alldocsview.h"
 #include "exportxrechnung.h"
 #include "ui_finalizedoc.h"
+#include "ui_withdrawdoc.h"
 #include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
 #include "xmlindexdb.h"
@@ -201,6 +206,10 @@ void Portal::initActions()
     _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_D ));
     connect(_actFinalizeDocument, &QAction::triggered, this, &Portal::slotFinalizeDoc);
 
+    newIcon = DefaultProvider::self()->icon("file-x");
+    _actWithdrawDocument = new QAction(newIcon, i18n("Withdraw Invoice..."), this);
+    connect(_actWithdrawDocument, &QAction::triggered, this, &Portal::slotWithdrawDoc);
+
     newIcon = DefaultProvider::self()->icon( "x");
     _actDeleteDocument = new QAction(newIcon, i18n("Delete Document"), this);
     _actDeleteDocument->setShortcut( QKeySequence( Qt::CTRL|Qt::Key_Delete ));
@@ -281,6 +290,7 @@ void Portal::initActions()
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
     _actOpenDocumentPDF->setStatusTip( i18n( "Open a viewer on an archived document" ) );
     _actFinalizeDocument->setStatusTip( i18n("Finalize the document to send it to the customer"));
+    _actWithdrawDocument->setStatusTip( i18n("Withdraw a final invoice that was not sent to the customer"));
     _actDeleteDocument->setStatusTip( i18n("Delete a not yet final document"));
     _actGeneratePDF->setStatusTip( i18n("Regenerate the current PDF"));
 
@@ -294,6 +304,7 @@ void Portal::initActions()
     _actXRechnung->setEnabled( false );
     _actChangeDocStatus->setEnabled( false );
     _actFinalizeDocument->setEnabled( false );
+    _actWithdrawDocument->setEnabled(false);
     _actDeleteDocument->setEnabled(false);
     _actGeneratePDF->setEnabled(false);
 
@@ -317,6 +328,7 @@ void Portal::initActions()
         docMenu->addSeparator();
         // docMenu->addAction(_actChangeDocStatus);
         docMenu->addAction(_actFinalizeDocument);
+        docMenu->addAction(_actWithdrawDocument);
         docMenu->addAction(_actDeleteDocument);
     }
 
@@ -380,6 +392,7 @@ void Portal::initView()
         if (!_readOnlyMode) {
             menu->addAction( _actEditDocument );
             menu->addAction( _actFinalizeDocument );
+            menu->addAction( _actWithdrawDocument );
             menu->addAction( _actDeleteDocument );
             menu->addSection(i18n("Create New Documents"));
             menu->addAction( _actNewDocument );
@@ -728,6 +741,7 @@ void Portal::slotXRechnungCurrentDocument()
 {
     // The due date and the buyer reference are part of the document, ie. its footer.
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    if (isWithdrawn(uuid)) return;
     _exporter->exportDocument(uuid);
 }
 
@@ -863,9 +877,86 @@ void Portal::slotFinalizeDoc()
     // doc is only deleted in the slot
 }
 
+bool Portal::isWithdrawn(const QString& uuid) const
+{
+    DocGuardedPtr doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    const bool re = doc && doc->state().is(KraftDocState::State::Invalid);
+    delete doc;
+    return re;
+}
+
+void Portal::slotWithdrawDoc()
+{
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    if (uuid.isEmpty()) return;
+
+    // An open editor would overwrite the withdrawn document with its own state
+    for (auto it = mViewMap.constBegin(); it != mViewMap.constEnd(); ++it) {
+        if (it.value() && it.value()->isVisible() && it.value()->type() == KraftViewBase::ReadWrite && it.key()->uuid() == uuid) {
+            QMessageBox::warning(this, i18n("Withdraw Invoice"), i18n("Please close the editor of this document first."));
+            return;
+        }
+    }
+
+    DocGuardedPtr doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    if (!doc) return;
+
+    if (!doc->isInvoice() || !doc->state().canBeInvalidated()) {
+        delete doc;
+        return;
+    }
+
+    QDialog dia(this);
+    Ui::WithdrawDocDialog ui;
+    ui.setupUi(&dia);
+    dia.setWindowTitle(i18n("Withdraw Invoice"));
+    const QIcon icon = DefaultProvider::self()->icon("file-x");
+    ui.iconLabel->setPixmap(icon.pixmap(QSize(120, 120)));
+    const QString info = i18n("%1, date %2", doc->docIdentifier(), doc->dateStr());
+    ui._docTypeLabel->setText(QStringLiteral("<b>") + info.toHtmlEscaped() + QStringLiteral("</b>"));
+    ui._docLabelIntro->setText(QStringLiteral("<pre>") + doc->address().toHtmlEscaped() + QStringLiteral("</pre>"));
+
+    QPushButton *okButton = ui.buttonBox->button(QDialogButtonBox::Yes);
+    auto updateOk = [&ui, okButton]() {
+        okButton->setEnabled(ui._notSentCB->isChecked() && !ui._reasonEdit->toPlainText().trimmed().isEmpty());
+    };
+    connect(ui._notSentCB, &QCheckBox::toggled, &dia, updateOk);
+    connect(ui._reasonEdit, &QPlainTextEdit::textChanged, &dia, updateOk);
+    updateOk();
+
+    const bool accepted = dia.exec() == QDialog::Accepted;
+    const bool ok = accepted && doc->invalidate(ui._reasonEdit->toPlainText());
+    if (ok) {
+        m_portalView->allDocsView()->slotUpdateView(doc);
+        slotDocumentSelected(uuid); // updates the actions
+    }
+    delete doc;
+
+    if (!accepted) return;
+    if (!ok) {
+        QMessageBox::warning(this, i18n("Withdraw Invoice"), i18n("The invoice could not be withdrawn because saving failed."));
+        return;
+    }
+
+    if (ui._createDraftCB->isChecked()) {
+        DocGuardedPtr draft = DocumentMan::self()->createCorrection(uuid);
+        if (draft && DocumentMan::self()->saveDocument(draft)) {
+            const QString draftUuid = draft->uuid();
+            m_portalView->allDocsView()->slotUpdateView(draft);
+            delete draft;
+            slotOpenDocument(draftUuid);
+        } else {
+            delete draft;
+            QMessageBox::warning(this, i18n("Withdraw Invoice"), i18n("The invoice was withdrawn, but the corrected draft could not be created."));
+        }
+    }
+}
+
 void Portal::slotMailDocument()
 {
     const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    if (isWithdrawn(uuid)) return;
+
     XmlIndexDb indx;
     QFileInfo fi = indx.pdfPathByUuid(uuid);
 
@@ -950,9 +1041,10 @@ void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KC
     m_portalView->allDocsView()->setErrorMsg({}, {});
 
     if (_currentSelectedUuid == uuid) {
+        const bool withdrawn = isWithdrawn(uuid);
         _actOpenDocumentPDF->setEnabled(true);
-        _actPrintPDF->setEnabled(true);
-        _actMailPDF->setEnabled(true);
+        _actPrintPDF->setEnabled(!withdrawn);
+        _actMailPDF->setEnabled(!withdrawn);
         _actGeneratePDF->setEnabled(true);
     }
 }
@@ -1032,6 +1124,7 @@ void Portal::slotPrintPDF(const QString& uuid)
     XmlIndexDb indx;
     QString fileName;
 
+
     if (!uuid.isEmpty()) {
         fileName = indx.pdfPathByUuid(uuid).filePath();
 
@@ -1039,6 +1132,17 @@ void Portal::slotPrintPDF(const QString& uuid)
             // try to interpret it as a ident rather than a uuid
             fileName = indx.pdfPathByIdent(uuid).filePath();
         }
+    }
+
+    // the parameter can also be an ident, so check by the file
+    QFileInfo xmlFile = indx.xmlPathByUuid(uuid);
+    if (xmlFile.filePath().isEmpty())
+        xmlFile = indx.xmlPathByIdent(uuid);
+    KraftDoc metaDoc;
+    if (xmlFile.exists() && DocumentMan::self()->loadMetaFromFilename(xmlFile.filePath(), &metaDoc)
+            && metaDoc.state().is(KraftDocState::State::Invalid)) {
+        slotStatusMsg(i18n("A withdrawn document can not be printed."));
+        return;
     }
 
     // Use lp on Linux to print the file
@@ -1111,10 +1215,12 @@ void Portal::slotDocumentSelected( const QString& uuid)
 
     _actEditDocument->setEnabled(docWriteEnabled);
     _actCopyDocument->setEnabled(enable);
-    _actFollowDocument->setEnabled(enable);
+    const bool withdrawn = docPtr->state().is(KraftDocState::State::Invalid);
+    _actFollowDocument->setEnabled(enable && !withdrawn);
     _actFinalizeDocument->setEnabled(enable && docWriteEnabled);
     _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
-    _actDeleteDocument->setEnabled(enable && docWriteEnabled);
+    _actWithdrawDocument->setEnabled(enable && !_readOnlyMode && docPtr->isInvoice() && docPtr->state().canBeInvalidated());
+    _actDeleteDocument->setEnabled(enable && !_readOnlyMode && docPtr->canBeDeleted());
 
     XmlIndexDb indx;
 
@@ -1126,12 +1232,12 @@ void Portal::slotDocumentSelected( const QString& uuid)
     }
 
     _actOpenDocumentPDF->setEnabled(pdfEnabled);
-    _actPrintPDF->setEnabled(pdfEnabled);
-    _actMailPDF->setEnabled(pdfEnabled);
+    _actPrintPDF->setEnabled(pdfEnabled && !withdrawn);
+    _actMailPDF->setEnabled(pdfEnabled && !withdrawn);
     _actGeneratePDF->setEnabled(pdfEnabled);
 
     if (enable) {
-        _actXRechnung->setEnabled(docPtr->supportsXRechnung() );
+        _actXRechnung->setEnabled(docPtr->supportsXRechnung() && !withdrawn);
         if (docWriteEnabled)
             _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
     }

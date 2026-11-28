@@ -205,6 +205,8 @@ QVariantHash DocumentTemplate::labelVariantHash()
     hash.insert( TAG( "WEBSITE"), i18nc("Printed on the document", "Website"));
 
     hash.insert( TAG( "PAGE"), i18nc("Printed on the document", "Page"));
+    hash.insert( TAG( "INVALID"), i18nc("Stamp printed on a withdrawn document", "Invalid"));
+    hash.insert( TAG( "WITHDRAWN"), i18nc("Label of the reason why a document was withdrawn", "Withdrawn"));
     hash.insert( TAG( "PREDECESSOR"), i18nc("Label of Predecessor document number", "Predecessor-Doc"));
     hash.insert( TAG( "PAGE_OF"), i18nc("the 'of' in page X of Y", "of"));
     hash.insert( TAG( "DOC_NO"), i18nc("Document number on document", "Document No."));

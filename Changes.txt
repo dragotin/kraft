@@ -14,6 +14,7 @@ Changes since version 2.1.0: #######################################
   and footer texts
 - Feature: Buyer reference (BT-10) is entered in the document footer,
   preset from the customer. The XRechnung dialog is gone
+- Feature: Withdraw final invoices that were not sent to the customer
 - Improvement: XRechnung export checks seller, buyer and document
   data and names what is missing instead of writing an invalid file
 - Improvement: XRechnung file name proposal contains the document

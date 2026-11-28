@@ -167,6 +167,7 @@ QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::Stat
         break;
     case State::Final:
         re.append(State::Retracted);
+        re.append(State::Invalid);
         break;
     case State::New:
         re.append(State::Deleted);
@@ -196,14 +197,14 @@ bool KraftDocState::canBeFinalized() const
     return re;
 }
 
-bool KraftDocState::forcesReadOnly()
+bool KraftDocState::canBeInvalidated() const
 {
-    bool re{false};
+    return validFollowStates(_state).contains(State::Invalid);
+}
 
-    if (_state == State::Final) {
-        re = true;
-    }
-    return re;
+bool KraftDocState::forcesReadOnly() const
+{
+    return _state == State::Final || _state == State::Retracted || _state == State::Invalid;
 }
 
 // =====================================================================================
@@ -249,6 +250,7 @@ void KraftDoc::clear()
     _toSEnd = QDateTime();
     _dueDate = QDate();
     _buyerRef.clear();
+    setInvalidated(QString(), QDateTime());
     _owner.clear();
 
     mPositions.clear();
@@ -279,6 +281,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   _state.setState(KraftDocState::State::New);
   KraftObj::operator=(origDoc);
   setUuid(QString()); // clear the Uuid
+  // the new doc is not withdrawn, even if the original is.
+  setInvalidated(QString(), QDateTime());
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -754,6 +758,45 @@ void KraftDoc::slotNewIdent(const QString& ident)
     delete generator;
 }
 
+void KraftDoc::setInvalidated(const QString& reason, const QDateTime& at)
+{
+    _invalidReason = reason;
+    _invalidatedAt = at;
+}
+
+bool KraftDoc::canBeDeleted() const
+{
+    // a withdrawn document has an official number and must be kept.
+    if (_state.is(KraftDocState::State::Invalid) && !mIdent.isEmpty())
+        return false;
+    return KraftDocState::validFollowStates(_state.state()).contains(KraftDocState::State::Deleted);
+}
+
+bool KraftDoc::invalidate(const QString& reason)
+{
+    const QString r = reason.trimmed();
+
+    if (r.isEmpty()) {
+        qDebug() << "A reason is required to invalidate a document";
+        return false;
+    }
+    if (!_state.canBeInvalidated()) {
+        qDebug() << "Document is in wrong state to be invalidated" << _state.stateString();
+        return false;
+    }
+
+    const auto oldState = _state.state();
+    setInvalidated(r, QDateTime::currentDateTime());
+    _state.setState(KraftDocState::State::Invalid);
+
+    if (!DocumentMan::self()->saveDocument(this)) {
+        _state.setState(oldState);
+        setInvalidated(QString(), QDateTime());
+        return false;
+    }
+    return true;
+}
+
 void KraftDoc::slotDeleteDoc()
 {
     auto nowState = state().state();
@@ -767,8 +810,7 @@ void KraftDoc::slotDeleteDoc()
         return;
     }
 
-    QList<KraftDocState::State> allowed = KraftDocState::validFollowStates(nowState);
-    if (!allowed.contains(KraftDocState::State::Deleted)) {
+    if (!canBeDeleted()) {
         qDebug() << "Document state can not be followed by Deleted state" << state().stateString();
         return;
     }

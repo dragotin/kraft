@@ -63,7 +63,9 @@ Entenhausener Weg 42
 |doc.hasReducedTaxItems | |true
 |doc.ident |Document identification number, &#39;draft&#39; for unsaved documents |20110127
 |doc.individualTaxesDocument |True if the document mixes different tax rates across its items |true
+|doc.invalidReason |Reason why the document was withdrawn, empty if it was not |
 |doc.isDraftState |True if the document is still in draft state |false
+|doc.isInvalidState |True if the document was withdrawn and is invalid |false
 |doc.isInvoice |True if the document is an invoice |true
 |doc.items |List of the document positions (line items) |
 |doc.nettoSumNum |Netto sum as numerical value, not localized |455.87
@@ -149,6 +151,7 @@ Entenhausener Weg 42
 |label.DOC_NO |Label for the document number, e.g. &#39;Document No.&#39; |Document No.
 |label.EMAIL |Label for the email address, e.g. &#39;Email&#39; |Email
 |label.FAX |Label for the fax number, e.g. &#39;Fax&#39; |Fax
+|label.INVALID |Stamp for a withdrawn, invalid document, e.g. &#39;Invalid&#39; |Invalid
 |label.ITEM |Label for the item column, e.g. &#39;Item&#39; |Item
 |label.MOBILE |Label for the mobile number, e.g. &#39;Mobile&#39; |Mobile
 |label.NET |Label for the net amount, e.g. &#39;Net&#39; |Net
@@ -166,6 +169,7 @@ Entenhausener Weg 42
 |label.UNIT |Label for the unit column, e.g. &#39;Unit&#39; |Unit
 |label.VAT |Label for the value added tax, e.g. &#39;VAT&#39; |VAT
 |label.WEBSITE |Label for the website, e.g. &#39;Website&#39; |Website
+|label.WITHDRAWN |Label for the reason why a document was withdrawn, e.g. &#39;Withdrawn&#39; |Withdrawn
 
 |===
 

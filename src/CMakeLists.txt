@@ -164,6 +164,7 @@ set( kraft_UIS
     numbercycleseditbase.ui
     documentactions.ui
     finalizedoc.ui
+    withdrawdoc.ui
     dbtoxml.ui
 )
 

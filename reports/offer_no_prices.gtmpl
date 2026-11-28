@@ -58,6 +58,14 @@
             font-weight: bold;
 
         }
+    {% elif doc.isInvalidState %}
+	    @top-center {
+	        font-family: Oxygen;
+	        font-size:40pt;
+	        content: '{{ label.INVALID }}';
+            font-variant: small-caps;
+            font-weight: bold;
+        }
 	{% endif %}        
 	{% if me.URL %}
         @bottom-right {

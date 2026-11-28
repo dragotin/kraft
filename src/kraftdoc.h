@@ -77,11 +77,12 @@ public:
     QString stateStringI18n() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
-    bool forcesReadOnly();
+    bool forcesReadOnly() const;
 
     bool is(State s) const { return _state == s; }
     bool isNew() const { return is(State::New); }
     bool canBeFinalized() const;
+    bool canBeInvalidated() const;
 
 private:
     State _state;
@@ -94,6 +95,8 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString docType READ docTypeStr)
     Q_PROPERTY(QString state READ (_state.stateString))
     Q_PROPERTY(bool isDraftState READ isDraftState)
+    Q_PROPERTY(bool isInvalidState READ isInvalidState)
+    Q_PROPERTY(QString invalidReason READ invalidReason)
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ addressUid)
     Q_PROPERTY(QString ident READ ident)
@@ -325,6 +328,13 @@ public:
 
     bool isInvoice() const;
     bool isDraftState() const;
+    bool isInvalidState() const { return _state.is(KraftDocState::State::Invalid); }
+    bool canBeDeleted() const;
+
+    // Why and when the document was withdrawn, empty if it was not.
+    QString invalidReason() const { return _invalidReason; }
+    QDateTime invalidatedAt() const { return _invalidatedAt; }
+    void setInvalidated(const QString& reason, const QDateTime& at);
     bool supportsXRechnung() const;
 
     void setTaxValues(double fullTax, double redTax);
@@ -347,6 +357,10 @@ public:
     // queries a document ident number from the numbercycle and sets the status to final.
     void finalize();
     void slotNewIdent(const QString&);
+
+    // Withdraws a final document that was never sent out: Sets the state to invalid
+    // and saves. The document keeps its ident. A reason is mandatory.
+    bool invalidate(const QString& reason);
 
     void slotDeleteDoc();
 
@@ -395,6 +409,10 @@ private:
 
     QString _buyerRef;
     QDate _dueDate;
+
+    // Set if the document was withdrawn
+    QString _invalidReason;
+    QDateTime _invalidatedAt;
 
     // Time of supply
     QDateTime _toSStart;
